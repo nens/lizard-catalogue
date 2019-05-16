@@ -8,8 +8,24 @@ class RasterList extends React.Component {
     }
 
     render() {
-        return <h2>Raster List</h2>
+        const { rasters } = this.props
+
+        if (!rasters) return <h1>Loading ...</h1>
+
+        return (
+            <div>
+                {this.props.rasters.map(raster => (
+                    <p key={raster.uuid}>{raster.name}</p>
+                ))}
+            </div>
+        )
+        
+        
     }
 }
 
-export default connect(null, { fetchRasters })(RasterList);
+const mapStateToProps = state => ({
+    rasters: state.rasters
+})
+
+export default connect(mapStateToProps, { fetchRasters })(RasterList);

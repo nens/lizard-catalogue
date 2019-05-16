@@ -12,9 +12,8 @@ export const fetchRasters = () => (dispatch, getState) => {
     request
         .get(`${baseUrl}/rasters`)
         .then(response => {
-            console.log(response);
-            console.log(baseUrl);
-            dispatch(rastersFetched(response.body))
+            console.log(baseUrl)
+            dispatch(rastersFetched(response.body.results))
         })
         .catch(console.error)
 }
