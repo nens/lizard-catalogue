@@ -11,7 +11,7 @@ const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
 // const host = process.env.HOST || '0.0.0.0';
 const host = 'localhost'; // Om toegang andere computers tegen te gaan
 
-const PROXY_SERVER = "https://demo.lizard.net/"
+const PROXY_SERVER = "https://demo.lizard.net"
 const PROXY_SETTING = {
   "/bootstrap": {
     "target": PROXY_SERVER,
