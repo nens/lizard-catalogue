@@ -1,8 +1,17 @@
 import React from 'react';
 
-export default class RasterDetails extends React.Component {
-    render() {
-        console.log(this.props.raster)
-        return <h3>Raster Details</h3>
-    }
+const RasterDetails = (props) => {
+    const { raster } = props;
+
+    if (!raster) return <h4>Raster Details</h4>;
+
+    return (
+        <div>
+            <h4>Raster Details</h4>
+            <p>Name: {raster.name}</p>
+            <p>Organisation: {raster.organisation.name}</p>
+        </div>
+    );
 };
+
+export default RasterDetails;

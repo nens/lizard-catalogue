@@ -1,16 +1,15 @@
 import request from 'superagent';
-import { baseUrl } from '../apis/raster-api';
+import { baseUrl } from './api';
 
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
+export const RASTER_SELECTED = 'RASTER_SELECTED';
 
 const rastersFetched = (rasters) => ({
     type: RASTERS_FETCHED,
     payload: rasters
 });
 
-export const fetchRasters = () => (dispatch, getState) => {
-    if (getState().rasters) return 
-
+export const fetchRasters = dispatch => {
     request
         .get(`${baseUrl}/rasters`)
         .then(response => {
@@ -19,5 +18,11 @@ export const fetchRasters = () => (dispatch, getState) => {
         .catch(console.error)
 };
 
+const rasterSelected = (raster) => ({
+    type: RASTER_SELECTED,
+    payload: raster
+});
 
-
+export const selectRaster = (raster, dispatch) => {
+    dispatch(rasterSelected(raster));
+};

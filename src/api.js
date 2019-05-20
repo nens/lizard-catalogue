@@ -1,6 +1,10 @@
+//Construct baseUrl for API endpoint 
+
 export const baseUrl = (() => {
+    //set the API endpoint 
     let absoluteBase = 'http://demo.lizard.net/api/v4';
-  
+
+    //set absoluteBase in relation to the current hosting service
     if (typeof window !== 'undefined') {
       const protocol = window && window.location.protocol;
   
@@ -10,5 +14,3 @@ export const baseUrl = (() => {
     }
     return absoluteBase;
 })();
-
-// export const baseUrl = 'http://localhost:3000/api/v4';
