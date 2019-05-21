@@ -1,18 +1,21 @@
-import React from 'react';
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { fetchRasters, selectRaster } from '../action';
 import { getRasters, getRaster } from '../reducers';
 import RasterList from './RasterList';
 import RasterDetails from './RasterDetails';
+import { MyProps } from '../interface';
+import './Raster.css'
 
-class RasterContainer extends React.Component {
+class RasterContainer extends React.Component<MyProps> {
+    
     componentDidMount() {
         this.props.fetchRasters();
     };
 
     render() {
         return (
-            <div>
+            <div className="raster-container">
                 <RasterList rasters={this.props.rasters} selectRaster={this.props.selectRaster} />
                 <RasterDetails raster={this.props.raster} />
             </div>

@@ -1,4 +1,5 @@
-import React from 'react';
+import * as React from 'react';
+import { Raster } from '../interface';
 
 const RasterList = (props) => {
     const { rasters, selectRaster } = props;
@@ -6,8 +7,9 @@ const RasterList = (props) => {
     if (!rasters) return <h1>Loading ...</h1>;
 
     return (
-        <div>
-            {rasters.map(raster => (
+        <div className="raster-list">
+            <h3>Raster List</h3>
+            {rasters.map((raster:Raster) => (
                 <p key={raster.uuid} onClick={() => selectRaster(raster)}>{raster.name}</p>
             ))}
         </div>
