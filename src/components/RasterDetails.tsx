@@ -1,6 +1,11 @@
 import * as React from 'react';
+import { Raster } from '../interface';
 
-const RasterDetails = (props) => {
+interface MyProps {
+    raster: Raster;
+}
+
+const RasterDetails = (props: MyProps) => {
     const { raster } = props;
 
     if (!raster) return <h4>Raster Details</h4>;
