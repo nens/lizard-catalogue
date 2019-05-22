@@ -11,7 +11,7 @@ const rastersFetched = (rasters: Raster[]): RastersFetched => ({
     payload: rasters
 });
 
-export const fetchRasters = (dispatch: Dispatch<RastersFetched>) => {
+export const fetchRasters = (dispatch: Dispatch<RastersFetched>): void => {
     request
         .get(`${baseUrl}/rasters`)
         .then(response => {
@@ -25,6 +25,6 @@ const rasterSelected = (raster: Raster): RasterSelected => ({
     payload: raster
 });
 
-export const selectRaster = (raster: Raster, dispatch: Dispatch<RasterSelected>) => {
+export const selectRaster = (raster: Raster, dispatch: Dispatch<RasterSelected>): void => {
     dispatch(rasterSelected(raster));
 };

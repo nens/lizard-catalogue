@@ -8,19 +8,24 @@ import { MyStore, Raster, RasterActionType } from '../interface';
 import './Raster.css';
 import { Dispatch } from 'redux';
 
-export interface MyProps {
-    rasters: Raster[];
-    raster: Raster;
-    selectRaster(raster: Raster): () => Raster;
-    fetchRasters(): () => Raster[];
+interface PropsFromState {
+  rasters: Raster[] | null;
+  raster: Raster | null;
+}
+
+interface PropsFromDispatch {
+  selectRaster: (raster: Raster) => void;
+  fetchRasters: () => void;
 };
+
+type RasterContainerProps = PropsFromState & PropsFromDispatch;
 
 export interface MyState {
     //page to be used later for pagination
     page: number;
 };
 
-class RasterContainer extends React.Component<MyProps, MyState> {
+class RasterContainer extends React.Component<RasterContainerProps, MyState> {
 
     componentDidMount() {
         this.props.fetchRasters();
@@ -30,20 +35,22 @@ class RasterContainer extends React.Component<MyProps, MyState> {
         return (
             <div className="raster-container">
                 <RasterList rasters={this.props.rasters} selectRaster={this.props.selectRaster} />
-                <RasterDetails raster={this.props.raster} />
+                {this.props.raster !== null ?
+                 <RasterDetails raster={this.props.raster} />
+                 : null}
             </div>
         );
     };
 };
 
-const mapStateToProps = (state: MyStore) => {
+const mapStateToProps = (state: MyStore): PropsFromState => {
     return {
-        rasters: getRasters(state),
-        raster: getRaster(state)
+      rasters: getRasters(state),
+      raster: getRaster(state),
     }
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<RasterActionType>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<RasterActionType>): PropsFromDispatch => ({
     fetchRasters: () => fetchRasters(dispatch),
     selectRaster: (raster: Raster) => selectRaster(raster, dispatch)
 });

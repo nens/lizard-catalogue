@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Raster } from '../interface';
 
 interface MyProps {
-    rasters: Raster[];
-    selectRaster(raster: Raster): () => Raster;
+    rasters: Raster[] | null;
+    selectRaster: (raster: Raster) => void;
 }
 
 const RasterList = (props: MyProps) => {
