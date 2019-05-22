@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
 import { RASTERS_FETCHED, RASTER_SELECTED } from "./action";
+import { RastersFetched, RasterSelected, MyStore } from './interface';
 
-const rasters = (state = null, action) => {
+const rasters = (state: MyStore['rasters'] = null, action: RastersFetched) => {
     switch (action.type) {
         case RASTERS_FETCHED:
             return action.payload;
@@ -10,7 +11,7 @@ const rasters = (state = null, action) => {
     };
 };
 
-const selectedRaster = (state = null, action) => {
+const selectedRaster = (state: MyStore['selectedRaster'] = null, action: RasterSelected) => {
     switch (action.type) {
         case RASTER_SELECTED:
             return action.payload;
@@ -19,11 +20,11 @@ const selectedRaster = (state = null, action) => {
     };
 };
 
-export const getRasters = (state) => {
+export const getRasters = (state: MyStore) => {
     return state.rasters
 };
 
-export const getRaster = (state) => {
+export const getRaster = (state: MyStore) => {
     return state.selectedRaster
 };
 
