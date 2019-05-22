@@ -20,8 +20,7 @@ interface PropsFromDispatch {
 
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
 
-export interface MyState {
-    //page to be used later for pagination
+interface MyState {
     page: number;
 };
 
@@ -35,9 +34,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         return (
             <div className="raster-container">
                 <RasterList rasters={this.props.rasters} selectRaster={this.props.selectRaster} />
-                {this.props.raster !== null ?
-                 <RasterDetails raster={this.props.raster} />
-                 : null}
+                <RasterDetails raster={this.props.raster} />
             </div>
         );
     };

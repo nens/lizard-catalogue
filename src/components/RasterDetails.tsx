@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Raster } from '../interface';
 
 interface MyProps {
-    raster: Raster;
+    raster: Raster | null;
 }
 
 const RasterDetails = (props: MyProps) => {
