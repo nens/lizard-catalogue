@@ -30,6 +30,7 @@ export interface Raster {
     interval: string;
     first_value_timestamp: string;
     last_value_timestamp: string;
+    last_modified: string;
     data_type: string;
     resolution: string;
     wms_info: {

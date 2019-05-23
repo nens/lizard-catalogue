@@ -28,3 +28,9 @@ const rasterSelected = (raster: Raster): RasterSelected => ({
 export const selectRaster = (raster: Raster, dispatch: Dispatch<RasterSelected>): void => {
     dispatch(rasterSelected(raster));
 };
+
+export const extractDate = (string: string) => {
+    const date = new Date(string)
+
+    return `${date.getFullYear()}-${date.getMonth() < 10 ? `0${date.getMonth()}` : `${date.getMonth()}`}-${date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`}`
+}

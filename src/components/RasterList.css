@@ -1,0 +1,107 @@
+.raster-list {
+    font-size: 10px;
+    width: 50%;
+    border: thin solid lightgrey;
+    border-radius: .4rem;
+    padding: 1rem;
+    background-color: #f4f2f2;
+
+    min-height: 90vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.raster-list__searchbar {
+    height: 5%;
+}
+
+.raster-list__searchbar-input {
+    width: 90%;
+}
+
+.raster-list__length {
+    height: 2%;
+}
+
+.raster-list__content {
+    height: 80%;
+}
+
+.raster-list__list {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    height: 100%;
+
+    margin: 0;
+    padding: 0;
+}
+
+.raster-list__row-title {
+    font-weight: bold;
+    width: 100%;
+    margin: 0.5rem auto;
+    display: flex;
+    justify-content: space-between;
+    height: 5%;
+}
+
+.raster-list__row {
+    border-radius: .3rem;
+    margin: 0.5rem auto;
+    background-color: #fff;
+    height: 3rem;
+    cursor: pointer;
+    width: 100%;
+    height: 10%;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.raster-list__row:hover:active {
+    border: 1px solid #41a086;
+}
+
+.raster-list__row-box {
+    flex: .5;
+}
+
+.raster-list__row-type {
+    flex: 1;
+}
+
+.raster-list__row-name {
+    flex: 3;
+}
+
+.raster-list__row-org {
+    flex: 3;
+}
+
+.raster-list__row-obs {
+    flex: 3;
+}
+
+.raster-list__row-time {
+    flex: 3;
+}
+
+.raster-list__row-acc {
+    flex: 1;
+}
+
+.raster-list__button-container {
+    height: 5%;
+}
+
+.raster-list__button {
+
+}
+
+li {
+    list-style: none;
+}

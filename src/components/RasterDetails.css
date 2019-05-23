@@ -1,12 +1,13 @@
 .raster-details {
-    font-size: .8rem;
+    font-size: 1.2rem;
     width: 40%;
     border: thin solid lightgrey;
     border-radius: .4rem;
-    padding: 1rem;
+    padding: 2rem;
     background-color: #f4f2f2;
 
     min-height: 90vh;
+
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -20,7 +21,7 @@
 }
 
 .raster-details__name {
-    font-size: 1rem;
+    font-size: 1.6rem;
     font-weight: 500;
 }
 
@@ -44,7 +45,7 @@ a.raster-details__name {
 }
 
 .raster-details__description-box h4 {
-    margin: 5px 0;
+    margin: .5rem 0;
 }
 
 .raster-details__map-box {
@@ -73,7 +74,7 @@ a.raster-details__name {
 .row {
     display: flex;
     
-    height: 30px;
+    height: 3rem;
 }
 
 .column {
@@ -81,7 +82,7 @@ a.raster-details__name {
 
     flex: 1;
     text-align: left;
-    padding: .4rem;
+    padding: .6rem;
     margin: 0;
 }
 
@@ -90,17 +91,21 @@ a.raster-details__name {
 }
 
 .raster-details__button-container {
-    height: 15%;
+    height: 10%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
 }
 
 .raster-details__button {
     font-size: inherit;
     background-color: #41a086;
     color: white;
-    width: 4.5rem;
+    width: 6rem;
     border: none;
     border-bottom: 1px solid grey;
-    padding: .2rem;
+    padding: .4rem;
 }
 
 .raster-details__button:focus {
@@ -108,5 +113,5 @@ a.raster-details__name {
 }
 
 .button-api {
-    margin-right: 1rem;
+    margin-right: 2rem;
 }
