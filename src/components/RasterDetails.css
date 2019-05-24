@@ -3,11 +3,12 @@
     width: 40%;
     border: thin solid lightgrey;
     border-radius: .4rem;
-    padding: 2rem;
+    padding: 1.5rem;
+    margin-right: 1rem;
     background-color: #f4f2f2;
 
     min-height: 90vh;
-
+    
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -20,13 +21,11 @@
     color: grey;
 }
 
-.raster-details__name {
+.raster-details h3 {
     font-size: 1.6rem;
-    font-weight: 500;
-}
-
-a.raster-details__name {
-   color: black;
+    font-weight: 600;
+    text-decoration: underline;
+    margin: 0;
 }
 
 .raster-details__uuid {
@@ -37,7 +36,7 @@ a.raster-details__name {
     display: flex;
     justify-content: space-between;
 
-    height: 30%;
+    min-height: 35%;
 }
 
 .raster-details__description-box {
@@ -63,18 +62,19 @@ a.raster-details__name {
 }
 
 .raster-details__data-1 {
-    height: 25%;
+    min-height: 25%;
 }
 
 .raster-details__data-2 {
-    height: 15%;
+    min-height: 15%;
     align-items: center;
+    margin-top: 2rem;
 }
 
 .row {
     display: flex;
     
-    height: 3rem;
+    min-height: 3rem;
 }
 
 .column {
@@ -99,13 +99,13 @@ a.raster-details__name {
 }
 
 .raster-details__button {
-    font-size: inherit;
     background-color: #41a086;
     color: white;
     width: 6rem;
     border: none;
     border-bottom: 1px solid grey;
     padding: .4rem;
+    cursor: pointer;
 }
 
 .raster-details__button:focus {

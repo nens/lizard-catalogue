@@ -1,10 +1,11 @@
 .raster-list {
-    font-size: 10px;
+    font-size: 1rem;
     width: 50%;
     border: thin solid lightgrey;
     border-radius: .4rem;
     padding: 1rem;
     background-color: #f4f2f2;
+    margin-left: 1rem;
 
     min-height: 90vh;
 
@@ -13,16 +14,54 @@
     justify-content: space-between;
 }
 
-.raster-list__searchbar {
+.raster-list__top {
     height: 5%;
 }
 
+.raster-list__searchbar {
+    display: flex;
+    align-items: center;
+}
+
 .raster-list__searchbar-input {
-    width: 90%;
+    font-family: inherit;
+    font-size: .9rem;
+    border: none;
+    border-radius: .5rem;
+    padding: .4rem 2rem;
+    margin-right: -3.25rem;
+    height: 3rem;
+
+    width: 98%;
+}
+
+.raster-list__searchbar-input:focus {
+    outline-color: #41a086;
+}
+
+.raster-list__searchbar-button {
+    border: none;
+    background-color: inherit;
+    width: 2rem;
+}
+
+.raster-list__searchbar-button:focus {
+    outline: none;
+}
+
+.raster-list__searchbar-button:active {
+    transform: translateY(2px);
+}
+
+.raster-list__searchbar-icon {
+    height: 1.5rem;
+    width: 1.5rem;
+    fill: grey;
 }
 
 .raster-list__length {
-    height: 2%;
+    color: grey;
+    margin-top: 1rem;
 }
 
 .raster-list__content {
@@ -32,7 +71,7 @@
 .raster-list__list {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: flex-start;
 
     height: 100%;
 
@@ -50,7 +89,7 @@
 }
 
 .raster-list__row {
-    border-radius: .3rem;
+    border-radius: 1rem;
     margin: 0.5rem auto;
     background-color: #fff;
     height: 3rem;
@@ -62,44 +101,73 @@
     justify-content: space-between;
 }
 
-.raster-list__row:hover:active {
+.raster-list__row:hover {
+    border: 1px solid #41a086;
+}
+
+.raster-list__row:active {
     border: 1px solid #41a086;
 }
 
 .raster-list__row-box {
     flex: .5;
+    text-align: center;
+    margin: auto 0;
 }
 
 .raster-list__row-type {
     flex: 1;
+    text-align: center;
+    margin: auto 0;
 }
 
 .raster-list__row-name {
-    flex: 3;
+    flex: 2;
+    text-align: left;
+    margin: auto 0;
 }
 
 .raster-list__row-org {
     flex: 3;
+    text-align: left;
+    margin: auto 0;
 }
 
 .raster-list__row-obs {
-    flex: 3;
+    flex: 2;
+    text-align: left;
+    margin: auto 0;
 }
 
 .raster-list__row-time {
-    flex: 3;
+    flex: 2;
+    text-align: center;
+    margin: auto 0;
 }
 
 .raster-list__row-acc {
     flex: 1;
+    text-align: center;
+    margin: auto 0;
+}
+
+.raster-list__pagination {
+    display: flex;
+    justify-content: space-between;
 }
 
 .raster-list__button-container {
     height: 5%;
+    text-align: right;
 }
 
 .raster-list__button {
-
+    font-size: 1.2rem;
+    padding: .8rem;
+    border: none;
+    background-color: #41a086;
+    color: #fff;
+    cursor: pointer;
 }
 
 li {
