@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Raster } from '../interface';
-import { Map, TileLayer } from 'react-leaflet';
+import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 
 import './RasterDetails.css';
 
@@ -22,13 +22,18 @@ const RasterDetails = (props: MyProps) => {
     const startDate = new Date(raster.first_value_timestamp);
     const stopDate = new Date(raster.last_value_timestamp);
 
-    //Turn the new Date into a string with the date format of YYYY-MM-DD 
-    const start = `${startDate.getFullYear()}-${startDate.getMonth() < 10 ? `0${startDate.getMonth()}` : `${startDate.getMonth()}`}-${startDate.getDate() < 10 ? `0${startDate.getDate()}` : `${startDate.getDate()}`}`;
-    const stop = `${stopDate.getFullYear()}-${stopDate.getMonth() < 10 ? `0${stopDate.getMonth()}` : `${stopDate.getMonth()}`}-${stopDate.getDate() < 10 ? `0${stopDate.getDate()}` : `${stopDate.getDate()}`}`;
-    
+    //Turn the new Date into a string with the date format of DD-MM-YYYY
+    const start = startDate.toLocaleDateString();
+    const stop = stopDate.toLocaleDateString();
+
+    //Calculate raster resolution and decide to show it in m2 or square degrees
+    const rasterResolution = Math.abs(raster.pixelsize_x * raster.pixelsize_y);
+    //If the projection is EPSG:4326, the resolution is calculated in square degrees, otherwise it is in m2
+    const resolution = raster.projection === "EPSG:4326" ? rasterResolution.toFixed(6) + " deg2" : rasterResolution + " m2"
+
     return (
         <div className="raster-details">
-            <a href="/" className="raster-details__name">{raster.name}</a>
+            <h3>{raster.name}</h3>
             <span className="raster-details__uuid">{raster.uuid}</span>
             <div className="raster-details__main-box">
                 <div className="raster-details__description-box">
@@ -40,7 +45,8 @@ const RasterDetails = (props: MyProps) => {
                 </div>
                 <div className="raster-details__map-box">
                     <Map bounds={bounds} >
-                        <TileLayer url="https://{s}.tile.osm.org/{z}/{x}/{y}.png" />
+                        <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} />
+                        <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
                     </Map>
                 </div>
             </div>
@@ -49,25 +55,25 @@ const RasterDetails = (props: MyProps) => {
                     <p className="column column-1">Temporal</p><p className="column column-2">{raster.temporal ? 'Yes' : 'No'} </p>
                 </div>
                 <div className="row">
-                    <p className="column column-1">Resolution</p><p className="column column-2">{raster.resolution}</p>
+                    <p className="column column-1">Resolution</p><p className="column column-2">{resolution}</p>
                 </div>
                 <div className="row">
-                    <p className="column column-1">Datatype</p><p className="column column-2">{raster.data_type}</p>
+                    <p className="column column-1">Datatype</p><p className="column column-2">Raster</p>
                 </div>
                 <div className="row">
-                    <p className="column column-1">Interval</p><p className="column column-2">{raster.interval}</p>
+                    <p className="column column-1">Interval</p><p className="column column-2">{raster.temporal ? raster.interval : null}</p>
                 </div>
                 <div className="row">
-                    <p className="column column-1">Start</p><p className="column column-2">{start}</p>
+                    <p className="column column-1">Start</p><p className="column column-2">{raster.temporal ? start : null}</p>
                 </div>
                 <div className="row">
-                    <p className="column column-1">Stop</p><p className="column column-2">{stop}</p>
+                    <p className="column column-1">Stop</p><p className="column column-2">{raster.temporal ? stop : null}</p>
                 </div>
             </div>
             <br />
             <div className="raster-details__data-2">
                 <div className="row">
-                    <p className="column column-1">Observation type</p><p className="column column-2">{raster.observation_type.code}</p>
+                    <p className="column column-1">Observation type</p><p className="column column-2">{raster.observation_type.parameter}</p>
                 </div>
                 <div className="row">
                     <p className="column column-1">Measuring unit</p><p className="column column-2">{raster.observation_type.unit}</p>
@@ -78,11 +84,10 @@ const RasterDetails = (props: MyProps) => {
             </div>
             <br/>
             <div className="raster-details__button-container">
-                <button className="raster-details__button">WMS</button>
                 <h4>View data in</h4>
                 <div>
-                    <button className="raster-details__button button-api">API</button>
-                    <button className="raster-details__button button-lizard">LIZARD</button>
+                    <button className="raster-details__button button-api" onClick={() => window.location.href = `https://demo.lizard.net/api/v4/rasters/${raster.uuid}`}>API</button>
+                    <button className="raster-details__button button-lizard" onClick={() => window.location.href = `https://demo.lizard.net`}>LIZARD</button>
                 </div>
             </div>
         </div>

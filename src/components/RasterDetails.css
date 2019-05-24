@@ -1,12 +1,14 @@
 .raster-details {
-    font-size: .8rem;
+    font-size: 1.2rem;
     width: 40%;
     border: thin solid lightgrey;
     border-radius: .4rem;
-    padding: 1rem;
+    padding: 1.5rem;
+    margin-right: 1rem;
     background-color: #f4f2f2;
 
     min-height: 90vh;
+    
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -19,13 +21,11 @@
     color: grey;
 }
 
-.raster-details__name {
-    font-size: 1rem;
-    font-weight: 500;
-}
-
-a.raster-details__name {
-   color: black;
+.raster-details h3 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-decoration: underline;
+    margin: 0;
 }
 
 .raster-details__uuid {
@@ -36,7 +36,7 @@ a.raster-details__name {
     display: flex;
     justify-content: space-between;
 
-    height: 30%;
+    min-height: 35%;
 }
 
 .raster-details__description-box {
@@ -44,7 +44,7 @@ a.raster-details__name {
 }
 
 .raster-details__description-box h4 {
-    margin: 5px 0;
+    margin: .5rem 0;
 }
 
 .raster-details__map-box {
@@ -62,18 +62,19 @@ a.raster-details__name {
 }
 
 .raster-details__data-1 {
-    height: 25%;
+    min-height: 25%;
 }
 
 .raster-details__data-2 {
-    height: 15%;
+    min-height: 15%;
     align-items: center;
+    margin-top: 2rem;
 }
 
 .row {
     display: flex;
     
-    height: 30px;
+    min-height: 3rem;
 }
 
 .column {
@@ -81,7 +82,7 @@ a.raster-details__name {
 
     flex: 1;
     text-align: left;
-    padding: .4rem;
+    padding: .6rem;
     margin: 0;
 }
 
@@ -97,10 +98,11 @@ a.raster-details__name {
     font-size: inherit;
     background-color: #41a086;
     color: white;
-    width: 4.5rem;
+    width: 6rem;
     border: none;
     border-bottom: 1px solid grey;
-    padding: .2rem;
+    padding: .4rem;
+    cursor: pointer;
 }
 
 .raster-details__button:focus {
@@ -108,5 +110,5 @@ a.raster-details__name {
 }
 
 .button-api {
-    margin-right: 1rem;
+    margin-right: 2rem;
 }
