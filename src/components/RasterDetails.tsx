@@ -45,8 +45,8 @@ const RasterDetails = (props: MyProps) => {
                 </div>
                 <div className="raster-details__map-box">
                     <Map bounds={bounds} >
-                        <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} />
                         <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
+                        <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} />
                     </Map>
                 </div>
             </div>
