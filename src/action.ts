@@ -1,6 +1,6 @@
 import request from 'superagent';
 import { baseUrl } from './api';
-import { Raster, RastersFetched, RasterSelected, RastersObject } from './interface';
+import { RastersFetched, RasterSelected, RastersObject, Raster } from './interface';
 import { Dispatch } from 'redux';
 
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';

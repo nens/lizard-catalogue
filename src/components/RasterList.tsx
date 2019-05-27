@@ -60,8 +60,6 @@ const RasterList = (props: MyProps) => {
                 <div className="raster-list__pagination">
                     {!previous ? null : <button className="raster-list__button-previous" onClick={() => onClick(page - 1)}>Previous</button>}
                     {!next ? null : <button className="raster-list__button-next" onClick={() => onClick(page + 1)}>Next</button>}
-                    {/* <button className="raster-list__button-previous" onClick={() => onClick(page - 1)}>Previous</button>
-                    <button className="raster-list__button-next" onClick={() => onClick(page + 1)}>Next</button> */}
                 </div>
             </div>
             <div className="raster-list__button-container">

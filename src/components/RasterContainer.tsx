@@ -1,16 +1,17 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { fetchRasters, selectRaster } from '../action';
-import { getRaster, getRasters } from '../reducers';
+import { getRaster, getRastersObject, MyStore, getRasters } from '../reducers';
 import RasterList from './RasterList';
 import RasterDetails from './RasterDetails';
-import { MyStore, Raster, RasterActionType, RastersObject } from '../interface';
+import { RasterActionType, RastersObject, Raster } from '../interface';
 import { Dispatch } from 'redux';
 import './Raster.css';
 
 interface PropsFromState {
   rastersObject: RastersObject | null;
   raster: Raster | null;
+  rasters: {};
 }
 
 interface PropsFromDispatch {
@@ -79,8 +80,9 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
 
 const mapStateToProps = (state: MyStore): PropsFromState => {
     return {
-      rastersObject: getRasters(state),
+      rastersObject: getRastersObject(state),
       raster: getRaster(state),
+      rasters: getRasters(state)
     }
 };
 

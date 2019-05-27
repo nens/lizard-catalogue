@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Raster } from '../interface';
+// import { Raster } from '../interface';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 
 import './RasterDetails.css';
+import { Raster } from '../interface';
 
 interface MyProps {
     raster: Raster | null;

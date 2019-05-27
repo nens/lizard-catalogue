@@ -1,12 +1,5 @@
 import { RASTERS_FETCHED, RASTER_SELECTED } from "./action";
 
-//REDUX STORE INTERFACE
-export interface MyStore {
-    rasters: RastersObject | null;
-    // rasters: Raster[] | null;
-    selectedRaster: Raster | null;
-};
-
 //ACTION INTERFACE
 export interface RastersFetched {
     type: typeof RASTERS_FETCHED;
