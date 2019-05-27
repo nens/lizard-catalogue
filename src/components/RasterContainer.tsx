@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { fetchRasters, selectRaster } from '../action';
-import { getRasters, getRaster } from '../reducers';
+import { getRaster, getRasters } from '../reducers';
 import RasterList from './RasterList';
 import RasterDetails from './RasterDetails';
-import { MyStore, Raster, RasterActionType } from '../interface';
+import { MyStore, Raster, RasterActionType, RastersObject } from '../interface';
 import { Dispatch } from 'redux';
 import './Raster.css';
 
 interface PropsFromState {
-  rasters: Raster[] | null;
+  rastersObject: RastersObject | null;
   raster: Raster | null;
 }
 
@@ -22,12 +22,14 @@ type RasterContainerProps = PropsFromState & PropsFromDispatch;
 
 interface MyState {
     page: number;
+    initialPage: number;
     searchTerm: string;
 };
 
 class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     state: MyState = {
         page: 1,
+        initialPage: 1,
         searchTerm: ''
     };
 
@@ -35,7 +37,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         if (page < 1) return page = 1;
         this.props.fetchRasters(page, this.state.searchTerm);
         this.setState({
-            page: page
+            page: page,
         });
     };
 
@@ -43,13 +45,14 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         this.setState({
             searchTerm: event.target.value
         });
-
     }
 
     onSubmit = (event) => {
         event.preventDefault();
-        console.log(this.state.searchTerm)
-        this.props.fetchRasters(this.state.page, this.state.searchTerm);
+        this.setState({
+            page: 1
+        });
+        this.props.fetchRasters(this.state.initialPage, this.state.searchTerm);
     }
 
     componentDidMount() {
@@ -60,7 +63,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         return (
             <div className="raster-container">
                 <RasterList 
-                    rasters={this.props.rasters} 
+                    rastersObject={this.props.rastersObject} 
                     selectRaster={this.props.selectRaster} 
                     page={this.state.page} 
                     searchTerm={this.state.searchTerm}
@@ -76,7 +79,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
 
 const mapStateToProps = (state: MyStore): PropsFromState => {
     return {
-      rasters: getRasters(state),
+      rastersObject: getRasters(state),
       raster: getRaster(state),
     }
 };

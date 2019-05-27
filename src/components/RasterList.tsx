@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Raster } from '../interface';
+import { Raster, RastersObject } from '../interface';
 import './RasterList.css';
 
 interface MyProps {
-    rasters: Raster[] | null;
+    rastersObject: RastersObject | null;
     selectRaster: (raster: Raster) => void;
     page: number;
     searchTerm: string;
@@ -13,9 +13,12 @@ interface MyProps {
 }
 
 const RasterList = (props: MyProps) => {
-    const { rasters, selectRaster, page, searchTerm, onClick, onChange, onSubmit } = props;
+    const { rastersObject, selectRaster, page, searchTerm, onClick, onChange, onSubmit } = props;
 
-    if (!rasters) return <div className="raster-list"><h1>Loading ...</h1></div>;
+    if (!rastersObject) return <div className="raster-list"><h1>Loading ...</h1></div>;
+
+    const { count, previous, next } = rastersObject;
+    const rasters = rastersObject.results;
     
     return (
         <div className="raster-list">
@@ -28,7 +31,7 @@ const RasterList = (props: MyProps) => {
                         </svg>
                     </button>
                 </form>
-                <div className="raster-list__length">{rasters.length} Items</div>
+                <div className="raster-list__length">{count} Items</div>
             </div>
 
             <div className="raster-list__content">
@@ -55,8 +58,10 @@ const RasterList = (props: MyProps) => {
                     ))}
                 </ul>
                 <div className="raster-list__pagination">
-                    <button className="raster-list__button-previous" onClick={() => onClick(page - 1)}>Previous</button>
-                    <button className="raster-list__button-next" onClick={() => onClick(page + 1)}>Next</button>
+                    {!previous ? null : <button className="raster-list__button-previous" onClick={() => onClick(page - 1)}>Previous</button>}
+                    {!next ? null : <button className="raster-list__button-next" onClick={() => onClick(page + 1)}>Next</button>}
+                    {/* <button className="raster-list__button-previous" onClick={() => onClick(page - 1)}>Previous</button>
+                    <button className="raster-list__button-next" onClick={() => onClick(page + 1)}>Next</button> */}
                 </div>
             </div>
             <div className="raster-list__button-container">

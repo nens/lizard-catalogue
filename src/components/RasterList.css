@@ -97,6 +97,8 @@
     width: 100%;
     height: 10%;
 
+    border: 1px solid transparent;
+
     display: flex;
     justify-content: space-between;
 }
@@ -152,8 +154,18 @@
 }
 
 .raster-list__pagination {
-    display: flex;
-    justify-content: space-between;
+    position: relative;
+    width: 100%;
+}
+
+.raster-list__button-previous {
+    position: absolute;
+    left: 0;
+}
+
+.raster-list__button-next {
+    position: absolute;
+    right: 0;
 }
 
 .raster-list__button-container {

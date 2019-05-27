@@ -21,11 +21,11 @@ const selectedRaster = (state: MyStore['selectedRaster'] = null, action: RasterS
 };
 
 export const getRasters = (state: MyStore) => {
-    return state.rasters
+    return state.rasters;
 };
 
 export const getRaster = (state: MyStore) => {
-    return state.selectedRaster
+    return state.selectedRaster;
 };
 
 export default combineReducers({

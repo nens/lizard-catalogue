@@ -1,12 +1,12 @@
 import request from 'superagent';
 import { baseUrl } from './api';
-import { Raster, RastersFetched, RasterSelected } from './interface';
+import { Raster, RastersFetched, RasterSelected, RastersObject } from './interface';
 import { Dispatch } from 'redux';
 
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
 export const RASTER_SELECTED = 'RASTER_SELECTED';
 
-const rastersFetched = (rasters: Raster[]): RastersFetched => ({
+const rastersFetched = (rasters: RastersObject): RastersFetched => ({
     type: RASTERS_FETCHED,
     payload: rasters
 });
@@ -15,7 +15,7 @@ export const fetchRasters = (page: number, searchTerm: string, dispatch: Dispatc
     request
         .get(`${baseUrl}/rasters?name__icontains=${searchTerm}&page=${page}`)
         .then(response => {
-            dispatch(rastersFetched(response.body.results))
+            dispatch(rastersFetched(response.body))
         })
         .catch(console.error)
 };
