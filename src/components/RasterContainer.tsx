@@ -7,6 +7,7 @@ import RasterDetails from './RasterDetails';
 import { RasterActionType, RastersObject, Raster } from '../interface';
 import { Dispatch } from 'redux';
 import './Raster.css';
+import FilterBar from './FilterBar';
 
 interface PropsFromState {
   rastersObject: RastersObject | null;
@@ -63,6 +64,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     render() {
         return (
             <div className="raster-container">
+                <FilterBar />
                 <RasterList 
                     rastersObject={this.props.rastersObject} 
                     selectRaster={this.props.selectRaster} 
