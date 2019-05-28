@@ -12,21 +12,20 @@ interface MyProps {
     onSubmit: (event: object) => void;
 }
 
-interface MyState {
-    [index: string]: Raster | {};
-}
-
-class RasterList extends React.Component<MyProps, MyState> {
+class RasterList extends React.Component<MyProps, {}> {
     state = {};
-
+    
     onCheckboxSelect = (raster: Raster) => {
-        this.setState({
-            raster: raster
-        });
-    }
+        if (!this.state[raster.uuid]) {
+            this.setState({
+                [raster.uuid]: raster
+            });
+        } else {
+            delete this.state[raster.uuid]
+        };        
+    };
 
     render() {
-        console.log(this.state)
         const { rastersObject, selectRaster, page, searchTerm, onClick, onChange, onSubmit } = this.props;
 
         if (!rastersObject) return <div className="raster-list"><h1>Loading ...</h1></div>;
@@ -61,7 +60,7 @@ class RasterList extends React.Component<MyProps, MyState> {
                         </li>
                         {rasters.map((raster: Raster) => (
                             <li className="raster-list__row" key={raster.uuid} onClick={() => selectRaster(raster)}>
-                                <input type="checkbox" className="raster-list__row-box" onClick={() => this.onCheckboxSelect(raster)}/>
+                                <input type="checkbox" className="raster-list__row-box" onClick={() => this.onCheckboxSelect(raster)} />
                                 <div className="raster-list__row-type">#</div>
                                 <div className="raster-list__row-name">{raster.name}</div>
                                 <div className="raster-list__row-org">{raster.organisation.name}</div>
@@ -77,12 +76,14 @@ class RasterList extends React.Component<MyProps, MyState> {
                     </div>
                 </div>
                 <div className="raster-list__button-container">
-                    <button className="raster-list__button">ADD TO BASKET</button>
+                    {Object.keys(this.state).length === 0 ? 
+                        <button className="raster-list__button raster-list__button-grey">ADD TO BASKET</button> : 
+                        <button className="raster-list__button">ADD TO BASKET</button>
+                    }                    
                 </div>
             </div>
         );
     }
-
 };
 
 export default RasterList;
