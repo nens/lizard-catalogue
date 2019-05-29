@@ -1,20 +1,25 @@
-import { RASTERS_FETCHED, RASTER_SELECTED } from "./action";
+import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_ADDED } from "./action";
 
 //ACTION INTERFACE
 export interface RastersFetched {
     type: typeof RASTERS_FETCHED;
-    payload: RastersObject;
+    payload: APIObject;
 };
 
 export interface RasterSelected {
     type: typeof RASTER_SELECTED;
-    payload: Raster;
+    payload: string;
 };
 
-export type RasterActionType = RastersFetched | RasterSelected;
+export interface BasketAdded {
+    type: typeof BASKET_ADDED;
+    payload: string[];
+}
+
+export type RasterActionType = RastersFetched | RasterSelected | BasketAdded;
 
 //INTERFACES
-export interface RastersObject {
+export interface APIObject {
     count: number;
     previous: string;
     next: string;
