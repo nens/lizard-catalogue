@@ -10,23 +10,26 @@ interface MyProps {
     onClick: (page: number) => void;
     onChange: (event: object) => void;
     onSubmit: (event: object) => void;
+    addToBasket: (basket) => void;
 }
 
 class RasterList extends React.Component<MyProps, {}> {
     state = {};
-    
+
     onCheckboxSelect = (raster: Raster) => {
         if (!this.state[raster.uuid]) {
             this.setState({
                 [raster.uuid]: raster
             });
         } else {
-            delete this.state[raster.uuid]
-        };        
+            delete this.state[raster.uuid];
+            this.setState({});
+        };
     };
 
     render() {
-        const { rastersObject, selectRaster, page, searchTerm, onClick, onChange, onSubmit } = this.props;
+        console.log(this.state)
+        const { rastersObject, selectRaster, page, searchTerm, onClick, onChange, onSubmit, addToBasket } = this.props;
 
         if (!rastersObject) return <div className="raster-list"><h1>Loading ...</h1></div>;
 
@@ -58,17 +61,25 @@ class RasterList extends React.Component<MyProps, {}> {
                             <div className="raster-list__row-time">Latest update</div>
                             <div className="raster-list__row-acc" />
                         </li>
-                        {rasters.map((raster: Raster) => (
-                            <li className="raster-list__row" key={raster.uuid} onClick={() => selectRaster(raster)}>
-                                <input type="checkbox" className="raster-list__row-box" onClick={() => this.onCheckboxSelect(raster)} />
-                                <div className="raster-list__row-type">#</div>
-                                <div className="raster-list__row-name">{raster.name}</div>
-                                <div className="raster-list__row-org">{raster.organisation.name}</div>
-                                <div className="raster-list__row-obs">{raster.observation_type.parameter}</div>
-                                <div className="raster-list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
-                                <div className="raster-list__row-acc" />
-                            </li>
-                        ))}
+                        {rasters.map((raster: Raster) => {
+                            //Here is a logic to define whether a raster has been selected (check-box has been checked or not)
+                            //if yes then the default checked value of the input field will be true
+                            //if no then the default checked value of the input field will be false
+                            const rasterUuid = this.state[raster.uuid];
+                            const checked = rasterUuid ? true : false;
+
+                            return (
+                                <li className="raster-list__row" key={raster.uuid} onClick={() => selectRaster(raster)} >
+                                    <input type="checkbox" className="raster-list__row-box" onClick={() => this.onCheckboxSelect(raster)} defaultChecked={checked} />
+                                    <div className="raster-list__row-type">#</div>
+                                    <div className="raster-list__row-name">{raster.name}</div>
+                                    <div className="raster-list__row-org">{raster.organisation.name}</div>
+                                    <div className="raster-list__row-obs">{raster.observation_type.parameter}</div>
+                                    <div className="raster-list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
+                                    <div className="raster-list__row-acc" />
+                                </li>
+                            )
+                        })}
                     </ul>
                     <div className="raster-list__pagination">
                         {!previous ? null : <button className="raster-list__button-previous" onClick={() => onClick(page - 1)}>Previous</button>}
@@ -76,10 +87,10 @@ class RasterList extends React.Component<MyProps, {}> {
                     </div>
                 </div>
                 <div className="raster-list__button-container">
-                    {Object.keys(this.state).length === 0 ? 
-                        <button className="raster-list__button raster-list__button-grey">ADD TO BASKET</button> : 
-                        <button className="raster-list__button">ADD TO BASKET</button>
-                    }                    
+                    {Object.keys(this.state).length === 0 ?
+                        <button className="raster-list__button raster-list__button-grey">ADD TO BASKET</button> :
+                        <button className="raster-list__button" onClick={() => addToBasket(this.state)}>ADD TO BASKET</button>
+                    }
                 </div>
             </div>
         );

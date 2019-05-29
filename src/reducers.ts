@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { RASTERS_FETCHED, RASTER_SELECTED } from "./action";
+import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_ADDED } from "./action";
 import { RastersFetched, RasterSelected, RastersObject, Raster } from './interface';
 
 export interface MyStore {
@@ -7,6 +7,7 @@ export interface MyStore {
     uuid: [];
     rasters: {};
     selectedRaster: Raster | null;
+    basket: {};
 };
 
 const rastersObject = (state: MyStore['rastersObject'] = null, action: RastersFetched) => {
@@ -24,25 +25,34 @@ const uuid = (state: MyStore['uuid'] = [], action: RastersFetched) => {
             return action.payload.results.map(raster => raster.uuid);
         default:
             return state;
-    }
+    };
 };
 
 const rasters = (state: MyStore['rasters'] = {}, action: RastersFetched) => {
     switch (action.type) {
         case RASTERS_FETCHED:
-            const newState = {}
+            const newState = {};
             action.payload.results.forEach(raster => {
                 newState[raster.uuid] = raster;
             });
             return newState;
         default:
             return state;
-    }
-}
+    };
+};
 
 const selectedRaster = (state: MyStore['selectedRaster'] = null, action: RasterSelected) => {
     switch (action.type) {
         case RASTER_SELECTED:
+            return action.payload;
+        default:
+            return state;
+    };
+};
+
+const basket = (state: MyStore['basket'] = {}, action) => {
+    switch (action.type) {
+        case BASKET_ADDED:
             return action.payload;
         default:
             return state;
@@ -55,7 +65,7 @@ export const getRastersObject = (state: MyStore) => {
 
 export const getRasters = (state: MyStore) => {
     return state.rasters;
-}
+};
 
 export const getRaster = (state: MyStore) => {
     return state.selectedRaster;
@@ -65,5 +75,6 @@ export default combineReducers({
     rastersObject,
     uuid,
     rasters,
-    selectedRaster
+    selectedRaster,
+    basket
 });
