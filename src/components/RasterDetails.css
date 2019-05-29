@@ -1,0 +1,114 @@
+.raster-details {
+    font-size: 1.2rem;
+    width: 40%;
+    border: thin solid lightgrey;
+    border-radius: .4rem;
+    padding: 1.5rem;
+    margin-right: 1rem;
+    background-color: #f4f2f2;
+
+    min-height: 90vh;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.raster-details__loading {
+    font-size: inherit;
+    align-items: center;
+    justify-content: center;
+    color: grey;
+}
+
+.raster-details h3 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-decoration: underline;
+    margin: 0;
+}
+
+.raster-details__uuid {
+    color: grey;
+}
+
+.raster-details__main-box {
+    display: flex;
+    justify-content: space-between;
+
+    min-height: 35%;
+}
+
+.raster-details__description-box {
+    flex: 1;
+}
+
+.raster-details__description-box h4 {
+    margin: .5rem 0;
+}
+
+.raster-details__map-box {
+    flex: 1.5;
+    display: flex;
+    justify-content: flex-end;
+
+    height: 100%;
+    width: 100%;
+}
+
+.leaflet-container {
+    height: 90%;
+    width: 90%;
+}
+
+.raster-details__data-1 {
+    min-height: 25%;
+}
+
+.raster-details__data-2 {
+    min-height: 15%;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.row {
+    display: flex;
+    
+    min-height: 3rem;
+}
+
+.column {
+    border: thin solid grey;
+
+    flex: 1;
+    text-align: left;
+    padding: .6rem;
+    margin: 0;
+}
+
+.column-2 {
+    font-weight: bold;
+}
+
+.raster-details__button-container {
+    height: 15%;
+}
+
+.raster-details__button {
+    font-size: inherit;
+    background-color: #41a086;
+    color: white;
+    width: 6rem;
+    border: none;
+    border-bottom: 1px solid grey;
+    padding: .4rem;
+    cursor: pointer;
+}
+
+.raster-details__button:focus {
+    outline: none;
+}
+
+.button-api {
+    margin-right: 2rem;
+}

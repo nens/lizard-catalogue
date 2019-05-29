@@ -28,12 +28,20 @@ export interface Raster {
     description: string;
     temporal: boolean;
     interval: string;
-    first_value_timestamp:  string;
+    first_value_timestamp: string;
     last_value_timestamp: string;
-    data_type: string;
-    resolution: string;
+    projection: string;
+    pixelsize_x: number;
+    pixelsize_y: number;
     wms_info: {
         endpoint: string;
+        layer: string;
+    };
+    spatial_bounds: {
+        west: number;
+        east: number;
+        north: number;
+        south: number;
     };
 };
 
