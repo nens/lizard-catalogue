@@ -6,6 +6,8 @@ import { Dispatch } from 'redux';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
 export const RASTER_SELECTED = 'RASTER_SELECTED';
 
+export const BASKET_ADDED = 'BASKET_ADDED';
+
 const rastersFetched = (rasters: RastersObject): RastersFetched => ({
     type: RASTERS_FETCHED,
     payload: rasters
@@ -27,4 +29,13 @@ const rasterSelected = (raster: Raster): RasterSelected => ({
 
 export const selectRaster = (raster: Raster, dispatch: Dispatch<RasterSelected>): void => {
     dispatch(rasterSelected(raster));
+};
+
+const basketAdded = (basket) => ({
+    type: BASKET_ADDED,
+    payload: basket
+});
+
+export const addToBasket = (basket, dispatch) => {
+    dispatch(basketAdded(basket))
 };
