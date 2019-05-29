@@ -1,0 +1,187 @@
+.raster-list {
+    font-size: 1rem;
+    width: 50%;
+    border: thin solid lightgrey;
+    border-radius: .4rem;
+    padding: 1rem;
+    background-color: #f4f2f2;
+    margin-left: 1rem;
+
+    min-height: 90vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.raster-list__top {
+    height: 5%;
+}
+
+.raster-list__searchbar {
+    display: flex;
+    align-items: center;
+}
+
+.raster-list__searchbar-input {
+    font-family: inherit;
+    font-size: .9rem;
+    border: none;
+    border-radius: .5rem;
+    padding: .4rem 2rem;
+    margin-right: -3.25rem;
+    height: 3rem;
+
+    width: 98%;
+}
+
+.raster-list__searchbar-input:focus {
+    outline-color: #41a086;
+}
+
+.raster-list__searchbar-button {
+    border: none;
+    background-color: inherit;
+    width: 2rem;
+}
+
+.raster-list__searchbar-button:focus {
+    outline: none;
+}
+
+.raster-list__searchbar-button:active {
+    transform: translateY(2px);
+}
+
+.raster-list__searchbar-icon {
+    height: 1.5rem;
+    width: 1.5rem;
+    fill: grey;
+}
+
+.raster-list__length {
+    color: grey;
+    margin-top: 1rem;
+}
+
+.raster-list__content {
+    height: 80%;
+}
+
+.raster-list__list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    height: 100%;
+
+    margin: 0;
+    padding: 0;
+}
+
+.raster-list__row-title {
+    font-weight: bold;
+    width: 100%;
+    margin: 0.5rem auto;
+    display: flex;
+    justify-content: space-between;
+    height: 5%;
+}
+
+.raster-list__row {
+    border-radius: 1rem;
+    margin: 0.5rem auto;
+    background-color: #fff;
+    height: 3rem;
+    cursor: pointer;
+    width: 100%;
+    height: 10%;
+
+    border: 1px solid transparent;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.raster-list__row:hover {
+    border: 1px solid #41a086;
+}
+
+.raster-list__row:active {
+    border: 1px solid #41a086;
+}
+
+.raster-list__row-box {
+    flex: .5;
+    text-align: center;
+    margin: auto 0;
+}
+
+.raster-list__row-type {
+    flex: 1;
+    text-align: center;
+    margin: auto 0;
+}
+
+.raster-list__row-name {
+    flex: 2;
+    text-align: left;
+    margin: auto 0;
+}
+
+.raster-list__row-org {
+    flex: 3;
+    text-align: left;
+    margin: auto 0;
+}
+
+.raster-list__row-obs {
+    flex: 2;
+    text-align: left;
+    margin: auto 0;
+}
+
+.raster-list__row-time {
+    flex: 2;
+    text-align: center;
+    margin: auto 0;
+}
+
+.raster-list__row-acc {
+    flex: 1;
+    text-align: center;
+    margin: auto 0;
+}
+
+.raster-list__pagination {
+    position: relative;
+    width: 100%;
+}
+
+.raster-list__button-previous {
+    position: absolute;
+    left: 0;
+}
+
+.raster-list__button-next {
+    position: absolute;
+    right: 0;
+}
+
+.raster-list__button-container {
+    height: 5%;
+    text-align: right;
+}
+
+.raster-list__button {
+    font-size: 1.2rem;
+    padding: .8rem;
+    border: none;
+    background-color: #41a086;
+    color: #fff;
+    cursor: pointer;
+}
+
+li {
+    list-style: none;
+}

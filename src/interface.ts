@@ -1,15 +1,9 @@
 import { RASTERS_FETCHED, RASTER_SELECTED } from "./action";
 
-//REDUX STORE INTERFACE
-export interface MyStore {
-    rasters: Raster[] | null;
-    selectedRaster: Raster | null;
-};
-
 //ACTION INTERFACE
 export interface RastersFetched {
     type: typeof RASTERS_FETCHED;
-    payload: Raster[];
+    payload: RastersObject;
 };
 
 export interface RasterSelected {
@@ -20,6 +14,13 @@ export interface RasterSelected {
 export type RasterActionType = RastersFetched | RasterSelected;
 
 //INTERFACES
+export interface RastersObject {
+    count: number;
+    previous: string;
+    next: string;
+    results: Raster[];
+}
+
 export interface Raster {
     uuid: string;
     name: string;
@@ -30,6 +31,7 @@ export interface Raster {
     interval: string;
     first_value_timestamp: string;
     last_value_timestamp: string;
+    last_modified: string;
     projection: string;
     pixelsize_x: number;
     pixelsize_y: number;
