@@ -80,3 +80,8 @@ export default combineReducers({
     selectedRaster,
     basket
 });
+
+//TEST:
+export const getRasterObject = (state: MyStore, uuid: string) => {
+    return state.allRasters[uuid];
+};

@@ -1,7 +1,8 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Raster } from '../interface';
 import './RasterList.css';
-import { MyStore } from '../reducers';
+import { MyStore, getRasterObject } from '../reducers';
 
 interface MyProps {
     page: number;
@@ -13,6 +14,7 @@ interface MyProps {
 
     currentRasterList: MyStore['currentRasterList'] | null;
     allRasters: MyStore['allRasters'];
+    rasters2: Raster[] | [];
 
     selectRaster: (uuid: string) => void;
     updateBasket: (basket) => void;
@@ -40,7 +42,7 @@ class RasterList extends React.Component<MyProps, MyState> {
             //If already selected then remove this uuid from the basket
             this.setState({
                 checkedRaster: this.state.checkedRaster.filter(id => id !== uuid)
-             });
+            });
         };
     };
 
@@ -54,8 +56,12 @@ class RasterList extends React.Component<MyProps, MyState> {
         //Destructure rasterAPI object
         const { count, previous, next, rasterList } = currentRasterList;
 
-        //Create a new array of Arrays based on the rasterList array of all raster uuids
-        const rasters = rasterList.map(uuid => allRasters[uuid])
+        //Assign the rasters props to a variable
+        const rasters3 = rasterList.map(uuid => allRasters[uuid])
+        const rasters = this.props.rasters2
+
+        console.log(rasters)
+        console.log(rasters3)
 
         return (
             <div className="raster-list">
@@ -90,7 +96,7 @@ class RasterList extends React.Component<MyProps, MyState> {
 
                             return (
                                 <li className="raster-list__row-li" key={raster.uuid} onClick={() => selectRaster(raster.uuid)} >
-                                    <input className="raster-list__row raster-list__row-box" type="checkbox" onClick={() => this.onCheckboxSelect(raster.uuid)} defaultChecked={checked}/>
+                                    <input className="raster-list__row raster-list__row-box" type="checkbox" onClick={() => this.onCheckboxSelect(raster.uuid)} defaultChecked={checked} />
                                     <div className="raster-list__row raster-list__row-type">#</div>
                                     <div className="raster-list__row raster-list__row-name">{raster.name}</div>
                                     <div className="raster-list__row raster-list__row-org">{raster.organisation.name}</div>
@@ -117,4 +123,11 @@ class RasterList extends React.Component<MyProps, MyState> {
     }
 };
 
-export default RasterList;
+const mapStateToProps = (state: MyStore, ownProps: MyProps) => {
+    if (!ownProps.currentRasterList) return null
+    return {
+        rasters2: ownProps.currentRasterList.rasterList.map(uuid => getRasterObject(state, uuid))
+    }
+}
+
+export default connect(mapStateToProps)(RasterList);

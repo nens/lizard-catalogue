@@ -9,15 +9,15 @@ import { Dispatch } from 'redux';
 import './Raster.css';
 
 interface PropsFromState {
-  currentRasterList: MyStore['currentRasterList'] | null;
-  allRasters: MyStore['allRasters'];
-  selectedRaster: string | null;
-}
+    currentRasterList: MyStore['currentRasterList'] | null;
+    allRasters: MyStore['allRasters'];
+    selectedRaster: string | null;
+};
 
 interface PropsFromDispatch {
-  selectRaster: (uuid: string) => void;
-  fetchRasters: (page: number, searchTerm: string) => void;
-  updateBasket: (basket) => void;
+    selectRaster: (uuid: string) => void;
+    fetchRasters: (page: number, searchTerm: string) => void;
+    updateBasket: (basket) => void;
 };
 
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
@@ -64,16 +64,17 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     render() {
         return (
             <div className="raster-container">
-                <RasterList 
+                <RasterList
                     searchTerm={this.state.searchTerm}
-                    page={this.state.page} 
+                    page={this.state.page}
                     currentRasterList={this.props.currentRasterList}
                     allRasters={this.props.allRasters}
                     selectRaster={this.props.selectRaster}
-                    updateBasket={this.props.updateBasket} 
+                    updateBasket={this.props.updateBasket}
                     onClick={this.onClick}
                     onChange={this.onChange}
                     onSubmit={this.onSubmit}
+                    rasters2={[]}
                 />
                 <RasterDetails selectedRaster={this.props.selectedRaster} allRasters={this.props.allRasters} />
             </div>
@@ -81,13 +82,11 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     };
 };
 
-const mapStateToProps = (state: MyStore): PropsFromState => {
-    return {
-      currentRasterList: getCurrentRasterList(state),
-      selectedRaster: getRaster(state),
-      allRasters: getAllRasters(state)
-    };
-};
+const mapStateToProps = (state: MyStore): PropsFromState => ({
+    currentRasterList: getCurrentRasterList(state),
+    selectedRaster: getRaster(state),
+    allRasters: getAllRasters(state)
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType>): PropsFromDispatch => ({
     fetchRasters: (page: number, searchTerm: string) => fetchRasters(page, searchTerm, dispatch),
