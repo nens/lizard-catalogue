@@ -1,6 +1,6 @@
 import request from 'superagent';
 import { baseUrl } from './api';
-import { RastersFetched, RasterSelected, RastersObject, Raster, ObservationType } from './interface';
+import { RastersFetched, RasterSelected, APIObject, BasketAdded, ObservationType, Organisation } from './interface';
 import { Dispatch } from 'redux';
 
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
@@ -9,11 +9,11 @@ export const RASTER_SELECTED = 'RASTER_SELECTED';
 export const OBSERVATION_TYPES_FETCHED = 'OBSERVATION_TYPES_FETCHED';
 export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
 
-export const BASKET_ADDED = 'BASKET_ADDED';
+export const BASKET_UPDATED = 'BASKET_UPDATED';
 
-const rastersFetched = (rasters: RastersObject): RastersFetched => ({
+const rastersFetched = (apiObject: APIObject): RastersFetched => ({
     type: RASTERS_FETCHED,
-    payload: rasters
+    payload: apiObject
 });
 
 export const fetchRasters = (page: number, searchTerm: string, dispatch: Dispatch<RastersFetched>): void => {
@@ -25,22 +25,22 @@ export const fetchRasters = (page: number, searchTerm: string, dispatch: Dispatc
         .catch(console.error)
 };
 
-const rasterSelected = (raster: Raster): RasterSelected => ({
+const rasterSelected = (uuid: string): RasterSelected => ({
     type: RASTER_SELECTED,
-    payload: raster
+    payload: uuid
 });
 
-export const selectRaster = (raster: Raster, dispatch: Dispatch<RasterSelected>): void => {
-    dispatch(rasterSelected(raster));
+export const selectRaster = (uuid: string, dispatch: Dispatch<RasterSelected>): void => {
+    dispatch(rasterSelected(uuid));
 };
 
-const basketAdded = (basket) => ({
-    type: BASKET_ADDED,
+const basketUpdated = (basket: string[]): BasketAdded => ({
+    type: BASKET_UPDATED,
     payload: basket
 });
 
-export const addToBasket = (basket, dispatch) => {
-    dispatch(basketAdded(basket))
+export const updateBasket = (basket: string[], dispatch: Dispatch<BasketAdded>): void => {
+    dispatch(basketUpdated(basket))
 };
 
 const observationTypesFetched = (observationTypes: ObservationType[]) => ({
@@ -57,7 +57,7 @@ export const fetchObservationTypes = (dispatch) => {
         .catch(console.error)
 };
 
-const organisationsFetched = (organisations) => ({
+const organisationsFetched = (organisations: Organisation[]) => ({
     type: ORGANISATIONS_FETCHED,
     payload: organisations
 });

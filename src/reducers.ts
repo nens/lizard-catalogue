@@ -1,39 +1,42 @@
 import { combineReducers } from 'redux';
-import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_ADDED, OBSERVATION_TYPES_FETCHED, ORGANISATIONS_FETCHED } from "./action";
-import { RastersFetched, RasterSelected, RastersObject, Raster, ObservationType, Organisation } from './interface';
+import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED, OBSERVATION_TYPES_FETCHED, ORGANISATIONS_FETCHED } from "./action";
+import { RastersFetched, RasterSelected, BasketAdded, Raster, ObservationType, Organisation } from './interface';
 
 export interface MyStore {
-    rastersObject: RastersObject | null;
     observationTypes: ObservationType[] | null;
     organisations: Organisation[] | null;
-    uuid: [];
-    rasters: {};
-    selectedRaster: Raster | null;
-    basket: {};
+    currentRasterList: {
+        count: number;
+        previous: string | null;
+        next: string | null;
+        rasterList: string[];
+    } | null;
+    allRasters: {
+        [index: string]: Raster;
+    } | {};
+    selectedRaster: string | null;
+    basket: string[];
 };
 
-const rastersObject = (state: MyStore['rastersObject'] = null, action: RastersFetched) => {
+const currentRasterList = (state: MyStore['currentRasterList'] = null, action: RastersFetched) => {
     switch (action.type) {
         case RASTERS_FETCHED:
-            return action.payload;
+            const { count, previous, next } = action.payload;
+            return {
+                count: count,
+                previous: previous,
+                next: next,
+                rasterList: action.payload.results.map(raster => raster.uuid)
+            };
         default:
             return state;
     };
 };
 
-const uuid = (state: MyStore['uuid'] = [], action: RastersFetched) => {
+const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched) => {
     switch (action.type) {
         case RASTERS_FETCHED:
-            return action.payload.results.map(raster => raster.uuid);
-        default:
-            return state;
-    };
-};
-
-const rasters = (state: MyStore['rasters'] = {}, action: RastersFetched) => {
-    switch (action.type) {
-        case RASTERS_FETCHED:
-            const newState = {};
+            const newState = { ...state };
             action.payload.results.forEach(raster => {
                 newState[raster.uuid] = raster;
             });
@@ -52,9 +55,9 @@ const selectedRaster = (state: MyStore['selectedRaster'] = null, action: RasterS
     };
 };
 
-const basket = (state: MyStore['basket'] = {}, action) => {
+const basket = (state: MyStore['basket'] = [], action: BasketAdded) => {
     switch (action.type) {
-        case BASKET_ADDED:
+        case BASKET_UPDATED:
             return action.payload;
         default:
             return state;
@@ -79,13 +82,13 @@ const organisations = (state: MyStore['organisations'] = null, action) => {
     };
 };
 
-export const getRastersObject = (state: MyStore) => {
-    return state.rastersObject;
+export const getCurrentRasterList = (state: MyStore) => {
+    return state.currentRasterList;
 };
 
-export const getRasters = (state: MyStore) => {
-    return state.rasters;
-};
+export const getAllRasters = (state: MyStore) => {
+    return state.allRasters;
+}
 
 export const getRaster = (state: MyStore) => {
     return state.selectedRaster;
@@ -100,11 +103,10 @@ export const getOrganisations = (state: MyStore) => {
 }
 
 export default combineReducers({
-    rastersObject,
-    observationTypes,
-    organisations,
-    uuid,
-    rasters,
+    currentRasterList,
+    allRasters,
     selectedRaster,
     basket,
+    observationTypes,
+    organisations,
 });

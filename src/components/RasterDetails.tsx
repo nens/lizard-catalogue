@@ -1,19 +1,23 @@
 import * as React from 'react';
-// import { Raster } from '../interface';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
-
-import './RasterDetails.css';
+import { MyStore } from '../reducers';
 import { Raster } from '../interface';
+import './RasterDetails.css';
 
 interface MyProps {
-    raster: Raster | null;
+    selectedRaster: string | null;
+    allRasters: MyStore['allRasters'];
 }
 
 const RasterDetails = (props: MyProps) => {
+    //Destructure the props
+    const { selectedRaster, allRasters } = props;
 
-    const { raster } = props;
+    //If no raster is selected, display a text
+    if (!selectedRaster) return <div className="raster-details raster-details__loading">Please select a raster</div>;
 
-    if (!raster) return <div className="raster-details raster-details__loading">Please select a raster</div>;
+    //Assign the raster object based on the uuid of the raster
+    const raster: Raster = allRasters[selectedRaster];
 
     //Set the Map with bounds coming from spatial_bounds of the Raster
     const { north, east, south, west } = raster.spatial_bounds;
