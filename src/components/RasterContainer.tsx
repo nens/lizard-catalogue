@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { fetchRasters, selectRaster, addToBasket } from '../action';
-import { MyStore, getRasterUuid, getRasterAPI, getAllRasters } from '../reducers';
+import { fetchRasters, selectRaster, updateBasket } from '../action';
+import { MyStore, getAllRasters, getCurrentRasterList, getRaster } from '../reducers';
 import RasterList from './RasterList';
 import RasterDetails from './RasterDetails';
 import { RasterActionType } from '../interface';
@@ -9,15 +9,15 @@ import { Dispatch } from 'redux';
 import './Raster.css';
 
 interface PropsFromState {
-  rasterAPI: MyStore['rasterAPI'] | null;
+  currentRasterList: MyStore['currentRasterList'] | null;
   allRasters: MyStore['allRasters'];
-  uuid: string | null;
+  selectedRaster: string | null;
 }
 
 interface PropsFromDispatch {
   selectRaster: (uuid: string) => void;
   fetchRasters: (page: number, searchTerm: string) => void;
-  addToBasket: (basket) => void;
+  updateBasket: (basket) => void;
 };
 
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
@@ -67,15 +67,15 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                 <RasterList 
                     searchTerm={this.state.searchTerm}
                     page={this.state.page} 
-                    rasterAPI={this.props.rasterAPI}
+                    currentRasterList={this.props.currentRasterList}
                     allRasters={this.props.allRasters}
                     selectRaster={this.props.selectRaster}
-                    addToBasket={this.props.addToBasket} 
+                    updateBasket={this.props.updateBasket} 
                     onClick={this.onClick}
                     onChange={this.onChange}
                     onSubmit={this.onSubmit}
                 />
-                <RasterDetails uuid={this.props.uuid} allRasters={this.props.allRasters} />
+                <RasterDetails selectedRaster={this.props.selectedRaster} allRasters={this.props.allRasters} />
             </div>
         );
     };
@@ -83,8 +83,8 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
 
 const mapStateToProps = (state: MyStore): PropsFromState => {
     return {
-      rasterAPI: getRasterAPI(state),
-      uuid: getRasterUuid(state),
+      currentRasterList: getCurrentRasterList(state),
+      selectedRaster: getRaster(state),
       allRasters: getAllRasters(state)
     };
 };
@@ -92,7 +92,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => {
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType>): PropsFromDispatch => ({
     fetchRasters: (page: number, searchTerm: string) => fetchRasters(page, searchTerm, dispatch),
     selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
-    addToBasket: (basket) => addToBasket(basket, dispatch)
+    updateBasket: (basket) => updateBasket(basket, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RasterContainer);

@@ -6,7 +6,7 @@ import { Dispatch } from 'redux';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
 export const RASTER_SELECTED = 'RASTER_SELECTED';
 
-export const BASKET_ADDED = 'BASKET_ADDED';
+export const BASKET_UPDATED = 'BASKET_UPDATED';
 
 const rastersFetched = (apiObject: APIObject): RastersFetched => ({
     type: RASTERS_FETCHED,
@@ -31,11 +31,11 @@ export const selectRaster = (uuid: string, dispatch: Dispatch<RasterSelected>): 
     dispatch(rasterSelected(uuid));
 };
 
-const basketAdded = (basket: string[]):BasketAdded => ({
-    type: BASKET_ADDED,
+const basketUpdated = (basket: string[]):BasketAdded => ({
+    type: BASKET_UPDATED,
     payload: basket
 });
 
-export const addToBasket = (basket: string[], dispatch: Dispatch<BasketAdded>): void => {
-    dispatch(basketAdded(basket))
+export const updateBasket = (basket: string[], dispatch: Dispatch<BasketAdded>): void => {
+    dispatch(basketUpdated(basket))
 };

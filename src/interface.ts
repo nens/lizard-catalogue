@@ -1,4 +1,4 @@
-import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_ADDED } from "./action";
+import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED } from "./action";
 
 //ACTION INTERFACE
 export interface RastersFetched {
@@ -12,7 +12,7 @@ export interface RasterSelected {
 };
 
 export interface BasketAdded {
-    type: typeof BASKET_ADDED;
+    type: typeof BASKET_UPDATED;
     payload: string[];
 }
 

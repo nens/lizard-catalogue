@@ -5,19 +5,19 @@ import { Raster } from '../interface';
 import './RasterDetails.css';
 
 interface MyProps {
-    uuid: string | null;
+    selectedRaster: string | null;
     allRasters: MyStore['allRasters'];
 }
 
 const RasterDetails = (props: MyProps) => {
     //Destructure the props
-    const { uuid, allRasters } = props;
+    const { selectedRaster, allRasters } = props;
 
     //If no raster is selected, display a text
-    if (!uuid) return <div className="raster-details raster-details__loading">Please select a raster</div>;
+    if (!selectedRaster) return <div className="raster-details raster-details__loading">Please select a raster</div>;
 
     //Assign the raster object based on the uuid of the raster
-    const raster: Raster = allRasters[uuid];
+    const raster: Raster = allRasters[selectedRaster];
 
     //Set the Map with bounds coming from spatial_bounds of the Raster
     const { north, east, south, west } = raster.spatial_bounds;
