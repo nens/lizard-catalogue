@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { fetchRasters, selectRaster, updateBasket, fetchObservationTypes, fetchOrganisations } from '../action';
-import { MyStore, getAllRasters, getCurrentRasterList, getRaster, getObservationTypes, getOrganisations } from '../reducers';
+import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations } from '../reducers';
 import { RasterActionType, ObservationType, Organisation } from '../interface';
 import RasterList from './RasterList';
 import RasterDetails from './RasterDetails';
@@ -11,8 +11,6 @@ import './Raster.css';
 
 interface PropsFromState {
   currentRasterList: MyStore['currentRasterList'] | null;
-  allRasters: MyStore['allRasters'];
-  selectedRaster: string | null;
   observationTypes: ObservationType[] | null;
   organisations: Organisation[] | null;
 };
@@ -52,7 +50,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         this.setState({
             searchTerm: event.target.value
         });
-    }
+    };
 
     onSubmit = (event) => {
         event.preventDefault();
@@ -60,7 +58,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
             page: 1
         });
         this.props.fetchRasters(this.state.initialPage, this.state.searchTerm);
-    }
+    };
 
     componentDidMount() {
         this.props.fetchRasters(this.state.page, this.state.searchTerm);
@@ -91,15 +89,11 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     };
 };
 
-const mapStateToProps = (state: MyStore): PropsFromState => {
-    return {
-      currentRasterList: getCurrentRasterList(state),
-      selectedRaster: getRaster(state),
-      allRasters: getAllRasters(state),
-      observationTypes: getObservationTypes(state),
-      organisations: getOrganisations(state)
-    };
-};
+const mapStateToProps = (state: MyStore): PropsFromState => ({
+    currentRasterList: getCurrentRasterList(state),
+    observationTypes: getObservationTypes(state),
+    organisations: getOrganisations(state)
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType>): PropsFromDispatch => ({
     fetchRasters: (page: number, searchTerm: string) => fetchRasters(page, searchTerm, dispatch),

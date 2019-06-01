@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Raster } from '../interface';
-import './RasterList.css';
 import { MyStore, getRaster } from '../reducers';
 import './RasterList.css';
 
@@ -16,7 +15,7 @@ interface MyProps {
     onSubmit: (event: object) => void;
 
     selectRaster: (uuid: string) => void;
-    updateBasket: (basket) => void;
+    updateBasket: (basket: MyStore['basket']) => void;
 };
 
 interface PropsFromState {

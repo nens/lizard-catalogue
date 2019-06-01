@@ -78,7 +78,7 @@ li {
     justify-content: flex-start;
 
     height: 100%;
-    overflow: scroll;
+    overflow-y: scroll;
 
     margin: 0;
     padding: 0;
