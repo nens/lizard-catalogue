@@ -1,21 +1,28 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { fetchRasters, selectRaster, updateBasket } from '../action';
-import { MyStore, getCurrentRasterList } from '../reducers';
+import { Dispatch } from 'redux';
+import { fetchRasters, selectRaster, updateBasket, fetchObservationTypes, fetchOrganisations } from '../action';
+import { MyStore, getAllRasters, getCurrentRasterList, getRaster, getObservationTypes, getOrganisations } from '../reducers';
+import { RasterActionType, ObservationType, Organisation } from '../interface';
 import RasterList from './RasterList';
 import RasterDetails from './RasterDetails';
-import { RasterActionType } from '../interface';
-import { Dispatch } from 'redux';
+import FilterBar from './FilterBar';
 import './Raster.css';
 
 interface PropsFromState {
-    currentRasterList: MyStore['currentRasterList'] | null;
+  currentRasterList: MyStore['currentRasterList'] | null;
+  allRasters: MyStore['allRasters'];
+  selectedRaster: string | null;
+  observationTypes: ObservationType[] | null;
+  organisations: Organisation[] | null;
 };
 
 interface PropsFromDispatch {
-    selectRaster: (uuid: string) => void;
-    fetchRasters: (page: number, searchTerm: string) => void;
-    updateBasket: (basket) => void;
+  selectRaster: (uuid: string) => void;
+  fetchRasters: (page: number, searchTerm: string) => void;
+  updateBasket: (basket) => void;
+  fetchObservationTypes: () => void;
+  fetchOrganisations: () => void;
 };
 
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
@@ -62,7 +69,13 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     render() {
         return (
             <div className="raster-container">
-                <RasterList
+                <FilterBar 
+                    fetchObservationTypes={this.props.fetchObservationTypes}
+                    observationTypes={this.props.observationTypes}
+                    fetchOrganisations={this.props.fetchOrganisations}
+                    organisations={this.props.organisations}
+                />
+                <RasterList 
                     searchTerm={this.state.searchTerm}
                     page={this.state.page}
                     currentRasterList={this.props.currentRasterList}
@@ -78,14 +91,22 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     };
 };
 
-const mapStateToProps = (state: MyStore): PropsFromState => ({
-    currentRasterList: getCurrentRasterList(state)
-});
+const mapStateToProps = (state: MyStore): PropsFromState => {
+    return {
+      currentRasterList: getCurrentRasterList(state),
+      selectedRaster: getRaster(state),
+      allRasters: getAllRasters(state),
+      observationTypes: getObservationTypes(state),
+      organisations: getOrganisations(state)
+    };
+};
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType>): PropsFromDispatch => ({
     fetchRasters: (page: number, searchTerm: string) => fetchRasters(page, searchTerm, dispatch),
     selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
-    updateBasket: (basket) => updateBasket(basket, dispatch)
+    updateBasket: (basket) => updateBasket(basket, dispatch),
+    fetchObservationTypes: () => fetchObservationTypes(dispatch),
+    fetchOrganisations: () => fetchOrganisations(dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RasterContainer);

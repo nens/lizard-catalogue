@@ -9,8 +9,7 @@ li {
     border-radius: .4rem;
     padding: 1rem;
     background-color: #f4f2f2;
-    margin-left: 1rem;
-    margin-bottom: 1rem;
+    margin: 0 1rem 1rem 1rem;
 
     min-height: 98vh;
 

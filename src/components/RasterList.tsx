@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Raster } from '../interface';
 import './RasterList.css';
 import { MyStore, getRaster } from '../reducers';
+import './RasterList.css';
 
 interface MyProps {
     page: number;

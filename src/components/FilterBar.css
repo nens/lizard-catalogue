@@ -1,0 +1,72 @@
+.filter {
+    width: 20%;
+    margin: 0 0 1rem 1rem;
+
+    height: 98vh;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.filter-title {
+    border: thin solid lightgrey;
+    border-radius: .4rem;
+    padding: 1.5rem;
+    background-color: #f4f2f2;
+
+    font-size: 1.6rem;
+    font-weight: 500;
+
+    display: flex;
+    align-items: center;
+
+    height: 4%;
+}
+
+.filter-box {
+    border: thin solid lightgrey;
+    border-radius: .4rem;
+    padding: 1.5rem;
+    background-color: #f4f2f2;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    height: 95%;
+}
+
+.filter-box h4 {
+    font-size: 1.4rem;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.filter-observation-type {
+    height: 50%;
+    overflow: hidden;
+}
+
+.filter-organisation {
+    height: 50%;
+    overflow: hidden;
+}
+
+.filter-list {
+    display: block;
+    padding-left: 0;
+
+    font-size: 1rem;
+
+    height: 90%;
+
+    overflow-y: scroll;
+}
+
+.filter-item {
+    white-space: nowrap;
+    overflow: hidden;
+}

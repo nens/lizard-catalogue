@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
-import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED } from './action';
-import { RastersFetched, RasterSelected, Raster, BasketAdded } from './interface';
+import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED, OBSERVATION_TYPES_FETCHED, ORGANISATIONS_FETCHED } from "./action";
+import { RastersFetched, RasterSelected, BasketAdded, Raster, ObservationType, Organisation } from './interface';
 
 export interface MyStore {
+    observationTypes: ObservationType[] | null;
+    organisations: Organisation[] | null;
     currentRasterList: {
         count: number;
         previous: string | null;
@@ -34,7 +36,7 @@ const currentRasterList = (state: MyStore['currentRasterList'] = null, action: R
 const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched) => {
     switch (action.type) {
         case RASTERS_FETCHED:
-            const newState = {...state};
+            const newState = { ...state };
             action.payload.results.forEach(raster => {
                 newState[raster.uuid] = raster;
             });
@@ -62,6 +64,24 @@ const basket = (state: MyStore['basket'] = [], action: BasketAdded) => {
     };
 };
 
+const observationTypes = (state: MyStore['observationTypes'] = null, action) => {
+    switch (action.type) {
+        case OBSERVATION_TYPES_FETCHED:
+            return action.payload;
+        default:
+            return state;
+    };
+};
+
+const organisations = (state: MyStore['organisations'] = null, action) => {
+    switch (action.type) {
+        case ORGANISATIONS_FETCHED:
+            return action.payload;
+        default:
+            return state;
+    };
+};
+
 export const getCurrentRasterList = (state: MyStore) => {
     return state.currentRasterList;
 };
@@ -70,9 +90,19 @@ export const getRaster = (state: MyStore, uuid: string) => {
     return state.allRasters[uuid];
 };
 
+export const getObservationTypes = (state: MyStore) => {
+    return state.observationTypes;
+};
+
+export const getOrganisations = (state: MyStore) => {
+    return state.organisations;
+}
+
 export default combineReducers({
     currentRasterList,
     allRasters,
     selectedRaster,
-    basket
+    basket,
+    observationTypes,
+    organisations,
 });
