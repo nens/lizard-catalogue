@@ -2,67 +2,64 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Raster } from '../interface';
 import './RasterList.css';
-import { MyStore, getRasterObject } from '../reducers';
+import { MyStore, getRaster } from '../reducers';
 
 interface MyProps {
     page: number;
     searchTerm: string;
 
+    currentRasterList: MyStore['currentRasterList'] | null;
+
     onClick: (page: number) => void;
     onChange: (event: object) => void;
     onSubmit: (event: object) => void;
-
-    currentRasterList: MyStore['currentRasterList'] | null;
-    allRasters: MyStore['allRasters'];
-    rasters2: Raster[] | [];
 
     selectRaster: (uuid: string) => void;
     updateBasket: (basket) => void;
 };
 
-interface MyState {
-    checkedRaster: string[];
+interface PropsFromState {
+    rasters: Raster[] | null;
 };
 
-class RasterList extends React.Component<MyProps, MyState> {
+type RasterListProps = MyProps & PropsFromState;
+
+interface MyState {
+    checkedRasters: string[];
+};
+
+class RasterList extends React.Component<RasterListProps, MyState> {
     state = {
-        checkedRaster: []
+        checkedRasters: []
     };
 
     onCheckboxSelect = (uuid: string) => {
         //Check if the raster has already been selected or not
-        const selectedUuid = this.state.checkedRaster.filter(id => id === uuid)
+        const selectedUuid = this.state.checkedRasters.filter(id => id === uuid)
 
         //If not yet selected then add this new uuid into the basket
         if (selectedUuid.length === 0) {
             this.setState({
-                checkedRaster: [...this.state.checkedRaster, uuid]
+                checkedRasters: [...this.state.checkedRasters, uuid]
             });
         } else {
             //If already selected then remove this uuid from the basket
             this.setState({
-                checkedRaster: this.state.checkedRaster.filter(id => id !== uuid)
+                checkedRasters: this.state.checkedRasters.filter(id => id !== uuid)
             });
         };
     };
 
     render() {
         //Destructure all props of the Raster List component
-        const { searchTerm, page, onClick, onChange, onSubmit, currentRasterList, allRasters, selectRaster, updateBasket } = this.props;
+        const { searchTerm, page, onClick, onChange, onSubmit, currentRasterList, selectRaster, updateBasket, rasters } = this.props;
 
         //If nothing is fetched, Loading ... sign appeears
-        if (!currentRasterList) return <div className="raster-list"><h1>Loading ...</h1></div>;
+        if (!currentRasterList || !rasters) return <div className="raster-list"><h1>Loading ...</h1></div>;
 
         //Destructure rasterAPI object
-        const { count, previous, next, rasterList } = currentRasterList;
-
-        //Assign the rasters props to a variable
-        const rasters3 = rasterList.map(uuid => allRasters[uuid])
-        const rasters = this.props.rasters2
-
-        console.log(rasters)
-        console.log(rasters3)
-
+        const { count, previous, next } = currentRasterList;
+        
         return (
             <div className="raster-list">
                 <div className="raster-list__top">
@@ -92,7 +89,7 @@ class RasterList extends React.Component<MyProps, MyState> {
                             //Here is a logic to define whether a raster has been selected (check-box has been checked or not)
                             //if yes then the default checked value of the input field will be true
                             //if no then the default checked value of the input field will be false
-                            const checked = this.state.checkedRaster.filter(uuid => uuid === raster.uuid).length === 0 ? false : true;
+                            const checked = this.state.checkedRasters.filter(uuid => uuid === raster.uuid).length === 0 ? false : true;
 
                             return (
                                 <li className="raster-list__row-li" key={raster.uuid} onClick={() => selectRaster(raster.uuid)} >
@@ -113,21 +110,23 @@ class RasterList extends React.Component<MyProps, MyState> {
                     </div>
                 </div>
                 <div className="raster-list__button-container">
-                    {this.state.checkedRaster.length === 0 ?
+                    {this.state.checkedRasters.length === 0 ?
                         <button className="raster-list__button raster-list__button-grey">ADD TO BASKET</button> :
-                        <button className="raster-list__button" onClick={() => updateBasket(this.state.checkedRaster)}>ADD TO BASKET</button>
+                        <button className="raster-list__button" onClick={() => updateBasket(this.state.checkedRasters)}>ADD TO BASKET</button>
                     }
                 </div>
             </div>
         );
-    }
+    };
 };
 
-const mapStateToProps = (state: MyStore, ownProps: MyProps) => {
-    if (!ownProps.currentRasterList) return null
+const mapStateToProps = (state: MyStore, ownProps: MyProps): PropsFromState => {
+    if (!ownProps.currentRasterList) return {
+        rasters: null
+    };
     return {
-        rasters2: ownProps.currentRasterList.rasterList.map(uuid => getRasterObject(state, uuid))
-    }
-}
+        rasters: ownProps.currentRasterList.rasterList.map(uuid => getRaster(state, uuid))
+    };
+};
 
 export default connect(mapStateToProps)(RasterList);

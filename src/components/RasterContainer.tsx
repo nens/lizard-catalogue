@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { fetchRasters, selectRaster, updateBasket } from '../action';
-import { MyStore, getAllRasters, getCurrentRasterList, getRaster } from '../reducers';
+import { MyStore, getCurrentRasterList } from '../reducers';
 import RasterList from './RasterList';
 import RasterDetails from './RasterDetails';
 import { RasterActionType } from '../interface';
@@ -10,8 +10,6 @@ import './Raster.css';
 
 interface PropsFromState {
     currentRasterList: MyStore['currentRasterList'] | null;
-    allRasters: MyStore['allRasters'];
-    selectedRaster: string | null;
 };
 
 interface PropsFromDispatch {
@@ -68,24 +66,20 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                     searchTerm={this.state.searchTerm}
                     page={this.state.page}
                     currentRasterList={this.props.currentRasterList}
-                    allRasters={this.props.allRasters}
                     selectRaster={this.props.selectRaster}
                     updateBasket={this.props.updateBasket}
                     onClick={this.onClick}
                     onChange={this.onChange}
                     onSubmit={this.onSubmit}
-                    rasters2={[]}
                 />
-                <RasterDetails selectedRaster={this.props.selectedRaster} allRasters={this.props.allRasters} />
+                <RasterDetails />
             </div>
         );
     };
 };
 
 const mapStateToProps = (state: MyStore): PropsFromState => ({
-    currentRasterList: getCurrentRasterList(state),
-    selectedRaster: getRaster(state),
-    allRasters: getAllRasters(state)
+    currentRasterList: getCurrentRasterList(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType>): PropsFromDispatch => ({

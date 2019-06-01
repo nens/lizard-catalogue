@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED } from "./action";
+import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED } from './action';
 import { RastersFetched, RasterSelected, Raster, BasketAdded } from './interface';
 
 export interface MyStore {
@@ -66,12 +66,8 @@ export const getCurrentRasterList = (state: MyStore) => {
     return state.currentRasterList;
 };
 
-export const getAllRasters = (state: MyStore) => {
-    return state.allRasters;
-}
-
-export const getRaster = (state: MyStore) => {
-    return state.selectedRaster;
+export const getRaster = (state: MyStore, uuid: string) => {
+    return state.allRasters[uuid];
 };
 
 export default combineReducers({
@@ -80,8 +76,3 @@ export default combineReducers({
     selectedRaster,
     basket
 });
-
-//TEST:
-export const getRasterObject = (state: MyStore, uuid: string) => {
-    return state.allRasters[uuid];
-};
