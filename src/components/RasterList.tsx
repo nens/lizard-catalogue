@@ -19,17 +19,17 @@ interface MyProps {
 };
 
 interface PropsFromState {
-    rasters: Raster[] | null;
+    rasters: Raster[] | null
 };
 
 type RasterListProps = MyProps & PropsFromState;
 
 interface MyState {
-    checkedRasters: string[];
+    checkedRasters: string[]
 };
 
 class RasterList extends React.Component<RasterListProps, MyState> {
-    state = {
+    state: MyState = {
         checkedRasters: []
     };
 
