@@ -27,6 +27,9 @@ class FilterBar extends React.Component<MyProps, MyState> {
     onSubmit = (event) => {
         event.preventDefault();
         this.props.fetchOrganisations(this.state.searchTerm);
+        this.setState({
+            searchTerm: ''
+        });
     };
 
     componentDidMount() {
