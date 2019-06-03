@@ -1,8 +1,17 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { MyStore, getRaster } from '../reducers';
+import { Raster } from '../interface';
 import './Header.css';
 
-class Header extends React.Component {
+interface PropsFromState {
+    rasters: Raster[]
+};
+
+class Header extends React.Component<PropsFromState> {
     render() {
+        const { rasters } = this.props
+
         return (
             <nav className="header">
                 <div className="header-logo">
@@ -14,7 +23,7 @@ class Header extends React.Component {
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-cart" />
                         </svg>
-                        <span className="header-nav__notification">116</span>
+                        <span className="header-nav__notification">{rasters.length}</span>
                     </div>
                     <div className="header-nav__icon-box">
                         <svg className="header-nav__icon">
@@ -40,4 +49,10 @@ class Header extends React.Component {
     };
 };
 
-export default Header;
+const mapStateToProps = (state: MyStore): PropsFromState => {
+    return {
+        rasters: state.basket.map(uuid => getRaster(state, uuid))
+    };
+};
+
+export default connect(mapStateToProps)(Header);
