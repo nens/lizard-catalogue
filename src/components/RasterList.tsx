@@ -51,6 +51,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
     };
 
     render() {
+        console.log(this.state)
         //Destructure all props of the Raster List component
         const { searchTerm, page, onClick, onChange, onSubmit, currentRasterList, selectRaster, updateBasket, rasters } = this.props;
 
@@ -112,7 +113,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                 <div className="raster-list__button-container">
                     {this.state.checkedRasters.length === 0 ?
                         <button className="raster-list__button raster-list__button-grey">ADD TO BASKET</button> :
-                        <button className="raster-list__button" onClick={() => updateBasket(this.state.checkedRasters)}>ADD TO BASKET</button>
+                        <button className="raster-list__button" onClick={() => {updateBasket(this.state.checkedRasters); this.setState({checkedRasters: []})}}>ADD TO BASKET</button>
                     }
                 </div>
             </div>
