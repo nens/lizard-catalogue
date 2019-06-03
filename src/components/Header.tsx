@@ -15,7 +15,7 @@ class Header extends React.Component<PropsFromState> {
         return (
             <nav className="header">
                 <div className="header-logo">
-                    <img src="image/lizard.png" alt="logo" className="header-logo__logo"/>
+                    <img src="image/lizard.png" alt="logo" className="header-logo__logo" />
                     <h3 className="header-logo__text">Lizard Catalogue</h3>
                 </div>
                 <div className="header-nav">
@@ -23,7 +23,7 @@ class Header extends React.Component<PropsFromState> {
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-cart" />
                         </svg>
-                        <span className="header-nav__notification">{rasters.length}</span>
+                        <a href="#popup" className="header-nav__notification">{rasters.length}</a>
                         <span className="header-nav__text">Basket</span>
                     </div>
                     <div className="header-nav__icon-box">
@@ -43,6 +43,12 @@ class Header extends React.Component<PropsFromState> {
                             <use xlinkHref="image/symbols.svg#icon-sort" />
                         </svg>
                         <span className="header-nav__text">Nelen Schuurmans</span>
+                    </div>
+                </div>
+                <div className="popup" id="popup">
+                    <div className="popup-content">
+                        {`POPUP has ${rasters.length} items`}
+                        <a href="#catalogue" className="popup-close">&times;</a>
                     </div>
                 </div>
             </nav>
