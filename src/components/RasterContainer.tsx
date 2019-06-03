@@ -21,7 +21,7 @@ interface PropsFromDispatch {
     fetchRasters: (page: number, searchTerm: string) => void;
     updateBasket: (basket) => void;
     fetchObservationTypes: () => void;
-    fetchOrganisations: () => void;
+    fetchOrganisations: (searchTerm: string) => void;
 };
 
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
@@ -106,7 +106,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType>): PropsFromDisp
     selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
     updateBasket: (basket) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
-    fetchOrganisations: () => fetchOrganisations(dispatch)
+    fetchOrganisations: (searchTerm: string) => fetchOrganisations(dispatch, searchTerm)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RasterContainer);

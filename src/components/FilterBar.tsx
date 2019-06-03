@@ -4,7 +4,7 @@ import { ObservationType, Organisation } from '../interface';
 
 interface MyProps {
     fetchObservationTypes: () => void,
-    fetchOrganisations: () => void,
+    fetchOrganisations: (searchTerm: string) => void,
     observationTypes: ObservationType[],
     organisations: Organisation[]
 };
@@ -26,12 +26,12 @@ class FilterBar extends React.Component<MyProps, MyState> {
 
     onSubmit = (event) => {
         event.preventDefault();
-        console.log(this.state.searchTerm)
+        this.props.fetchOrganisations(this.state.searchTerm);
     };
 
     componentDidMount() {
         this.props.fetchObservationTypes();
-        this.props.fetchOrganisations();
+        this.props.fetchOrganisations(this.state.searchTerm);
     };
 
     render() {
@@ -44,14 +44,14 @@ class FilterBar extends React.Component<MyProps, MyState> {
                 <div className="filter-title">Filters</div>
                 <div className="filter-box"><h3>Loading ...</h3></div>
             </div>
-        )
+        );
 
         return (
             <div className="filter">
                 <div className="filter-title">Filters</div>
                 <div className="filter-box">
                     <form onSubmit={this.onSubmit} className="raster-list__searchbar">
-                        <input type="text" className="raster-list__searchbar-input" placeholder="search" onChange={this.onChange} value={searchTerm} />
+                        <input type="text" className="raster-list__searchbar-input" placeholder="search for Organisation" onChange={this.onChange} value={searchTerm} />
                         <button className="raster-list__searchbar-button" type="submit">
                             <svg className="raster-list__searchbar-icon">
                                 <use xlinkHref="image/symbols.svg#icon-search" />

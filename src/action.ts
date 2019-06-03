@@ -62,9 +62,9 @@ const organisationsFetched = (organisations: Organisation[]) => ({
     payload: organisations
 });
 
-export const fetchOrganisations = (dispatch) => {
+export const fetchOrganisations = (dispatch, searchTerm: string) => {
     request
-        .get(`${baseUrl}/organisations?page_size=0`)
+        .get(`${baseUrl}/organisations?name__icontains=${searchTerm}&page_size=0`)
         .then(response => {
             dispatch(organisationsFetched(response.body))
         })
