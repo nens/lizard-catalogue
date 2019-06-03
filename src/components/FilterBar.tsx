@@ -67,14 +67,6 @@ class FilterBar extends React.Component<MyProps, {}> {
                     <div className="filter-organisation">
                         <h4>Organisation</h4>
                         <ul className="filter-list">
-                            <li className="filter-item">
-                                <input type="checkbox" className="filter-checkbox" />
-                                <span className="filter-item-name">Nelen</span>
-                            </li>
-                            <li className="filter-item">
-                                <input type="checkbox" className="filter-checkbox" />
-                                <span className="filter-item-name">HHNK</span>
-                            </li>
                             {organisations.map((organisation: Organisation) => (
                                 <li className="filter-item" key={organisation.name}>
                                     <input type="checkbox" className="filter-checkbox" />

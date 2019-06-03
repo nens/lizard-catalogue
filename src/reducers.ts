@@ -86,12 +86,8 @@ export const getCurrentRasterList = (state: MyStore) => {
     return state.currentRasterList;
 };
 
-export const getAllRasters = (state: MyStore) => {
-    return state.allRasters;
-}
-
-export const getRaster = (state: MyStore) => {
-    return state.selectedRaster;
+export const getRaster = (state: MyStore, uuid: string) => {
+    return state.allRasters[uuid];
 };
 
 export const getObservationTypes = (state: MyStore) => {
