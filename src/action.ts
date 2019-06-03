@@ -1,6 +1,6 @@
 import request from 'superagent';
 import { baseUrl } from './api';
-import { RastersFetched, RasterSelected, APIObject, BasketAdded, ObservationType, Organisation } from './interface';
+import { RastersFetched, RasterSelected, RasterListObject, BasketAdded, ObservationType, Organisation } from './interface';
 import { Dispatch } from 'redux';
 
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
@@ -11,9 +11,9 @@ export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
 
 export const BASKET_UPDATED = 'BASKET_UPDATED';
 
-const rastersFetched = (apiObject: APIObject): RastersFetched => ({
+const rastersFetched = (rasterListObject: RasterListObject): RastersFetched => ({
     type: RASTERS_FETCHED,
-    payload: apiObject
+    payload: rasterListObject
 });
 
 export const fetchRasters = (page: number, searchTerm: string, dispatch: Dispatch<RastersFetched>): void => {

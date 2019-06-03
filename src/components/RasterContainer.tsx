@@ -12,8 +12,8 @@ import Header from './Header';
 
 interface PropsFromState {
     currentRasterList: MyStore['currentRasterList'] | null;
-    observationTypes: ObservationType[] | null;
-    organisations: Organisation[] | null;
+    observationTypes: ObservationType[];
+    organisations: Organisation[];
 };
 
 interface PropsFromDispatch {
