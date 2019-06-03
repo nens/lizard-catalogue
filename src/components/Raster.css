@@ -1,5 +1,16 @@
 .raster-container {
     display: flex;
+    flex-direction: column;
+}
+
+.raster-main {
+    display: flex;
 
     justify-content: space-between;
+}
+
+.raster-header {
+    background-color: #41a086;
+    margin: 1rem;
+    color: #fff;
 }

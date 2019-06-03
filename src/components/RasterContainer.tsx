@@ -8,19 +8,20 @@ import RasterList from './RasterList';
 import RasterDetails from './RasterDetails';
 import FilterBar from './FilterBar';
 import './Raster.css';
+import Header from './Header';
 
 interface PropsFromState {
-  currentRasterList: MyStore['currentRasterList'] | null;
-  observationTypes: ObservationType[] | null;
-  organisations: Organisation[] | null;
+    currentRasterList: MyStore['currentRasterList'] | null;
+    observationTypes: ObservationType[] | null;
+    organisations: Organisation[] | null;
 };
 
 interface PropsFromDispatch {
-  selectRaster: (uuid: string) => void;
-  fetchRasters: (page: number, searchTerm: string) => void;
-  updateBasket: (basket) => void;
-  fetchObservationTypes: () => void;
-  fetchOrganisations: () => void;
+    selectRaster: (uuid: string) => void;
+    fetchRasters: (page: number, searchTerm: string) => void;
+    updateBasket: (basket) => void;
+    fetchObservationTypes: () => void;
+    fetchOrganisations: () => void;
 };
 
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
@@ -67,23 +68,28 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     render() {
         return (
             <div className="raster-container">
-                <FilterBar 
-                    fetchObservationTypes={this.props.fetchObservationTypes}
-                    observationTypes={this.props.observationTypes}
-                    fetchOrganisations={this.props.fetchOrganisations}
-                    organisations={this.props.organisations}
-                />
-                <RasterList 
-                    searchTerm={this.state.searchTerm}
-                    page={this.state.page}
-                    currentRasterList={this.props.currentRasterList}
-                    selectRaster={this.props.selectRaster}
-                    updateBasket={this.props.updateBasket}
-                    onClick={this.onClick}
-                    onChange={this.onChange}
-                    onSubmit={this.onSubmit}
-                />
-                <RasterDetails />
+                <div className="raster-header">
+                    <Header />
+                </div>
+                <div className="raster-main">
+                    <FilterBar
+                        fetchObservationTypes={this.props.fetchObservationTypes}
+                        observationTypes={this.props.observationTypes}
+                        fetchOrganisations={this.props.fetchOrganisations}
+                        organisations={this.props.organisations}
+                    />
+                    <RasterList
+                        searchTerm={this.state.searchTerm}
+                        page={this.state.page}
+                        currentRasterList={this.props.currentRasterList}
+                        selectRaster={this.props.selectRaster}
+                        updateBasket={this.props.updateBasket}
+                        onClick={this.onClick}
+                        onChange={this.onChange}
+                        onSubmit={this.onSubmit}
+                    />
+                    <RasterDetails />
+                </div>
             </div>
         );
     };

@@ -57,7 +57,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
         //If nothing is fetched, Loading ... sign appeears
         if (!currentRasterList || !rasters) return <div className="raster-list"><h1>Loading ...</h1></div>;
 
-        //Destructure rasterAPI object
+        //Destructure the currentRasterList object
         const { count, previous, next } = currentRasterList;
         
         return (
@@ -67,7 +67,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                         <input type="text" className="raster-list__searchbar-input" placeholder="Search in Lizard or type an UUID" onChange={onChange} value={searchTerm} />
                         <button className="raster-list__searchbar-button" type="submit">
                             <svg className="raster-list__searchbar-icon">
-                                <use xlinkHref="image/symbol.svg#icon-search" />
+                                <use xlinkHref="image/symbols.svg#icon-search" />
                             </svg>
                         </button>
                     </form>
