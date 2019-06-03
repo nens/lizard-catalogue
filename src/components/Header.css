@@ -28,7 +28,6 @@
 .header-nav * {
     cursor: pointer;
     height: 100%;
-    width: 12rem;
     display: flex;
     align-items: center;
 }
@@ -41,10 +40,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    margin-right: 2rem;
 }
 
 .header-nav__icon {
-    height: 2.25rem;
+    height: 2.5rem;
+    width: 3rem;
     fill: #fff;
 }
 
@@ -55,7 +57,7 @@
     border-radius: 50%;
     background-color: orangered;
     position: absolute;
-    margin: -1rem 0 0 1.5rem;
+    margin: -1rem 0 0 -1rem;
 
     display: flex;
     justify-content: center;
@@ -64,4 +66,8 @@
 
 .header-nav__notification:hover {
     background-color: orangered;
+}
+
+.header-nav__text {
+    margin-left: 1rem;
 }

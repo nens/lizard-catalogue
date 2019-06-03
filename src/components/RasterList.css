@@ -175,6 +175,10 @@ li {
     outline: none;
 }
 
+.raster-list__button:active {
+    transform: translateY(2px);
+}
+
 .raster-list__button-grey {    
     background-color: #ccc;
     cursor: not-allowed;

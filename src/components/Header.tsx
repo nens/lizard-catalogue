@@ -24,6 +24,7 @@ class Header extends React.Component<PropsFromState> {
                             <use xlinkHref="image/symbols.svg#icon-cart" />
                         </svg>
                         <span className="header-nav__notification">{rasters.length}</span>
+                        <span className="header-nav__text">Basket</span>
                     </div>
                     <div className="header-nav__icon-box">
                         <svg className="header-nav__icon">

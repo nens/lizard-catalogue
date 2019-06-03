@@ -51,7 +51,6 @@ class RasterList extends React.Component<RasterListProps, MyState> {
     };
 
     render() {
-        console.log(this.state)
         //Destructure all props of the Raster List component
         const { searchTerm, page, onClick, onChange, onSubmit, currentRasterList, selectRaster, updateBasket, rasters } = this.props;
 
@@ -94,7 +93,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
 
                             return (
                                 <li className="raster-list__row-li" key={raster.uuid} onClick={() => selectRaster(raster.uuid)} >
-                                    <input className="raster-list__row raster-list__row-box" type="checkbox" onClick={() => this.onCheckboxSelect(raster.uuid)} defaultChecked={checked} />
+                                    <input className="raster-list__row raster-list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(raster.uuid)} checked={checked} />
                                     <div className="raster-list__row raster-list__row-type">#</div>
                                     <div className="raster-list__row raster-list__row-name">{raster.name}</div>
                                     <div className="raster-list__row raster-list__row-org">{raster.organisation.name}</div>
