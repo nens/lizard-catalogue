@@ -1,23 +1,21 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { fetchRasters, selectRaster, addToBasket } from '../action';
-import { getRaster, getRastersObject, MyStore, getRasters } from '../reducers';
+import { fetchRasters, selectRaster, updateBasket } from '../action';
+import { MyStore, getCurrentRasterList } from '../reducers';
 import RasterList from './RasterList';
 import RasterDetails from './RasterDetails';
-import { RasterActionType, RastersObject, Raster } from '../interface';
+import { RasterActionType } from '../interface';
 import { Dispatch } from 'redux';
 import './Raster.css';
 
 interface PropsFromState {
-  rastersObject: RastersObject | null;
-  raster: Raster | null;
-  rasters: {};
-}
+    currentRasterList: MyStore['currentRasterList'] | null;
+};
 
 interface PropsFromDispatch {
-  selectRaster: (raster: Raster) => void;
-  fetchRasters: (page: number, searchTerm: string) => void;
-  addToBasket: (basket) => void;
+    selectRaster: (uuid: string) => void;
+    fetchRasters: (page: number, searchTerm: string) => void;
+    updateBasket: (basket) => void;
 };
 
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
@@ -64,34 +62,30 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     render() {
         return (
             <div className="raster-container">
-                <RasterList 
-                    rastersObject={this.props.rastersObject} 
-                    selectRaster={this.props.selectRaster} 
-                    page={this.state.page} 
+                <RasterList
                     searchTerm={this.state.searchTerm}
+                    page={this.state.page}
+                    currentRasterList={this.props.currentRasterList}
+                    selectRaster={this.props.selectRaster}
+                    updateBasket={this.props.updateBasket}
                     onClick={this.onClick}
                     onChange={this.onChange}
                     onSubmit={this.onSubmit}
-                    addToBasket={this.props.addToBasket}
                 />
-                <RasterDetails raster={this.props.raster} />
+                <RasterDetails />
             </div>
         );
     };
 };
 
-const mapStateToProps = (state: MyStore): PropsFromState => {
-    return {
-      rastersObject: getRastersObject(state),
-      raster: getRaster(state),
-      rasters: getRasters(state)
-    }
-};
+const mapStateToProps = (state: MyStore): PropsFromState => ({
+    currentRasterList: getCurrentRasterList(state)
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType>): PropsFromDispatch => ({
     fetchRasters: (page: number, searchTerm: string) => fetchRasters(page, searchTerm, dispatch),
-    selectRaster: (raster: Raster) => selectRaster(raster, dispatch),
-    addToBasket: (basket) => addToBasket(basket, dispatch)
+    selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
+    updateBasket: (basket) => updateBasket(basket, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RasterContainer);
