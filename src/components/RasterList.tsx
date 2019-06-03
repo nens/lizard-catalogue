@@ -57,7 +57,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
         //If nothing is fetched, Loading ... sign appeears
         if (!currentRasterList || !rasters) return <div className="raster-list"><h1>Loading ...</h1></div>;
 
-        //Destructure rasterAPI object
+        //Destructure the currentRasterList object
         const { count, previous, next } = currentRasterList;
         
         return (
@@ -67,7 +67,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                         <input type="text" className="raster-list__searchbar-input" placeholder="Search in Lizard or type an UUID" onChange={onChange} value={searchTerm} />
                         <button className="raster-list__searchbar-button" type="submit">
                             <svg className="raster-list__searchbar-icon">
-                                <use xlinkHref="image/symbol.svg#icon-search" />
+                                <use xlinkHref="image/symbols.svg#icon-search" />
                             </svg>
                         </button>
                     </form>
@@ -93,7 +93,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
 
                             return (
                                 <li className="raster-list__row-li" key={raster.uuid} onClick={() => selectRaster(raster.uuid)} >
-                                    <input className="raster-list__row raster-list__row-box" type="checkbox" onClick={() => this.onCheckboxSelect(raster.uuid)} defaultChecked={checked} />
+                                    <input className="raster-list__row raster-list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(raster.uuid)} checked={checked} />
                                     <div className="raster-list__row raster-list__row-type">#</div>
                                     <div className="raster-list__row raster-list__row-name">{raster.name}</div>
                                     <div className="raster-list__row raster-list__row-org">{raster.organisation.name}</div>
@@ -112,7 +112,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                 <div className="raster-list__button-container">
                     {this.state.checkedRasters.length === 0 ?
                         <button className="raster-list__button raster-list__button-grey">ADD TO BASKET</button> :
-                        <button className="raster-list__button" onClick={() => updateBasket(this.state.checkedRasters)}>ADD TO BASKET</button>
+                        <button className="raster-list__button" onClick={() => {updateBasket(this.state.checkedRasters); this.setState({checkedRasters: []})}}>ADD TO BASKET</button>
                     }
                 </div>
             </div>

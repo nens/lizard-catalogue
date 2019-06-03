@@ -4,13 +4,17 @@ import { ObservationType, Organisation } from '../interface';
 
 interface MyProps {
     fetchObservationTypes: () => void,
-    fetchOrganisations: () => void,
-    observationTypes: ObservationType[] | null,
-    organisations: Organisation[] | null
+    fetchOrganisations: (searchTerm: string) => void,
+    observationTypes: ObservationType[],
+    organisations: Organisation[]
 };
 
-class FilterBar extends React.Component<MyProps, {}> {
-    state = {
+interface MyState {
+    searchTerm: string
+};
+
+class FilterBar extends React.Component<MyProps, MyState> {
+    state: MyState = {
         searchTerm: ''
     };
 
@@ -22,11 +26,15 @@ class FilterBar extends React.Component<MyProps, {}> {
 
     onSubmit = (event) => {
         event.preventDefault();
+        this.props.fetchOrganisations(this.state.searchTerm);
+        this.setState({
+            searchTerm: ''
+        });
     };
 
     componentDidMount() {
         this.props.fetchObservationTypes();
-        this.props.fetchOrganisations();
+        this.props.fetchOrganisations(this.state.searchTerm);
     };
 
     render() {
@@ -34,7 +42,7 @@ class FilterBar extends React.Component<MyProps, {}> {
 
         const { observationTypes, organisations } = this.props;
 
-        if (!observationTypes || !organisations) return (
+        if (observationTypes.length === 0 || organisations.length === 0) return (
             <div className="filter">
                 <div className="filter-title">Filters</div>
                 <div className="filter-box"><h3>Loading ...</h3></div>
@@ -46,10 +54,10 @@ class FilterBar extends React.Component<MyProps, {}> {
                 <div className="filter-title">Filters</div>
                 <div className="filter-box">
                     <form onSubmit={this.onSubmit} className="raster-list__searchbar">
-                        <input type="text" className="raster-list__searchbar-input" placeholder="search" onChange={this.onChange} value={searchTerm} />
+                        <input type="text" className="raster-list__searchbar-input" placeholder="search for Organisation" onChange={this.onChange} value={searchTerm} />
                         <button className="raster-list__searchbar-button" type="submit">
                             <svg className="raster-list__searchbar-icon">
-                                <use xlinkHref="image/symbol.svg#icon-search" />
+                                <use xlinkHref="image/symbols.svg#icon-search" />
                             </svg>
                         </button>
                     </form>

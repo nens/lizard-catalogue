@@ -3,8 +3,8 @@ import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED, OBSERVATION_TYPES_FET
 import { RastersFetched, RasterSelected, BasketAdded, Raster, ObservationType, Organisation } from './interface';
 
 export interface MyStore {
-    observationTypes: ObservationType[] | null;
-    organisations: Organisation[] | null;
+    observationTypes: ObservationType[];
+    organisations: Organisation[];
     currentRasterList: {
         count: number;
         previous: string | null;
@@ -58,13 +58,14 @@ const selectedRaster = (state: MyStore['selectedRaster'] = null, action: RasterS
 const basket = (state: MyStore['basket'] = [], action: BasketAdded) => {
     switch (action.type) {
         case BASKET_UPDATED:
-            return action.payload;
+            const newState = [...state, ...action.payload]
+            return newState.filter((item, pos) => newState.indexOf(item) === pos)
         default:
             return state;
     };
 };
 
-const observationTypes = (state: MyStore['observationTypes'] = null, action) => {
+const observationTypes = (state: MyStore['observationTypes'] = [], action) => {
     switch (action.type) {
         case OBSERVATION_TYPES_FETCHED:
             return action.payload;
@@ -73,7 +74,7 @@ const observationTypes = (state: MyStore['observationTypes'] = null, action) => 
     };
 };
 
-const organisations = (state: MyStore['organisations'] = null, action) => {
+const organisations = (state: MyStore['organisations'] = [], action) => {
     switch (action.type) {
         case ORGANISATIONS_FETCHED:
             return action.payload;
