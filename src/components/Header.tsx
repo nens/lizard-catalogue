@@ -75,11 +75,11 @@ class Header extends React.Component<MyProps> {
                                     <div className="li li-org">{raster.organisation.name}</div>
                                     <div className="li li-obs">{raster.observation_type.parameter}</div>
                                     <div className="li li-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
-                                    <button className="li li-basket li-basket__icon-box" onClick={() => removeItem(raster)}>
+                                    <div className="li li-basket li-basket__icon-box" onClick={() => removeItem(raster)}>
                                         <svg className="li-basket__icon">
                                             <use xlinkHref="image/symbols.svg#icon-remove_shopping_cart" />
                                         </svg>
-                                    </button>
+                                    </div>
                                 </li>
                             ))}
                         </ul>
