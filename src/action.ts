@@ -1,6 +1,6 @@
 import request from 'superagent';
 import { baseUrl } from './api';
-import { RastersFetched, RasterSelected, RasterListObject, BasketAdded, ObservationType, Organisation, Raster } from './interface';
+import { RastersFetched, RasterSelected, RasterListObject, BasketAdded, ObservationType, Organisation, Raster, ItemRemoved, ObservationTypesFetched, OrganisationsFetched } from './interface';
 import { Dispatch } from 'redux';
 
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
@@ -44,21 +44,21 @@ export const updateBasket = (basket: string[], dispatch: Dispatch<BasketAdded>):
     dispatch(basketUpdated(basket))
 };
 
-const itemRemoved = (raster: Raster) => ({
+const itemRemoved = (raster: Raster): ItemRemoved => ({
     type: ITEM_REMOVED,
     payload: raster.uuid
 });
 
-export const removeItem = (raster: Raster, dispatch) => {
+export const removeItem = (raster: Raster, dispatch: Dispatch<ItemRemoved>): void => {
     dispatch(itemRemoved(raster))
 };
 
-const observationTypesFetched = (observationTypes: ObservationType[]) => ({
+const observationTypesFetched = (observationTypes: ObservationType[]): ObservationTypesFetched => ({
     type: OBSERVATION_TYPES_FETCHED,
     payload: observationTypes
 });
 
-export const fetchObservationTypes = (dispatch) => {
+export const fetchObservationTypes = (dispatch: Dispatch<ObservationTypesFetched>) => {
     request
         .get(`${baseUrl}/observationtypes?page_size=0`)
         .then(response => {
@@ -67,12 +67,12 @@ export const fetchObservationTypes = (dispatch) => {
         .catch(console.error)
 };
 
-const organisationsFetched = (organisations: Organisation[]) => ({
+const organisationsFetched = (organisations: Organisation[]): OrganisationsFetched => ({
     type: ORGANISATIONS_FETCHED,
     payload: organisations
 });
 
-export const fetchOrganisations = (dispatch, searchTerm: string) => {
+export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>, searchTerm: string) => {
     request
         .get(`${baseUrl}/organisations?name__icontains=${searchTerm}&page_size=0`)
         .then(response => {

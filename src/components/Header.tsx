@@ -19,13 +19,6 @@ class Header extends React.Component<MyProps> {
     render() {
         const { basket, removeItem } = this.props
 
-        // const removeFromCart = (raster: Raster) => {
-        //     const index = basket.indexOf(raster);
-        //     if (index > -1) {
-        //         basket.splice(index, 1)
-        //     };
-        // };
-
         return (
             <nav className="header">
                 <div className="header-logo">
@@ -84,7 +77,10 @@ class Header extends React.Component<MyProps> {
                             ))}
                         </ul>
                         <p className="header-popup__content-onderste-laag">Onderste laag</p>
-                        <button className="header-popup__content-button raster-list__button" onClick={() => window.location.href = `https://demo.lizard.net`}>Open all data in Lizard</button>
+                        {basket.length === 0 ? 
+                            <button className="header-popup__content-button raster-list__button raster-list__button-grey">Open all data in Lizard</button> :
+                            <button className="header-popup__content-button raster-list__button" onClick={() => window.location.href = `https://demo.lizard.net`}>Open all data in Lizard</button>
+                        }
                         <a href="#catalogue" className="header-popup__close">&times;</a>
                     </div>
                 </div>

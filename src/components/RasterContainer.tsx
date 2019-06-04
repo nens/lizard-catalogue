@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { fetchRasters, selectRaster, updateBasket, fetchObservationTypes, fetchOrganisations } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations } from '../reducers';
-import { RasterActionType, ObservationType, Organisation } from '../interface';
+import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType } from '../interface';
 import RasterList from './RasterList';
 import RasterDetails from './RasterDetails';
 import FilterBar from './FilterBar';
-import './Raster.css';
 import Header from './Header';
+import './Raster.css';
 
 interface PropsFromState {
     currentRasterList: MyStore['currentRasterList'] | null;
@@ -101,7 +101,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     organisations: getOrganisations(state)
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<RasterActionType>): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType>): PropsFromDispatch => ({
     fetchRasters: (page: number, searchTerm: string) => fetchRasters(page, searchTerm, dispatch),
     selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
     updateBasket: (basket) => updateBasket(basket, dispatch),

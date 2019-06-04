@@ -159,7 +159,7 @@
 
 .header-popup__content-ul {
     padding: 0 2rem;
-    min-height: 40%;
+    min-height: 30%;
     max-height: 66%;
     overflow-y: scroll;
 }

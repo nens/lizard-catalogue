@@ -59,6 +59,16 @@ class RasterList extends React.Component<RasterListProps, MyState> {
 
         //Destructure the currentRasterList object
         const { count, previous, next } = currentRasterList;
+
+        //Add to basket function which will do the followings
+        //1- open the notification box
+        //2- dispatch an action to update the basket
+        //3- set the state of the RasterList component again
+        const addToBasket = () => {
+            window.location.href = 'catalogue#notification';
+            updateBasket(this.state.checkedRasters); 
+            this.setState({checkedRasters: []});
+        };
         
         return (
             <div className="raster-list">
@@ -112,8 +122,14 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                 <div className="raster-list__button-container">
                     {this.state.checkedRasters.length === 0 ?
                         <button className="raster-list__button raster-list__button-grey">ADD TO BASKET</button> :
-                        <button className="raster-list__button" onClick={() => {updateBasket(this.state.checkedRasters); this.setState({checkedRasters: []})}}>ADD TO BASKET</button>
+                        <button className="raster-list__button" onClick={addToBasket}>ADD TO BASKET</button>
                     }
+                </div>
+                <div className="raster-list__popup" id="notification">
+                    <div className="raster-list__popup-content">
+                        <p>Item successfully added to the Basket. Go to your basket to see which items have been added.</p>
+                        <a href="#catalogue" className="raster-list__popup-close">OK</a>
+                    </div>
                 </div>
             </div>
         );
