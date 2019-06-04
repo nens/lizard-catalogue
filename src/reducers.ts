@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED, OBSERVATION_TYPES_FETCHED, ORGANISATIONS_FETCHED } from "./action";
-import { RastersFetched, RasterSelected, BasketAdded, Raster, ObservationType, Organisation } from './interface';
+import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED, OBSERVATION_TYPES_FETCHED, ORGANISATIONS_FETCHED, ITEM_REMOVED } from "./action";
+import { RastersFetched, RasterSelected, Raster, ObservationType, Organisation, Basket } from './interface';
 
 export interface MyStore {
     observationTypes: ObservationType[];
@@ -55,11 +55,16 @@ const selectedRaster = (state: MyStore['selectedRaster'] = null, action: RasterS
     };
 };
 
-const basket = (state: MyStore['basket'] = [], action: BasketAdded) => {
+const basket = (state: MyStore['basket'] = [], action: Basket) => {
     switch (action.type) {
         case BASKET_UPDATED:
-            const newState = [...state, ...action.payload]
-            return newState.filter((item, pos) => newState.indexOf(item) === pos)
+            const newState = [...state, ...action.payload];
+            return newState.filter((item, pos) => newState.indexOf(item) === pos);
+        case ITEM_REMOVED:
+            const newState2 = [...state];
+            const index = newState2.indexOf(action.payload);
+            newState2.splice(index, 1);
+            return newState2;
         default:
             return state;
     };

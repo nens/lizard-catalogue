@@ -7,7 +7,7 @@ import RasterContainer from './components/RasterContainer';
 function App() {
   return (
     <Provider store={store}>
-      <div className="App">
+      <div className="App" id="catalogue">
         <Route exact={true} path='/catalogue' component={RasterContainer} />
         <Route exact={true} path='/' render={() => <Redirect to='/catalogue' />} />
       </div>
