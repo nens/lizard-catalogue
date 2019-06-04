@@ -1,16 +1,30 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { MyStore, getRaster } from '../reducers';
+import { removeItem } from '../action';
 import { Raster } from '../interface';
 import './Header.css';
 
 interface PropsFromState {
-    rasters: Raster[]
+    basket: Raster[]
 };
 
-class Header extends React.Component<PropsFromState> {
+interface PropsFromDispatch {
+    removeItem: (raster: Raster) => void
+};
+
+type MyProps = PropsFromState & PropsFromDispatch
+
+class Header extends React.Component<MyProps> {
     render() {
-        const { rasters } = this.props
+        const { basket, removeItem } = this.props
+
+        // const removeFromCart = (raster: Raster) => {
+        //     const index = basket.indexOf(raster);
+        //     if (index > -1) {
+        //         basket.splice(index, 1)
+        //     };
+        // };
 
         return (
             <nav className="header">
@@ -19,13 +33,13 @@ class Header extends React.Component<PropsFromState> {
                     <h3 className="header-logo__text">Lizard Catalogue</h3>
                 </div>
                 <div className="header-nav">
-                    <div className="header-nav__icon-box">
+                    <a href="#basket" className="header-nav__icon-box">
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-cart" />
                         </svg>
-                        <a href="#popup" className="header-nav__notification">{rasters.length}</a>
+                        <span className="header-nav__notification">{basket.length}</span>
                         <span className="header-nav__text">Basket</span>
-                    </div>
+                    </a>
                     <div className="header-nav__icon-box">
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-apps" />
@@ -45,21 +59,48 @@ class Header extends React.Component<PropsFromState> {
                         <span className="header-nav__text">Nelen Schuurmans</span>
                     </div>
                 </div>
-                <div className="popup" id="popup">
-                    <div className="popup-content">
-                        {`POPUP has ${rasters.length} items`}
-                        <a href="#catalogue" className="popup-close">&times;</a>
+                {/*This is the PopUp window when the basket is clicked*/}
+                <div className="header-popup" id="basket">
+                    <div className="header-popup__content">
+                        <h3>My selection</h3>
+                        <div className="header-popup__content-bovenste-laag">
+                            <span className="header-popup__content-item">{basket.length} items</span>
+                            <span className="header-popup__content-layer-title">Bovenste laag</span>
+                        </div>
+                        <ul className="header-popup__content-ul">
+                            {basket.map(raster => (
+                                <li className="header-popup__content-li" key={raster.uuid}>
+                                    <div className="li li-type">#</div>
+                                    <div className="li li-name">{raster.name}</div>
+                                    <div className="li li-org">{raster.organisation.name}</div>
+                                    <div className="li li-obs">{raster.observation_type.parameter}</div>
+                                    <div className="li li-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
+                                    <button className="li li-basket li-basket__icon-box" onClick={() => removeItem(raster)}>
+                                        <svg className="li-basket__icon">
+                                            <use xlinkHref="image/symbols.svg#icon-remove_shopping_cart" />
+                                        </svg>
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                        <p className="header-popup__content-onderste-laag">Onderste laag</p>
+                        <button className="header-popup__content-button raster-list__button" onClick={() => window.location.href = `https://demo.lizard.net`}>Open all data in Lizard</button>
+                        <a href="#catalogue" className="header-popup__close">&times;</a>
                     </div>
                 </div>
-            </nav>
+            </nav >
         );
     };
 };
 
 const mapStateToProps = (state: MyStore): PropsFromState => {
     return {
-        rasters: state.basket.map(uuid => getRaster(state, uuid))
+        basket: state.basket.map(uuid => getRaster(state, uuid))
     };
 };
 
-export default connect(mapStateToProps)(Header);
+const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
+    removeItem: (raster: Raster) => removeItem(raster, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

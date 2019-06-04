@@ -164,11 +164,15 @@ li {
 
 .raster-list__button {
     font-size: 1.2rem;
+    text-transform: uppercase;
     padding: .8rem;
+    border-radius: .2rem;
     border: none;
-    background-color: #41a086;
+    background-color: #55cbac;
     color: #fff;
     cursor: pointer;
+
+    box-shadow: .2rem .4rem .4rem rgba(12, 12, 12, 0.4);
 }
 
 .raster-list__button:focus {

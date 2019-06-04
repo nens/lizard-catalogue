@@ -1,6 +1,6 @@
 import request from 'superagent';
 import { baseUrl } from './api';
-import { RastersFetched, RasterSelected, RasterListObject, BasketAdded, ObservationType, Organisation } from './interface';
+import { RastersFetched, RasterSelected, RasterListObject, BasketAdded, ObservationType, Organisation, Raster } from './interface';
 import { Dispatch } from 'redux';
 
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
@@ -10,6 +10,7 @@ export const OBSERVATION_TYPES_FETCHED = 'OBSERVATION_TYPES_FETCHED';
 export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
 
 export const BASKET_UPDATED = 'BASKET_UPDATED';
+export const ITEM_REMOVED = 'ITEM_REMOVED'
 
 const rastersFetched = (rasterListObject: RasterListObject): RastersFetched => ({
     type: RASTERS_FETCHED,
@@ -41,6 +42,15 @@ const basketUpdated = (basket: string[]): BasketAdded => ({
 
 export const updateBasket = (basket: string[], dispatch: Dispatch<BasketAdded>): void => {
     dispatch(basketUpdated(basket))
+};
+
+const itemRemoved = (raster: Raster) => ({
+    type: ITEM_REMOVED,
+    payload: raster.uuid
+});
+
+export const removeItem = (raster: Raster, dispatch) => {
+    dispatch(itemRemoved(raster))
 };
 
 const observationTypesFetched = (observationTypes: ObservationType[]) => ({

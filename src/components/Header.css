@@ -74,7 +74,13 @@
     margin-left: 1rem;
 }
 
-.popup {
+.header-nav a {
+    text-decoration: none;
+    color: white;
+}
+
+/*POPUP WINDOW FOR THE BASKET*/
+.header-popup {
     height: 100vh;
     width: 100%;
     position: fixed;
@@ -87,17 +93,18 @@
     transition: all .3s;
 }
 
-.popup:target {
+.header-popup:target {
     opacity: 1;
     visibility: visible;
 }
 
-.popup-content {
+.header-popup__content {
+    font-size: 1.2rem;
     width: 60%;
     height: 60%;
     color: black;
     background-color: rgb(241,241,241);
-    box-shadow: 0 2rem 4rem rgba(105, 99, 99, 0.2);
+    box-shadow: 0 2rem 2rem rgba(12, 12, 12, 0.4);
     opacity: 0;
     transform: translate(50%, -50%) scale(.5);
     transition: all .4s .2s;
@@ -105,22 +112,123 @@
     position: absolute;
     top: 20%;
     left: 20%;
+    
+    justify-content: center;
+    text-align: center;
 }
 
-.popup-close {
+.header-popup__close {
     color: #777;
     position: absolute;
+    top: 0;
     right: 1rem;
     font-size: 2rem;
     text-decoration: none;
     transition: all .2s;
 }
 
-.popup-close:hover {
+.header-popup__close:hover {
     color: #41a086;
 }
 
-.popup:target .popup-content {
+.header-popup:target .header-popup__content {
     opacity: 1;
     transform: scale(1);
+}
+
+/*CONTENTS OF POPUP WINDOW FOR THE BASKET*/
+.header-popup__content-bovenste-laag {
+    display: flex;
+    position: relative;
+}
+
+.header-popup__content-item {
+    color: #777;
+    margin-left: 2rem;
+}
+
+.header-popup__content-layer-title {
+    position: absolute;
+    left: 44%;
+}
+
+.header-popup__content-onderste-laag {
+    position: absolute;
+    left: 44%;
+}
+
+.header-popup__content-ul {
+    padding: 0 2rem;
+    min-height: 40%;
+}
+
+.header-popup__content-li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 4.5rem;
+
+    border-radius: 1rem;
+    margin: 1rem auto;
+    background-color: #fff;
+    cursor: pointer;
+
+    border: 1px solid transparent;
+}
+
+.header-popup__content-li:hover {
+    border: 1px solid #41a086;
+}
+
+.li {
+    flex: 1;
+    text-align: center;
+    margin: auto 2px;
+    overflow: hidden;
+}
+
+.li-name {
+    flex: 2;
+    text-align: left;
+}
+
+.li-org {
+    flex: 3;
+    text-align: left;
+}
+
+.li-obs {
+    flex: 2;
+    text-align: left;
+}
+
+.li-time {
+    flex: 2;
+}
+
+.li-basket {
+    flex: .5;
+}
+
+.header-popup__content-button {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+}
+
+/*ICON DECORATION*/
+.li-basket__icon-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 1rem;
+
+    background-color: #f36d6f;
+}
+
+.li-basket__icon {
+    height: 2.5rem;
+    width: 2rem;
+    fill: #fff;
 }
