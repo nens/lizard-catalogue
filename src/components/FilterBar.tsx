@@ -54,7 +54,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                 <div className="filter-title">Filters</div>
                 <div className="filter-box">
                     <form onSubmit={this.onSubmit} className="raster-list__searchbar">
-                        <input type="text" className="raster-list__searchbar-input" placeholder="search for Organisation" onChange={this.onChange} value={searchTerm} />
+                        <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onChange} value={searchTerm} />
                         <button className="raster-list__searchbar-button" type="submit">
                             <svg className="raster-list__searchbar-icon">
                                 <use xlinkHref="image/symbols.svg#icon-search" />

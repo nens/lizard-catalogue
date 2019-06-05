@@ -104,7 +104,10 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             return (
                                 <li className="raster-list__row-li" key={raster.uuid} onClick={() => selectRaster(raster.uuid)} >
                                     <input className="raster-list__row raster-list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(raster.uuid)} checked={checked} />
-                                    <div className="raster-list__row raster-list__row-type">#</div>
+                                    {raster.temporal ? 
+                                        <img className="raster-list__row raster-list__row-type" src="image/raster-non-temporal.svg" alt="raster" /> :
+                                        <img className="raster-list__row raster-list__row-type" src="image/raster-temporal.svg" alt="raster" />
+                                    }
                                     <div className="raster-list__row raster-list__row-name">{raster.name}</div>
                                     <div className="raster-list__row raster-list__row-org">{raster.organisation.name}</div>
                                     <div className="raster-list__row raster-list__row-obs">{raster.observation_type.parameter}</div>
@@ -127,7 +130,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                 </div>
                 <div className="raster-list__popup" id="notification">
                     <div className="raster-list__popup-content">
-                        <p>Item successfully added to the Basket. Go to your basket to see which items have been added.</p>
+                        <p>Items successfully added to the Basket. Go to your basket to see which items have been added.</p>
                         <a href="#catalogue" className="raster-list__popup-close">OK</a>
                     </div>
                 </div>
