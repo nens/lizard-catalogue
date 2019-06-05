@@ -42,6 +42,9 @@
 
 .raster-details__description-box {
     flex: 1;
+
+    overflow-y: scroll;
+    overflow-x: hidden; 
 }
 
 .raster-details__description-box h4 {
@@ -49,7 +52,7 @@
 }
 
 .raster-details__map-box {
-    flex: 1.5;
+    flex: 1.2;
     display: flex;
     justify-content: flex-end;
 
@@ -59,7 +62,7 @@
 
 .leaflet-container {
     height: 90%;
-    width: 90%;
+    width: 95%;
 }
 
 .raster-details__data-1 {
