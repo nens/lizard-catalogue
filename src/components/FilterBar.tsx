@@ -10,12 +10,16 @@ interface MyProps {
 };
 
 interface MyState {
-    searchTerm: string
+    searchTerm: string,
+    obsItems: number,
+    orgItems: number
 };
 
 class FilterBar extends React.Component<MyProps, MyState> {
     state: MyState = {
-        searchTerm: ''
+        searchTerm: '',
+        obsItems: 7,
+        orgItems: 7
     };
 
     onChange = (event) => {
@@ -64,23 +68,25 @@ class FilterBar extends React.Component<MyProps, MyState> {
                     <div className="filter-observation-type">
                         <h4>Observation Type</h4>
                         <ul className="filter-list">
-                            {observationTypes.map((observationType: ObservationType) => (
+                            {observationTypes.slice(0, this.state.obsItems).map((observationType: ObservationType) => (
                                 <li className="filter-item" key={observationType.code}>
                                     <input type="checkbox" className="filter-checkbox" />
                                     <span className="filter-item-name">{observationType.parameter}</span>
                                 </li>
                             ))}
+                            <button className="filter-list-button" onClick={() => this.setState({obsItems: this.state.obsItems + 7})}>more ...</button>
                         </ul>
                     </div>
                     <div className="filter-organisation">
                         <h4>Organisation</h4>
                         <ul className="filter-list">
-                            {organisations.map((organisation: Organisation) => (
+                            {organisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
                                 <li className="filter-item" key={organisation.name}>
                                     <input type="checkbox" className="filter-checkbox" />
                                     <span className="filter-item-name">{organisation.name}</span>
                                 </li>
                             ))}
+                            <button className="filter-list-button" onClick={() => this.setState({orgItems: this.state.orgItems + 7})}>more ...</button>
                         </ul>
                     </div>
                 </div>

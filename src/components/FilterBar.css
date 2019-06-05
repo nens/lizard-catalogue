@@ -10,7 +10,6 @@
 }
 
 .filter-title {
-    border: thin solid lightgrey;
     border-radius: .4rem;
     padding: 1.5rem;
     background-color: #f2f2f2;
@@ -25,7 +24,6 @@
 }
 
 .filter-box {
-    border: thin solid lightgrey;
     border-radius: .4rem;
     padding: 1.5rem;
     background-color: #f2f2f2;
@@ -34,7 +32,7 @@
 
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    /* justify-content: space-between; */
 
     height: 93%;
 }
@@ -52,28 +50,38 @@
 }
 
 .filter-observation-type {
-    height: 50%;
-    overflow: hidden;
+    height: 44%;
+    margin-bottom: 2rem;
 }
 
 .filter-organisation {
-    height: 50%;
-    overflow: hidden;
+    height: 44%;
 }
 
 .filter-list {
-    display: block;
     padding-left: 0;
-
-    font-size: 1rem;
-
-    height: 80%;
-
     overflow-y: scroll;
+    height: 80%;
+}
+
+.filter-list-button {
+    font-size: 1.3rem;
+    line-height: 1.5rem;
+    bottom: 1rem;
+    border: none;
+    background-color: inherit;
+    color: #001AFF;
+    cursor: pointer;
+}
+
+.filter-list-button:focus {
+    outline: none;
 }
 
 .filter-item {
     font-size: 1.3rem;
+    line-height: 1.5rem;
+    margin-bottom: .8rem;
 
     white-space: nowrap;
     overflow: hidden;
