@@ -64,8 +64,8 @@ class Header extends React.Component<MyProps> {
                             {basket.map(raster => (
                                 <li className="header-popup__content-li" key={raster.uuid}>
                                     {raster.temporal ? 
-                                        <img className="li li-type" src="image/raster-non-temporal.svg" alt="raster" /> :
-                                        <img className="li li-type" src="image/raster-temporal.svg" alt="raster" />
+                                        <img className="li li-type" src="image/raster-temporal.svg" alt="raster" /> :
+                                        <img className="li li-type" src="image/raster-non-temporal.svg" alt="raster" />
                                     }
                                     <div className="li li-name">{raster.name}</div>
                                     <div className="li li-org">{raster.organisation.name}</div>
