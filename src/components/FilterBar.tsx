@@ -7,12 +7,7 @@ interface MyProps {
     fetchOrganisations: (searchTerm: string) => void,
     observationTypes: ObservationType[],
     organisations: Organisation[],
-    onOrganisationCheckbox: (organisation: Organisation) => void,
-    fetchRasters: (page: number, searchTerm: string, organisationName: string) => void,
-    page: number,
-    searchTerm: string,
-    organisationName: string
-
+    onOrganisationCheckbox: (organisation: Organisation) => void
 };
 
 interface MyState {
@@ -40,15 +35,6 @@ class FilterBar extends React.Component<MyProps, MyState> {
         this.setState({
             searchTerm: ''
         });
-    };
-
-    onClick = (organisation: Organisation) => {
-        this.props.onOrganisationCheckbox(organisation);
-        
-    };
-
-    onOrganisationCheck = (organisation: Organisation) => {
-        organisation.checked = !organisation.checked
     };
 
     componentDidMount() {
@@ -101,7 +87,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                         <ul className="filter-list">
                             {organisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
                                 <li className="filter-item" key={organisation.name}>
-                                    <input type="checkbox" className="filter-checkbox" onClick={() => this.onClick(organisation)} onChange={() => this.onOrganisationCheck(organisation)} checked={organisation.checked}/>
+                                    <input type="checkbox" className="filter-checkbox" onClick={() => this.props.onOrganisationCheckbox(organisation)} onChange={() => organisation.checked = !organisation.checked} checked={organisation.checked}/>
                                     <span className="filter-item-name">{organisation.name}</span>
                                 </li>
                             ))}

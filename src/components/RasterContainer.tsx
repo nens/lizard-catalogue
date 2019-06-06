@@ -69,31 +69,25 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
             this.setState({
                 organisationName: organisation.name
             });
-            this.props.fetchRasters(this.state.page, this.state.searchTerm, organisation.name);
         } else {
             this.setState({
                 organisationName: ''
             });
-            this.props.fetchRasters(this.state.page, this.state.searchTerm, '');
-        }
-        
+        };
     };
 
     componentDidMount() {
         this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName);
     };
 
-    // componentWillUpdate(nextProps, nextState: MyState) {
-    //     if (nextState.organisationName !== this.state.organisationName) {
-    //         console.log(nextProps.updateBasket)
-    //         console.log(this.state.organisationName)
-    //         console.log(nextState.organisationName)
-    //         this.props.fetchRasters(this.state.page, this.state.searchTerm, nextState.organisationName);
-    //     } 
-    // }
+    //Component will fetch the Rasters again each time the value of this.state.organisationName changes
+    componentWillUpdate(nextProps: RasterContainerProps, nextState: MyState) {
+        if (nextProps && nextState.organisationName !== this.state.organisationName) {
+            this.props.fetchRasters(this.state.page, this.state.searchTerm, nextState.organisationName);
+        };
+    };
 
     render() {
-        console.log(this.state.organisationName)
         return (
             <div className="raster-container">
                 <div className="raster-header">
@@ -106,10 +100,6 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                         fetchOrganisations={this.props.fetchOrganisations}
                         organisations={this.props.organisations}
                         onOrganisationCheckbox={this.onOrganisationCheckBox}
-                        fetchRasters={this.props.fetchRasters}
-                        page={this.state.page}
-                        searchTerm={this.state.searchTerm}
-                        organisationName={this.state.organisationName}
                     />
                     <RasterList
                         searchTerm={this.state.searchTerm}
