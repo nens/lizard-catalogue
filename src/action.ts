@@ -17,9 +17,9 @@ const rastersFetched = (rasterListObject: RasterListObject): RastersFetched => (
     payload: rasterListObject
 });
 
-export const fetchRasters = (page: number, searchTerm: string, dispatch: Dispatch<RastersFetched>): void => {
+export const fetchRasters = (page: number, searchTerm: string, organisationName: string, dispatch: Dispatch<RastersFetched>): void => {
     request
-        .get(`${baseUrl}/rasters?name__icontains=${searchTerm}&page=${page}`)
+        .get(`${baseUrl}/rasters?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}`)
         .then(response => {
             dispatch(rastersFetched(response.body))
         })

@@ -18,7 +18,7 @@ interface PropsFromState {
 
 interface PropsFromDispatch {
     selectRaster: (uuid: string) => void;
-    fetchRasters: (page: number, searchTerm: string) => void;
+    fetchRasters: (page: number, searchTerm: string, organisationName: string) => void;
     updateBasket: (basket) => void;
     fetchObservationTypes: () => void;
     fetchOrganisations: (searchTerm: string) => void;
@@ -30,18 +30,20 @@ interface MyState {
     page: number;
     initialPage: number;
     searchTerm: string;
+    organisationName: string
 };
 
 class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     state: MyState = {
         page: 1,
         initialPage: 1,
-        searchTerm: ''
+        searchTerm: '',
+        organisationName: ''
     };
 
     onClick = (page: number) => {
         if (page < 1) return page = 1;
-        this.props.fetchRasters(page, this.state.searchTerm);
+        this.props.fetchRasters(page, this.state.searchTerm, this.state.organisationName);
         this.setState({
             page: page,
         });
@@ -58,11 +60,31 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         this.setState({
             page: 1
         });
-        this.props.fetchRasters(this.state.initialPage, this.state.searchTerm);
+        this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName);
+    };
+
+    //When click on the checkbox in the filter bar, this function will update the organisation name state in this component
+    onOrganisationCheckBox = (organisation: Organisation) => {
+        if (!organisation.checked) {
+            this.setState({
+                organisationName: organisation.name
+            });
+        } else {
+            this.setState({
+                organisationName: ''
+            });
+        };
     };
 
     componentDidMount() {
-        this.props.fetchRasters(this.state.page, this.state.searchTerm);
+        this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName);
+    };
+
+    //Component will fetch the Rasters again each time the value of this.state.organisationName changes
+    componentWillUpdate(nextProps: RasterContainerProps, nextState: MyState) {
+        if (nextProps && nextState.organisationName !== this.state.organisationName) {
+            this.props.fetchRasters(this.state.page, this.state.searchTerm, nextState.organisationName);
+        };
     };
 
     render() {
@@ -77,6 +99,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                         observationTypes={this.props.observationTypes}
                         fetchOrganisations={this.props.fetchOrganisations}
                         organisations={this.props.organisations}
+                        onOrganisationCheckbox={this.onOrganisationCheckBox}
                     />
                     <RasterList
                         searchTerm={this.state.searchTerm}
@@ -102,7 +125,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType>): PropsFromDispatch => ({
-    fetchRasters: (page: number, searchTerm: string) => fetchRasters(page, searchTerm, dispatch),
+    fetchRasters: (page: number, searchTerm: string, organisationName: string) => fetchRasters(page, searchTerm, organisationName, dispatch),
     selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
     updateBasket: (basket) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),

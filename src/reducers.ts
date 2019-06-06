@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED, OBSERVATION_TYPES_FETCHED, ORGANISATIONS_FETCHED, ITEM_REMOVED } from "./action";
-import { RastersFetched, RasterSelected, Raster, ObservationType, Organisation, Basket } from './interface';
+import { RastersFetched, RasterSelected, Raster, ObservationType, Organisation, Basket, OrganisationsFetched, ObservationTypesFetched } from './interface';
 
 export interface MyStore {
     observationTypes: ObservationType[];
@@ -70,7 +70,7 @@ const basket = (state: MyStore['basket'] = [], action: Basket) => {
     };
 };
 
-const observationTypes = (state: MyStore['observationTypes'] = [], action) => {
+const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched) => {
     switch (action.type) {
         case OBSERVATION_TYPES_FETCHED:
             return action.payload;
@@ -79,10 +79,17 @@ const observationTypes = (state: MyStore['observationTypes'] = [], action) => {
     };
 };
 
-const organisations = (state: MyStore['organisations'] = [], action) => {
+const organisations = (state: MyStore['organisations'] = [], action: OrganisationsFetched) => {
     switch (action.type) {
         case ORGANISATIONS_FETCHED:
-            return action.payload;
+            return action.payload.map(organisation => {
+                return {
+                    url: organisation.url,
+                    name: organisation.name,
+                    uuid: organisation.uuid,
+                    checked: false
+                };
+            });
         default:
             return state;
     };

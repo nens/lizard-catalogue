@@ -6,7 +6,8 @@ interface MyProps {
     fetchObservationTypes: () => void,
     fetchOrganisations: (searchTerm: string) => void,
     observationTypes: ObservationType[],
-    organisations: Organisation[]
+    organisations: Organisation[],
+    onOrganisationCheckbox: (organisation: Organisation) => void
 };
 
 interface MyState {
@@ -74,7 +75,11 @@ class FilterBar extends React.Component<MyProps, MyState> {
                                     <span className="filter-item-name">{observationType.parameter}</span>
                                 </li>
                             ))}
-                            <button className="filter-list-button" onClick={() => this.setState({obsItems: this.state.obsItems + 7})}>more ...</button>
+                            {this.state.obsItems < observationTypes.length ? 
+                                <button className="filter-list-button" onClick={() => this.setState({obsItems: this.state.obsItems + 7})}>more ...</button> :
+                                <button style={{display: 'none'}}/>
+                            }
+                            
                         </ul>
                     </div>
                     <div className="filter-organisation">
@@ -82,11 +87,14 @@ class FilterBar extends React.Component<MyProps, MyState> {
                         <ul className="filter-list">
                             {organisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
                                 <li className="filter-item" key={organisation.name}>
-                                    <input type="checkbox" className="filter-checkbox" />
+                                    <input type="checkbox" className="filter-checkbox" onClick={() => this.props.onOrganisationCheckbox(organisation)} onChange={() => organisation.checked = !organisation.checked} checked={organisation.checked}/>
                                     <span className="filter-item-name">{organisation.name}</span>
                                 </li>
                             ))}
-                            <button className="filter-list-button" onClick={() => this.setState({orgItems: this.state.orgItems + 7})}>more ...</button>
+                            {this.state.orgItems < organisations.length ? 
+                                <button className="filter-list-button" onClick={() => this.setState({orgItems: this.state.orgItems + 7})}>more ...</button> :
+                                <button style={{display: 'none'}}/>
+                            }
                         </ul>
                     </div>
                 </div>
