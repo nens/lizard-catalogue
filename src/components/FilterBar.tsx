@@ -37,6 +37,14 @@ class FilterBar extends React.Component<MyProps, MyState> {
         });
     };
 
+    //Handling changes when click on the checkbox
+    onOrganisationChange = (organisation: Organisation, organisations: MyProps['organisations']) => {
+        //Toggle the checked property on click
+        organisation.checked = !organisation.checked;
+        //Only one organisation can be selected at a time
+        organisations.filter(org => org.uuid !== organisation.uuid).map(org => org.checked = false);
+    };
+
     componentDidMount() {
         this.props.fetchObservationTypes();
         this.props.fetchOrganisations(this.state.searchTerm);
@@ -87,7 +95,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                         <ul className="filter-list">
                             {organisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
                                 <li className="filter-item" key={organisation.name}>
-                                    <input type="checkbox" className="filter-checkbox" onClick={() => this.props.onOrganisationCheckbox(organisation)} onChange={() => organisation.checked = !organisation.checked} checked={organisation.checked}/>
+                                    <input type="checkbox" className="filter-checkbox" onClick={() => this.props.onOrganisationCheckbox(organisation)} onChange={() => this.onOrganisationChange(organisation, organisations)} checked={organisation.checked}/>
                                     <span className="filter-item-name">{organisation.name}</span>
                                 </li>
                             ))}
