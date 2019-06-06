@@ -64,18 +64,36 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     };
 
     //When click on the checkbox in the filter bar, this function will update the organisation name state in this component
-    onOrganisationCheckBox = (name: string) => {
-        this.setState({
-            organisationName: name
-        });
+    onOrganisationCheckBox = (organisation: Organisation) => {
+        if (!organisation.checked) {
+            this.setState({
+                organisationName: organisation.name
+            });
+            this.props.fetchRasters(this.state.page, this.state.searchTerm, organisation.name);
+        } else {
+            this.setState({
+                organisationName: ''
+            });
+            this.props.fetchRasters(this.state.page, this.state.searchTerm, '');
+        }
+        
     };
 
     componentDidMount() {
         this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName);
     };
-    
+
+    // componentWillUpdate(nextProps, nextState: MyState) {
+    //     if (nextState.organisationName !== this.state.organisationName) {
+    //         console.log(nextProps.updateBasket)
+    //         console.log(this.state.organisationName)
+    //         console.log(nextState.organisationName)
+    //         this.props.fetchRasters(this.state.page, this.state.searchTerm, nextState.organisationName);
+    //     } 
+    // }
 
     render() {
+        console.log(this.state.organisationName)
         return (
             <div className="raster-container">
                 <div className="raster-header">

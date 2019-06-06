@@ -75,6 +75,7 @@ export interface Organisation {
     url: string;
     name: string;
     uuid: string;
+    checked: boolean
 };
 
 export interface ObservationType {

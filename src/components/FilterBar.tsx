@@ -7,7 +7,7 @@ interface MyProps {
     fetchOrganisations: (searchTerm: string) => void,
     observationTypes: ObservationType[],
     organisations: Organisation[],
-    onOrganisationCheckbox: (name: string) => void,
+    onOrganisationCheckbox: (organisation: Organisation) => void,
     fetchRasters: (page: number, searchTerm: string, organisationName: string) => void,
     page: number,
     searchTerm: string,
@@ -18,14 +18,14 @@ interface MyProps {
 interface MyState {
     searchTerm: string,
     obsItems: number,
-    orgItems: number,
+    orgItems: number
 };
 
 class FilterBar extends React.Component<MyProps, MyState> {
     state: MyState = {
         searchTerm: '',
         obsItems: 7,
-        orgItems: 7,
+        orgItems: 7
     };
 
     onChange = (event) => {
@@ -42,9 +42,13 @@ class FilterBar extends React.Component<MyProps, MyState> {
         });
     };
 
-    onClick = (organisationName: string) => {
-        this.props.fetchRasters(this.props.page, this.props.searchTerm, organisationName);
-        this.props.onOrganisationCheckbox(organisationName);
+    onClick = (organisation: Organisation) => {
+        this.props.onOrganisationCheckbox(organisation);
+        
+    };
+
+    onOrganisationCheck = (organisation: Organisation) => {
+        organisation.checked = !organisation.checked
     };
 
     componentDidMount() {
@@ -97,7 +101,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                         <ul className="filter-list">
                             {organisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
                                 <li className="filter-item" key={organisation.name}>
-                                    <input type="checkbox" className="filter-checkbox" onClick={() => this.onClick(organisation.name)} />
+                                    <input type="checkbox" className="filter-checkbox" onClick={() => this.onClick(organisation)} onChange={() => this.onOrganisationCheck(organisation)} checked={organisation.checked}/>
                                     <span className="filter-item-name">{organisation.name}</span>
                                 </li>
                             ))}

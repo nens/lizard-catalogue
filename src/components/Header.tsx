@@ -43,7 +43,7 @@ class Header extends React.Component<MyProps> {
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-user" />
                         </svg>
-                        <span className="header-nav__text">Jan de Vries</span>
+                        <span className="header-nav__text">User</span>
                     </div>
                     <div className="header-nav__icon-box">
                         <svg className="header-nav__icon">
