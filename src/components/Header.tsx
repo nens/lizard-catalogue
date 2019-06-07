@@ -17,7 +17,20 @@ type MyProps = PropsFromState & PropsFromDispatch
 
 class Header extends React.Component<MyProps> {
     render() {
-        const { basket, removeItem } = this.props
+        const { basket, removeItem } = this.props;
+
+        //onClick function for the Open All Data button
+        const onClick = (basket: PropsFromState['basket']) => {
+            //create an array of short ID of all the rasters in the basket
+            const idArray = basket.map(raster => raster.uuid.substr(0, 7));
+
+            //create the url path to display all the rasters in the basket on the map
+            //the format of the url is something like: ',raster$rasterID1,raster$rasterID2,...,raster$rasterIDn'
+            const urlPath = idArray.map(id => `,raster$${id}`).join('');
+
+            //Open the link in a another tab
+            window.open(`https://demo.lizard.net/nl/map/topography${urlPath}`);
+        };
 
         return (
             <nav className="header">
@@ -82,7 +95,7 @@ class Header extends React.Component<MyProps> {
                         <p className="header-popup__content-onderste-laag">Onderste laag</p>
                         {basket.length === 0 ? 
                             <button className="header-popup__content-button raster-list__button raster-list__button-grey">Open all data in Lizard</button> :
-                            <button className="header-popup__content-button raster-list__button" onClick={() => window.open(`https://demo.lizard.net`)}>Open all data in Lizard</button>
+                            <button className="header-popup__content-button raster-list__button" onClick={() => onClick(basket)}>Open all data in Lizard</button>
                         }
                         <a href="#catalogue" className="header-popup__close">&times;</a>
                     </div>
