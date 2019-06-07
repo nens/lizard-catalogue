@@ -59,6 +59,7 @@ export interface Raster {
     projection: string;
     pixelsize_x: number;
     pixelsize_y: number;
+    access_modifier: string;
     wms_info: {
         endpoint: string;
         layer: string;

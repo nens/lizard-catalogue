@@ -93,7 +93,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             <div className="raster-list__row raster-list__row-org">Organisation</div>
                             <div className="raster-list__row raster-list__row-obs">Obs.Type</div>
                             <div className="raster-list__row raster-list__row-time">Latest update</div>
-                            <div className="raster-list__row raster-list__row-acc" />
+                            <div className="raster-list__row raster-list__row-access" />
                         </li>
                         {rasters.map((raster: Raster) => {
                             //Here is a logic to define whether a raster has been selected (check-box has been checked or not)
@@ -112,7 +112,10 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                                     <div className="raster-list__row raster-list__row-org">{raster.organisation.name}</div>
                                     <div className="raster-list__row raster-list__row-obs">{raster.observation_type.parameter}</div>
                                     <div className="raster-list__row raster-list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
-                                    <div className="raster-list__row raster-list__row-acc" />
+                                    {raster.access_modifier === 'Public' && 'Publiek' ? 
+                                        <div className="raster-list__row raster-list__row-access"><div className="access-modifier">{raster.access_modifier.toUpperCase()}</div></div> :
+                                        <div className="raster-list__row raster-list__row-access" />
+                                    } 
                                 </li>
                             )
                         })}
