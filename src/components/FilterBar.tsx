@@ -3,37 +3,53 @@ import './FilterBar.css';
 import { ObservationType, Organisation } from '../interface';
 
 interface MyProps {
-    fetchObservationTypes: () => void,
-    fetchOrganisations: (searchTerm: string) => void,
+    fetchObservationTypes: (searchObs: string) => void,
+    fetchOrganisations: (searchOrg: string) => void,
     observationTypes: ObservationType[],
     organisations: Organisation[],
     onOrganisationCheckbox: (organisation: Organisation) => void
 };
 
 interface MyState {
-    searchTerm: string,
+    searchObs: string,
+    searchOrg: string,
     obsItems: number,
     orgItems: number
 };
 
 class FilterBar extends React.Component<MyProps, MyState> {
     state: MyState = {
-        searchTerm: '',
+        searchObs: '',
+        searchOrg: '',
         obsItems: 7,
         orgItems: 7
     };
 
-    onChange = (event) => {
+    onObsChange = (event) => {
         this.setState({
-            searchTerm: event.target.value
+            searchObs: event.target.value
         });
     };
 
-    onSubmit = (event) => {
+    onObsSubmit = (event) => {
         event.preventDefault();
-        this.props.fetchOrganisations(this.state.searchTerm);
+        this.props.fetchObservationTypes(this.state.searchObs);
         this.setState({
-            searchTerm: ''
+            searchObs: ''
+        });
+    };
+
+    onOrgChange = (event) => {
+        this.setState({
+            searchOrg: event.target.value
+        });
+    };
+
+    onOrgSubmit = (event) => {
+        event.preventDefault();
+        this.props.fetchOrganisations(this.state.searchOrg);
+        this.setState({
+            searchOrg: ''
         });
     };
 
@@ -46,21 +62,14 @@ class FilterBar extends React.Component<MyProps, MyState> {
     };
 
     componentDidMount() {
-        this.props.fetchObservationTypes();
-        this.props.fetchOrganisations(this.state.searchTerm);
+        this.props.fetchObservationTypes(this.state.searchObs);
+        this.props.fetchOrganisations(this.state.searchOrg);
     };
 
     render() {
-        const { searchTerm } = this.state;
+        const { searchObs, searchOrg } = this.state;
 
         const { observationTypes, organisations } = this.props;
-
-        if (observationTypes.length === 0 || organisations.length === 0) return (
-            <div className="filter">
-                <div className="filter-title">Filters</div>
-                <div className="filter-box"><h3>Loading ...</h3></div>
-            </div>
-        );
 
         return (
             <div className="filter">
@@ -68,8 +77,8 @@ class FilterBar extends React.Component<MyProps, MyState> {
                 <div className="filter-box">
                     <div className="filter-observation-type">
                         <h4>Observation Type</h4>
-                        <form onSubmit={this.onSubmit} className="raster-list__searchbar">
-                            <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onChange} value={searchTerm} />
+                        <form onSubmit={this.onObsSubmit} className="raster-list__searchbar">
+                            <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onObsChange} value={searchObs} />
                             <button className="raster-list__searchbar-button" type="submit">
                                 <svg className="raster-list__searchbar-icon">
                                     <use xlinkHref="image/symbols.svg#icon-search" />
@@ -91,8 +100,8 @@ class FilterBar extends React.Component<MyProps, MyState> {
                     </div>
                     <div className="filter-organisation">
                         <h4>Organisation</h4>
-                        <form onSubmit={this.onSubmit} className="raster-list__searchbar">
-                            <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onChange} value={searchTerm} />
+                        <form onSubmit={this.onOrgSubmit} className="raster-list__searchbar">
+                            <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onOrgChange} value={searchOrg} />
                             <button className="raster-list__searchbar-button" type="submit">
                                 <svg className="raster-list__searchbar-icon">
                                     <use xlinkHref="image/symbols.svg#icon-search" />

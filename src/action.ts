@@ -58,9 +58,9 @@ const observationTypesFetched = (observationTypes: ObservationType[]): Observati
     payload: observationTypes
 });
 
-export const fetchObservationTypes = (dispatch: Dispatch<ObservationTypesFetched>) => {
+export const fetchObservationTypes = (dispatch: Dispatch<ObservationTypesFetched>, searchTerm: string) => {
     request
-        .get(`${baseUrl}/observationtypes?page_size=0`)
+        .get(`${baseUrl}/observationtypes?parameter__icontains=${searchTerm}&page_size=0`)
         .then(response => {
             dispatch(observationTypesFetched(response.body))
         })
