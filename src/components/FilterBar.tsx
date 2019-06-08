@@ -66,16 +66,16 @@ class FilterBar extends React.Component<MyProps, MyState> {
             <div className="filter">
                 <div className="filter-title">Filters</div>
                 <div className="filter-box">
-                    <form onSubmit={this.onSubmit} className="raster-list__searchbar">
-                        <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onChange} value={searchTerm} />
-                        <button className="raster-list__searchbar-button" type="submit">
-                            <svg className="raster-list__searchbar-icon">
-                                <use xlinkHref="image/symbols.svg#icon-search" />
-                            </svg>
-                        </button>
-                    </form>
                     <div className="filter-observation-type">
                         <h4>Observation Type</h4>
+                        <form onSubmit={this.onSubmit} className="raster-list__searchbar">
+                            <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onChange} value={searchTerm} />
+                            <button className="raster-list__searchbar-button" type="submit">
+                                <svg className="raster-list__searchbar-icon">
+                                    <use xlinkHref="image/symbols.svg#icon-search" />
+                                </svg>
+                            </button>
+                        </form>
                         <ul className="filter-list">
                             {observationTypes.slice(0, this.state.obsItems).map((observationType: ObservationType) => (
                                 <li className="filter-item" key={observationType.code}>
@@ -83,25 +83,32 @@ class FilterBar extends React.Component<MyProps, MyState> {
                                     <span className="filter-item-name">{observationType.parameter}</span>
                                 </li>
                             ))}
-                            {this.state.obsItems < observationTypes.length ? 
-                                <button className="filter-list-button" onClick={() => this.setState({obsItems: this.state.obsItems + 7})}>more ...</button> :
-                                <button style={{display: 'none'}}/>
+                            {this.state.obsItems < observationTypes.length ?
+                                <button className="filter-list-button" onClick={() => this.setState({ obsItems: this.state.obsItems + 7 })}>more ...</button> :
+                                <button style={{ display: 'none' }} />
                             }
-                            
                         </ul>
                     </div>
                     <div className="filter-organisation">
                         <h4>Organisation</h4>
+                        <form onSubmit={this.onSubmit} className="raster-list__searchbar">
+                            <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onChange} value={searchTerm} />
+                            <button className="raster-list__searchbar-button" type="submit">
+                                <svg className="raster-list__searchbar-icon">
+                                    <use xlinkHref="image/symbols.svg#icon-search" />
+                                </svg>
+                            </button>
+                        </form>
                         <ul className="filter-list">
                             {organisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
                                 <li className="filter-item" key={organisation.name}>
-                                    <input type="checkbox" className="filter-checkbox" onClick={() => this.props.onOrganisationCheckbox(organisation)} onChange={() => this.onOrganisationChange(organisation, organisations)} checked={organisation.checked}/>
+                                    <input type="checkbox" className="filter-checkbox" onClick={() => this.props.onOrganisationCheckbox(organisation)} onChange={() => this.onOrganisationChange(organisation, organisations)} checked={organisation.checked} />
                                     <span className="filter-item-name">{organisation.name}</span>
                                 </li>
                             ))}
-                            {this.state.orgItems < organisations.length ? 
-                                <button className="filter-list-button" onClick={() => this.setState({orgItems: this.state.orgItems + 7})}>more ...</button> :
-                                <button style={{display: 'none'}}/>
+                            {this.state.orgItems < organisations.length ?
+                                <button className="filter-list-button" onClick={() => this.setState({ orgItems: this.state.orgItems + 7 })}>more ...</button> :
+                                <button style={{ display: 'none' }} />
                             }
                         </ul>
                     </div>

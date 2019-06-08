@@ -65,7 +65,9 @@ class RasterList extends React.Component<RasterListProps, MyState> {
         //2- dispatch an action to update the basket
         //3- set the state of the RasterList component again
         const addToBasket = () => {
+            //Click the button will open the notification popup
             window.location.href = 'catalogue#notification';
+            
             updateBasket(this.state.checkedRasters); 
             this.setState({checkedRasters: []});
         };
@@ -97,8 +99,8 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                         </li>
                         {rasters.map((raster: Raster) => {
                             //Here is a logic to define whether a raster has been selected (check-box has been checked or not)
-                            //if yes then the default checked value of the input field will be true
-                            //if no then the default checked value of the input field will be false
+                            //if yes then the checked value of the input field will be true
+                            //if no then the checked value of the input field will be false
                             const checked = this.state.checkedRasters.filter(uuid => uuid === raster.uuid).length === 0 ? false : true;
 
                             return (
