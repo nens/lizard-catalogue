@@ -73,7 +73,17 @@ const basket = (state: MyStore['basket'] = [], action: Basket) => {
 const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched) => {
     switch (action.type) {
         case OBSERVATION_TYPES_FETCHED:
-            return action.payload;
+            return action.payload.map(observation => {
+                return {
+                    url: observation.url,
+                    code: observation.code,
+                    parameter: observation.parameter,
+                    unit: observation.unit,
+                    scale: observation.scale,
+                    description: observation.description,
+                    checked: false
+                };
+            });
         default:
             return state;
     };

@@ -19,7 +19,7 @@ interface PropsFromState {
 interface PropsFromDispatch {
     selectRaster: (uuid: string) => void;
     fetchRasters: (page: number, searchTerm: string, organisationName: string) => void;
-    updateBasket: (basket) => void;
+    updateBasket: (basket: MyStore['basket']) => void;
     fetchObservationTypes: (searchObs: string) => void;
     fetchOrganisations: (searchOrg: string) => void;
 };
@@ -127,7 +127,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType>): PropsFromDispatch => ({
     fetchRasters: (page: number, searchTerm: string, organisationName: string) => fetchRasters(page, searchTerm, organisationName, dispatch),
     selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
-    updateBasket: (basket) => updateBasket(basket, dispatch),
+    updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: (searchObs: string) => fetchObservationTypes(dispatch, searchObs),
     fetchOrganisations: (searchOrg: string) => fetchOrganisations(dispatch, searchOrg)
 });

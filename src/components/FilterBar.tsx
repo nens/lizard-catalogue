@@ -25,6 +25,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
         orgItems: 7
     };
 
+    //Handling on change and on submit for the Observation Type search
     onObsChange = (event) => {
         this.setState({
             searchObs: event.target.value
@@ -39,6 +40,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
         });
     };
 
+    //Handling on change and on submit for the Organisation search
     onOrgChange = (event) => {
         this.setState({
             searchOrg: event.target.value
@@ -54,6 +56,13 @@ class FilterBar extends React.Component<MyProps, MyState> {
     };
 
     //Handling changes when click on the checkbox
+    onObservationTypeChange = (observationType: ObservationType, observationTypes: MyProps['observationTypes']) => {
+        //Toggle the checked property on click
+        observationType.checked = !observationType.checked;
+        //Only one observation type can be selected at a time
+        observationTypes.filter(obs => obs.parameter !== observationType.parameter).map(obs => obs.checked = false);
+    };
+
     onOrganisationChange = (organisation: Organisation, organisations: MyProps['organisations']) => {
         //Toggle the checked property on click
         organisation.checked = !organisation.checked;
@@ -69,7 +78,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
     render() {
         const { searchObs, searchOrg } = this.state;
 
-        const { observationTypes, organisations } = this.props;
+        const { observationTypes, organisations, onOrganisationCheckbox } = this.props;
 
         return (
             <div className="filter">
@@ -88,7 +97,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                         <ul className="filter-list">
                             {observationTypes.slice(0, this.state.obsItems).map((observationType: ObservationType) => (
                                 <li className="filter-item" key={observationType.code}>
-                                    <input type="checkbox" className="filter-checkbox" />
+                                    <input type="checkbox" className="filter-checkbox" onClick={() => {this.onObservationTypeChange(observationType, observationTypes); console.log(observationType.checked)}} defaultChecked={observationType.checked} />
                                     <span className="filter-item-name">{observationType.parameter}</span>
                                 </li>
                             ))}
@@ -111,7 +120,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                         <ul className="filter-list">
                             {organisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
                                 <li className="filter-item" key={organisation.name}>
-                                    <input type="checkbox" className="filter-checkbox" onClick={() => this.props.onOrganisationCheckbox(organisation)} onChange={() => this.onOrganisationChange(organisation, organisations)} checked={organisation.checked} />
+                                    <input type="checkbox" className="filter-checkbox" onClick={() => onOrganisationCheckbox(organisation)} onChange={() => this.onOrganisationChange(organisation, organisations)} checked={organisation.checked} />
                                     <span className="filter-item-name">{organisation.name}</span>
                                 </li>
                             ))}
