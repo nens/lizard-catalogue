@@ -89,8 +89,8 @@ class RasterDetails extends React.Component<PropsFromState> {
                 <div className="raster-details__button-container">
                     <h4>View data in</h4>
                     <div>
-                        <button className="raster-details__button button-api" onClick={() => window.location.href = `https://demo.lizard.net/api/v4/rasters/${raster.uuid}`}>API</button>
-                        <button className="raster-details__button button-lizard" onClick={() => window.location.href = `https://demo.lizard.net`}>LIZARD</button>
+                        <button className="raster-details__button button-api" onClick={() => window.open(`https://demo.lizard.net/api/v4/rasters/${raster.uuid}`)}>API</button>
+                        <button className="raster-details__button button-lizard" onClick={() => window.open(`https://demo.lizard.net/nl/map/topography,raster$${raster.uuid.substr(0, 7)}`)}>LIZARD</button>
                     </div>
                 </div>
             </div>

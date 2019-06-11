@@ -3,16 +3,14 @@ li {
 }
 
 .raster-list {
-    font-size: 1rem;
     width: 50%;
-    border: thin solid lightgrey;
     border-radius: .4rem;
     padding: 1rem;
-    background-color: #f4f2f2;
-    margin-left: 1rem;
-    margin-bottom: 1rem;
+    background-color: #f2f2f2;
+    box-shadow: .1rem .3rem .4rem rgba(12, 12, 12, 0.4);
+    margin: 0 1rem 1rem 1rem;
 
-    min-height: 98vh;
+    height: 90vh;
 
     display: flex;
     flex-direction: column;
@@ -30,9 +28,10 @@ li {
 
 .raster-list__searchbar-input {
     font-family: inherit;
-    font-size: .9rem;
+    font-size: 1.1rem;
+    font-weight: 300;
     border: none;
-    border-radius: .5rem;
+    border-radius: .8rem;
     padding: .4rem 2rem;
     margin-right: -3.25rem;
     height: 3rem;
@@ -65,12 +64,15 @@ li {
 }
 
 .raster-list__length {
-    color: grey;
-    margin-top: 1rem;
+    color: #686868;
+    margin: 1rem 0 0 1rem;
 }
 
 .raster-list__content {
     height: 80%;
+
+    font-size: 1.3rem;
+    line-height: 1.5rem;
 }
 
 .raster-list__list {
@@ -79,7 +81,7 @@ li {
     justify-content: flex-start;
 
     height: 100%;
-    overflow: scroll;
+    overflow-y: scroll;
 
     margin: 0;
     padding: 0;
@@ -95,7 +97,7 @@ li {
 }
 
 .raster-list__row-li {
-    border-radius: 1rem;
+    border-radius: .8rem;
     margin: 0.5rem auto;
     background-color: #fff;
     height: 3rem;
@@ -110,7 +112,12 @@ li {
 }
 
 .raster-list__row-li:hover {
-    border: 1px solid #41a086;
+    border: 1px solid #2FCBAB;
+}
+
+.raster-list__row-li img {
+    width: 3rem;
+    height: 3rem;
 }
 
 .raster-list__row {
@@ -143,6 +150,18 @@ li {
     flex: 2;
 }
 
+.raster-list__row-access {
+    flex: .8;
+}
+
+.access-modifier {
+    font-size: 1rem;
+    color: #fff;
+    background-color: #1ABC9C;
+    border-radius: .2rem;
+    width: 4.5rem;
+}
+
 .raster-list__pagination {
     position: relative;
     width: 100%;
@@ -165,18 +184,76 @@ li {
 
 .raster-list__button {
     font-size: 1.2rem;
+    text-transform: uppercase;
     padding: .8rem;
+    border-radius: .2rem;
     border: none;
-    background-color: #41a086;
+    background-color: #55cbac;
     color: #fff;
     cursor: pointer;
+
+    box-shadow: .2rem .4rem .4rem rgba(12, 12, 12, 0.4);
 }
 
 .raster-list__button:focus {
     outline: none;
 }
 
+.raster-list__button:active {
+    transform: translateY(2px);
+}
+
 .raster-list__button-grey {    
-    background-color: #ccc;
+    background-color: #BFBFBF;
     cursor: not-allowed;
+}
+
+/*POPUP WINDOW WHEN CLICK ON THE ADD TO BASKET BUTTON*/
+.raster-list__popup {
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(105, 99, 99, 0.8);
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all .3s;
+}
+
+.raster-list__popup:target {
+    opacity: 1;
+    visibility: visible;
+}
+
+.raster-list__popup-content {
+    width: 24%;
+    min-height: 12rem;
+    border: 1px solid #BEBEBE;
+    background-color: #F1F1F1;
+    box-shadow: 0 2rem 2rem rgba(12, 12, 12, 0.4);
+    transform: translate(-50%, -50%);
+    /* transition: all .4s .2s; */
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.raster-list__popup-close {
+    background-color: #2FCBAB;
+    text-decoration: none;
+    color: #fff;
+    height: 2rem;
+    width: 5rem;
+    border-radius: .2rem;
+    box-shadow: .1rem .2rem .4rem rgba(12, 12, 12, 0.5);
 }
