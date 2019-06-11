@@ -7,6 +7,7 @@ interface MyProps {
     fetchOrganisations: (searchOrg: string) => void,
     observationTypes: ObservationType[],
     organisations: Organisation[],
+    onObservationTypeCheckbox: (obsType: ObservationType) => void,
     onOrganisationCheckbox: (organisation: Organisation) => void
 };
 
@@ -78,7 +79,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
     render() {
         const { searchObs, searchOrg } = this.state;
 
-        const { observationTypes, organisations, onOrganisationCheckbox } = this.props;
+        const { observationTypes, organisations, onObservationTypeCheckbox, onOrganisationCheckbox } = this.props;
 
         return (
             <div className="filter">
@@ -97,7 +98,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                         <ul className="filter-list">
                             {observationTypes.slice(0, this.state.obsItems).map((observationType: ObservationType) => (
                                 <li className="filter-item" key={observationType.code}>
-                                    <input type="checkbox" className="filter-checkbox" onClick={() => {this.onObservationTypeChange(observationType, observationTypes); console.log(observationType.checked)}} defaultChecked={observationType.checked} />
+                                    <input type="checkbox" className="filter-checkbox" onClick={() => onObservationTypeCheckbox(observationType)} onChange={() => this.onObservationTypeChange(observationType, observationTypes)} checked={observationType.checked} />
                                     <span className="filter-item-name">{observationType.parameter}</span>
                                 </li>
                             ))}

@@ -11,26 +11,27 @@ import Header from './Header';
 import './Raster.css';
 
 interface PropsFromState {
-    currentRasterList: MyStore['currentRasterList'] | null;
-    observationTypes: ObservationType[];
-    organisations: Organisation[];
+    currentRasterList: MyStore['currentRasterList'] | null,
+    observationTypes: ObservationType[],
+    organisations: Organisation[]
 };
 
 interface PropsFromDispatch {
-    selectRaster: (uuid: string) => void;
-    fetchRasters: (page: number, searchTerm: string, organisationName: string) => void;
-    updateBasket: (basket: MyStore['basket']) => void;
-    fetchObservationTypes: (searchObs: string) => void;
-    fetchOrganisations: (searchOrg: string) => void;
+    selectRaster: (uuid: string) => void,
+    fetchRasters: (page: number, searchTerm: string, organisationName: string) => void,
+    updateBasket: (basket: MyStore['basket']) => void,
+    fetchObservationTypes: (searchObs: string) => void,
+    fetchOrganisations: (searchOrg: string) => void
 };
 
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
 
 interface MyState {
-    page: number;
-    initialPage: number;
-    searchTerm: string;
-    organisationName: string
+    page: number,
+    initialPage: number,
+    searchTerm: string,
+    organisationName: string,
+    observationType: string
 };
 
 class RasterContainer extends React.Component<RasterContainerProps, MyState> {
@@ -38,7 +39,8 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         page: 1,
         initialPage: 1,
         searchTerm: '',
-        organisationName: ''
+        organisationName: '',
+        observationType: ''
     };
 
     onClick = (page: number) => {
@@ -63,8 +65,21 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName);
     };
 
+    //When click on the checkbox in the filter bar, this function will update the observation type state in this component
+    onObservationTypeCheckbox = (obsType: ObservationType) => {
+        if (!obsType.checked) {
+            this.setState({
+                observationType: obsType.parameter
+            });
+        } else {
+            this.setState({
+                observationType: ''
+            });
+        };
+    };
+
     //When click on the checkbox in the filter bar, this function will update the organisation name state in this component
-    onOrganisationCheckBox = (organisation: Organisation) => {
+    onOrganisationCheckbox = (organisation: Organisation) => {
         if (!organisation.checked) {
             this.setState({
                 organisationName: organisation.name
@@ -99,7 +114,8 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                         observationTypes={this.props.observationTypes}
                         fetchOrganisations={this.props.fetchOrganisations}
                         organisations={this.props.organisations}
-                        onOrganisationCheckbox={this.onOrganisationCheckBox}
+                        onObservationTypeCheckbox={this.onObservationTypeCheckbox}
+                        onOrganisationCheckbox={this.onOrganisationCheckbox}
                     />
                     <RasterList
                         searchTerm={this.state.searchTerm}
