@@ -62,6 +62,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         this.setState({
             page: 1
         });
+
         this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName);
     };
 

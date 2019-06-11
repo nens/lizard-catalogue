@@ -21,6 +21,25 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
     request
         .get(`${baseUrl}/rasters?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}`)
         .then(response => {
+            if(response.body.count === 0) {
+                request
+                    .get(`${baseUrl}/rasters?uuid=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}`)
+                    .then(response => {
+                        dispatch(rastersFetched(response.body))
+                    })
+                    .catch(console.error)
+            } else {
+                dispatch(rastersFetched(response.body))
+            }
+        })
+        .catch(console.error)
+};
+
+//Decide whether gonna use this fetch function
+export const fetchRastersOnUuid = (searchUuid: string, dispatch: Dispatch<RastersFetched>): void => {
+    request
+        .get(`${baseUrl}/rasters?uuid=${searchUuid}`)
+        .then(response => {
             dispatch(rastersFetched(response.body))
         })
         .catch(console.error)
