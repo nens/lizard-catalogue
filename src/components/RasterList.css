@@ -162,27 +162,40 @@ li {
     width: 4.5rem;
 }
 
-.raster-list__pagination {
-    position: relative;
+.raster-list__button-container {
+    height: 5%;
+    display: flex;
+    justify-content: space-between;
     width: 100%;
+    margin: 0 0 0 auto;
+    border: 1px solid blue;
+
+    position: relative;
+}
+
+.raster-list__button-pagination {
+    position: absolute;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    width: 40%;
+    height: 100%;
+
+    border: 1px solid red;
+
+    display: flex;
+    justify-content: space-between;
 }
 
 .raster-list__button-previous {
-    position: absolute;
-    left: 0;
+    
 }
 
 .raster-list__button-next {
-    position: absolute;
-    right: 0;
+    
 }
 
-.raster-list__button-container {
-    height: 5%;
-    text-align: right;
-}
-
-.raster-list__button {
+.raster-list__button-basket {
     font-size: 1.2rem;
     text-transform: uppercase;
     padding: .8rem;
@@ -193,17 +206,19 @@ li {
     cursor: pointer;
 
     box-shadow: .2rem .4rem .4rem rgba(12, 12, 12, 0.4);
+
+    position: absolute;
 }
 
-.raster-list__button:focus {
+.raster-list__button-basket:focus {
     outline: none;
 }
 
-.raster-list__button:active {
+.raster-list__button-basket:active {
     transform: translateY(2px);
 }
 
-.raster-list__button-grey {    
+.raster-list__button-basket-grey {    
     background-color: #BFBFBF;
     cursor: not-allowed;
 }

@@ -122,17 +122,18 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             )
                         })}
                     </ul>
-                    <div className="raster-list__pagination">
+                </div>
+                <div className="raster-list__button-container">
+                    <div className="raster-list__button-pagination">
                         {!previous ? null : <button className="raster-list__button-previous" onClick={() => onClick(page - 1)}>Previous</button>}
                         {!next ? null : <button className="raster-list__button-next" onClick={() => onClick(page + 1)}>Next</button>}
                     </div>
-                </div>
-                <div className="raster-list__button-container">
                     {this.state.checkedRasters.length === 0 ?
-                        <button className="raster-list__button raster-list__button-grey">ADD TO BASKET</button> :
-                        <button className="raster-list__button" onClick={addToBasket}>ADD TO BASKET</button>
+                        <button className="raster-list__button-basket raster-list__button-basket-grey">ADD TO BASKET</button> :
+                        <button className="raster-list__button-basket" onClick={addToBasket}>ADD TO BASKET</button>
                     }
                 </div>
+                {/*Notification popup when click on the Add to Basket button*/}
                 <div className="raster-list__popup" id="notification">
                     <div className="raster-list__popup-content">
                         <p>Items successfully added to the Basket. Go to your basket to see which items have been added.</p>
