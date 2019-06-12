@@ -17,6 +17,10 @@ li {
     justify-content: space-around;
 }
 
+.loading-screen {
+    justify-content: space-between;
+}
+
 .raster-list__top {
     height: 8%;
 }

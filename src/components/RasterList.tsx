@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Raster } from '../interface';
 import { MyStore, getRaster } from '../reducers';
 import './RasterList.css';
+import { sortRasters } from '../action';
 
 interface MyProps {
     page: number;
@@ -18,11 +19,15 @@ interface MyProps {
     updateBasket: (basket: MyStore['basket']) => void;
 };
 
+interface PropsFromDispatch {
+    sortRasters: (rasters: Raster[]) => void
+};
+
 interface PropsFromState {
     rasters: Raster[] | null
 };
 
-type RasterListProps = MyProps & PropsFromState;
+type RasterListProps = MyProps & PropsFromState & PropsFromDispatch;
 
 interface MyState {
     checkedRasters: string[]
@@ -50,12 +55,22 @@ class RasterList extends React.Component<RasterListProps, MyState> {
         };
     };
 
+    
+
+    // componentWillUpdate(nextProps: RasterListProps, nextState: MyState) {
+    //     if (nextProps.rasters !== this.props.rasters)
+    // }
+
+    shouldComponentUpdate(nextProps: PropsFromState) {
+        return nextProps.rasters !== this.props.rasters
+    }
+
     render() {
         //Destructure all props of the Raster List component
         const { searchTerm, page, onClick, onChange, onSubmit, currentRasterList, selectRaster, updateBasket, rasters } = this.props;
 
         //If nothing is fetched, Loading ... sign appeears
-        if (!currentRasterList || !rasters) return <div className="raster-list"><h1>Loading ...</h1></div>;
+        if (!currentRasterList || !rasters) return <div className="raster-list loading-screen"><h1>Loading ...</h1></div>;
 
         //Destructure the currentRasterList object
         const { count, previous, next } = currentRasterList;
@@ -91,7 +106,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                         <li className="raster-list__row-title">
                             <div className="raster-list__row raster-list__row-box" />
                             <div className="raster-list__row raster-list__row-type">Type</div>
-                            <div className="raster-list__row raster-list__row-name">Name</div>
+                            <div className="raster-list__row raster-list__row-name">Name <img src="image/sort.svg" alt="sort" onClick={() => this.props.sortRasters(rasters)}/></div>
                             <div className="raster-list__row raster-list__row-org">Organisation</div>
                             <div className="raster-list__row raster-list__row-obs">Obs.Type</div>
                             <div className="raster-list__row raster-list__row-time">Latest update</div>
@@ -150,6 +165,10 @@ class RasterList extends React.Component<RasterListProps, MyState> {
     };
 };
 
+const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
+    sortRasters: (rasters: Raster[]) => sortRasters(dispatch, rasters)
+});
+
 const mapStateToProps = (state: MyStore, ownProps: MyProps): PropsFromState => {
     if (!ownProps.currentRasterList) return {
         rasters: null
@@ -159,4 +178,4 @@ const mapStateToProps = (state: MyStore, ownProps: MyProps): PropsFromState => {
     };
 };
 
-export default connect(mapStateToProps)(RasterList);
+export default connect(mapStateToProps, mapDispatchToProps)(RasterList);

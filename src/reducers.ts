@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED, OBSERVATION_TYPES_FETCHED, ORGANISATIONS_FETCHED, ITEM_REMOVED } from "./action";
-import { RastersFetched, RasterSelected, Raster, ObservationType, Organisation, Basket, OrganisationsFetched, ObservationTypesFetched } from './interface';
+import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED, OBSERVATION_TYPES_FETCHED, ORGANISATIONS_FETCHED, ITEM_REMOVED, SORT_RASTERS_BY_NAME } from "./action";
+import { RastersFetched, RasterSelected, Raster, ObservationType, Organisation, Basket, OrganisationsFetched, ObservationTypesFetched, RastersSorted } from './interface';
 
 export interface MyStore {
     observationTypes: ObservationType[];
@@ -18,7 +18,7 @@ export interface MyStore {
     basket: string[];
 };
 
-const currentRasterList = (state: MyStore['currentRasterList'] = null, action: RastersFetched) => {
+const currentRasterList = (state: MyStore['currentRasterList'] = null, action: RastersFetched | RastersSorted) => {
     switch (action.type) {
         case RASTERS_FETCHED:
             const { count, previous, next } = action.payload;
@@ -27,6 +27,12 @@ const currentRasterList = (state: MyStore['currentRasterList'] = null, action: R
                 previous: previous,
                 next: next,
                 rasterList: action.payload.results.map(raster => raster.uuid)
+            };
+        case SORT_RASTERS_BY_NAME:
+            const newState = {...state}
+            return {
+                ...newState,
+                rasterList: action.payload
             };
         default:
             return state;

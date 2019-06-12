@@ -1,4 +1,4 @@
-import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED, ITEM_REMOVED, OBSERVATION_TYPES_FETCHED, ORGANISATIONS_FETCHED } from "./action";
+import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED, ITEM_REMOVED, OBSERVATION_TYPES_FETCHED, ORGANISATIONS_FETCHED, SORT_RASTERS_BY_NAME } from "./action";
 
 //ACTION INTERFACE
 export interface RastersFetched {
@@ -12,6 +12,11 @@ export interface RasterSelected {
 };
 
 export type RasterActionType = RastersFetched | RasterSelected;
+
+export interface RastersSorted {
+    type: typeof SORT_RASTERS_BY_NAME,
+    payload: string[]
+}
 
 export interface BasketAdded {
     type: typeof BASKET_UPDATED,

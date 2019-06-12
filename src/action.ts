@@ -1,6 +1,6 @@
 import request from 'superagent';
 import { baseUrl } from './api';
-import { RastersFetched, RasterSelected, RasterListObject, BasketAdded, ObservationType, Organisation, Raster, ItemRemoved, ObservationTypesFetched, OrganisationsFetched } from './interface';
+import { RastersFetched, RasterSelected, RasterListObject, BasketAdded, ObservationType, Organisation, Raster, ItemRemoved, ObservationTypesFetched, OrganisationsFetched, RastersSorted } from './interface';
 import { Dispatch } from 'redux';
 
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
@@ -99,3 +99,21 @@ export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>, sea
         })
         .catch(console.error)
 };
+
+//Sorting Rasters by name, type, organisation, observation type and latest update
+export const SORT_RASTERS_BY_NAME = 'SORT_RASTERS_BY_NAME';
+
+//Sorting Rasters by alphabetical order
+const sortByName = (a: Raster, b: Raster) => {
+    return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
+};
+
+const sortRastersByName = (rasters: Raster[]): RastersSorted => ({
+    type: SORT_RASTERS_BY_NAME,
+    payload: rasters.sort(sortByName).map(raster => raster.uuid)
+});
+
+export const sortRasters = (dispatch:Dispatch<RastersSorted>, rasters: Raster[]) => {
+    dispatch(sortRastersByName(rasters))
+};
+

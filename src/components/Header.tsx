@@ -62,7 +62,7 @@ class Header extends React.Component<MyProps> {
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-sort" />
                         </svg>
-                        <span className="header-nav__text">Nelen Schuurmans</span>
+                        <span className="header-nav__text">Nelen &amp; Schuurmans</span>
                     </div>
                 </div>
                 {/*This is the PopUp window when the basket is clicked*/}
