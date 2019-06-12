@@ -94,8 +94,8 @@ class Header extends React.Component<MyProps> {
                         </ul>
                         <p className="header-popup__content-onderste-laag">Onderste laag</p>
                         {basket.length === 0 ? 
-                            <button className="header-popup__content-button raster-list__button raster-list__button-grey">Open all data in Lizard</button> :
-                            <button className="header-popup__content-button raster-list__button" onClick={() => onClick(basket)}>Open all data in Lizard</button>
+                            <button className="header-popup__content-button raster-list__button-basket raster-list__button-basket-grey">Open all data in Lizard</button> :
+                            <button className="header-popup__content-button raster-list__button-basket" onClick={() => onClick(basket)}>Open all data in Lizard</button>
                         }
                         <a href="#catalogue" className="header-popup__close">&times;</a>
                     </div>

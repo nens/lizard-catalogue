@@ -112,7 +112,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                                     }
                                     <div className="raster-list__row raster-list__row-name">{raster.name}</div>
                                     <div className="raster-list__row raster-list__row-org">{raster.organisation.name}</div>
-                                    <div className="raster-list__row raster-list__row-obs">{raster.observation_type.parameter}</div>
+                                    <div className="raster-list__row raster-list__row-obs">{raster.observation_type && raster.observation_type.parameter}</div>
                                     <div className="raster-list__row raster-list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
                                     {raster.access_modifier === 'Public' && 'Publiek' ? 
                                         <div className="raster-list__row raster-list__row-access"><div className="access-modifier">{raster.access_modifier.toUpperCase()}</div></div> :
@@ -122,17 +122,23 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             )
                         })}
                     </ul>
-                    <div className="raster-list__pagination">
-                        {!previous ? null : <button className="raster-list__button-previous" onClick={() => onClick(page - 1)}>Previous</button>}
-                        {!next ? null : <button className="raster-list__button-next" onClick={() => onClick(page + 1)}>Next</button>}
-                    </div>
                 </div>
                 <div className="raster-list__button-container">
+                    <div className="raster-list__button-pagination">
+                        {!previous ? <button className="raster-list__button-grey">&lsaquo;</button> : <button className="raster-list__button-previous" onClick={() => onClick(page - 1)}>&lsaquo;</button>}
+                        <ul className="raster-list__button-pagination-ul">
+                            <li className="raster-list__button-pagination-li" onClick={() => onClick(page - 1)}>{page === 1 ? null : page - 1}</li>
+                            <li className="raster-list__button-pagination-li raster-list__button-pagination-li-active">{page}</li>
+                            <li className="raster-list__button-pagination-li" onClick={() => onClick(page + 1)}>{page >= Math.ceil(currentRasterList.count/10) ? null : page + 1}</li>
+                        </ul>
+                        {!next ? <button className="raster-list__button-grey">&rsaquo;</button> : <button className="raster-list__button-next" onClick={() => onClick(page + 1)}>&rsaquo;</button>}
+                    </div>
                     {this.state.checkedRasters.length === 0 ?
-                        <button className="raster-list__button raster-list__button-grey">ADD TO BASKET</button> :
-                        <button className="raster-list__button" onClick={addToBasket}>ADD TO BASKET</button>
+                        <button className="raster-list__button-basket raster-list__button-basket-grey">ADD TO BASKET</button> :
+                        <button className="raster-list__button-basket" onClick={addToBasket}>ADD TO BASKET</button>
                     }
                 </div>
+                {/*Notification popup when click on the Add to Basket button*/}
                 <div className="raster-list__popup" id="notification">
                     <div className="raster-list__popup-content">
                         <p>Items successfully added to the Basket. Go to your basket to see which items have been added.</p>
