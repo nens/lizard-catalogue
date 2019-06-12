@@ -14,11 +14,11 @@ li {
 
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 .raster-list__top {
-    height: 5%;
+    height: 8%;
 }
 
 .raster-list__searchbar {
@@ -163,14 +163,10 @@ li {
 }
 
 .raster-list__button-container {
+    position: relative;
     height: 5%;
-    display: flex;
-    justify-content: space-between;
     width: 100%;
     margin: 0 0 0 auto;
-    border: 1px solid blue;
-
-    position: relative;
 }
 
 .raster-list__button-pagination {
@@ -178,36 +174,65 @@ li {
     margin: 0 auto;
     left: 0;
     right: 0;
-    width: 40%;
+    width: 20%;
     height: 100%;
-
-    border: 1px solid red;
 
     display: flex;
     justify-content: space-between;
 }
 
-.raster-list__button-previous {
-    
+.raster-list__button-pagination button {
+    border: none;
+    background-color: transparent;
+    font-size: 2rem;
+    text-align: center;
+    cursor: pointer;
 }
 
-.raster-list__button-next {
-    
+.raster-list__button-pagination button:focus {
+    outline: none;
+}
+
+.raster-list__button-grey {
+    color: grey;
+    cursor: not-allowed !important;
+}
+
+.raster-list__button-pagination-ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.raster-list__button-pagination-li {
+    width: 1.5rem;
+    margin: 0 .3rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.raster-list__button-pagination-li-active {
+    background: #009F86;
+    color: #fff;
+    border-radius: .3rem;
+    cursor: unset;
 }
 
 .raster-list__button-basket {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     text-transform: uppercase;
+    
+    position: absolute;
+    right: 0;
+
     padding: .8rem;
     border-radius: .2rem;
     border: none;
     background-color: #55cbac;
     color: #fff;
-    cursor: pointer;
-
     box-shadow: .2rem .4rem .4rem rgba(12, 12, 12, 0.4);
-
-    position: absolute;
+    cursor: pointer;
 }
 
 .raster-list__button-basket:focus {
