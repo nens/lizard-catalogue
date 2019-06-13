@@ -6,7 +6,7 @@ import { Raster } from '../interface';
 import './RasterDetails.css';
 
 interface PropsFromState {
-    raster: Raster | null;
+    raster: Raster | null
 };
 
 class RasterDetails extends React.Component<PropsFromState> {

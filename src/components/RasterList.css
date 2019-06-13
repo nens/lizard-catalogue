@@ -17,6 +17,10 @@ li {
     justify-content: space-around;
 }
 
+.loading-screen {
+    justify-content: space-between;
+}
+
 .raster-list__top {
     height: 8%;
 }
@@ -152,6 +156,10 @@ li {
 
 .raster-list__row-access {
     flex: .8;
+}
+
+.raster-list__sorting-icon {
+    cursor: pointer;
 }
 
 .access-modifier {
