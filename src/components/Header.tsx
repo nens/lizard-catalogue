@@ -13,7 +13,7 @@ interface PropsFromDispatch {
     removeItem: (raster: Raster) => void
 };
 
-type MyProps = PropsFromState & PropsFromDispatch
+type MyProps = PropsFromState & PropsFromDispatch;
 
 class Header extends React.Component<MyProps> {
     render() {

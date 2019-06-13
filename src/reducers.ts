@@ -1,6 +1,28 @@
 import { combineReducers } from 'redux';
-import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED, OBSERVATION_TYPES_FETCHED, ORGANISATIONS_FETCHED, ITEM_REMOVED, SORT_RASTERS_BY_NAME } from "./action";
-import { RastersFetched, RasterSelected, Raster, ObservationType, Organisation, Basket, OrganisationsFetched, ObservationTypesFetched, RastersSorted } from './interface';
+import {
+    RASTERS_FETCHED,
+    RASTER_SELECTED,
+    BASKET_UPDATED,
+    OBSERVATION_TYPES_FETCHED,
+    ORGANISATIONS_FETCHED,
+    ITEM_REMOVED,
+    RASTERS_SORTED_BY_TYPE,
+    RASTERS_SORTED_BY_NAME,
+    RASTERS_SORTED_BY_ORGANISATION_NAME,
+    RASTERS_SORTED_BY_OBSERVATION_TYPE,
+    RASTERS_SORTED_BY_UPDATE,
+} from "./action";
+import {
+    RastersFetched,
+    RasterSelected,
+    Raster,
+    ObservationType,
+    Organisation,
+    Basket,
+    OrganisationsFetched,
+    ObservationTypesFetched,
+    RastersSorted
+} from './interface';
 
 export interface MyStore {
     observationTypes: ObservationType[];
@@ -28,10 +50,34 @@ const currentRasterList = (state: MyStore['currentRasterList'] = null, action: R
                 next: next,
                 rasterList: action.payload.results.map(raster => raster.uuid)
             };
-        case SORT_RASTERS_BY_NAME:
-            const newState = {...state}
+        case RASTERS_SORTED_BY_TYPE:
+            const newState1 = { ...state }
             return {
-                ...newState,
+                ...newState1,
+                rasterList: action.payload
+            };
+        case RASTERS_SORTED_BY_NAME:
+            const newState2 = { ...state }
+            return {
+                ...newState2,
+                rasterList: action.payload
+            };
+        case RASTERS_SORTED_BY_ORGANISATION_NAME:
+            const newState3 = { ...state }
+            return {
+                ...newState3,
+                rasterList: action.payload
+            };
+        case RASTERS_SORTED_BY_OBSERVATION_TYPE:
+            const newState4 = { ...state }
+            return {
+                ...newState4,
+                rasterList: action.payload
+            };
+        case RASTERS_SORTED_BY_UPDATE:
+            const newState5 = { ...state }
+            return {
+                ...newState5,
                 rasterList: action.payload
             };
         default:

@@ -158,6 +158,10 @@ li {
     flex: .8;
 }
 
+.raster-list__sorting-icon {
+    cursor: pointer;
+}
+
 .access-modifier {
     font-size: 1rem;
     color: #fff;
