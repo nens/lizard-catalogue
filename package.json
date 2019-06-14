@@ -2,6 +2,7 @@
   "name": "lizard-catalogue",
   "version": "0.1.2",
   "main": "target/index.js",
+  "homepage": "/catalog",
   "private": true,
   "dependencies": {
     "@babel/core": "7.4.3",
