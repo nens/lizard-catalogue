@@ -1,0 +1,14 @@
+{
+  "prompt": {
+    "src": {
+      "status": true
+    }
+  },
+  "github": {
+    "release": true,
+    "assets": "dist/lizard-catalogue.zip"
+  },
+  "npm": {
+    "publish": false
+  }
+}
