@@ -4,11 +4,7 @@ import { RASTERS_FETCHED,
     ITEM_REMOVED, 
     OBSERVATION_TYPES_FETCHED, 
     ORGANISATIONS_FETCHED, 
-    RASTERS_SORTED_BY_NAME, 
-    RASTERS_SORTED_BY_ORGANISATION_NAME, 
-    RASTERS_SORTED_BY_OBSERVATION_TYPE, 
-    RASTERS_SORTED_BY_UPDATE, 
-    RASTERS_SORTED_BY_TYPE 
+    RASTERS_SORTED 
 } from "./action";
 
 //ACTION INTERFACE
@@ -25,9 +21,9 @@ export interface RasterSelected {
 export type RasterActionType = RastersFetched | RasterSelected;
 
 export interface RastersSorted {
-    type: typeof RASTERS_SORTED_BY_NAME | typeof RASTERS_SORTED_BY_ORGANISATION_NAME | typeof RASTERS_SORTED_BY_OBSERVATION_TYPE | typeof RASTERS_SORTED_BY_UPDATE | typeof RASTERS_SORTED_BY_TYPE,
+    type: typeof RASTERS_SORTED,
     payload: string[]
-}
+};
 
 export interface BasketAdded {
     type: typeof BASKET_UPDATED,
