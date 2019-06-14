@@ -83,6 +83,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
+    "release": "release-it --verbose",
     "tsc": "tsc"
   },
   "eslintConfig": {
@@ -149,5 +150,8 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "release-it": "^10.4.2"
   }
 }
