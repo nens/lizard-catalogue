@@ -68,6 +68,7 @@
     padding-left: 0;
     overflow-y: scroll;
     height: 70%;
+    margin: 1rem 0 0 0;
 }
 
 .filter-list-button {
@@ -91,4 +92,40 @@
 
     white-space: nowrap;
     overflow: hidden;
+}
+
+.filter__checked-item {
+    font-size: .9rem;
+    color: rgb(44, 44, 44);
+    font-style: italic;
+    white-space: nowrap;
+
+    display: flex;
+    width: 90%;
+    height: 2rem;
+    align-items: center;
+    padding-left: 2rem;
+    
+    overflow: hidden;
+    position: relative;
+}
+
+.filter__checked-item button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    color: rgb(44, 44, 44);
+    font-style: italic;
+    font-size: 1.2rem;
+    position: absolute;
+    left: 0;
+    top: .1rem;
+}
+
+.filter__checked-item button:hover {
+    color: red;
+}
+
+.filter__checked-item button:focus {
+    outline: none;
 }
