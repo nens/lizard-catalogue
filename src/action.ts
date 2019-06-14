@@ -88,9 +88,9 @@ const observationTypesFetched = (observationTypes: ObservationType[]): Observati
     payload: observationTypes
 });
 
-export const fetchObservationTypes = (dispatch: Dispatch<ObservationTypesFetched>, searchTerm: string) => {
+export const fetchObservationTypes = (dispatch: Dispatch<ObservationTypesFetched>): void => {
     request
-        .get(`${baseUrl}/observationtypes?parameter__icontains=${searchTerm}&page_size=0`)
+        .get(`${baseUrl}/observationtypes?page_size=0`)
         .then(response => {
             dispatch(observationTypesFetched(response.body))
         })
@@ -102,9 +102,9 @@ const organisationsFetched = (organisations: Organisation[]): OrganisationsFetch
     payload: organisations
 });
 
-export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>, searchTerm: string) => {
+export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>): void => {
     request
-        .get(`${baseUrl}/organisations?name__icontains=${searchTerm}&page_size=0`)
+        .get(`${baseUrl}/organisations?page_size=0`)
         .then(response => {
             dispatch(organisationsFetched(response.body))
         })

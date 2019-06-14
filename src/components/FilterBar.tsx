@@ -1,12 +1,12 @@
 import * as React from 'react';
-import './FilterBar.css';
 import { ObservationType, Organisation } from '../interface';
+import './FilterBar.css';
 
 interface MyProps {
-    fetchObservationTypes: (searchObs: string) => void,
-    fetchOrganisations: (searchOrg: string) => void,
     observationTypes: ObservationType[],
     organisations: Organisation[],
+    fetchObservationTypes: () => void,
+    fetchOrganisations: () => void,
     onObservationTypeCheckbox: (obsType: ObservationType) => void,
     onOrganisationCheckbox: (organisation: Organisation) => void
 };
@@ -35,10 +35,6 @@ class FilterBar extends React.Component<MyProps, MyState> {
 
     onObsSubmit = (event) => {
         event.preventDefault();
-        this.props.fetchObservationTypes(this.state.searchObs);
-        this.setState({
-            searchObs: ''
-        });
     };
 
     //Handling on change and on submit for the Organisation search
@@ -50,10 +46,6 @@ class FilterBar extends React.Component<MyProps, MyState> {
 
     onOrgSubmit = (event) => {
         event.preventDefault();
-        this.props.fetchOrganisations(this.state.searchOrg);
-        this.setState({
-            searchOrg: ''
-        });
     };
 
     //Handling changes when click on the checkbox
@@ -72,14 +64,22 @@ class FilterBar extends React.Component<MyProps, MyState> {
     };
 
     componentDidMount() {
-        this.props.fetchObservationTypes(this.state.searchObs);
-        this.props.fetchOrganisations(this.state.searchOrg);
+        this.props.fetchObservationTypes();
+        this.props.fetchOrganisations();
     };
 
     render() {
         const { searchObs, searchOrg } = this.state;
 
         const { observationTypes, organisations, onObservationTypeCheckbox, onOrganisationCheckbox } = this.props;
+
+        //Filter observation types & organisations at the client side instead of fetching again from the server after each search
+        const filteredObservationTypes = observationTypes.filter(observationTypes => observationTypes.parameter.toLowerCase().includes(this.state.searchObs.toLowerCase()));
+        const filteredOrganisations = organisations.filter(organisation => organisation.name.toLowerCase().includes(this.state.searchOrg.toLowerCase()));
+
+        //Find the the observation type and the organisation that have been checked in the filter list
+        const checkedObservationType = observationTypes.find(observationType => observationType.checked)
+        const checkedOrganisation = organisations.find(organisation => organisation.checked)
 
         return (
             <div className="filter">
@@ -95,14 +95,19 @@ class FilterBar extends React.Component<MyProps, MyState> {
                                 </svg>
                             </button>
                         </form>
+                        {checkedObservationType ? 
+                            //Showing the checked item and the option the remove this checked item from the filter
+                            <div className="filter__checked-item"><button onClick={() => {onObservationTypeCheckbox(checkedObservationType); checkedObservationType.checked = !checkedObservationType.checked}}>x</button>{checkedObservationType.parameter}</div> : 
+                            <div className="filter__checked-item"/>
+                        }
                         <ul className="filter-list">
-                            {observationTypes.slice(0, this.state.obsItems).map((observationType: ObservationType) => (
+                            {filteredObservationTypes.slice(0, this.state.obsItems).map((observationType: ObservationType) => (
                                 <li className="filter-item" key={observationType.code}>
                                     <input type="checkbox" className="filter-checkbox" onClick={() => onObservationTypeCheckbox(observationType)} onChange={() => this.onObservationTypeChange(observationType, observationTypes)} checked={observationType.checked} />
                                     <span className="filter-item-name">{observationType.parameter}</span>
                                 </li>
                             ))}
-                            {this.state.obsItems < observationTypes.length ?
+                            {this.state.obsItems < filteredObservationTypes.length ?
                                 <button className="filter-list-button" onClick={() => this.setState({ obsItems: this.state.obsItems + 7 })}>more ...</button> :
                                 <button style={{ display: 'none' }} />
                             }
@@ -118,14 +123,19 @@ class FilterBar extends React.Component<MyProps, MyState> {
                                 </svg>
                             </button>
                         </form>
+                        {checkedOrganisation ? 
+                            //Showing the checked item and the option the remove this checked item from the filter
+                            <div className="filter__checked-item"><button onClick={() => {onOrganisationCheckbox(checkedOrganisation); checkedOrganisation.checked = !checkedOrganisation.checked}}>x</button>{checkedOrganisation.name}</div> : 
+                            <div className="filter__checked-item"/>
+                        }
                         <ul className="filter-list">
-                            {organisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
+                            {filteredOrganisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
                                 <li className="filter-item" key={organisation.name}>
                                     <input type="checkbox" className="filter-checkbox" onClick={() => onOrganisationCheckbox(organisation)} onChange={() => this.onOrganisationChange(organisation, organisations)} checked={organisation.checked} />
                                     <span className="filter-item-name">{organisation.name}</span>
                                 </li>
                             ))}
-                            {this.state.orgItems < organisations.length ?
+                            {this.state.orgItems < filteredOrganisations.length ?
                                 <button className="filter-list-button" onClick={() => this.setState({ orgItems: this.state.orgItems + 7 })}>more ...</button> :
                                 <button style={{ display: 'none' }} />
                             }
