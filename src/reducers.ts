@@ -6,11 +6,7 @@ import {
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
     ITEM_REMOVED,
-    RASTERS_SORTED_BY_TYPE,
-    RASTERS_SORTED_BY_NAME,
-    RASTERS_SORTED_BY_ORGANISATION_NAME,
-    RASTERS_SORTED_BY_OBSERVATION_TYPE,
-    RASTERS_SORTED_BY_UPDATE,
+    RASTERS_SORTED
 } from "./action";
 import {
     RastersFetched,
@@ -50,34 +46,10 @@ const currentRasterList = (state: MyStore['currentRasterList'] = null, action: R
                 next: next,
                 rasterList: action.payload.results.map(raster => raster.uuid)
             };
-        case RASTERS_SORTED_BY_TYPE:
-            const newState1 = { ...state }
+        case RASTERS_SORTED:
+            const newState = { ...state }
             return {
-                ...newState1,
-                rasterList: action.payload
-            };
-        case RASTERS_SORTED_BY_NAME:
-            const newState2 = { ...state }
-            return {
-                ...newState2,
-                rasterList: action.payload
-            };
-        case RASTERS_SORTED_BY_ORGANISATION_NAME:
-            const newState3 = { ...state }
-            return {
-                ...newState3,
-                rasterList: action.payload
-            };
-        case RASTERS_SORTED_BY_OBSERVATION_TYPE:
-            const newState4 = { ...state }
-            return {
-                ...newState4,
-                rasterList: action.payload
-            };
-        case RASTERS_SORTED_BY_UPDATE:
-            const newState5 = { ...state }
-            return {
-                ...newState5,
+                ...newState,
                 rasterList: action.payload
             };
         default:

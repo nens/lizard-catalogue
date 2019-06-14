@@ -112,13 +112,8 @@ export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>, sea
 };
 
 //SORTING DATA ACTIONS
-
 //Sorting Rasters by name, type, organisation, observation type and latest update
-export const RASTERS_SORTED_BY_TYPE = 'RASTERS_SORTED_BY_TYPE';
-export const RASTERS_SORTED_BY_NAME = 'RASTERS_SORTED_BY_NAME';
-export const RASTERS_SORTED_BY_ORGANISATION_NAME = 'RASTERS_SORTED_BY_ORGANISATION_NAME';
-export const RASTERS_SORTED_BY_OBSERVATION_TYPE = 'RASTERS_SORTED_BY_OBSERVATION_TYPE';
-export const RASTERS_SORTED_BY_UPDATE = 'RASTERS_SORTED_BY_UPDATE';
+export const RASTERS_SORTED = 'RASTERS_SORTED';
 
 //Sorting raster types by temporal or non-temporal data type
 const sortByType = (a: Raster, b: Raster) => {
@@ -126,7 +121,7 @@ const sortByType = (a: Raster, b: Raster) => {
 };
 
 const rastersSortedByType = (rasters: Raster[]): RastersSorted => ({
-    type: RASTERS_SORTED_BY_TYPE,
+    type: RASTERS_SORTED,
     payload: rasters.sort(sortByType).map(raster => raster.uuid)
 });
 
@@ -140,7 +135,7 @@ const sortByName = (a: Raster, b: Raster) => {
 };
 
 const rastersSortedByName = (rasters: Raster[]): RastersSorted => ({
-    type: RASTERS_SORTED_BY_NAME,
+    type: RASTERS_SORTED,
     payload: rasters.sort(sortByName).map(raster => raster.uuid)
 });
 
@@ -154,7 +149,7 @@ const sortByOrganisationName = (a: Raster, b: Raster) => {
 };
 
 const rastersSortedByOrganisationName = (rasters: Raster[]): RastersSorted => ({
-    type: RASTERS_SORTED_BY_ORGANISATION_NAME,
+    type: RASTERS_SORTED,
     payload: rasters.sort(sortByOrganisationName).map(raster => raster.uuid)
 });
 
@@ -168,7 +163,7 @@ const sortByObservationType = (a: Raster, b: Raster) => {
 };
 
 const rastersSortedByObservationType = (rasters: Raster[]): RastersSorted => ({
-    type: RASTERS_SORTED_BY_OBSERVATION_TYPE,
+    type: RASTERS_SORTED,
     payload: rasters.sort(sortByObservationType).map(raster => raster.uuid)
 });
 
@@ -182,7 +177,7 @@ const sortByUpdate = (a: Raster, b: Raster) => {
 };
 
 const rastersSortedByUpdate = (rasters: Raster[]): RastersSorted => ({
-    type: RASTERS_SORTED_BY_UPDATE,
+    type: RASTERS_SORTED,
     payload: rasters.sort(sortByUpdate).map(raster => raster.uuid)
 });
 
