@@ -99,7 +99,10 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     //Component will fetch the Rasters again each time the value of this.state.organisationName changes
     componentWillUpdate(nextProps: RasterContainerProps, nextState: MyState) {
         if (nextProps && nextState.organisationName !== this.state.organisationName) {
-            this.props.fetchRasters(this.state.page, this.state.searchTerm, nextState.organisationName);
+            this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, nextState.organisationName);
+            this.setState({
+                page: 1
+            });
         };
     };
 
