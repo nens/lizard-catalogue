@@ -1,5 +1,6 @@
 .filter {
     width: 15%;
+    min-width: 0;
     margin: 0 0 1rem 1rem;
 
     height: 90vh;
