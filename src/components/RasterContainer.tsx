@@ -20,8 +20,8 @@ interface PropsFromDispatch {
     selectRaster: (uuid: string) => void,
     fetchRasters: (page: number, searchTerm: string, organisationName: string) => void,
     updateBasket: (basket: MyStore['basket']) => void,
-    fetchObservationTypes: (searchObs: string) => void,
-    fetchOrganisations: (searchOrg: string) => void
+    fetchObservationTypes: () => void,
+    fetchOrganisations: () => void
 };
 
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
@@ -62,6 +62,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         this.setState({
             page: 1
         });
+
         this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName);
     };
 
@@ -98,7 +99,10 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     //Component will fetch the Rasters again each time the value of this.state.organisationName changes
     componentWillUpdate(nextProps: RasterContainerProps, nextState: MyState) {
         if (nextProps && nextState.organisationName !== this.state.organisationName) {
-            this.props.fetchRasters(this.state.page, this.state.searchTerm, nextState.organisationName);
+            this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, nextState.organisationName);
+            this.setState({
+                page: 1
+            });
         };
     };
 
@@ -144,8 +148,8 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | Filte
     fetchRasters: (page: number, searchTerm: string, organisationName: string) => fetchRasters(page, searchTerm, organisationName, dispatch),
     selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
-    fetchObservationTypes: (searchObs: string) => fetchObservationTypes(dispatch, searchObs),
-    fetchOrganisations: (searchOrg: string) => fetchOrganisations(dispatch, searchOrg)
+    fetchObservationTypes: () => fetchObservationTypes(dispatch),
+    fetchOrganisations: () => fetchOrganisations(dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RasterContainer);

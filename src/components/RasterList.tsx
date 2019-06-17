@@ -5,17 +5,17 @@ import { MyStore, getRaster } from '../reducers';
 import './RasterList.css';
 
 interface MyProps {
-    page: number;
-    searchTerm: string;
+    page: number,
+    searchTerm: string,
 
-    currentRasterList: MyStore['currentRasterList'] | null;
+    currentRasterList: MyStore['currentRasterList'] | null,
 
-    onClick: (page: number) => void;
-    onChange: (event: object) => void;
-    onSubmit: (event: object) => void;
+    onClick: (page: number) => void,
+    onChange: (event: object) => void,
+    onSubmit: (event: object) => void,
 
-    selectRaster: (uuid: string) => void;
-    updateBasket: (basket: MyStore['basket']) => void;
+    selectRaster: (uuid: string) => void,
+    updateBasket: (basket: MyStore['basket']) => void
 };
 
 interface PropsFromState {
@@ -55,7 +55,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
         const { searchTerm, page, onClick, onChange, onSubmit, currentRasterList, selectRaster, updateBasket, rasters } = this.props;
 
         //If nothing is fetched, Loading ... sign appeears
-        if (!currentRasterList || !rasters) return <div className="raster-list"><h1>Loading ...</h1></div>;
+        if (!currentRasterList || !rasters) return <div className="raster-list loading-screen"><h1>Loading ...</h1></div>;
 
         //Destructure the currentRasterList object
         const { count, previous, next } = currentRasterList;
@@ -90,11 +90,11 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                     <ul className="raster-list__list">
                         <li className="raster-list__row-title">
                             <div className="raster-list__row raster-list__row-box" />
-                            <div className="raster-list__row raster-list__row-type">Type</div>
-                            <div className="raster-list__row raster-list__row-name">Name</div>
-                            <div className="raster-list__row raster-list__row-org">Organisation</div>
-                            <div className="raster-list__row raster-list__row-obs">Obs.Type</div>
-                            <div className="raster-list__row raster-list__row-time">Latest update</div>
+                            <div className="raster-list__row raster-list__row-type">Type <img src="image/sort-2.svg" alt="sort-type" className="raster-list__sorting-icon" /></div>
+                            <div className="raster-list__row raster-list__row-name">Name <img src="image/sort-2.svg" alt="sort-name" className="raster-list__sorting-icon" /></div>
+                            <div className="raster-list__row raster-list__row-org">Organisation <img src="image/sort-2.svg" alt="sort-organisation" className="raster-list__sorting-icon" /></div>
+                            <div className="raster-list__row raster-list__row-obs">Obs.Type <img src="image/sort-2.svg" alt="sort-obs" className="raster-list__sorting-icon" /></div>
+                            <div className="raster-list__row raster-list__row-time">Latest update <img src="image/sort-2.svg" alt="sort-update" className="raster-list__sorting-icon" /></div>
                             <div className="raster-list__row raster-list__row-access" />
                         </li>
                         {rasters.map((raster: Raster) => {
@@ -112,7 +112,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                                     }
                                     <div className="raster-list__row raster-list__row-name">{raster.name}</div>
                                     <div className="raster-list__row raster-list__row-org">{raster.organisation.name}</div>
-                                    <div className="raster-list__row raster-list__row-obs">{raster.observation_type.parameter}</div>
+                                    <div className="raster-list__row raster-list__row-obs">{raster.observation_type && raster.observation_type.parameter}</div>
                                     <div className="raster-list__row raster-list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
                                     {raster.access_modifier === 'Public' && 'Publiek' ? 
                                         <div className="raster-list__row raster-list__row-access"><div className="access-modifier">{raster.access_modifier.toUpperCase()}</div></div> :
@@ -122,17 +122,25 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             )
                         })}
                     </ul>
-                    <div className="raster-list__pagination">
-                        {!previous ? null : <button className="raster-list__button-previous" onClick={() => onClick(page - 1)}>Previous</button>}
-                        {!next ? null : <button className="raster-list__button-next" onClick={() => onClick(page + 1)}>Next</button>}
-                    </div>
                 </div>
                 <div className="raster-list__button-container">
+                    <div className="raster-list__button-pagination">
+                        {!previous ? <button className="raster-list__button-grey">&lsaquo;</button> : <button className="raster-list__button-previous" onClick={() => onClick(page - 1)}>&lsaquo;</button>}
+                        <ul className="raster-list__button-pagination-ul">
+                            <li className="raster-list__button-pagination-li" onClick={() => onClick(page - 2)}>{page <= 2 ? null : page - 2}</li>
+                            <li className="raster-list__button-pagination-li" onClick={() => onClick(page - 1)}>{page <= 1 ? null : page - 1}</li>
+                            <li className="raster-list__button-pagination-li raster-list__button-pagination-li-active">{page}</li>
+                            <li className="raster-list__button-pagination-li" onClick={() => onClick(page + 1)}>{page >= Math.ceil(currentRasterList.count/10) ? null : page + 1}</li>
+                            <li className="raster-list__button-pagination-li" onClick={() => onClick(page + 2)}>{page >= (Math.ceil(currentRasterList.count/10) - 1) ? null : page + 2}</li>
+                        </ul>
+                        {!next ? <button className="raster-list__button-grey">&rsaquo;</button> : <button className="raster-list__button-next" onClick={() => onClick(page + 1)}>&rsaquo;</button>}
+                    </div>
                     {this.state.checkedRasters.length === 0 ?
-                        <button className="raster-list__button raster-list__button-grey">ADD TO BASKET</button> :
-                        <button className="raster-list__button" onClick={addToBasket}>ADD TO BASKET</button>
+                        <button className="raster-list__button-basket raster-list__button-basket-grey">ADD TO BASKET</button> :
+                        <button className="raster-list__button-basket" onClick={addToBasket}>ADD TO BASKET</button>
                     }
                 </div>
+                {/*Notification popup when click on the Add to Basket button*/}
                 <div className="raster-list__popup" id="notification">
                     <div className="raster-list__popup-content">
                         <p>Items successfully added to the Basket. Go to your basket to see which items have been added.</p>
