@@ -182,7 +182,7 @@ li {
     margin: 0 auto;
     left: 0;
     right: 0;
-    width: 20%;
+    width: 30%;
     height: 100%;
 
     display: flex;
@@ -214,8 +214,8 @@ li {
 }
 
 .raster-list__button-pagination-li {
-    width: 1.5rem;
     margin: 0 .3rem;
+    padding: .2rem;
     text-align: center;
     cursor: pointer;
 }

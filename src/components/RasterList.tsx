@@ -145,9 +145,11 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                     <div className="raster-list__button-pagination">
                         {!previous ? <button className="raster-list__button-grey">&lsaquo;</button> : <button className="raster-list__button-previous" onClick={() => onClick(page - 1)}>&lsaquo;</button>}
                         <ul className="raster-list__button-pagination-ul">
-                            <li className="raster-list__button-pagination-li" onClick={() => onClick(page - 1)}>{page === 1 ? null : page - 1}</li>
+                            <li className="raster-list__button-pagination-li" onClick={() => onClick(page - 2)}>{page <= 2 ? null : page - 2}</li>
+                            <li className="raster-list__button-pagination-li" onClick={() => onClick(page - 1)}>{page <= 1 ? null : page - 1}</li>
                             <li className="raster-list__button-pagination-li raster-list__button-pagination-li-active">{page}</li>
                             <li className="raster-list__button-pagination-li" onClick={() => onClick(page + 1)}>{page >= Math.ceil(currentRasterList.count/10) ? null : page + 1}</li>
+                            <li className="raster-list__button-pagination-li" onClick={() => onClick(page + 2)}>{page >= (Math.ceil(currentRasterList.count/10) - 1) ? null : page + 2}</li>
                         </ul>
                         {!next ? <button className="raster-list__button-grey">&rsaquo;</button> : <button className="raster-list__button-next" onClick={() => onClick(page + 1)}>&rsaquo;</button>}
                     </div>
