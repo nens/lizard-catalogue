@@ -160,6 +160,7 @@ li {
 
 .raster-list__sorting-icon {
     cursor: pointer;
+    display: none;
 }
 
 .access-modifier {

@@ -1,14 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { Raster, RastersSorted } from '../interface';
+import { Raster } from '../interface';
 import { MyStore, getRaster } from '../reducers';
-import { sortRastersByName, 
-    sortRastersByOrganisationName, 
-    sortRastersByObservationType, 
-    sortRastersByType, 
-    sortRastersByUpdate 
-} from '../action';
 import './RasterList.css';
 
 interface MyProps {
@@ -25,19 +18,11 @@ interface MyProps {
     updateBasket: (basket: MyStore['basket']) => void
 };
 
-interface PropsFromDispatch {
-    sortRastersByName: (rasters: Raster[]) => void,
-    sortRastersByOrganisationName: (rasters: Raster[]) => void,
-    sortRastersByObservationType: (rasters: Raster[]) => void,
-    sortRastersByType: (rasters: Raster[]) => void,
-    sortRastersByUpdate: (rasters: Raster[]) => void
-};
-
 interface PropsFromState {
     rasters: Raster[] | null
 };
 
-type RasterListProps = MyProps & PropsFromState & PropsFromDispatch;
+type RasterListProps = MyProps & PropsFromState;
 
 interface MyState {
     checkedRasters: string[]
@@ -68,9 +53,6 @@ class RasterList extends React.Component<RasterListProps, MyState> {
     render() {
         //Destructure all props of the Raster List component
         const { searchTerm, page, onClick, onChange, onSubmit, currentRasterList, selectRaster, updateBasket, rasters } = this.props;
-
-        //Rasters' data sorting actions
-        const { sortRastersByType, sortRastersByName, sortRastersByOrganisationName, sortRastersByObservationType, sortRastersByUpdate } = this.props;
 
         //If nothing is fetched, Loading ... sign appeears
         if (!currentRasterList || !rasters) return <div className="raster-list loading-screen"><h1>Loading ...</h1></div>;
@@ -108,11 +90,11 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                     <ul className="raster-list__list">
                         <li className="raster-list__row-title">
                             <div className="raster-list__row raster-list__row-box" />
-                            <div className="raster-list__row raster-list__row-type">Type <img src="image/sort-2.svg" alt="sort-type" className="raster-list__sorting-icon" onClick={() => sortRastersByType(rasters)}/></div>
-                            <div className="raster-list__row raster-list__row-name">Name <img src="image/sort-2.svg" alt="sort-name" className="raster-list__sorting-icon" onClick={() => sortRastersByName(rasters)}/></div>
-                            <div className="raster-list__row raster-list__row-org">Organisation <img src="image/sort-2.svg" alt="sort-organisation" className="raster-list__sorting-icon" onClick={() => sortRastersByOrganisationName(rasters)}/></div>
-                            <div className="raster-list__row raster-list__row-obs">Obs.Type <img src="image/sort-2.svg" alt="sort-obs" className="raster-list__sorting-icon" onClick={() => sortRastersByObservationType(rasters)}/></div>
-                            <div className="raster-list__row raster-list__row-time">Latest update <img src="image/sort-2.svg" alt="sort-update" className="raster-list__sorting-icon" onClick={() => sortRastersByUpdate(rasters)}/></div>
+                            <div className="raster-list__row raster-list__row-type">Type <img src="image/sort-2.svg" alt="sort-type" className="raster-list__sorting-icon" /></div>
+                            <div className="raster-list__row raster-list__row-name">Name <img src="image/sort-2.svg" alt="sort-name" className="raster-list__sorting-icon" /></div>
+                            <div className="raster-list__row raster-list__row-org">Organisation <img src="image/sort-2.svg" alt="sort-organisation" className="raster-list__sorting-icon" /></div>
+                            <div className="raster-list__row raster-list__row-obs">Obs.Type <img src="image/sort-2.svg" alt="sort-obs" className="raster-list__sorting-icon" /></div>
+                            <div className="raster-list__row raster-list__row-time">Latest update <img src="image/sort-2.svg" alt="sort-update" className="raster-list__sorting-icon" /></div>
                             <div className="raster-list__row raster-list__row-access" />
                         </li>
                         {rasters.map((raster: Raster) => {
@@ -170,14 +152,6 @@ class RasterList extends React.Component<RasterListProps, MyState> {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<RastersSorted>): PropsFromDispatch => ({
-    sortRastersByName: (rasters: Raster[]) => sortRastersByName(dispatch, rasters),
-    sortRastersByOrganisationName: (rasters: Raster[]) => sortRastersByOrganisationName(dispatch, rasters),
-    sortRastersByObservationType: (rasters: Raster[]) => sortRastersByObservationType(dispatch, rasters),
-    sortRastersByType: (rasters: Raster[]) => sortRastersByType(dispatch, rasters),
-    sortRastersByUpdate: (rasters: Raster[]) => sortRastersByUpdate(dispatch, rasters)
-});
-
 const mapStateToProps = (state: MyStore, ownProps: MyProps): PropsFromState => {
     if (!ownProps.currentRasterList) return {
         rasters: null
@@ -187,4 +161,4 @@ const mapStateToProps = (state: MyStore, ownProps: MyProps): PropsFromState => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RasterList);
+export default connect(mapStateToProps)(RasterList);

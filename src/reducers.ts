@@ -5,8 +5,7 @@ import {
     BASKET_UPDATED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
-    ITEM_REMOVED,
-    RASTERS_SORTED
+    ITEM_REMOVED
 } from "./action";
 import {
     RastersFetched,
@@ -16,8 +15,7 @@ import {
     Organisation,
     Basket,
     OrganisationsFetched,
-    ObservationTypesFetched,
-    RastersSorted
+    ObservationTypesFetched
 } from './interface';
 
 export interface MyStore {
@@ -36,7 +34,7 @@ export interface MyStore {
     basket: string[];
 };
 
-const currentRasterList = (state: MyStore['currentRasterList'] = null, action: RastersFetched | RastersSorted) => {
+const currentRasterList = (state: MyStore['currentRasterList'] = null, action: RastersFetched) => {
     switch (action.type) {
         case RASTERS_FETCHED:
             const { count, previous, next } = action.payload;
@@ -45,12 +43,6 @@ const currentRasterList = (state: MyStore['currentRasterList'] = null, action: R
                 previous: previous,
                 next: next,
                 rasterList: action.payload.results.map(raster => raster.uuid)
-            };
-        case RASTERS_SORTED:
-            const newState = { ...state }
-            return {
-                ...newState,
-                rasterList: action.payload
             };
         default:
             return state;

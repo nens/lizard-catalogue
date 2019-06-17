@@ -10,8 +10,7 @@ import { RastersFetched,
     Raster, 
     ItemRemoved, 
     ObservationTypesFetched, 
-    OrganisationsFetched, 
-    RastersSorted 
+    OrganisationsFetched
 } from './interface';
 
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
@@ -109,78 +108,4 @@ export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>): vo
             dispatch(organisationsFetched(response.body))
         })
         .catch(console.error)
-};
-
-//SORTING DATA ACTIONS
-//Sorting Rasters by name, type, organisation, observation type and latest update
-export const RASTERS_SORTED = 'RASTERS_SORTED';
-
-//Sorting raster types by temporal or non-temporal data type
-const sortByType = (a: Raster, b: Raster) => {
-    return a.temporal === b.temporal ? 0 : a.temporal? -1 : 1;
-};
-
-const rastersSortedByType = (rasters: Raster[]): RastersSorted => ({
-    type: RASTERS_SORTED,
-    payload: rasters.sort(sortByType).map(raster => raster.uuid)
-});
-
-export const sortRastersByType = (dispatch:Dispatch<RastersSorted>, rasters: Raster[]) => {
-    dispatch(rastersSortedByType(rasters))
-};
-
-//Sorting rasters' names by alphabetical order
-const sortByName = (a: Raster, b: Raster) => {
-    return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
-};
-
-const rastersSortedByName = (rasters: Raster[]): RastersSorted => ({
-    type: RASTERS_SORTED,
-    payload: rasters.sort(sortByName).map(raster => raster.uuid)
-});
-
-export const sortRastersByName = (dispatch:Dispatch<RastersSorted>, rasters: Raster[]) => {
-    dispatch(rastersSortedByName(rasters))
-};
-
-//Sorting organisations' names by alphabetical order
-const sortByOrganisationName = (a: Raster, b: Raster) => {
-    return a.organisation.name.toLowerCase() < b.organisation.name.toLowerCase() ? -1 : 1;
-};
-
-const rastersSortedByOrganisationName = (rasters: Raster[]): RastersSorted => ({
-    type: RASTERS_SORTED,
-    payload: rasters.sort(sortByOrganisationName).map(raster => raster.uuid)
-});
-
-export const sortRastersByOrganisationName = (dispatch:Dispatch<RastersSorted>, rasters: Raster[]) => {
-    dispatch(rastersSortedByOrganisationName(rasters))
-};
-
-//Sorting observation types by alphabetical order
-const sortByObservationType = (a: Raster, b: Raster) => {
-    return a.observation_type.parameter.toLowerCase() < b.observation_type.parameter.toLowerCase() ? -1 : 1;
-};
-
-const rastersSortedByObservationType = (rasters: Raster[]): RastersSorted => ({
-    type: RASTERS_SORTED,
-    payload: rasters.sort(sortByObservationType).map(raster => raster.uuid)
-});
-
-export const sortRastersByObservationType = (dispatch:Dispatch<RastersSorted>, rasters: Raster[]) => {
-    dispatch(rastersSortedByObservationType(rasters))
-};
-
-//Sorting raster types by temporal or non-temporal data type
-const sortByUpdate = (a: Raster, b: Raster) => {
-    return new Date(b.last_modified).getTime() - new Date(a.last_modified).getTime();
-};
-
-const rastersSortedByUpdate = (rasters: Raster[]): RastersSorted => ({
-    type: RASTERS_SORTED,
-    payload: rasters.sort(sortByUpdate).map(raster => raster.uuid)
-});
-
-export const sortRastersByUpdate = (dispatch:Dispatch<RastersSorted>, rasters: Raster[]) => {
-    dispatch(rastersSortedByUpdate(rasters))
 };
