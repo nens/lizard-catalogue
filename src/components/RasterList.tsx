@@ -66,7 +66,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
         //3- set the state of the RasterList component again
         const addToBasket = () => {
             //Click the button will open the notification popup
-            window.location.href = 'catalogue#notification';
+            window.location.href = '#notification';
             
             updateBasket(this.state.checkedRasters); 
             this.setState({checkedRasters: []});
