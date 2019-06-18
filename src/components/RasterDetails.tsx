@@ -6,7 +6,7 @@ import { Raster } from '../interface';
 import './RasterDetails.css';
 
 interface PropsFromState {
-    raster: Raster | null;
+    raster: Raster | null
 };
 
 class RasterDetails extends React.Component<PropsFromState> {
@@ -90,7 +90,7 @@ class RasterDetails extends React.Component<PropsFromState> {
                     <h4>View data in</h4>
                     <div>
                         <button className="raster-details__button button-api" onClick={() => window.open(`https://demo.lizard.net/api/v4/rasters/${raster.uuid}`)}>API</button>
-                        <button className="raster-details__button button-lizard" onClick={() => window.open(`https://demo.lizard.net/nl/map/topography,raster$${raster.uuid.substr(0, 7)}`)}>LIZARD</button>
+                        <button className="raster-details__button button-lizard" onClick={() => window.open(`https://demo.lizard.net/nl/map/topography,raster$${raster.uuid.substr(0, 7)}`)}>PORTAL</button>
                     </div>
                 </div>
             </div>

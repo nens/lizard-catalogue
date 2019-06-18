@@ -1,7 +1,17 @@
 import request from 'superagent';
 import { baseUrl } from './api';
-import { RastersFetched, RasterSelected, RasterListObject, BasketAdded, ObservationType, Organisation, Raster, ItemRemoved, ObservationTypesFetched, OrganisationsFetched } from './interface';
 import { Dispatch } from 'redux';
+import { RastersFetched, 
+    RasterSelected, 
+    RasterListObject, 
+    BasketAdded, 
+    ObservationType, 
+    Organisation, 
+    Raster, 
+    ItemRemoved, 
+    ObservationTypesFetched, 
+    OrganisationsFetched
+} from './interface';
 
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
 export const RASTER_SELECTED = 'RASTER_SELECTED';
@@ -20,6 +30,25 @@ const rastersFetched = (rasterListObject: RasterListObject): RastersFetched => (
 export const fetchRasters = (page: number, searchTerm: string, organisationName: string, dispatch: Dispatch<RastersFetched>): void => {
     request
         .get(`${baseUrl}/rasters?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}`)
+        .then(response => {
+            if(response.body.count === 0) {
+                request
+                    .get(`${baseUrl}/rasters?uuid=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}`)
+                    .then(response => {
+                        dispatch(rastersFetched(response.body))
+                    })
+                    .catch(console.error)
+            } else {
+                dispatch(rastersFetched(response.body))
+            }
+        })
+        .catch(console.error)
+};
+
+//Decide whether gonna use this fetch function
+export const fetchRastersOnUuid = (searchUuid: string, dispatch: Dispatch<RastersFetched>): void => {
+    request
+        .get(`${baseUrl}/rasters?uuid=${searchUuid}`)
         .then(response => {
             dispatch(rastersFetched(response.body))
         })
@@ -58,9 +87,9 @@ const observationTypesFetched = (observationTypes: ObservationType[]): Observati
     payload: observationTypes
 });
 
-export const fetchObservationTypes = (dispatch: Dispatch<ObservationTypesFetched>, searchTerm: string) => {
+export const fetchObservationTypes = (dispatch: Dispatch<ObservationTypesFetched>): void => {
     request
-        .get(`${baseUrl}/observationtypes?parameter__icontains=${searchTerm}&page_size=0`)
+        .get(`${baseUrl}/observationtypes?page_size=0`)
         .then(response => {
             dispatch(observationTypesFetched(response.body))
         })
@@ -72,9 +101,9 @@ const organisationsFetched = (organisations: Organisation[]): OrganisationsFetch
     payload: organisations
 });
 
-export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>, searchTerm: string) => {
+export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>): void => {
     request
-        .get(`${baseUrl}/organisations?name__icontains=${searchTerm}&page_size=0`)
+        .get(`${baseUrl}/organisations?page_size=0`)
         .then(response => {
             dispatch(organisationsFetched(response.body))
         })

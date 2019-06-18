@@ -1,6 +1,22 @@
 import { combineReducers } from 'redux';
-import { RASTERS_FETCHED, RASTER_SELECTED, BASKET_UPDATED, OBSERVATION_TYPES_FETCHED, ORGANISATIONS_FETCHED, ITEM_REMOVED } from "./action";
-import { RastersFetched, RasterSelected, Raster, ObservationType, Organisation, Basket, OrganisationsFetched, ObservationTypesFetched } from './interface';
+import {
+    RASTERS_FETCHED,
+    RASTER_SELECTED,
+    BASKET_UPDATED,
+    OBSERVATION_TYPES_FETCHED,
+    ORGANISATIONS_FETCHED,
+    ITEM_REMOVED
+} from "./action";
+import {
+    RastersFetched,
+    RasterSelected,
+    Raster,
+    ObservationType,
+    Organisation,
+    Basket,
+    OrganisationsFetched,
+    ObservationTypesFetched
+} from './interface';
 
 export interface MyStore {
     observationTypes: ObservationType[];
