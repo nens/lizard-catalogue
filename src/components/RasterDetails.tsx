@@ -79,10 +79,10 @@ class RasterDetails extends React.Component<PropsFromState> {
                         <p className="column column-1">Observation type</p><p className="column column-2">{raster.observation_type && raster.observation_type.parameter}</p>
                     </div>
                     <div className="row">
-                        <p className="column column-1">Measuring unit</p><p className="column column-2">{raster.observation_type.unit}</p>
+                        <p className="column column-1">Measuring unit</p><p className="column column-2">{raster.observation_type && raster.observation_type.unit}</p>
                     </div>
                     <div className="row">
-                        <p className="column column-1">Scale</p><p className="column column-2">{raster.observation_type.scale}</p>
+                        <p className="column column-1">Scale</p><p className="column column-2">{raster.observation_type && raster.observation_type.scale}</p>
                     </div>
                 </div>
                 <br/>
