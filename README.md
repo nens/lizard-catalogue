@@ -2,14 +2,18 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
+To install npm packages run:
+
+### `npm install`
+
 In the project directory, you can run:
 
 ### `npm start`
 
-Add your username and password to log in:
-`$ PROXY_USERNAME=<your_sso_username> PROXY_PASSWORD=<your_sso_password> npm start`
-
-Runs the app in the development mode.<br>
+Add your username and password to log in by running:<br>
+### `./start`
+This is a python script that will prompt you for username passwords and will actually run the following script behind the scenes: <br>
+It runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.<br>
@@ -26,9 +30,19 @@ Builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
 The build is minified and the filenames include the hashes.<br>
+After this it also zips the build folder and puts the result in the `dist` folder.<br>
 Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### `npm run release`
+
+Uses release-it library to release the `dist` folder to github.<br>
+A wizard will follow. Usually just choose the defaults everywhere by hitting enter.<br>
+
+## Deployment
+For the deployment of frontend repositories we make use of an Ansible script in the lizard-nxt repository.
+More information is provided in the readme file of lizard-nxt: https://github.com/nens/lizard-nxt/blob/master/README.rst
+Look below the heading "Deployment clients". 
+
 
 ### `npm run eject`
 

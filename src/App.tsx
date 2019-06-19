@@ -10,6 +10,7 @@ function App() {
       <div className="App" id="catalogue">
         <Route exact={true} path='/catalogue' component={RasterContainer} />
         <Route exact={true} path='/' render={() => <Redirect to='/catalogue' />} />
+        <Route exact={true} path='/catalog' render={() => <Redirect to='/catalogue' />} />
       </div>
     </Provider>
   );
