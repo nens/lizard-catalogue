@@ -53,7 +53,7 @@ class RasterDetails extends React.Component<PropsFromState> {
                         </Map>
                     </div>
                 </div>
-                <div className="raster-details__data-1">
+                <div className="raster-details__metadata">
                     <div className="row">
                         <p className="column column-1">Temporal</p><p className="column column-2">{raster.temporal ? 'Yes' : 'No'} </p>
                     </div>
@@ -61,20 +61,17 @@ class RasterDetails extends React.Component<PropsFromState> {
                         <p className="column column-1">Resolution</p><p className="column column-2">{resolution}</p>
                     </div>
                     <div className="row">
-                        <p className="column column-1">Datatype</p><p className="column column-2">Raster</p>
+                        <p className="column column-1">Data type</p><p className="column column-2">Raster</p>
                     </div>
                     <div className="row">
                         <p className="column column-1">Interval</p><p className="column column-2">{raster.temporal ? raster.interval : null}</p>
                     </div>
                     <div className="row">
-                        <p className="column column-1">Start</p><p className="column column-2">{raster.temporal ? start : null}</p>
+                        <p className="column column-1">Started</p><p className="column column-2">{raster.temporal ? start : null}</p>
                     </div>
                     <div className="row">
-                        <p className="column column-1">Stop</p><p className="column column-2">{raster.temporal ? stop : null}</p>
+                        <p className="column column-1">Stopped</p><p className="column column-2">{raster.temporal ? stop : null}</p>
                     </div>
-                </div>
-                <br />
-                <div className="raster-details__data-2">
                     <div className="row">
                         <p className="column column-1">Observation type</p><p className="column column-2">{raster.observation_type && raster.observation_type.parameter}</p>
                     </div>
