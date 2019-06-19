@@ -87,7 +87,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                 <div className="filter-box">
                     <div className="filter-observation-type" title="Feature in Development">
                         <h4 title="Filter by Observation Type">Observation Type</h4>
-                        <form onSubmit={this.onObsSubmit} className="raster-list__searchbar">
+                        <form onSubmit={this.onObsSubmit} className="raster-list__searchbar" title="Type observation type's parameter name">
                             <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onObsChange} value={searchObs} />
                             <button className="raster-list__searchbar-button" type="submit">
                                 <svg className="raster-list__searchbar-icon">
@@ -115,7 +115,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                     </div>
                     <div className="filter-organisation">
                         <h4 title="Filter by Organisation">Organisation</h4>
-                        <form onSubmit={this.onOrgSubmit} className="raster-list__searchbar">
+                        <form onSubmit={this.onOrgSubmit} className="raster-list__searchbar" title="Type organisation name">
                             <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onOrgChange} value={searchOrg} />
                             <button className="raster-list__searchbar-button" type="submit">
                                 <svg className="raster-list__searchbar-icon">
