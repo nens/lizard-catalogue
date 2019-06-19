@@ -46,12 +46,12 @@ class Header extends React.Component<MyProps> {
                         <span className="header-nav__notification">{basket.length}</span>
                         <span className="header-nav__text">Basket</span>
                     </a>
-                    <div className="header-nav__icon-box">
+                    {/* <div className="header-nav__icon-box">
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-apps" />
                         </svg>
                         <span className="header-nav__text">Apps</span>
-                    </div>
+                    </div> */}
                     <div className="header-nav__icon-box">
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-user" />
