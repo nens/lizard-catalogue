@@ -36,7 +36,7 @@ class RasterDetails extends React.Component<PropsFromState> {
 
         return (
             <div className="raster-details">
-                <h3>{raster.name}</h3>
+                <h3 title={raster.name}>{raster.name}</h3>
                 <span className="raster-details__uuid">{raster.uuid}</span>
                 <div className="raster-details__main-box">
                     <div className="raster-details__description-box">

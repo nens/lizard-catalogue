@@ -58,6 +58,11 @@
 .filter-observation-type {
     height: 44%;
     margin-bottom: 2rem;
+    color: grey;
+}
+
+.filter-observation-type:hover {
+    cursor: not-allowed;
 }
 
 .filter-organisation {

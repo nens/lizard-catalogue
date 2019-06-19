@@ -39,7 +39,7 @@ class Header extends React.Component<MyProps> {
                     <h3 className="header-logo__text">Lizard Catalogue</h3>
                 </div>
                 <div className="header-nav">
-                    <a href="#basket" className="header-nav__icon-box">
+                    <a href="#basket" className="header-nav__icon-box" title={`${basket.length} items in the basket`}>
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-cart" />
                         </svg>
