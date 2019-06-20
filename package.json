@@ -1,7 +1,8 @@
 {
   "name": "lizard-catalogue",
-  "version": "0.1.0",
+  "version": "0.1.9",
   "main": "target/index.js",
+  "homepage": "/catalogue",
   "private": true,
   "dependencies": {
     "@babel/core": "7.4.3",
@@ -81,8 +82,9 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
+    "build": "rm -rf dist/*.zip && node scripts/build.js && scripts/makedist.sh",
     "test": "node scripts/test.js",
+    "release": "release-it --verbose",
     "tsc": "tsc"
   },
   "eslintConfig": {
@@ -149,5 +151,8 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "release-it": "^10.4.2"
   }
 }
