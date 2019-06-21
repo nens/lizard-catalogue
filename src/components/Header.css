@@ -268,8 +268,8 @@
 }
 
 .header-information-box__main {
-    width: 50%;
-    height: 35%;
+    width: 40%;
+    min-height: 30%;
     color: #333;
     border: 1px solid #BEBEBE;
     border-radius: .8rem;
@@ -282,19 +282,23 @@
     position: absolute;
     top: 5%;
     left: 25%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .header-information-box__main h4 {
     font-size: 1.8rem;
     font-weight: 400;
     margin: 0;
-    padding: 1.5rem;
+    padding: 2rem;
     border-bottom: 1px solid #e5e5e5;
 }
 
 .header-information-box__main__content {
     font-size: 1.4rem;
-    padding: 1.5rem;
+    padding: 0 2rem;
 }
 
 .header-information-box__close {
@@ -310,4 +314,28 @@
 
 .header-information-box__close:hover {
     color: #41a086;
+}
+
+.header-information-box__footer {
+    border-top: 1px solid #e5e5e5;
+    padding: 2rem;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-information-box__footer a {
+    font-size: 1.4rem;
+    color: #adadab;
+    text-decoration: none;
+}
+
+.header-information-box__footer button {
+    font-size: 1.4rem;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #adadab;
+    border-radius: .4rem;
+    padding: .6rem 1.2rem;
+    cursor: pointer;
 }

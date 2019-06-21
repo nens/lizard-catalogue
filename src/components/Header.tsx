@@ -108,9 +108,19 @@ class Header extends React.Component<MyProps> {
                 {/*This is the PopUp window for the Information box*/}
                 <div className="header-information-box" id="information">
                     <div className="header-information-box__main">
-                        <h4>Information</h4>
-                        <div className="header-information-box__main__content">
-                            Information of the Lizard Catalogue here
+                        <div className="header-information-box__main__top">
+                            <h4>Information</h4>
+                            <div className="header-information-box__main__content">
+                                <p>Welcome to the Lizard Catalogue!</p>
+                                <p>
+                                    This catalogue provides you a detailed overview of all the raster datasets in Lizard.
+                                    You're able to search for datasets, filter them per organisation, view detailed metadata and open datasets in the Lizard Portal and the Lizard API.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="header-information-box__footer">
+                            <a href="/static_media/documents/privacy.pdf" target="_blank">Privacy Statement</a>
+                            <button onClick={() => window.location.href='#catalogue'}>Close</button>
                         </div>
                         <a href="#catalogue" className="header-information-box__close">&times;</a>
                     </div>
