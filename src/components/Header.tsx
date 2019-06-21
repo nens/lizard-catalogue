@@ -28,8 +28,8 @@ class Header extends React.Component<MyProps> {
             //the format of the url is something like: ',raster$rasterID1,raster$rasterID2,...,raster$rasterIDn'
             const urlPath = idArray.map(id => `,raster$${id}`).join('');
 
-            //Open the link in a another tab
-            window.open(`https://demo.lizard.net/nl/map/topography${urlPath}`);
+            //Open the link in another tab with projection of the whole global map to view all selected rasters
+            window.open(`https://demo.lizard.net/nl/map/topography${urlPath}/point/@0.1,-0.1,2`);
         };
 
         return (
