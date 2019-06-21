@@ -339,3 +339,11 @@
     padding: .6rem 1.2rem;
     cursor: pointer;
 }
+
+.header-information-box__footer button:hover {
+    background-color: #ccc;
+}
+
+.header-information-box__footer button:focus {
+    outline: none;
+}
