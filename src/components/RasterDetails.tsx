@@ -41,7 +41,7 @@ class RasterDetails extends React.Component<PropsFromState> {
                 <div className="raster-details__main-box">
                     <div className="raster-details__description-box">
                         <h4>Description</h4>
-                        <span>{raster.description}</span>
+                        <div className="description">{raster.description}</div>
                         <br/>
                         <h4>Organisation</h4>
                         <span>{raster.organisation.name}</span>
