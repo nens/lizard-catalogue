@@ -341,7 +341,9 @@
 }
 
 .header-information-box__footer button:hover {
-    background-color: #ccc;
+    border: 1px solid transparent;
+    background-color: #55cbac;
+    color: #fff;
 }
 
 .header-information-box__footer button:focus {
