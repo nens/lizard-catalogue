@@ -45,14 +45,19 @@
 }
 
 .raster-details__description-box {
+    min-width: 0;
     flex: 1;
-
-    overflow-y: scroll;
-    overflow-x: hidden; 
+    display: flex;
+    flex-direction: column;
 }
 
 .raster-details__description-box h4 {
     margin: .8rem 0 .5rem 0;
+}
+
+.description {
+    overflow-y: scroll;
+    overflow-x: hidden; 
 }
 
 .raster-details__map-box {

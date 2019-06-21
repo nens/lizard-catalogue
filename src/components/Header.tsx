@@ -64,6 +64,11 @@ class Header extends React.Component<MyProps> {
                         </svg>
                         <span className="header-nav__text">Nelen &amp; Schuurmans</span>
                     </div>
+                    <a href="#information" className="header-nav__icon-box" title="Info">
+                        <svg className="header-nav__icon info-box">
+                            <use xlinkHref="image/symbols.svg#icon-info" />
+                        </svg>
+                    </a>
                 </div>
                 {/*This is the PopUp window when the basket is clicked*/}
                 <div className="header-popup" id="basket">
@@ -76,7 +81,7 @@ class Header extends React.Component<MyProps> {
                         <ul className="header-popup__content-ul">
                             {basket.map(raster => (
                                 <li className="header-popup__content-li" key={raster.uuid}>
-                                    {raster.temporal ? 
+                                    {raster.temporal ?
                                         <img className="li li-type" src="image/raster-temporal.svg" alt="raster" /> :
                                         <img className="li li-type" src="image/raster-non-temporal.svg" alt="raster" />
                                     }
@@ -93,11 +98,31 @@ class Header extends React.Component<MyProps> {
                             ))}
                         </ul>
                         <p className="header-popup__content-onderste-laag">Onderste laag</p>
-                        {basket.length === 0 ? 
+                        {basket.length === 0 ?
                             <button className="header-popup__content-button raster-list__button-basket raster-list__button-basket-grey">Open all data in Lizard</button> :
                             <button className="header-popup__content-button raster-list__button-basket" onClick={() => onClick(basket)}>Open all data in Lizard</button>
                         }
                         <a href="#catalogue" className="header-popup__close">&times;</a>
+                    </div>
+                </div>
+                {/*This is the PopUp window for the Information box*/}
+                <div className="header-information-box" id="information">
+                    <div className="header-information-box__main">
+                        <div className="header-information-box__main__top">
+                            <h4>Information</h4>
+                            <div className="header-information-box__main__content">
+                                <p>Welcome to the Lizard Catalogue!</p>
+                                <p>
+                                    This catalogue provides you a detailed overview of all the raster datasets in Lizard.
+                                    You're able to search for datasets, filter them per organisation, view detailed metadata and open datasets in the Lizard Portal and the Lizard API.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="header-information-box__footer">
+                            <a href="/static_media/documents/privacy.pdf" target="_blank">Privacy Statement</a>
+                            <button onClick={() => window.location.href='#catalogue'}>Close</button>
+                        </div>
+                        <a href="#catalogue" className="header-information-box__close">&times;</a>
                     </div>
                 </div>
             </nav >
