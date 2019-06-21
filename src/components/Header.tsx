@@ -102,7 +102,8 @@ class Header extends React.Component<MyProps> {
                             <button className="header-popup__content-button raster-list__button-basket raster-list__button-basket-grey">Open all data in Lizard</button> :
                             <button className="header-popup__content-button raster-list__button-basket" onClick={() => onClick(basket)}>Open all data in Lizard</button>
                         }
-                        <a href="#catalogue" className="header-popup__close">&times;</a>
+                        {/* eslint-disable-next-line */}
+                        <a href="#" className="header-popup__close">&times;</a>
                     </div>
                 </div>
                 {/*This is the PopUp window for the Information box*/}
@@ -120,9 +121,10 @@ class Header extends React.Component<MyProps> {
                         </div>
                         <div className="header-information-box__footer">
                             <a href="/static_media/documents/privacy.pdf" target="_blank">Privacy Statement</a>
-                            <button onClick={() => window.location.href='#catalogue'}>Close</button>
+                            <button onClick={() => window.location.href='#'}>Close</button>
                         </div>
-                        <a href="#catalogue" className="header-information-box__close">&times;</a>
+                        {/* eslint-disable-next-line */}
+                        <a href="#" className="header-information-box__close">&times;</a>
                     </div>
                 </div>
             </nav >

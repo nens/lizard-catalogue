@@ -144,7 +144,8 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                 <div className="raster-list__popup" id="notification">
                     <div className="raster-list__popup-content">
                         <p>Items successfully added to the Basket. Go to your basket to see which items have been added.</p>
-                        <a href="#catalogue" className="raster-list__popup-close">OK</a>
+                        {/* eslint-disable-next-line */}
+                        <a href="#" className="raster-list__popup-close">OK</a>
                     </div>
                 </div>
             </div>
