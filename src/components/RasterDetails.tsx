@@ -18,7 +18,12 @@ class RasterDetails extends React.Component<PropsFromState> {
         if (!raster) return <div className="raster-details raster-details__loading">Please select a raster</div>;
 
         //Set the Map with bounds coming from spatial_bounds of the Raster
-        const { north, east, south, west } = raster.spatial_bounds;
+        //If spatial_bounds is null then set the projection to the whole globe which is at [[85, 180], [-85, -180]]
+        const north = raster.spatial_bounds ? raster.spatial_bounds.north : 85;
+        const south = raster.spatial_bounds ? raster.spatial_bounds.south : -85;
+        const east = raster.spatial_bounds ? raster.spatial_bounds.east : 180;
+        const west = raster.spatial_bounds ? raster.spatial_bounds.west : -180;
+
         const bounds = [[north, east], [south, west]];
 
         //Get the Date from the timestamp string
@@ -89,8 +94,8 @@ class RasterDetails extends React.Component<PropsFromState> {
                 <div className="raster-details__button-container">
                     <h4>View data in</h4>
                     <div>
-                        <button className="raster-details__button button-api" onClick={() => window.open(`https://demo.lizard.net/api/v4/rasters/${raster.uuid}`)}>API</button>
-                        <button className="raster-details__button button-lizard" onClick={() => window.open(`https://demo.lizard.net/nl/map/topography,raster$${raster.uuid.substr(0, 7)}`)}>PORTAL</button>
+                        <button className="raster-details__button button-api" onClick={() => window.open(`https://nxt3.staging.lizard.net/api/v4/rasters/${raster.uuid}`)}>API</button>
+                        <button className="raster-details__button button-lizard" onClick={() => window.open(`https://nxt3.staging.lizard.net/nl/map/topography,raster$${raster.uuid.substr(0, 7)}`)}>PORTAL</button>
                     </div>
                 </div>
             </div>

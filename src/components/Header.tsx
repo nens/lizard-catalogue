@@ -29,7 +29,7 @@ class Header extends React.Component<MyProps> {
             const urlPath = idArray.map(id => `,raster$${id}`).join('');
 
             //Open the link in a another tab
-            window.open(`https://demo.lizard.net/nl/map/topography${urlPath}`);
+            window.open(`https://nxt3.staging.lizard.net/nl/map/topography${urlPath}`);
         };
 
         return (
