@@ -47,7 +47,7 @@ class RasterDetails extends React.Component<PropsFromState> {
                         <span>{raster.description}</span>
                         <br/>
                         <h4>Organisation</h4>
-                        <span>{raster.organisation.name}</span>
+                        <span>{raster.organisation && raster.organisation.name}</span>
                     </div>
                     <div className="raster-details__map-box">
                         <Map bounds={bounds} >

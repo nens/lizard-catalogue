@@ -81,8 +81,8 @@ class Header extends React.Component<MyProps> {
                                         <img className="li li-type" src="image/raster-non-temporal.svg" alt="raster" />
                                     }
                                     <div className="li li-name">{raster.name}</div>
-                                    <div className="li li-org">{raster.organisation.name}</div>
-                                    <div className="li li-obs">{raster.observation_type.parameter}</div>
+                                    <div className="li li-org">{raster.organisation && raster.organisation.name}</div>
+                                    <div className="li li-obs">{raster.observation_type && raster.observation_type.parameter}</div>
                                     <div className="li li-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
                                     <div className="li li-basket li-basket__icon-box" onClick={() => removeItem(raster)}>
                                         <svg className="li-basket__icon">
