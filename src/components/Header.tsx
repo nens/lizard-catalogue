@@ -29,8 +29,8 @@ class Header extends React.Component<MyProps> {
             const urlPath = idArray.map(id => `,raster$${id}`).join('');
 
             //Open the link in another tab with projection of the last selected raster
-                //Get the last selected raster in the basket
-                const lastSelectedRaster = basket[basket.length - 1];
+                //Get the last selected raster in the basket which is the first item in the basket array
+                const lastSelectedRaster = basket[0];
 
                 //Get the spatial bounds of the last selected raster, if spatial_bounds is null then set it to the global map
                 const { north, east, south, west } = lastSelectedRaster.spatial_bounds ? 
@@ -58,7 +58,7 @@ class Header extends React.Component<MyProps> {
         return (
             <nav className="header">
                 <div className="header-logo">
-                    <img src="image/lizard.png" alt="logo" className="header-logo__logo" />
+                    <img src="image/lizard.png" alt="logo" className="header-logo__logo" onClick={() => window.location.href=""}/>
                     <h3 className="header-logo__text">Lizard Catalogue</h3>
                 </div>
                 <div className="header-nav">
@@ -157,7 +157,10 @@ class Header extends React.Component<MyProps> {
 
 const mapStateToProps = (state: MyStore): PropsFromState => {
     return {
-        basket: state.basket.map(uuid => getRaster(state, uuid))
+        //Get all the rasters by their uuid from the basket and reverse the order
+        //so the last selected raster will appear on top of the list
+        //and the first selected raster will appear at the bottom of the list
+        basket: state.basket.map(uuid => getRaster(state, uuid)).reverse()
     };
 };
 

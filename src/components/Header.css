@@ -15,6 +15,7 @@
 
 .header-logo img {
     height: 7.4rem;
+    cursor: pointer;
 }
 
 .header-logo__text {
