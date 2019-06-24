@@ -28,8 +28,31 @@ class Header extends React.Component<MyProps> {
             //the format of the url is something like: ',raster$rasterID1,raster$rasterID2,...,raster$rasterIDn'
             const urlPath = idArray.map(id => `,raster$${id}`).join('');
 
-            //Open the link in another tab with projection of the whole global map to view all selected rasters
-            window.open(`https://demo.lizard.net/nl/map/topography${urlPath}/point/@0.1,-0.1,2`);
+            //Open the link in another tab with projection of the last selected raster
+                //Get the last selected raster in the basket
+                const lastSelectedRaster = basket[basket.length - 1];
+
+                //Get the spatial bounds of the last selected raster, if spatial_bounds is null then set it to the global map
+                const { north, east, south, west } = lastSelectedRaster.spatial_bounds ? 
+                    lastSelectedRaster.spatial_bounds : {north: 85, east: 180, south: -85, west: -180};
+
+                //Calculate the latitude and longitude based on the spatial bounds
+                const rasterLat = (west + east)/2;
+                const rasterLong = (north + south)/2;
+
+                //Get the zoom level based on 4 spatial bounds
+                //Get reference from stackoverflow on how to calculate the zoom level: 
+                //https://stackoverflow.com/questions/6048975/google-maps-v3-how-to-calculate-the-zoom-level-for-a-given-bounds
+                const GLOBE_WIDTH = 256; //a constant in Google's map projection
+                let angle = east - west;
+                if (angle < 0) angle += 360;
+                let angle2 = north - south;
+                if (angle2 > angle) angle = angle2;
+                const zoom = Math.round(Math.log(960 * 360 / angle / GLOBE_WIDTH) / Math.LN2);
+
+            window.open(`https://demo.lizard.net/nl/map/topography${urlPath}/point/@${rasterLong},${rasterLat},${zoom}`);
+            //If open all rasters with the projection of the globe then use:
+            //window.open(`https://demo.lizard.net/nl/map/topography${urlPath}/point/@0.1,-0.1,2`);
         };
 
         return (
