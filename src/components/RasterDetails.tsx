@@ -19,10 +19,8 @@ class RasterDetails extends React.Component<PropsFromState> {
 
         //Set the Map with bounds coming from spatial_bounds of the Raster
         //If spatial_bounds is null then set the projection to the whole globe which is at [[85, 180], [-85, -180]]
-        const north = raster.spatial_bounds ? raster.spatial_bounds.north : 85;
-        const south = raster.spatial_bounds ? raster.spatial_bounds.south : -85;
-        const east = raster.spatial_bounds ? raster.spatial_bounds.east : 180;
-        const west = raster.spatial_bounds ? raster.spatial_bounds.west : -180;
+        const { north, east, south, west } = raster.spatial_bounds ? 
+            raster.spatial_bounds : {north: 85, east: 180, south: -85, west: -180};
 
         const bounds = [[north, east], [south, west]];
 
@@ -38,7 +36,7 @@ class RasterDetails extends React.Component<PropsFromState> {
         const rasterResolution = Math.abs(raster.pixelsize_x * raster.pixelsize_y);
         //If the projection is EPSG:4326, the resolution is calculated in square degrees, otherwise it is in m2
         const resolution = raster.projection === "EPSG:4326" ? rasterResolution.toFixed(6) + " deg2" : rasterResolution + " m2"
-
+        
         return (
             <div className="raster-details">
                 <h3>{raster.name}</h3>
