@@ -5,6 +5,8 @@ import { MyStore, getRaster } from '../reducers';
 import { Raster } from '../interface';
 import './RasterDetails.css';
 
+import { PROXY_SERVER } from '../api';
+
 interface PropsFromState {
     raster: Raster | null
 };
@@ -18,13 +20,16 @@ class RasterDetails extends React.Component<PropsFromState> {
         if (!raster) return <div className="raster-details raster-details__loading">Please select a raster</div>;
 
         //Set the Map with bounds coming from spatial_bounds of the Raster
-        const { north, east, south, west } = raster.spatial_bounds;
+        //If spatial_bounds is null then set the projection to the whole globe which is at [[85, 180], [-85, -180]]
+        const { north, east, south, west } = raster.spatial_bounds ?
+            raster.spatial_bounds : { north: 85, east: 180, south: -85, west: -180 };
+
         const bounds = [[north, east], [south, west]];
-        
+
         //Calculate the latitude and longitude based on the spatial bounds
-        const rasterLat = (west + east)/2;
-        const rasterLong = (north + south)/2;
-        
+        const rasterLat = (west + east) / 2;
+        const rasterLong = (north + south) / 2;
+
         //Get the zoom level based on 4 spatial bounds
         //Get reference from stackoverflow on how to calculate the zoom level: 
         //https://stackoverflow.com/questions/6048975/google-maps-v3-how-to-calculate-the-zoom-level-for-a-given-bounds
@@ -56,9 +61,9 @@ class RasterDetails extends React.Component<PropsFromState> {
                     <div className="raster-details__description-box">
                         <h4>Description</h4>
                         <div className="description">{raster.description}</div>
-                        <br/>
+                        <br />
                         <h4>Organisation</h4>
-                        <span>{raster.organisation.name}</span>
+                        <span>{raster.organisation && raster.organisation.name}</span>
                     </div>
                     <div className="raster-details__map-box">
                         <Map bounds={bounds} >
@@ -96,22 +101,22 @@ class RasterDetails extends React.Component<PropsFromState> {
                         <p className="column column-1">Scale</p><p className="column column-2">{raster.observation_type && raster.observation_type.scale}</p>
                     </div>
                 </div>
-                <br/>
+                <br />
                 <div className="raster-details__button-container">
                     <h4>View data in</h4>
                     <div>
-                        <button className="raster-details__button button-api" onClick={() => window.open(`https://demo.lizard.net/api/v4/rasters/${raster.uuid}`)}>API</button>
-                        <button className="raster-details__button button-lizard" onClick={() => window.open(`https://demo.lizard.net/nl/map/topography,raster$${raster.uuid.substr(0, 7)}/point/@${rasterLong},${rasterLat},${zoom}`)}>PORTAL</button>
+                        <button className="raster-details__button button-api" onClick={() => window.open(`${PROXY_SERVER}/api/v4/rasters/${raster.uuid}`)}>API</button>
+                        <button className="raster-details__button button-lizard" onClick={() => window.open(`${PROXY_SERVER}/nl/map/topography,raster$${raster.uuid.substr(0, 7)}/point/@${rasterLong},${rasterLat},${zoom}`)}>PORTAL</button>
                     </div>
                 </div>
             </div>
         );
-    };    
+    };
 };
 
 const mapStateToProps = (state: MyStore): PropsFromState => {
     if (!state.selectedRaster) return {
-        raster: null 
+        raster: null
     };
     return {
         raster: getRaster(state, state.selectedRaster)

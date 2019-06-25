@@ -5,6 +5,8 @@ import { removeItem } from '../action';
 import { Raster } from '../interface';
 import './Header.css';
 
+import { PROXY_SERVER } from '../api';
+
 interface PropsFromState {
     basket: Raster[]
 };
@@ -49,10 +51,11 @@ class Header extends React.Component<MyProps> {
                 let angle2 = north - south;
                 if (angle2 > angle) angle = angle2;
                 const zoom = Math.round(Math.log(960 * 360 / angle / GLOBE_WIDTH) / Math.LN2);
-
-            window.open(`https://demo.lizard.net/nl/map/topography${urlPath}/point/@${rasterLong},${rasterLat},${zoom}`);
+           
+            window.open(`${PROXY_SERVER}/nl/map/topography${urlPath}/point/@${rasterLong},${rasterLat},${zoom}`);
             //If open all rasters with the projection of the globe then use:
             //window.open(`https://demo.lizard.net/nl/map/topography${urlPath}/point/@0.1,-0.1,2`);
+            
         };
 
         return (
@@ -109,8 +112,8 @@ class Header extends React.Component<MyProps> {
                                         <img className="li li-type" src="image/raster-non-temporal.svg" alt="raster" />
                                     }
                                     <div className="li li-name">{raster.name}</div>
-                                    <div className="li li-org">{raster.organisation.name}</div>
-                                    <div className="li li-obs">{raster.observation_type.parameter}</div>
+                                    <div className="li li-org">{raster.organisation && raster.organisation.name}</div>
+                                    <div className="li li-obs">{raster.observation_type && raster.observation_type.parameter}</div>
                                     <div className="li li-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
                                     <div className="li li-basket li-basket__icon-box" onClick={() => removeItem(raster)}>
                                         <svg className="li-basket__icon">

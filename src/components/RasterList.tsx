@@ -111,7 +111,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                                         <img className="raster-list__row raster-list__row-type" src="image/raster-non-temporal.svg" alt="raster" />
                                     }
                                     <div className="raster-list__row raster-list__row-name">{raster.name}</div>
-                                    <div className="raster-list__row raster-list__row-org">{raster.organisation.name}</div>
+                                    <div className="raster-list__row raster-list__row-org">{raster.organisation && raster.organisation.name}</div>
                                     <div className="raster-list__row raster-list__row-obs">{raster.observation_type && raster.observation_type.parameter}</div>
                                     <div className="raster-list__row raster-list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
                                     {raster.access_modifier === 'Public' && 'Publiek' ? 
