@@ -18,7 +18,8 @@ li {
 }
 
 .loading-screen {
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
 }
 
 .raster-list__top {

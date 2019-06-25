@@ -1,4 +1,5 @@
 import * as React from 'react';
+import MDSpinner from "react-md-spinner";
 import { connect } from 'react-redux';
 import { Raster } from '../interface';
 import { MyStore, getRaster } from '../reducers';
@@ -55,7 +56,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
         const { searchTerm, page, onClick, onChange, onSubmit, currentRasterList, selectRaster, updateBasket, rasters } = this.props;
 
         //If nothing is fetched, Loading ... sign appeears
-        if (!currentRasterList || !rasters) return <div className="raster-list loading-screen"><h1>Loading ...</h1></div>;
+        if (!currentRasterList || !rasters) return <div className="raster-list loading-screen"><MDSpinner size={50}/></div>;
 
         //Destructure the currentRasterList object
         const { count, previous, next } = currentRasterList;
