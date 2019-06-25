@@ -5,6 +5,8 @@ import { MyStore, getRaster } from '../reducers';
 import { Raster } from '../interface';
 import './RasterDetails.css';
 
+import { PROXY_SERVER } from '../api';
+
 interface PropsFromState {
     raster: Raster | null
 };
@@ -92,8 +94,8 @@ class RasterDetails extends React.Component<PropsFromState> {
                 <div className="raster-details__button-container">
                     <h4>View data in</h4>
                     <div>
-                        <button className="raster-details__button button-api" onClick={() => window.open(`https://nxt3.staging.lizard.net/api/v4/rasters/${raster.uuid}`)}>API</button>
-                        <button className="raster-details__button button-lizard" onClick={() => window.open(`https://nxt3.staging.lizard.net/nl/map/topography,raster$${raster.uuid.substr(0, 7)}`)}>PORTAL</button>
+                        <button className="raster-details__button button-api" onClick={() => window.open(`${PROXY_SERVER}/api/v4/rasters/${raster.uuid}`)}>API</button>
+                        <button className="raster-details__button button-lizard" onClick={() => window.open(`${PROXY_SERVER}/nl/map/topography,raster$${raster.uuid.substr(0, 7)}`)}>PORTAL</button>
                     </div>
                 </div>
             </div>

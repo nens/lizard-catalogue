@@ -1,5 +1,4 @@
 //Construct baseUrl for API endpoint 
-
 export const baseUrl = (() => {
     //set the API endpoint 
     let absoluteBase = 'http://demo.lizard.net/api/v4';
@@ -14,3 +13,5 @@ export const baseUrl = (() => {
     }
     return absoluteBase;
 })();
+
+export const PROXY_SERVER = 'https://nxt3.staging.lizard.net';

@@ -5,6 +5,8 @@ import { removeItem } from '../action';
 import { Raster } from '../interface';
 import './Header.css';
 
+import { PROXY_SERVER } from '../api';
+
 interface PropsFromState {
     basket: Raster[]
 };
@@ -29,7 +31,7 @@ class Header extends React.Component<MyProps> {
             const urlPath = idArray.map(id => `,raster$${id}`).join('');
 
             //Open the link in a another tab
-            window.open(`https://nxt3.staging.lizard.net/nl/map/topography${urlPath}`);
+            window.open(`${PROXY_SERVER}/nl/map/topography${urlPath}`);
         };
 
         return (
