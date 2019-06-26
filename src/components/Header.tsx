@@ -23,6 +23,9 @@ class Header extends React.Component<MyProps> {
 
         //onClick function for the Open All Data button
         const onClick = (basket: PropsFromState['basket']) => {
+            //If there is no item in the basket then the function will not do anything
+            if (basket.length === 0) return ;
+
             //create an array of short ID of all the rasters in the basket
             const idArray = basket.map(raster => raster.uuid.substr(0, 7));
 
@@ -124,10 +127,15 @@ class Header extends React.Component<MyProps> {
                             ))}
                         </ul>
                         <p className="header-popup__content-onderste-laag">Onderste laag</p>
-                        {basket.length === 0 ?
-                            <button className="header-popup__content-button raster-list__button-basket raster-list__button-basket-grey">Open all data in Lizard</button> :
-                            <button className="header-popup__content-button raster-list__button-basket" onClick={() => onClick(basket)}>Open all data in Lizard</button>
-                        }
+                            <button 
+                                className={basket.length === 0 ? 
+                                    "header-popup__content-button raster-list__button-basket raster-list__button-basket-grey" : 
+                                    "header-popup__content-button raster-list__button-basket"
+                                } 
+                                onClick={() => onClick(basket)}
+                            >
+                                Open all data in Lizard
+                            </button>
                         {/* eslint-disable-next-line */}
                         <a href="#" className="header-popup__close">&times;</a>
                     </div>
