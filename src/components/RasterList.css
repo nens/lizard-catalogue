@@ -3,7 +3,7 @@ li {
 }
 
 .raster-list {
-    width: 50%;
+    width: 52%;
     border-radius: .4rem;
     padding: 1rem;
     background-color: #f2f2f2;
@@ -252,7 +252,7 @@ li {
     transform: translateY(2px);
 }
 
-.raster-list__button-basket-grey {    
+.raster-list__button-basket:disabled {    
     background-color: #BFBFBF;
     cursor: not-allowed;
 }

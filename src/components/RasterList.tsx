@@ -75,7 +75,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
         return (
             <div className="raster-list">
                 <div className="raster-list__top">
-                    <form onSubmit={onSubmit} className="raster-list__searchbar">
+                    <form onSubmit={onSubmit} className="raster-list__searchbar" title="Type raster name or raster's UUID">
                         <input type="text" className="raster-list__searchbar-input" placeholder="Search in Lizard or type an UUID" onChange={onChange} value={searchTerm} />
                         <button className="raster-list__searchbar-button" type="submit">
                             <svg className="raster-list__searchbar-icon">
@@ -135,16 +135,20 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                         </ul>
                         {!next ? <button className="raster-list__button-grey">&rsaquo;</button> : <button className="raster-list__button-next" onClick={() => onClick(page + 1)}>&rsaquo;</button>}
                     </div>
-                    {this.state.checkedRasters.length === 0 ?
-                        <button className="raster-list__button-basket raster-list__button-basket-grey">ADD TO BASKET</button> :
-                        <button className="raster-list__button-basket" onClick={addToBasket}>ADD TO BASKET</button>
-                    }
+                        <button 
+                            className="raster-list__button-basket"
+                            disabled={this.state.checkedRasters.length === 0 ? true : false}
+                            onClick={addToBasket}
+                        >
+                            ADD TO BASKET
+                        </button>
                 </div>
                 {/*Notification popup when click on the Add to Basket button*/}
                 <div className="raster-list__popup" id="notification">
                     <div className="raster-list__popup-content">
                         <p>Items successfully added to the Basket. Go to your basket to see which items have been added.</p>
-                        <a href="#catalogue" className="raster-list__popup-close">OK</a>
+                        {/* eslint-disable-next-line */}
+                        <a href="#" className="raster-list__popup-close">OK</a>
                     </div>
                 </div>
             </div>

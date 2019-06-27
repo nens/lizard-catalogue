@@ -83,11 +83,11 @@ class FilterBar extends React.Component<MyProps, MyState> {
 
         return (
             <div className="filter">
-                <div className="filter-title">Filters</div>
+                <div className="filter-title" title="Filter rasters">Filters</div>
                 <div className="filter-box">
-                    <div className="filter-observation-type">
-                        <h4>Observation Type</h4>
-                        <form onSubmit={this.onObsSubmit} className="raster-list__searchbar">
+                    <div className="filter-observation-type" title="Feature in Development">
+                        <h4 title="Filter by Observation Type">Observation Type</h4>
+                        <form onSubmit={this.onObsSubmit} className="raster-list__searchbar" title="Type observation type's parameter name">
                             <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onObsChange} value={searchObs} />
                             <button className="raster-list__searchbar-button" type="submit">
                                 <svg className="raster-list__searchbar-icon">
@@ -114,8 +114,8 @@ class FilterBar extends React.Component<MyProps, MyState> {
                         </ul>
                     </div>
                     <div className="filter-organisation">
-                        <h4>Organisation</h4>
-                        <form onSubmit={this.onOrgSubmit} className="raster-list__searchbar">
+                        <h4 title="Filter by Organisation">Organisation</h4>
+                        <form onSubmit={this.onOrgSubmit} className="raster-list__searchbar" title="Type organisation name">
                             <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onOrgChange} value={searchOrg} />
                             <button className="raster-list__searchbar-button" type="submit">
                                 <svg className="raster-list__searchbar-icon">

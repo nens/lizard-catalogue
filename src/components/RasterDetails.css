@@ -1,7 +1,7 @@
 .raster-details {
-    font-size: 1.2rem;
-    line-height: 1.4rem;
-    width: 35%;
+    font-size: 1.3rem;
+    line-height: 1.5rem;
+    width: 30%;
     border-radius: .4rem;
     padding: 1.5rem;
     margin-right: 1rem;
@@ -45,14 +45,19 @@
 }
 
 .raster-details__description-box {
+    min-width: 0;
     flex: 1;
-
-    overflow-y: scroll;
-    overflow-x: hidden; 
+    display: flex;
+    flex-direction: column;
 }
 
 .raster-details__description-box h4 {
     margin: .8rem 0 .5rem 0;
+}
+
+.description {
+    overflow-y: scroll;
+    overflow-x: hidden; 
 }
 
 .raster-details__map-box {
@@ -69,13 +74,8 @@
     width: 95%;
 }
 
-.raster-details__data-1 {
-    height: 25%;
-}
-
-.raster-details__data-2 {
-    height: 15%;
-    align-items: center;
+.raster-details__metadata {
+    height: 40%;
     margin-top: 2rem;
 }
 
@@ -83,10 +83,11 @@
     display: flex;
     
     min-height: 3rem;
+    background-color: #fff;
 }
 
 .column {
-    border: thin solid grey;
+    border: thin solid #ECECEC;
 
     flex: 1;
     text-align: left;

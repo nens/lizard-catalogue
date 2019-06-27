@@ -94,3 +94,8 @@ export interface ObservationType {
     description: string,
     checked: boolean
 };
+
+export interface CenterPoint {
+    lat: number,
+    lng: number
+};
