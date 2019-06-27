@@ -252,7 +252,7 @@ li {
     transform: translateY(2px);
 }
 
-.raster-list__button-basket-grey {    
+.raster-list__button-basket:disabled {    
     background-color: #BFBFBF;
     cursor: not-allowed;
 }
