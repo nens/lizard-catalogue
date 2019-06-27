@@ -64,7 +64,10 @@ class RasterList extends React.Component<RasterListProps, MyState> {
         //1- open the notification box
         //2- dispatch an action to update the basket
         //3- set the state of the RasterList component again
-        const addToBasket = () => {
+        const addToBasket = (rasters: MyState['checkedRasters']) => {
+            //If there is no raster checked, do nothing
+            if (rasters.length === 0) return ;
+
             //Click the button will open the notification popup
             window.location.href = '#notification';
             
@@ -135,10 +138,15 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                         </ul>
                         {!next ? <button className="raster-list__button-grey">&rsaquo;</button> : <button className="raster-list__button-next" onClick={() => onClick(page + 1)}>&rsaquo;</button>}
                     </div>
-                    {this.state.checkedRasters.length === 0 ?
-                        <button className="raster-list__button-basket raster-list__button-basket-grey">ADD TO BASKET</button> :
-                        <button className="raster-list__button-basket" onClick={addToBasket}>ADD TO BASKET</button>
-                    }
+                        <button 
+                            className={this.state.checkedRasters.length === 0 ? 
+                                "raster-list__button-basket raster-list__button-basket-grey" :
+                                "raster-list__button-basket"
+                            }
+                            onClick={() => addToBasket(this.state.checkedRasters)}
+                        >
+                            ADD TO BASKET
+                        </button>
                 </div>
                 {/*Notification popup when click on the Add to Basket button*/}
                 <div className="raster-list__popup" id="notification">

@@ -5,7 +5,8 @@ import { removeItem } from '../action';
 import { Raster } from '../interface';
 import './Header.css';
 
-import { PROXY_SERVER } from '../api';
+import { zoomLevelCalculation } from '../utils/zoomLevelCalculation';
+import { openRastersInLizard } from '../utils/openRaster';
 
 interface PropsFromState {
     basket: Raster[]
@@ -45,20 +46,10 @@ class Header extends React.Component<MyProps> {
                 const rasterLat = (west + east)/2;
                 const rasterLong = (north + south)/2;
 
-                //Get the zoom level based on 4 spatial bounds
-                //Get reference from stackoverflow on how to calculate the zoom level: 
-                //https://stackoverflow.com/questions/6048975/google-maps-v3-how-to-calculate-the-zoom-level-for-a-given-bounds
-                const GLOBE_WIDTH = 256; //a constant in Google's map projection
-                let angle = east - west;
-                if (angle < 0) angle += 360;
-                let angle2 = north - south;
-                if (angle2 > angle) angle = angle2;
-                const zoom = Math.round(Math.log(960 * 360 / angle / GLOBE_WIDTH) / Math.LN2);
+                //Calculate the zoom level of the last selected raster by using the zoomLevelCalculation function
+                const zoom = zoomLevelCalculation(north, east, south, west);
            
-            window.open(`${PROXY_SERVER}/nl/map/topography${urlPath}/point/@${rasterLong},${rasterLat},${zoom}`);
-            //If open all rasters with the projection of the globe then use:
-            //window.open(`https://demo.lizard.net/nl/map/topography${urlPath}/point/@0.1,-0.1,2`);
-            
+            openRastersInLizard(urlPath, rasterLong, rasterLat, zoom);
         };
 
         return (

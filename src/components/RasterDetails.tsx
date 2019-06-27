@@ -5,7 +5,8 @@ import { MyStore, getRaster } from '../reducers';
 import { Raster } from '../interface';
 import './RasterDetails.css';
 
-import { PROXY_SERVER } from '../api';
+import { zoomLevelCalculation } from '../utils/zoomLevelCalculation';
+import { openRasterInAPI, openRasterInLizard } from '../utils/openRaster';
 
 interface PropsFromState {
     raster: Raster | null
@@ -30,15 +31,8 @@ class RasterDetails extends React.Component<PropsFromState> {
         const rasterLat = (west + east) / 2;
         const rasterLong = (north + south) / 2;
 
-        //Get the zoom level based on 4 spatial bounds
-        //Get reference from stackoverflow on how to calculate the zoom level: 
-        //https://stackoverflow.com/questions/6048975/google-maps-v3-how-to-calculate-the-zoom-level-for-a-given-bounds
-        const GLOBE_WIDTH = 256; //a constant in Google's map projection
-        let angle = east - west;
-        if (angle < 0) angle += 360;
-        let angle2 = north - south;
-        if (angle2 > angle) angle = angle2;
-        const zoom = Math.round(Math.log(960 * 360 / angle / GLOBE_WIDTH) / Math.LN2);
+        //Calculate the zoom level of the raster by using the zoomLevelCalculation function
+        const zoom = zoomLevelCalculation(north, east, south, west);
 
         //Get the Date from the timestamp string
         const startDate = new Date(raster.first_value_timestamp);
@@ -105,8 +99,8 @@ class RasterDetails extends React.Component<PropsFromState> {
                 <div className="raster-details__button-container">
                     <h4>View data in</h4>
                     <div>
-                        <button className="raster-details__button button-api" onClick={() => window.open(`${PROXY_SERVER}/api/v4/rasters/${raster.uuid}`)}>API</button>
-                        <button className="raster-details__button button-lizard" onClick={() => window.open(`${PROXY_SERVER}/nl/map/topography,raster$${raster.uuid.substr(0, 7)}/point/@${rasterLong},${rasterLat},${zoom}`)}>PORTAL</button>
+                        <button className="raster-details__button button-api" onClick={() => openRasterInAPI(raster)}>API</button>
+                        <button className="raster-details__button button-lizard" onClick={() => openRasterInLizard(raster, rasterLong, rasterLat, zoom)}>PORTAL</button>
                     </div>
                 </div>
             </div>
