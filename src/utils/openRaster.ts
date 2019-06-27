@@ -5,10 +5,13 @@ export const openRasterInAPI = (raster: Raster) => {
     window.open(`${PROXY_SERVER}/api/v4/rasters/${raster.uuid}`)
 };
 
-export const openRasterInLizard = (raster: Raster, rasterLong: number, rasterLat: number, zoom: number) => {
-    window.open(`${PROXY_SERVER}/nl/map/topography,raster$${raster.uuid.substr(0, 7)}/point/@${rasterLong},${rasterLat},${zoom}`)
-};
+export const openRastersInLizard = (basket: Raster[], centerPoint, zoom: number) => {
+    //create an array of short ID of all the rasters in the basket
+    const idArray = basket.map(raster => raster.uuid.substr(0, 7));
 
-export const openRastersInLizard = (urlPath: string, rasterLong: number, rasterLat: number, zoom: number) => {
-    window.open(`${PROXY_SERVER}/nl/map/topography${urlPath}/point/@${rasterLong},${rasterLat},${zoom}`);
+    //create the url path to display all the rasters in the basket on the map
+    //the format of the url is something like: ',raster$rasterID1,raster$rasterID2,...,raster$rasterIDn'
+    const urlPath = idArray.map(id => `,raster$${id}`).join('');
+    
+    window.open(`${PROXY_SERVER}/nl/map/topography${urlPath}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };

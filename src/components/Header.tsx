@@ -5,7 +5,7 @@ import { removeItem } from '../action';
 import { Raster } from '../interface';
 import './Header.css';
 
-import { zoomLevelCalculation } from '../utils/zoomLevelCalculation';
+import { zoomLevelCalculation, getCenterPoint } from '../utils/latLngZoomCalculation';
 import { openRastersInLizard } from '../utils/openRaster';
 
 interface PropsFromState {
@@ -22,37 +22,29 @@ class Header extends React.Component<MyProps> {
     render() {
         const { basket, removeItem } = this.props;
 
-        //onClick function for the Open All Data button
+        //Open All Data button will open all rasters in Lizard Client
+        //with projection of the last selected raster
         const openInLizard = (basket: PropsFromState['basket']) => {
-            //create an array of short ID of all the rasters in the basket
-            const idArray = basket.map(raster => raster.uuid.substr(0, 7));
+            //Get the last selected raster in the basket which is the first item in the basket array
+            const lastSelectedRaster = basket[0];
 
-            //create the url path to display all the rasters in the basket on the map
-            //the format of the url is something like: ',raster$rasterID1,raster$rasterID2,...,raster$rasterIDn'
-            const urlPath = idArray.map(id => `,raster$${id}`).join('');
+            //Get the spatial bounds of the last selected raster, if spatial_bounds is null then set it to the global map
+            const { north, east, south, west } = lastSelectedRaster.spatial_bounds ?
+                lastSelectedRaster.spatial_bounds : { north: 85, east: 180, south: -85, west: -180 };
 
-            //Open the link in another tab with projection of the last selected raster
-                //Get the last selected raster in the basket which is the first item in the basket array
-                const lastSelectedRaster = basket[0];
+            //Get the center point of the raster based on its spatial bounds
+            const centerPoint = getCenterPoint(north, east, south, west);
 
-                //Get the spatial bounds of the last selected raster, if spatial_bounds is null then set it to the global map
-                const { north, east, south, west } = lastSelectedRaster.spatial_bounds ? 
-                    lastSelectedRaster.spatial_bounds : {north: 85, east: 180, south: -85, west: -180};
-
-                //Calculate the latitude and longitude based on the spatial bounds
-                const rasterLat = (west + east)/2;
-                const rasterLong = (north + south)/2;
-
-                //Calculate the zoom level of the last selected raster by using the zoomLevelCalculation function
-                const zoom = zoomLevelCalculation(north, east, south, west);
-           
-            openRastersInLizard(urlPath, rasterLong, rasterLat, zoom);
+            //Calculate the zoom level of the last selected raster by using the zoomLevelCalculation function
+            const zoom = zoomLevelCalculation(north, east, south, west);
+            
+            openRastersInLizard(basket, centerPoint, zoom);
         };
 
         return (
             <nav className="header">
                 <div className="header-logo">
-                    <img src="image/lizard.png" alt="logo" className="header-logo__logo" onClick={() => window.location.href=""}/>
+                    <img src="image/lizard.png" alt="logo" className="header-logo__logo" onClick={() => window.location.href = ""} />
                     <h3 className="header-logo__text">Lizard Catalogue</h3>
                 </div>
                 <div className="header-nav">
@@ -115,12 +107,12 @@ class Header extends React.Component<MyProps> {
                             ))}
                         </ul>
                         <p className="header-popup__content-onderste-laag">Onderste laag</p>
-                            <button 
-                                className="header-popup__content-button raster-list__button-basket"
-                                disabled={basket.length === 0 ? true : false} 
-                                onClick={() => openInLizard(basket)}
-                            >
-                                Open all data in Lizard
+                        <button
+                            className="header-popup__content-button raster-list__button-basket"
+                            disabled={basket.length === 0 ? true : false}
+                            onClick={() => openInLizard(basket)}
+                        >
+                            Open all data in Lizard
                             </button>
                         {/* eslint-disable-next-line */}
                         <a href="#" className="header-popup__close">&times;</a>
@@ -141,7 +133,7 @@ class Header extends React.Component<MyProps> {
                         </div>
                         <div className="header-information-box__footer">
                             <a href="/static_media/documents/privacy.pdf" target="_blank">Privacy Statement</a>
-                            <button onClick={() => window.location.href='#'}>Close</button>
+                            <button onClick={() => window.location.href = '#'}>Close</button>
                         </div>
                         {/* eslint-disable-next-line */}
                         <a href="#" className="header-information-box__close">&times;</a>
