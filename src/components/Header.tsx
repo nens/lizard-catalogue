@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { MyStore, getRaster } from '../reducers';
 import { removeItem } from '../action';
-import { Raster } from '../interface';
+import { Raster, CenterPoint } from '../interface';
 import './Header.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../utils/latLngZoomCalculation';
@@ -33,7 +33,7 @@ class Header extends React.Component<MyProps> {
                 lastSelectedRaster.spatial_bounds : { north: 85, east: 180, south: -85, west: -180 };
 
             //Get the center point of the raster based on its spatial bounds
-            const centerPoint = getCenterPoint(north, east, south, west);
+            const centerPoint: CenterPoint = getCenterPoint(north, east, south, west);
 
             //Calculate the zoom level of the last selected raster by using the zoomLevelCalculation function
             const zoom = zoomLevelCalculation(north, east, south, west);

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getRaster } from '../reducers';
-import { Raster } from '../interface';
+import { Raster, CenterPoint } from '../interface';
 import './RasterDetails.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../utils/latLngZoomCalculation';
@@ -28,7 +28,7 @@ class RasterDetails extends React.Component<PropsFromState> {
         const bounds = [[north, east], [south, west]];
 
         //Get the center point of the raster based on its spatial bounds
-        const centerPoint = getCenterPoint(north, east, south, west);
+        const centerPoint: CenterPoint = getCenterPoint(north, east, south, west);
 
         //Calculate the zoom level of the raster by using the zoomLevelCalculation function
         const zoom = zoomLevelCalculation(north, east, south, west);
