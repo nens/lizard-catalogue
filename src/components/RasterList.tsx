@@ -20,7 +20,7 @@ interface MyProps {
 };
 
 interface PropsFromState {
-    rasters: Raster[] | null
+    rasters: Raster[]
 };
 
 type RasterListProps = MyProps & PropsFromState;
@@ -51,12 +51,19 @@ class RasterList extends React.Component<RasterListProps, MyState> {
         };
     };
 
+    renderLoadingScreen() {
+        return <div className="raster-list loading-screen"><MDSpinner size={50}/></div>;
+    };
+
     render() {
         //Destructure all props of the Raster List component
         const { searchTerm, page, onClick, onChange, onSubmit, currentRasterList, selectRaster, updateBasket, rasters } = this.props;
 
-        //If nothing is fetched, Loading ... sign appeears
-        if (!currentRasterList || !rasters) return <div className="raster-list loading-screen"><MDSpinner size={50}/></div>;
+        //If nothing is fetched, show loading screen
+        if (!currentRasterList) return <this.renderLoadingScreen />;
+        
+        //If data is being requested from the API, show loading screen
+        if (currentRasterList.isFetching) return <this.renderLoadingScreen />;
 
         //Destructure the currentRasterList object
         const { count, previous, next } = currentRasterList;
@@ -156,7 +163,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
 
 const mapStateToProps = (state: MyStore, ownProps: MyProps): PropsFromState => {
     if (!ownProps.currentRasterList) return {
-        rasters: null
+        rasters: []
     };
     return {
         rasters: ownProps.currentRasterList.rasterList.map(uuid => getRaster(state, uuid))

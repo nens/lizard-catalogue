@@ -5,17 +5,19 @@ import {
     BASKET_UPDATED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
-    ITEM_REMOVED
+    ITEM_REMOVED,
+    RASTERS_REQUESTED
 } from "./action";
 import {
     RastersFetched,
     RasterSelected,
+    RasterActionType,
     Raster,
     ObservationType,
     Organisation,
     Basket,
     OrganisationsFetched,
-    ObservationTypesFetched
+    ObservationTypesFetched,
 } from './interface';
 
 export interface MyStore {
@@ -26,6 +28,7 @@ export interface MyStore {
         previous: string | null;
         next: string | null;
         rasterList: string[];
+        isFetching: boolean
     } | null;
     allRasters: {
         [index: string]: Raster;
@@ -34,22 +37,31 @@ export interface MyStore {
     basket: string[];
 };
 
-const currentRasterList = (state: MyStore['currentRasterList'] = null, action: RastersFetched) => {
+const currentRasterList = (state: MyStore['currentRasterList'] = null, action: RasterActionType): MyStore['currentRasterList'] => {
     switch (action.type) {
+        case RASTERS_REQUESTED:
+            return {
+                count: 0,
+                previous: null,
+                next: null,
+                rasterList: [],
+                isFetching: true
+            }
         case RASTERS_FETCHED:
             const { count, previous, next } = action.payload;
             return {
                 count: count,
                 previous: previous,
                 next: next,
-                rasterList: action.payload.results.map(raster => raster.uuid)
+                rasterList: action.payload.results.map(raster => raster.uuid),
+                isFetching: false
             };
         default:
             return state;
     };
 };
 
-const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched) => {
+const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched): MyStore['allRasters'] => {
     switch (action.type) {
         case RASTERS_FETCHED:
             const newState = { ...state };
@@ -62,7 +74,7 @@ const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched) =
     };
 };
 
-const selectedRaster = (state: MyStore['selectedRaster'] = null, action: RasterSelected) => {
+const selectedRaster = (state: MyStore['selectedRaster'] = null, action: RasterSelected): MyStore['selectedRaster'] => {
     switch (action.type) {
         case RASTER_SELECTED:
             return action.payload;
@@ -71,7 +83,7 @@ const selectedRaster = (state: MyStore['selectedRaster'] = null, action: RasterS
     };
 };
 
-const basket = (state: MyStore['basket'] = [], action: Basket) => {
+const basket = (state: MyStore['basket'] = [], action: Basket): MyStore['basket'] => {
     switch (action.type) {
         case BASKET_UPDATED:
             const newState = [...state, ...action.payload];
@@ -86,7 +98,7 @@ const basket = (state: MyStore['basket'] = [], action: Basket) => {
     };
 };
 
-const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched) => {
+const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched): MyStore['observationTypes'] => {
     switch (action.type) {
         case OBSERVATION_TYPES_FETCHED:
             return action.payload.map(observation => {
@@ -105,7 +117,7 @@ const observationTypes = (state: MyStore['observationTypes'] = [], action: Obser
     };
 };
 
-const organisations = (state: MyStore['organisations'] = [], action: OrganisationsFetched) => {
+const organisations = (state: MyStore['organisations'] = [], action: OrganisationsFetched): MyStore['organisations'] => {
     switch (action.type) {
         case ORGANISATIONS_FETCHED:
             return action.payload.map(organisation => {

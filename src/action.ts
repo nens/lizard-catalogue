@@ -9,10 +9,11 @@ import { RastersFetched,
     Organisation, 
     Raster, 
     ItemRemoved, 
-    ObservationTypesFetched, 
+    ObservationTypesFetched,
     OrganisationsFetched
 } from './interface';
 
+export const RASTERS_REQUESTED = 'RASTERS_REQUESTED';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
 export const RASTER_SELECTED = 'RASTER_SELECTED';
 
@@ -22,12 +23,17 @@ export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
 export const BASKET_UPDATED = 'BASKET_UPDATED';
 export const ITEM_REMOVED = 'ITEM_REMOVED'
 
+const rastersRequested = () => ({
+    type: RASTERS_REQUESTED
+});
+
 const rastersFetched = (rasterListObject: RasterListObject): RastersFetched => ({
     type: RASTERS_FETCHED,
     payload: rasterListObject
 });
 
-export const fetchRasters = (page: number, searchTerm: string, organisationName: string, dispatch: Dispatch<RastersFetched>): void => {
+export const fetchRasters = (page: number, searchTerm: string, organisationName: string, dispatch): void => {
+    dispatch(rastersRequested());
     request
         .get(`${baseUrl}/rasters?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}`)
         .then(response => {
