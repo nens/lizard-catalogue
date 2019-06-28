@@ -52,7 +52,7 @@ class Header extends React.Component<MyProps> {
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-cart" />
                         </svg>
-                        <span className="header-nav__notification">{basket.length}</span>
+                        {basket.length === 0 ? <span /> : <span className="header-nav__notification">{basket.length}</span>}
                         <span className="header-nav__text">Basket</span>
                     </a>
                     {/* <div className="header-nav__icon-box">
