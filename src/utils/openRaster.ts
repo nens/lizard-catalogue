@@ -1,11 +1,11 @@
-import { Raster, CenterPoint } from "../interface";
+import { Raster, LatLng } from "../interface";
 import { PROXY_SERVER } from "../api";
 
 export const openRasterInAPI = (raster: Raster) => {
     window.open(`${PROXY_SERVER}/api/v4/rasters/${raster.uuid}`)
 };
 
-export const openRastersInLizard = (basket: Raster[], centerPoint: CenterPoint, zoom: number) => {
+export const openRastersInLizard = (basket: Raster[], centerPoint: LatLng, zoom: number) => {
     //create an array of short ID of all the rasters in the basket
     const idArray = basket.map(raster => raster.uuid.substr(0, 7));
 

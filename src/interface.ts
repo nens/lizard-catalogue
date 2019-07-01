@@ -100,7 +100,7 @@ export interface ObservationType {
     checked: boolean
 };
 
-export interface CenterPoint {
+export interface LatLng {
     lat: number,
     lng: number
 };
