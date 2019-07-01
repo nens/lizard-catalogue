@@ -3,10 +3,15 @@ import { RASTERS_FETCHED,
     BASKET_UPDATED, 
     ITEM_REMOVED, 
     OBSERVATION_TYPES_FETCHED, 
-    ORGANISATIONS_FETCHED
+    ORGANISATIONS_FETCHED,
+    RASTERS_REQUESTED
 } from "./action";
 
 //ACTION INTERFACE
+export interface RastersRequested {
+    type: typeof RASTERS_REQUESTED
+};
+
 export interface RastersFetched {
     type: typeof RASTERS_FETCHED,
     payload: RasterListObject
@@ -17,7 +22,7 @@ export interface RasterSelected {
     payload: string
 };
 
-export type RasterActionType = RastersFetched | RasterSelected;
+export type RasterActionType = RastersRequested | RastersFetched | RasterSelected;
 
 export interface BasketAdded {
     type: typeof BASKET_UPDATED,
