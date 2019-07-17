@@ -2,14 +2,15 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { MyStore, getRaster } from '../reducers';
 import { removeItem } from '../action';
-import { Raster, LatLng } from '../interface';
+import { Raster, LatLng, Bootstrap } from '../interface';
 import './Header.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../utils/latLngZoomCalculation';
 import { openRastersInLizard } from '../utils/openRaster';
 
 interface PropsFromState {
-    basket: Raster[]
+    basket: Raster[],
+    user: Bootstrap['user']
 };
 
 interface PropsFromDispatch {
@@ -20,7 +21,7 @@ type MyProps = PropsFromState & PropsFromDispatch;
 
 class Header extends React.Component<MyProps> {
     render() {
-        const { basket, removeItem } = this.props;
+        const { basket, removeItem, user } = this.props;
 
         //Open All Data button will open all rasters in Lizard Client
         //with projection of the last selected raster
@@ -65,7 +66,7 @@ class Header extends React.Component<MyProps> {
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-user" />
                         </svg>
-                        <span className="header-nav__text">User</span>
+                        <span className="header-nav__text">{user.first_name}</span>
                     </div>
                     <div className="header-nav__icon-box">
                         <svg className="header-nav__icon">
@@ -149,7 +150,9 @@ const mapStateToProps = (state: MyStore): PropsFromState => {
         //Get all the rasters by their uuid from the basket and reverse the order
         //so the last selected raster will appear on top of the list
         //and the first selected raster will appear at the bottom of the list
-        basket: state.basket.map(uuid => getRaster(state, uuid)).reverse()
+        basket: state.basket.map(uuid => getRaster(state, uuid)).reverse(),
+        //Get user
+        user: state.bootstrap.user
     };
 };
 
