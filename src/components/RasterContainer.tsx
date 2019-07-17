@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { fetchRasters, selectRaster, updateBasket, fetchObservationTypes, fetchOrganisations } from '../action';
+import { fetchRasters, selectRaster, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType } from '../interface';
 import RasterList from './RasterList';
@@ -17,6 +17,7 @@ interface PropsFromState {
 };
 
 interface PropsFromDispatch {
+    getLizardBootstrap: () => void,
     selectRaster: (uuid: string) => void,
     fetchRasters: (page: number, searchTerm: string, organisationName: string) => void,
     updateBasket: (basket: MyStore['basket']) => void,
@@ -93,6 +94,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     };
 
     componentDidMount() {
+        this.props.getLizardBootstrap();
         this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName);
     };
 
@@ -145,6 +147,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType>): PropsFromDispatch => ({
+    getLizardBootstrap: () => fetchLizardBootstrap(dispatch),
     fetchRasters: (page: number, searchTerm: string, organisationName: string) => fetchRasters(page, searchTerm, organisationName, dispatch),
     selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),

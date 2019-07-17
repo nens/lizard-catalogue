@@ -1,13 +1,27 @@
-import { RASTERS_FETCHED, 
-    RASTER_SELECTED, 
-    BASKET_UPDATED, 
-    ITEM_REMOVED, 
-    OBSERVATION_TYPES_FETCHED, 
+import {
+    RASTERS_FETCHED,
+    RASTER_SELECTED,
+    BASKET_UPDATED,
+    ITEM_REMOVED,
+    OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
-    RASTERS_REQUESTED
+    RASTERS_REQUESTED,
+    REQUEST_LIZARD_BOOTSTRAP,
+    RECEIVE_LIZARD_BOOTSTRAP
 } from "./action";
 
 //ACTION INTERFACE
+export interface RequestLizardBootstrap {
+    type: typeof REQUEST_LIZARD_BOOTSTRAP
+};
+
+export interface ReceiveLizardBootstrap {
+    type: typeof RECEIVE_LIZARD_BOOTSTRAP,
+    payload: Bootstrap
+};
+
+export type BootstrapActionType = RequestLizardBootstrap | ReceiveLizardBootstrap;
+
 export interface RastersRequested {
     type: typeof RASTERS_REQUESTED
 };
@@ -49,6 +63,16 @@ export interface OrganisationsFetched {
 export type FilterActionType = ObservationTypesFetched | OrganisationsFetched;
 
 //INTERFACES
+export interface Bootstrap {
+    user: {
+        first_name: string | null,
+        username: string | null,
+        authenticated: boolean
+    },
+    isAuthenticated: boolean | null,
+    isFetching: boolean
+};
+
 export interface RasterListObject {
     count: number,
     previous: string,
