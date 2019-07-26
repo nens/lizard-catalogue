@@ -142,11 +142,13 @@ export const getRaster = (state: MyStore, uuid: string) => {
 };
 
 export const getObservationTypes = (state: MyStore) => {
-    return state.observationTypes;
+    //Remove observation types without parameter to display
+    return state.observationTypes.filter(observationType => observationType.parameter !== "");
 };
 
 export const getOrganisations = (state: MyStore) => {
-    return state.organisations;
+    //Remove organisations without name to display
+    return state.organisations.filter(organisation => organisation.name !== "");
 }
 
 export default combineReducers({
