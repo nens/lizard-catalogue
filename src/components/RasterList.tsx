@@ -14,6 +14,7 @@ interface MyProps {
     onClick: (page: number) => void,
     onChange: (event: object) => void,
     onSubmit: (event: object) => void,
+    onSorting: (ordering: string) => void,
 
     selectRaster: (uuid: string) => void,
     updateBasket: (basket: MyStore['basket']) => void
@@ -57,7 +58,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
 
     render() {
         //Destructure all props of the Raster List component
-        const { searchTerm, page, onClick, onChange, onSubmit, currentRasterList, selectRaster, updateBasket, rasters } = this.props;
+        const { searchTerm, page, onClick, onChange, onSubmit, onSorting, currentRasterList, selectRaster, updateBasket, rasters } = this.props;
 
         //If nothing is fetched, show loading screen
         if (!currentRasterList) return <this.renderLoadingScreen />;
@@ -100,23 +101,23 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             <div className="raster-list__row raster-list__row-box" />
                             <div className="raster-list__row raster-list__row-type">
                                 Type 
-                                <i className="fa fa-sort"/>
+                                <i className="fa fa-sort" onClick={() => onSorting('temporal')}/>
                             </div>
                             <div className="raster-list__row raster-list__row-name">
                                 Name 
-                                <i className="fa fa-sort"/>
+                                <i className="fa fa-sort" onClick={() => onSorting('name')}/>
                             </div>
                             <div className="raster-list__row raster-list__row-org">
                                 Organisation 
-                                <i className="fa fa-sort"/>
+                                <i className="fa fa-sort" onClick={() => onSorting('organisation')}/>
                             </div>
                             <div className="raster-list__row raster-list__row-obs">
                                 Obs.Type 
-                                <i className="fa fa-sort"/>
+                                <i className="fa fa-sort" onClick={() => onSorting('observation_type')}/>
                             </div>
                             <div className="raster-list__row raster-list__row-time">
                                 Latest update
-                                <i className="fa fa-sort"/>
+                                <i className="fa fa-sort" onClick={() => onSorting('last_modified')}/>
                             </div>
                             <div className="raster-list__row raster-list__row-access" />
                         </li>
