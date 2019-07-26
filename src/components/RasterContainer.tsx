@@ -18,7 +18,7 @@ interface PropsFromState {
 
 interface PropsFromDispatch {
     selectRaster: (uuid: string) => void,
-    fetchRasters: (page: number, searchTerm: string, organisationName: string) => void,
+    fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string) => void,
     updateBasket: (basket: MyStore['basket']) => void,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void
@@ -45,7 +45,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
 
     onClick = (page: number) => {
         if (page < 1) return page = 1;
-        this.props.fetchRasters(page, this.state.searchTerm, this.state.organisationName);
+        this.props.fetchRasters(page, this.state.searchTerm, this.state.organisationName, this.state.observationType);
         this.setState({
             page: page,
         });
@@ -63,7 +63,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
             page: 1
         });
 
-        this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName);
+        this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName, this.state.observationType);
     };
 
     //When click on the checkbox in the filter bar, this function will update the observation type state in this component
@@ -93,13 +93,13 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     };
 
     componentDidMount() {
-        this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName);
+        this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.observationType);
     };
 
     //Component will fetch the Rasters again each time the value of this.state.organisationName changes
     componentWillUpdate(nextProps: RasterContainerProps, nextState: MyState) {
-        if (nextProps && nextState.organisationName !== this.state.organisationName) {
-            this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, nextState.organisationName);
+        if (nextProps && (nextState.organisationName !== this.state.organisationName || nextState.observationType !== this.state.observationType)) {
+            this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, nextState.organisationName, nextState.observationType);
             this.setState({
                 page: 1
             });
@@ -145,7 +145,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType>): PropsFromDispatch => ({
-    fetchRasters: (page: number, searchTerm: string, organisationName: string) => fetchRasters(page, searchTerm, organisationName, dispatch),
+    fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, dispatch),
     selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
