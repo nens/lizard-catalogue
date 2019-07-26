@@ -109,11 +109,11 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             </div>
                             <div className="raster-list__row raster-list__row-org">
                                 Organisation 
-                                <i className="fa fa-sort" onClick={() => onSorting('organisation')}/>
+                                <i className="fa fa-sort" onClick={() => onSorting('organisation__name')}/>
                             </div>
                             <div className="raster-list__row raster-list__row-obs">
                                 Obs.Type 
-                                <i className="fa fa-sort" onClick={() => onSorting('observation_type')}/>
+                                <i className="fa fa-sort" onClick={() => onSorting('observation_type__parameter')}/>
                             </div>
                             <div className="raster-list__row raster-list__row-time">
                                 Latest update
