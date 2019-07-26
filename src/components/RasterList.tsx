@@ -98,11 +98,26 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                     <ul className="raster-list__list">
                         <li className="raster-list__row-title">
                             <div className="raster-list__row raster-list__row-box" />
-                            <div className="raster-list__row raster-list__row-type">Type <img src="image/sort-2.svg" alt="sort-type" className="raster-list__sorting-icon" /></div>
-                            <div className="raster-list__row raster-list__row-name">Name <img src="image/sort-2.svg" alt="sort-name" className="raster-list__sorting-icon" /></div>
-                            <div className="raster-list__row raster-list__row-org">Organisation <img src="image/sort-2.svg" alt="sort-organisation" className="raster-list__sorting-icon" /></div>
-                            <div className="raster-list__row raster-list__row-obs">Obs.Type <img src="image/sort-2.svg" alt="sort-obs" className="raster-list__sorting-icon" /></div>
-                            <div className="raster-list__row raster-list__row-time">Latest update <img src="image/sort-2.svg" alt="sort-update" className="raster-list__sorting-icon" /></div>
+                            <div className="raster-list__row raster-list__row-type">
+                                Type 
+                                <i className="fa fa-sort"/>
+                            </div>
+                            <div className="raster-list__row raster-list__row-name">
+                                Name 
+                                <i className="fa fa-sort"/>
+                            </div>
+                            <div className="raster-list__row raster-list__row-org">
+                                Organisation 
+                                <i className="fa fa-sort"/>
+                            </div>
+                            <div className="raster-list__row raster-list__row-obs">
+                                Obs.Type 
+                                <i className="fa fa-sort"/>
+                            </div>
+                            <div className="raster-list__row raster-list__row-time">
+                                Latest update
+                                <i className="fa fa-sort"/>
+                            </div>
                             <div className="raster-list__row raster-list__row-access" />
                         </li>
                         {rasters.map((raster: Raster) => {
