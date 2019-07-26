@@ -11,9 +11,9 @@ interface MyProps {
 
     currentRasterList: MyStore['currentRasterList'] | null,
 
-    onClick: (page: number) => void,
-    onChange: (event: object) => void,
-    onSubmit: (event: object) => void,
+    onPageClick: (page: number) => void,
+    onSearchChange: (event: object) => void,
+    onSearchSubmit: (event: object) => void,
     onSorting: (ordering: string) => void,
 
     selectRaster: (uuid: string) => void,
@@ -58,7 +58,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
 
     render() {
         //Destructure all props of the Raster List component
-        const { searchTerm, page, onClick, onChange, onSubmit, onSorting, currentRasterList, selectRaster, updateBasket, rasters } = this.props;
+        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentRasterList, selectRaster, updateBasket, rasters } = this.props;
 
         //If nothing is fetched, show loading screen
         if (!currentRasterList) return <this.renderLoadingScreen />;
@@ -84,8 +84,8 @@ class RasterList extends React.Component<RasterListProps, MyState> {
         return (
             <div className="raster-list">
                 <div className="raster-list__top">
-                    <form onSubmit={onSubmit} className="raster-list__searchbar" title="Type raster name or raster's UUID">
-                        <input type="text" className="raster-list__searchbar-input" placeholder="Search in Lizard or type an UUID" onChange={onChange} value={searchTerm} />
+                    <form onSubmit={onSearchSubmit} className="raster-list__searchbar" title="Type raster name or raster's UUID">
+                        <input type="text" className="raster-list__searchbar-input" placeholder="Search in Lizard or type an UUID" onChange={onSearchChange} value={searchTerm} />
                         <button className="raster-list__searchbar-button" type="submit">
                             <svg className="raster-list__searchbar-icon">
                                 <use xlinkHref="image/symbols.svg#icon-search" />
@@ -149,15 +149,15 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                 </div>
                 <div className="raster-list__button-container">
                     <div className="raster-list__button-pagination">
-                        {!previous ? <button className="raster-list__button-grey">&lsaquo;</button> : <button className="raster-list__button-previous" onClick={() => onClick(page - 1)}>&lsaquo;</button>}
+                        {!previous ? <button className="raster-list__button-grey">&lsaquo;</button> : <button className="raster-list__button-previous" onClick={() => onPageClick(page - 1)}>&lsaquo;</button>}
                         <ul className="raster-list__button-pagination-ul">
-                            <li className="raster-list__button-pagination-li" onClick={() => onClick(page - 2)}>{page <= 2 ? null : page - 2}</li>
-                            <li className="raster-list__button-pagination-li" onClick={() => onClick(page - 1)}>{page <= 1 ? null : page - 1}</li>
+                            <li className="raster-list__button-pagination-li" onClick={() => onPageClick(page - 2)}>{page <= 2 ? null : page - 2}</li>
+                            <li className="raster-list__button-pagination-li" onClick={() => onPageClick(page - 1)}>{page <= 1 ? null : page - 1}</li>
                             <li className="raster-list__button-pagination-li raster-list__button-pagination-li-active">{page}</li>
-                            <li className="raster-list__button-pagination-li" onClick={() => onClick(page + 1)}>{page >= Math.ceil(currentRasterList.count/10) ? null : page + 1}</li>
-                            <li className="raster-list__button-pagination-li" onClick={() => onClick(page + 2)}>{page >= (Math.ceil(currentRasterList.count/10) - 1) ? null : page + 2}</li>
+                            <li className="raster-list__button-pagination-li" onClick={() => onPageClick(page + 1)}>{page >= Math.ceil(currentRasterList.count/10) ? null : page + 1}</li>
+                            <li className="raster-list__button-pagination-li" onClick={() => onPageClick(page + 2)}>{page >= (Math.ceil(currentRasterList.count/10) - 1) ? null : page + 2}</li>
                         </ul>
-                        {!next ? <button className="raster-list__button-grey">&rsaquo;</button> : <button className="raster-list__button-next" onClick={() => onClick(page + 1)}>&rsaquo;</button>}
+                        {!next ? <button className="raster-list__button-grey">&rsaquo;</button> : <button className="raster-list__button-next" onClick={() => onPageClick(page + 1)}>&rsaquo;</button>}
                     </div>
                         <button 
                             className="raster-list__button-basket"

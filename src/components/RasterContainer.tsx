@@ -45,7 +45,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         ordering: '',
     };
 
-    onClick = (page: number) => {
+    onPageClick = (page: number) => {
         if (page < 1) return page = 1;
         this.props.fetchRasters(page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
         this.setState({
@@ -53,13 +53,13 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         });
     };
 
-    onChange = (event) => {
+    onSearchChange = (event) => {
         this.setState({
             searchTerm: event.target.value
         });
     };
 
-    onSubmit = (event) => {
+    onSearchSubmit = (event) => {
         event.preventDefault();
         this.setState({
             page: 1
@@ -143,9 +143,9 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                         currentRasterList={this.props.currentRasterList}
                         selectRaster={this.props.selectRaster}
                         updateBasket={this.props.updateBasket}
-                        onClick={this.onClick}
-                        onChange={this.onChange}
-                        onSubmit={this.onSubmit}
+                        onPageClick={this.onPageClick}
+                        onSearchChange={this.onSearchChange}
+                        onSearchSubmit={this.onSearchSubmit}
                         onSorting={this.onSorting}
                     />
                     <RasterDetails />
