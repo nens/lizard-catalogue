@@ -127,6 +127,16 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             //if no then the checked value of the input field will be false
                             const checked = this.state.checkedRasters.filter(uuid => uuid === raster.uuid).length === 0 ? false : true;
 
+                            const renderAccessModifier = () => {
+                                if (raster.access_modifier === "Public" || raster.access_modifier === "Publiek") {
+                                    return <div className="access-modifier public">{raster.access_modifier.toUpperCase()}</div>
+                                } else if (raster.access_modifier === "Private" || raster.access_modifier === "Privaat") {
+                                    return <div className="access-modifier private">{raster.access_modifier.toUpperCase()}</div>
+                                } else {
+                                    return <div className="access-modifier common">{raster.access_modifier.toUpperCase()}</div>
+                                }
+                            }
+
                             return (
                                 <li className="raster-list__row-li" key={raster.uuid} onClick={() => selectRaster(raster.uuid)} >
                                     <input className="raster-list__row raster-list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(raster.uuid)} checked={checked} />
@@ -138,10 +148,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                                     <div className="raster-list__row raster-list__row-org">{raster.organisation && raster.organisation.name}</div>
                                     <div className="raster-list__row raster-list__row-obs">{raster.observation_type && raster.observation_type.parameter}</div>
                                     <div className="raster-list__row raster-list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
-                                    {raster.access_modifier === 'Public' && 'Publiek' ? 
-                                        <div className="raster-list__row raster-list__row-access"><div className="access-modifier">{raster.access_modifier.toUpperCase()}</div></div> :
-                                        <div className="raster-list__row raster-list__row-access" />
-                                    } 
+                                    <div className="raster-list__row raster-list__row-access">{renderAccessModifier()}</div>
                                 </li>
                             )
                         })}
