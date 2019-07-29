@@ -32,14 +32,15 @@ const rastersFetched = (rasterListObject: RasterListObject): RastersFetched => (
     payload: rasterListObject
 });
 
-export const fetchRasters = (page: number, searchTerm: string, organisationName: string, dispatch): void => {
+export const fetchRasters = (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string, dispatch): void => {
     dispatch(rastersRequested());
     request
-        .get(`${baseUrl}/rasters?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}`)
+        .get(`${baseUrl}/rasters?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&observation_type__parameter__icontains=${observationTypeParameter}&ordering=${ordering}`)
         .then(response => {
             if(response.body.count === 0) {
+                //If could not find any raster with the search term by raster's name then look for raster's uuid
                 request
-                    .get(`${baseUrl}/rasters?uuid=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}`)
+                    .get(`${baseUrl}/rasters?uuid=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&observation_type__parameter__icontains=${observationTypeParameter}`)
                     .then(response => {
                         dispatch(rastersFetched(response.body))
                     })
