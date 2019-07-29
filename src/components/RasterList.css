@@ -132,6 +132,11 @@ li {
     overflow: hidden;
 }
 
+.raster-list__row i {
+    cursor: pointer;
+    margin-left: .5rem;
+}
+
 .raster-list__row-box {
     flex: .5;
 }
@@ -159,17 +164,23 @@ li {
     flex: .8;
 }
 
-.raster-list__sorting-icon {
-    cursor: pointer;
-    display: none;
-}
-
 .access-modifier {
     font-size: 1rem;
     color: #fff;
-    background-color: #1ABC9C;
     border-radius: .2rem;
-    width: 4.5rem;
+    width: 5rem;
+}
+
+.public {
+    background-color: #1ABC9C;
+}
+
+.private {
+    background-color: #FF4500;
+}
+
+.common {
+    background-color: #FFA500;
 }
 
 .raster-list__button-container {

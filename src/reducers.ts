@@ -179,11 +179,28 @@ export const getRaster = (state: MyStore, uuid: string) => {
 };
 
 export const getObservationTypes = (state: MyStore) => {
-    return state.observationTypes;
+    //Remove observation types with empty parameter
+    const observationTypes = state.observationTypes.filter(observationType => observationType.parameter !== "");
+
+    //Remove duplicates in parameters using reduce() method
+    const parameters = observationTypes.map(observationType => observationType.parameter);
+    const parametersWithoutDuplicates = parameters.reduce((a: string[], b) => {
+        if (a.indexOf(b) < 0) a.push(b);
+        return a;
+    }, []);
+
+    //Return all observation types based on their parameters
+    //For observation types with same parameters (i.e. waterhoogte), only select one of them as we are interested in getting one single result only
+    //So in this case, we select the first one from the array
+    return parametersWithoutDuplicates.map(parameter => {
+        //Get all the observation types with this parameter and select the first one
+        return observationTypes.filter(observationType => observationType.parameter === parameter)[0];
+    });
 };
 
 export const getOrganisations = (state: MyStore) => {
-    return state.organisations;
+    //Remove organisations with empty name
+    return state.organisations.filter(organisation => organisation.name !== "");
 }
 
 export default combineReducers({

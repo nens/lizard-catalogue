@@ -19,7 +19,7 @@ interface PropsFromState {
 interface PropsFromDispatch {
     getLizardBootstrap: () => void,
     selectRaster: (uuid: string) => void,
-    fetchRasters: (page: number, searchTerm: string, organisationName: string) => void,
+    fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => void,
     updateBasket: (basket: MyStore['basket']) => void,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void
@@ -32,7 +32,8 @@ interface MyState {
     initialPage: number,
     searchTerm: string,
     organisationName: string,
-    observationType: string
+    observationType: string,
+    ordering: string,
 };
 
 class RasterContainer extends React.Component<RasterContainerProps, MyState> {
@@ -41,30 +42,31 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         initialPage: 1,
         searchTerm: '',
         organisationName: '',
-        observationType: ''
+        observationType: '',
+        ordering: '',
     };
 
-    onClick = (page: number) => {
+    onPageClick = (page: number) => {
         if (page < 1) return page = 1;
-        this.props.fetchRasters(page, this.state.searchTerm, this.state.organisationName);
+        this.props.fetchRasters(page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
         this.setState({
             page: page,
         });
     };
 
-    onChange = (event) => {
+    onSearchChange = (event) => {
         this.setState({
             searchTerm: event.target.value
         });
     };
 
-    onSubmit = (event) => {
+    onSearchSubmit = (event) => {
         event.preventDefault();
         this.setState({
             page: 1
         });
 
-        this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName);
+        this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
     };
 
     //When click on the checkbox in the filter bar, this function will update the observation type state in this component
@@ -93,15 +95,29 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         };
     };
 
+    //When click on the sorting icon in the raster list, this function will update the ordering state in this component
+    onSorting = (ordering: string) => {
+        //Sorting rasters in 2 ways if user clicks on the sorting icon multiple times
+        if (ordering !== this.state.ordering) {
+            this.setState({
+                ordering: ordering
+            });
+        } else {
+            this.setState({
+                ordering: `-${ordering}`
+            })
+        };
+    };
+
     componentDidMount() {
         this.props.getLizardBootstrap();
-        this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName);
+        this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
     };
 
     //Component will fetch the Rasters again each time the value of this.state.organisationName changes
     componentWillUpdate(nextProps: RasterContainerProps, nextState: MyState) {
-        if (nextProps && nextState.organisationName !== this.state.organisationName) {
-            this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, nextState.organisationName);
+        if (nextProps && (nextState.organisationName !== this.state.organisationName || nextState.observationType !== this.state.observationType || nextState.ordering !== this.state.ordering)) {
+            this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, nextState.organisationName, nextState.observationType, nextState.ordering);
             this.setState({
                 page: 1
             });
@@ -129,9 +145,10 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                         currentRasterList={this.props.currentRasterList}
                         selectRaster={this.props.selectRaster}
                         updateBasket={this.props.updateBasket}
-                        onClick={this.onClick}
-                        onChange={this.onChange}
-                        onSubmit={this.onSubmit}
+                        onPageClick={this.onPageClick}
+                        onSearchChange={this.onSearchChange}
+                        onSearchSubmit={this.onSearchSubmit}
+                        onSorting={this.onSorting}
                     />
                     <RasterDetails />
                 </div>
@@ -148,7 +165,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType>): PropsFromDispatch => ({
     getLizardBootstrap: () => fetchLizardBootstrap(dispatch),
-    fetchRasters: (page: number, searchTerm: string, organisationName: string) => fetchRasters(page, searchTerm, organisationName, dispatch),
+    fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, ordering, dispatch),
     selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),

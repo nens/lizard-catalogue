@@ -51,7 +51,7 @@ class Header extends React.Component<MyProps> {
                 <div className="header-nav">
                     <a href="#basket" className="header-nav__icon-box" title={`${basket.length} items in the basket`}>
                         <svg className="header-nav__icon">
-                            <use xlinkHref="image/symbols.svg#icon-cart" />
+                            <use xlinkHref="image/symbols.svg#icon-shopping-basket" />
                         </svg>
                         {basket.length === 0 ? <span /> : <span className="header-nav__notification">{basket.length}</span>}
                         <span className="header-nav__text">Basket</span>
@@ -68,12 +68,12 @@ class Header extends React.Component<MyProps> {
                         </svg>
                         <span className="header-nav__text">{user.first_name}</span>
                     </div>
-                    <div className="header-nav__icon-box">
+                    {/* <div className="header-nav__icon-box">
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-sort" />
                         </svg>
                         <span className="header-nav__text">Nelen &amp; Schuurmans</span>
-                    </div>
+                    </div> */}
                     <a href="#information" className="header-nav__icon-box" title="Info">
                         <svg className="header-nav__icon info-box">
                             <use xlinkHref="image/symbols.svg#icon-info" />
@@ -128,7 +128,7 @@ class Header extends React.Component<MyProps> {
                                 <p>Welcome to the Lizard Catalogue!</p>
                                 <p>
                                     This catalogue provides you a detailed overview of all the raster datasets in Lizard.
-                                    You're able to search for datasets, filter them per organisation, view detailed metadata and open datasets in the Lizard Portal and the Lizard API.
+                                    You can search for datasets, filter them per organisation, view detailed metadata and open datasets in the Lizard Portal and the Lizard API.
                                 </p>
                             </div>
                         </div>
