@@ -83,34 +83,6 @@ class FilterBar extends React.Component<MyProps, MyState> {
 
         return (
             <div className="filter-box">
-                <div className="filter-observation-type" title="Feature in Development">
-                    <h4 title="Filter by Observation Type">Observation Type</h4>
-                    <form onSubmit={this.onObsSubmit} className="raster-list__searchbar" title="Type observation type's parameter name">
-                        <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onObsChange} value={searchObs} />
-                        <button className="raster-list__searchbar-button" type="submit">
-                            <svg className="raster-list__searchbar-icon">
-                                <use xlinkHref="image/symbols.svg#icon-search" />
-                            </svg>
-                        </button>
-                    </form>
-                    {checkedObservationType ?
-                        //Showing the checked item and the option the remove this checked item from the filter
-                        <div className="filter__checked-item"><button onClick={() => { onObservationTypeCheckbox(checkedObservationType); checkedObservationType.checked = !checkedObservationType.checked }}>x</button>{checkedObservationType.parameter}</div> :
-                        <div className="filter__checked-item" />
-                    }
-                    <ul className="filter-list">
-                        {filteredObservationTypes.slice(0, this.state.obsItems).map((observationType: ObservationType) => (
-                            <li className="filter-item" key={observationType.code}>
-                                <input type="checkbox" className="filter-checkbox" onClick={() => onObservationTypeCheckbox(observationType)} onChange={() => this.onObservationTypeChange(observationType, observationTypes)} checked={observationType.checked} />
-                                <span className="filter-item-name">{observationType.parameter}</span>
-                            </li>
-                        ))}
-                        {this.state.obsItems < filteredObservationTypes.length ?
-                            <button className="filter-list-button" onClick={() => this.setState({ obsItems: this.state.obsItems + 7 })}>more ...</button> :
-                            <button style={{ display: 'none' }} />
-                        }
-                    </ul>
-                </div>
                 <div className="filter-organisation">
                     <h4 title="Filter by Organisation">Organisation</h4>
                     <form onSubmit={this.onOrgSubmit} className="raster-list__searchbar" title="Type organisation name">
@@ -135,6 +107,34 @@ class FilterBar extends React.Component<MyProps, MyState> {
                         ))}
                         {this.state.orgItems < filteredOrganisations.length ?
                             <button className="filter-list-button" onClick={() => this.setState({ orgItems: this.state.orgItems + 7 })}>more ...</button> :
+                            <button style={{ display: 'none' }} />
+                        }
+                    </ul>
+                </div>
+                <div className="filter-observation-type" title="Feature in Development">
+                    <h4 title="Filter by Observation Type">Observation Type</h4>
+                    <form onSubmit={this.onObsSubmit} className="raster-list__searchbar" title="Type observation type's parameter name">
+                        <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onObsChange} value={searchObs} />
+                        <button className="raster-list__searchbar-button" type="submit">
+                            <svg className="raster-list__searchbar-icon">
+                                <use xlinkHref="image/symbols.svg#icon-search" />
+                            </svg>
+                        </button>
+                    </form>
+                    {checkedObservationType ?
+                        //Showing the checked item and the option the remove this checked item from the filter
+                        <div className="filter__checked-item"><button onClick={() => { onObservationTypeCheckbox(checkedObservationType); checkedObservationType.checked = !checkedObservationType.checked }}>x</button>{checkedObservationType.parameter}</div> :
+                        <div className="filter__checked-item" />
+                    }
+                    <ul className="filter-list">
+                        {filteredObservationTypes.slice(0, this.state.obsItems).map((observationType: ObservationType) => (
+                            <li className="filter-item" key={observationType.code}>
+                                <input type="checkbox" className="filter-checkbox" onClick={() => onObservationTypeCheckbox(observationType)} onChange={() => this.onObservationTypeChange(observationType, observationTypes)} checked={observationType.checked} />
+                                <span className="filter-item-name">{observationType.parameter}</span>
+                            </li>
+                        ))}
+                        {this.state.obsItems < filteredObservationTypes.length ?
+                            <button className="filter-list-button" onClick={() => this.setState({ obsItems: this.state.obsItems + 7 })}>more ...</button> :
                             <button style={{ display: 'none' }} />
                         }
                     </ul>
