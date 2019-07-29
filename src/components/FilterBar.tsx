@@ -128,7 +128,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                     }
                     <ul className="filter-list">
                         {filteredOrganisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
-                            <li className="filter-item" key={organisation.name}>
+                            <li className="filter-item" key={organisation.uuid}>
                                 <input type="checkbox" className="filter-checkbox" onClick={() => onOrganisationCheckbox(organisation)} onChange={() => this.onOrganisationChange(organisation, organisations)} checked={organisation.checked} />
                                 <span className="filter-item-name">{organisation.name}</span>
                             </li>

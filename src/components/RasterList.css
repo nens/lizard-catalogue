@@ -132,6 +132,11 @@ li {
     overflow: hidden;
 }
 
+.raster-list__row i {
+    cursor: pointer;
+    margin-left: .5rem;
+}
+
 .raster-list__row-box {
     flex: .5;
 }
@@ -157,11 +162,6 @@ li {
 
 .raster-list__row-access {
     flex: .8;
-}
-
-.raster-list__sorting-icon {
-    cursor: pointer;
-    display: none;
 }
 
 .access-modifier {
