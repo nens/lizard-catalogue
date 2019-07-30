@@ -39,6 +39,21 @@ Uses release-it library to release the `dist` folder to github.<br>
 A wizard will follow. Usually just choose the defaults everywhere by hitting enter.<br>
 
 ## Deployment
+**Note: some users might experience some problems for the first deployment on their local machine and maybe some other times as well. Please follow the instructions below!** 
+
+Instructions for first-time deployment, follow these extra steps first before the actual deployment:
+- Create a Personal Access Token on GitHub (if you do not have it yet);
+- Export your personal GitHub token by running the following command: `$export GITHUB_TOKEN=$your_personal_github_token`;
+- Try running this command in your terminal: `ssh -v s-web-ws-d10.external-nens.local`.<br>
+If the message in the console is: "Could not resolve hostname: Name or service not known", then edit your resolv.config file as follows:
+  + Open resolv.config by running `sudo gedit /etc/resolv.conf`;
+  + Add the following contents to the file:<br>
+      nameserver 10.80.24.33<br>
+	    nameserver 10.80.24.32<br>
+	    search nens.local
+  + Save and exit the file;  
+- Now you are ready to move to the final step of the deployment.
+  
 For the deployment of frontend repositories we make use of an Ansible script in the lizard-nxt repository.
 More information is provided in the readme file of lizard-nxt: https://github.com/nens/lizard-nxt/blob/master/README.rst
 Look below the heading "Deployment clients". 
