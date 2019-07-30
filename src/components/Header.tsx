@@ -27,16 +27,26 @@ type HeaderProps = MyProps & PropsFromState & PropsFromDispatch;
 class Header extends React.Component<HeaderProps> {
 
     renderProfileDropdown() {
+        const { user } = this.props;
+
         return (
             <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
-                <a href="/edit_profile/" target="_blank" rel="noopener noreferrer">
-                    <i className="fa fa-pencil" style={{ paddingRight: "2rem" }}/>
-                    Edit Profile
+                <a
+                    href={user ? "https://sso.lizard.net/accounts/profile/" : "/accounts/login/?next=/catalogue/"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
+                    {user ? "Edit Profile" : "Login"}
                 </a>
-                <a href="/accounts/logout/">
-                    <i className="fa fa-power-off" style={{ paddingRight: "2rem" }}/>
-                    Logout
-                </a>
+                {user ?
+                    <a href="/accounts/logout/">
+                        <i className="fa fa-power-off" style={{ paddingRight: "2rem" }} />
+                        Logout
+                    </a>
+                    :
+                    null
+                }
             </div>
         );
     };
