@@ -29,7 +29,7 @@ class Header extends React.Component<HeaderProps> {
     renderProfileDropdown() {
         return (
             <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
-                <a href="/accounts/login/?next=/edit_profile/" target="_blank" rel="noopener noreferrer">
+                <a href="/edit_profile/" target="_blank" rel="noopener noreferrer">
                     <i className="fa fa-pencil" style={{ paddingRight: "2rem" }}/>
                     Edit Profile
                 </a>
