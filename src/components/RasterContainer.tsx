@@ -28,6 +28,7 @@ interface PropsFromDispatch {
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
 
 interface MyState {
+    showProfileDropdown: boolean,
     page: number,
     initialPage: number,
     searchTerm: string,
@@ -38,12 +39,19 @@ interface MyState {
 
 class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     state: MyState = {
+        showProfileDropdown: false,
         page: 1,
         initialPage: 1,
         searchTerm: '',
         organisationName: '',
         observationType: '',
         ordering: '',
+    };
+
+    toggleProfileDropdown = (event) => {
+        return event.target.id === "user-profile" ?
+            this.setState({ showProfileDropdown: !this.state.showProfileDropdown }) :
+            this.setState({ showProfileDropdown: false });
     };
 
     onPageClick = (page: number) => {
@@ -126,9 +134,12 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
 
     render() {
         return (
-            <div className="raster-container">
+            <div className="raster-container" onClick={this.toggleProfileDropdown}>
                 <div className="raster-header">
-                    <Header />
+                    <Header 
+                        showProfileDropdown={this.state.showProfileDropdown}
+                        toggleProfileDropdown={this.toggleProfileDropdown}
+                    />
                 </div>
                 <div className="raster-main">
                     <FilterBar

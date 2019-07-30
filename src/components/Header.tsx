@@ -8,6 +8,11 @@ import './Header.css';
 import { zoomLevelCalculation, getCenterPoint } from '../utils/latLngZoomCalculation';
 import { openRastersInLizard } from '../utils/openRaster';
 
+interface MyProps {
+    showProfileDropdown: boolean,
+    toggleProfileDropdown: (event) => void
+};
+
 interface PropsFromState {
     basket: Raster[],
     user: Bootstrap['user']
@@ -17,9 +22,25 @@ interface PropsFromDispatch {
     removeItem: (raster: Raster) => void
 };
 
-type MyProps = PropsFromState & PropsFromDispatch;
+type HeaderProps = MyProps & PropsFromState & PropsFromDispatch;
 
-class Header extends React.Component<MyProps> {
+class Header extends React.Component<HeaderProps> {
+
+    renderProfileDropdown() {
+        return (
+            <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
+                <a href="/accounts/login/?next=/edit_profile/" target="_blank" rel="noopener noreferrer">
+                    <i className="fa fa-pencil" style={{ paddingRight: "2rem" }}/>
+                    Edit Profile
+                </a>
+                <a href="/accounts/logout/">
+                    <i className="fa fa-power-off" style={{ paddingRight: "2rem" }}/>
+                    Logout
+                </a>
+            </div>
+        );
+    };
+
     render() {
         const { basket, removeItem, user } = this.props;
 
@@ -38,7 +59,7 @@ class Header extends React.Component<MyProps> {
 
             //Calculate the zoom level of the last selected raster by using the zoomLevelCalculation function
             const zoom = zoomLevelCalculation(north, east, south, west);
-            
+
             openRastersInLizard(basket, centerPoint, zoom);
         };
 
@@ -62,11 +83,12 @@ class Header extends React.Component<MyProps> {
                         </svg>
                         <span className="header-nav__text">Apps</span>
                     </div> */}
-                    <div className="header-nav__icon-box">
-                        <svg className="header-nav__icon">
-                            <use xlinkHref="image/symbols.svg#icon-user" />
+                    <div className="header-nav__icon-box user-profile" id="user-profile">
+                        <svg className="header-nav__icon" id="user-profile">
+                            <use xlinkHref="image/symbols.svg#icon-user" id="user-profile"/>
                         </svg>
-                        <span className="header-nav__text">{user.first_name}</span>
+                        {user.first_name ? <span className="header-nav__text" id="user-profile">{user.first_name}</span> : <span className="header-nav__text" id="user-profile">User</span>}
+                        {this.props.showProfileDropdown && this.renderProfileDropdown()}
                     </div>
                     {/* <div className="header-nav__icon-box">
                         <svg className="header-nav__icon">
