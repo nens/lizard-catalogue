@@ -39,10 +39,7 @@ export const fetchLizardBootstrap = (dispatch) => {
     .then(data => {
         if (data && data.user && data.user.authenticated === true) {
             dispatch(receiveLizardBootstrap(data));
-        } else {
-            const nextUrl = window.location.href;
-            window.location.href = `${data.sso.login}&next=${nextUrl}`;
-        }
+        } 
     });
 };
 
