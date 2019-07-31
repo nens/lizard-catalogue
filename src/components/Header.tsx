@@ -2,25 +2,65 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { MyStore, getRaster } from '../reducers';
 import { removeItem } from '../action';
-import { Raster, LatLng } from '../interface';
+import { Raster, LatLng, Bootstrap } from '../interface';
 import './Header.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../utils/latLngZoomCalculation';
 import { openRastersInLizard } from '../utils/openRaster';
+import { PROXY_SERVER } from '../api';
+
+interface MyProps {
+    showProfileDropdown: boolean,
+    toggleProfileDropdown: (event) => void
+};
 
 interface PropsFromState {
-    basket: Raster[]
+    basket: Raster[],
+    user: Bootstrap['user']
 };
 
 interface PropsFromDispatch {
     removeItem: (raster: Raster) => void
 };
 
-type MyProps = PropsFromState & PropsFromDispatch;
+type HeaderProps = MyProps & PropsFromState & PropsFromDispatch;
 
-class Header extends React.Component<MyProps> {
+class Header extends React.Component<HeaderProps> {
+
+    renderProfileDropdown() {
+        const { user } = this.props;
+
+        //Show the dropdown with options for logged-in user and anonymous user
+        return user.authenticated ?
+            (
+                <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
+                    <a
+                        href="https://sso.lizard.net/accounts/profile/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
+                        Edit Profile
+                    </a>
+                    <a href="/accounts/logout/">
+                        <i className="fa fa-power-off" style={{ paddingRight: "2rem" }} />
+                        Logout
+                    </a>
+                </div>
+            )
+            :
+            (
+                <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
+                    <a href={`/accounts/login/?domain=${PROXY_SERVER}&next=/catalogue/`}>
+                        <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
+                        Login
+                    </a>
+                </div>
+            )
+    };
+
     render() {
-        const { basket, removeItem } = this.props;
+        const { basket, removeItem, user } = this.props;
 
         //Open All Data button will open all rasters in Lizard Client
         //with projection of the last selected raster
@@ -37,7 +77,7 @@ class Header extends React.Component<MyProps> {
 
             //Calculate the zoom level of the last selected raster by using the zoomLevelCalculation function
             const zoom = zoomLevelCalculation(north, east, south, west);
-            
+
             openRastersInLizard(basket, centerPoint, zoom);
         };
 
@@ -48,6 +88,11 @@ class Header extends React.Component<MyProps> {
                     <h3 className="header-logo__text">Lizard Catalogue</h3>
                 </div>
                 <div className="header-nav">
+                    <a href="#information" className="header-nav__icon-box" title="Info">
+                        <svg className="header-nav__icon info-box">
+                            <use xlinkHref="image/symbols.svg#icon-info" />
+                        </svg>
+                    </a>
                     <a href="#basket" className="header-nav__icon-box" title={`${basket.length} items in the basket`}>
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-shopping-basket" />
@@ -61,11 +106,12 @@ class Header extends React.Component<MyProps> {
                         </svg>
                         <span className="header-nav__text">Apps</span>
                     </div> */}
-                    <div className="header-nav__icon-box">
-                        <svg className="header-nav__icon">
-                            <use xlinkHref="image/symbols.svg#icon-user" />
+                    <div className="header-nav__icon-box user-profile" id="user-profile">
+                        <svg className="header-nav__icon" id="user-profile">
+                            <use xlinkHref="image/symbols.svg#icon-user" id="user-profile" />
                         </svg>
-                        <span className="header-nav__text">User</span>
+                        <span className="header-nav__text" id="user-profile">{user.first_name}</span>
+                        {this.props.showProfileDropdown && this.renderProfileDropdown()}
                     </div>
                     {/* <div className="header-nav__icon-box">
                         <svg className="header-nav__icon">
@@ -73,11 +119,6 @@ class Header extends React.Component<MyProps> {
                         </svg>
                         <span className="header-nav__text">Nelen &amp; Schuurmans</span>
                     </div> */}
-                    <a href="#information" className="header-nav__icon-box" title="Info">
-                        <svg className="header-nav__icon info-box">
-                            <use xlinkHref="image/symbols.svg#icon-info" />
-                        </svg>
-                    </a>
                 </div>
                 {/*This is the PopUp window when the basket is clicked*/}
                 <div className="header-popup" id="basket">
@@ -149,7 +190,9 @@ const mapStateToProps = (state: MyStore): PropsFromState => {
         //Get all the rasters by their uuid from the basket and reverse the order
         //so the last selected raster will appear on top of the list
         //and the first selected raster will appear at the bottom of the list
-        basket: state.basket.map(uuid => getRaster(state, uuid)).reverse()
+        basket: state.basket.map(uuid => getRaster(state, uuid)).reverse(),
+        //Get user
+        user: state.bootstrap.user
     };
 };
 

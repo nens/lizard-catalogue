@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { fetchRasters, selectRaster, updateBasket, fetchObservationTypes, fetchOrganisations } from '../action';
+import { fetchRasters, selectRaster, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType } from '../interface';
 import RasterList from './RasterList';
@@ -17,6 +17,7 @@ interface PropsFromState {
 };
 
 interface PropsFromDispatch {
+    getLizardBootstrap: () => void,
     selectRaster: (uuid: string) => void,
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => void,
     updateBasket: (basket: MyStore['basket']) => void,
@@ -27,6 +28,7 @@ interface PropsFromDispatch {
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
 
 interface MyState {
+    showProfileDropdown: boolean,
     page: number,
     initialPage: number,
     searchTerm: string,
@@ -37,12 +39,19 @@ interface MyState {
 
 class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     state: MyState = {
+        showProfileDropdown: false,
         page: 1,
         initialPage: 1,
         searchTerm: '',
         organisationName: '',
         observationType: '',
         ordering: '',
+    };
+
+    toggleProfileDropdown = (event) => {
+        return event.target.id === "user-profile" ?
+            this.setState({ showProfileDropdown: !this.state.showProfileDropdown }) :
+            this.setState({ showProfileDropdown: false });
     };
 
     onPageClick = (page: number) => {
@@ -109,6 +118,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     };
 
     componentDidMount() {
+        this.props.getLizardBootstrap();
         this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
     };
 
@@ -124,9 +134,12 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
 
     render() {
         return (
-            <div className="raster-container">
+            <div className="raster-container" onClick={this.toggleProfileDropdown}>
                 <div className="raster-header">
-                    <Header />
+                    <Header 
+                        showProfileDropdown={this.state.showProfileDropdown}
+                        toggleProfileDropdown={this.toggleProfileDropdown}
+                    />
                 </div>
                 <div className="raster-main">
                     <FilterBar
@@ -162,6 +175,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType>): PropsFromDispatch => ({
+    getLizardBootstrap: () => fetchLizardBootstrap(dispatch),
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, ordering, dispatch),
     selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
