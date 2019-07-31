@@ -88,6 +88,11 @@ class Header extends React.Component<HeaderProps> {
                     <h3 className="header-logo__text">Lizard Catalogue</h3>
                 </div>
                 <div className="header-nav">
+                    <a href="#information" className="header-nav__icon-box" title="Info">
+                        <svg className="header-nav__icon info-box">
+                            <use xlinkHref="image/symbols.svg#icon-info" />
+                        </svg>
+                    </a>
                     <a href="#basket" className="header-nav__icon-box" title={`${basket.length} items in the basket`}>
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-shopping-basket" />
@@ -105,7 +110,7 @@ class Header extends React.Component<HeaderProps> {
                         <svg className="header-nav__icon" id="user-profile">
                             <use xlinkHref="image/symbols.svg#icon-user" id="user-profile" />
                         </svg>
-                        {user.first_name ? <span className="header-nav__text" id="user-profile">{user.first_name}</span> : <span className="header-nav__text" id="user-profile">User</span>}
+                        <span className="header-nav__text" id="user-profile">{user.first_name}</span>
                         {this.props.showProfileDropdown && this.renderProfileDropdown()}
                     </div>
                     {/* <div className="header-nav__icon-box">
@@ -114,11 +119,6 @@ class Header extends React.Component<HeaderProps> {
                         </svg>
                         <span className="header-nav__text">Nelen &amp; Schuurmans</span>
                     </div> */}
-                    <a href="#information" className="header-nav__icon-box" title="Info">
-                        <svg className="header-nav__icon info-box">
-                            <use xlinkHref="image/symbols.svg#icon-info" />
-                        </svg>
-                    </a>
                 </div>
                 {/*This is the PopUp window when the basket is clicked*/}
                 <div className="header-popup" id="basket">
