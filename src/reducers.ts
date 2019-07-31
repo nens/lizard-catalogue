@@ -49,7 +49,6 @@ const bootstrap = (
             username: null,
             authenticated: false
         },
-        isAuthenticated: null,
         isFetching: false
     },
     action: BootstrapActionType
@@ -66,7 +65,6 @@ const bootstrap = (
                     username: user.username,
                     authenticated: user.authenticated
                 },
-                isAuthenticated: action.payload.user.authenticated,
                 isFetching: false
             };
         default:

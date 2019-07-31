@@ -69,7 +69,6 @@ export interface Bootstrap {
         username: string | null,
         authenticated: boolean
     },
-    isAuthenticated: boolean | null,
     isFetching: boolean
 };
 
