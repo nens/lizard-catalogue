@@ -8,7 +8,8 @@ interface MyProps {
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
     onObservationTypeCheckbox: (obsType: ObservationType) => void,
-    onOrganisationCheckbox: (organisation: Organisation) => void
+    onOrganisationCheckbox: (organisation: Organisation) => void,
+    switchView: () => void
 };
 
 interface MyState {
@@ -71,7 +72,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
     render() {
         const { searchObs, searchOrg } = this.state;
 
-        const { observationTypes, organisations, onObservationTypeCheckbox, onOrganisationCheckbox } = this.props;
+        const { observationTypes, organisations, onObservationTypeCheckbox, onOrganisationCheckbox, switchView } = this.props;
 
         //Filter observation types & organisations at the client side instead of fetching again from the server after each search
         const filteredObservationTypes = observationTypes.filter(observationTypes => observationTypes.parameter.toLowerCase().includes(this.state.searchObs.toLowerCase()));
@@ -84,8 +85,8 @@ class FilterBar extends React.Component<MyProps, MyState> {
         return (
             <div className="filter-box">
                 <div className="switcher">
-                    <button className="switcher-button switcher-button-raster">Raster</button>
-                    <button className="switcher-button switcher-button-wms">WMS</button>
+                    <button className="switcher-button switcher-button-raster" disabled={true}>Raster</button>
+                    <button className="switcher-button switcher-button-wms" onClick={switchView}>WMS</button>
                 </div>
                 <div className="filter-organisation">
                     <h4 title="Filter by Organisation">Organisation</h4>

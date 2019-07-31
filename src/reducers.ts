@@ -8,7 +8,8 @@ import {
     ITEM_REMOVED,
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
-    RECEIVE_LIZARD_BOOTSTRAP
+    RECEIVE_LIZARD_BOOTSTRAP,
+    SWITCH_VIEW
 } from "./action";
 import {
     RastersFetched,
@@ -49,7 +50,8 @@ const bootstrap = (
             username: null,
             authenticated: false
         },
-        isFetching: false
+        isFetching: false,
+        viewWMS: false 
     },
     action: BootstrapActionType
 ): MyStore['bootstrap'] => {
@@ -67,6 +69,11 @@ const bootstrap = (
                 },
                 isFetching: false
             };
+        case SWITCH_VIEW:
+            return {
+                ...state,
+                viewWMS: !state.viewWMS
+            }
         default:
             return state;
     }
@@ -166,6 +173,10 @@ const organisations = (state: MyStore['organisations'] = [], action: Organisatio
         default:
             return state;
     };
+};
+
+export const getLizardBootstrap = (state: MyStore) => {
+    return state.bootstrap;
 };
 
 export const getCurrentRasterList = (state: MyStore) => {

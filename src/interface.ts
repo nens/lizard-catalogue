@@ -7,7 +7,8 @@ import {
     ORGANISATIONS_FETCHED,
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
-    RECEIVE_LIZARD_BOOTSTRAP
+    RECEIVE_LIZARD_BOOTSTRAP,
+    SWITCH_VIEW
 } from "./action";
 
 //ACTION INTERFACE
@@ -20,7 +21,11 @@ export interface ReceiveLizardBootstrap {
     payload: Bootstrap
 };
 
-export type BootstrapActionType = RequestLizardBootstrap | ReceiveLizardBootstrap;
+export interface SwitchView {
+    type: typeof SWITCH_VIEW
+};
+
+export type BootstrapActionType = RequestLizardBootstrap | ReceiveLizardBootstrap | SwitchView;
 
 export interface RastersRequested {
     type: typeof RASTERS_REQUESTED
@@ -69,7 +74,8 @@ export interface Bootstrap {
         username: string | null,
         authenticated: boolean
     },
-    isFetching: boolean
+    isFetching: boolean,
+    viewWMS: boolean 
 };
 
 export interface RasterListObject {

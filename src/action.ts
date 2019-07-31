@@ -43,6 +43,17 @@ export const fetchLizardBootstrap = (dispatch) => {
     });
 };
 
+//MARK: Switch between rasters and wms layers
+export const SWITCH_VIEW = 'SWITCH_VIEW';
+
+const viewSwitched = () => ({
+    type: SWITCH_VIEW
+});
+
+export const switchView = (dispatch): void => {
+    dispatch(viewSwitched());
+};
+
 //MARK: Raster
 export const RASTERS_REQUESTED = 'RASTERS_REQUESTED';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
