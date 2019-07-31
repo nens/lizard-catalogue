@@ -145,34 +145,30 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                         toggleProfileDropdown={this.toggleProfileDropdown}
                     />
                 </div>
-
-                {!bootstrap.viewWMS ?
-                    <div className="raster-main">
-                        <FilterBar
-                            fetchObservationTypes={this.props.fetchObservationTypes}
-                            observationTypes={this.props.observationTypes}
-                            fetchOrganisations={this.props.fetchOrganisations}
-                            organisations={this.props.organisations}
-                            onObservationTypeCheckbox={this.onObservationTypeCheckbox}
-                            onOrganisationCheckbox={this.onOrganisationCheckbox}
-                            switchView={this.props.switchView}
-                        />
-                        <RasterList
-                            searchTerm={this.state.searchTerm}
-                            page={this.state.page}
-                            currentRasterList={this.props.currentRasterList}
-                            selectRaster={this.props.selectRaster}
-                            updateBasket={this.props.updateBasket}
-                            onPageClick={this.onPageClick}
-                            onSearchChange={this.onSearchChange}
-                            onSearchSubmit={this.onSearchSubmit}
-                            onSorting={this.onSorting}
-                        />
-                        <RasterDetails />
-                    </div>
-                    :
-                    null
-                }
+                <div className="raster-main">
+                    <FilterBar
+                        fetchObservationTypes={this.props.fetchObservationTypes}
+                        observationTypes={this.props.observationTypes}
+                        fetchOrganisations={this.props.fetchOrganisations}
+                        organisations={this.props.organisations}
+                        onObservationTypeCheckbox={this.onObservationTypeCheckbox}
+                        onOrganisationCheckbox={this.onOrganisationCheckbox}
+                        switchView={this.props.switchView}
+                        bootstrap={bootstrap}
+                    />
+                    <RasterList
+                        searchTerm={this.state.searchTerm}
+                        page={this.state.page}
+                        currentRasterList={this.props.currentRasterList}
+                        selectRaster={this.props.selectRaster}
+                        updateBasket={this.props.updateBasket}
+                        onPageClick={this.onPageClick}
+                        onSearchChange={this.onSearchChange}
+                        onSearchSubmit={this.onSearchSubmit}
+                        onSorting={this.onSorting}
+                    />
+                    <RasterDetails />
+                </div>
             </div>
         );
     };
