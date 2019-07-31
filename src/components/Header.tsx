@@ -29,26 +29,33 @@ class Header extends React.Component<HeaderProps> {
     renderProfileDropdown() {
         const { user } = this.props;
 
-        return (
-            <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
-                <a
-                    href={user ? "https://sso.lizard.net/accounts/profile/" : "/accounts/login/?next=/catalogue/"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
-                    {user ? "Edit Profile" : "Login"}
-                </a>
-                {user ?
+        //Show the dropdown with options for logged-in user and anonymous user
+        return user.authenticated ?
+            (
+                <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
+                    <a
+                        href="https://sso.lizard.net/accounts/profile/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
+                        Edit Profile
+                    </a>
                     <a href="/accounts/logout/">
                         <i className="fa fa-power-off" style={{ paddingRight: "2rem" }} />
                         Logout
                     </a>
-                    :
-                    null
-                }
-            </div>
-        );
+                </div>
+            )
+            :
+            (
+                <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
+                    <a href="/accounts/login/?next=/catalogue/">
+                        <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
+                        Login
+                    </a>
+                </div>
+            )
     };
 
     render() {
@@ -95,7 +102,7 @@ class Header extends React.Component<HeaderProps> {
                     </div> */}
                     <div className="header-nav__icon-box user-profile" id="user-profile">
                         <svg className="header-nav__icon" id="user-profile">
-                            <use xlinkHref="image/symbols.svg#icon-user" id="user-profile"/>
+                            <use xlinkHref="image/symbols.svg#icon-user" id="user-profile" />
                         </svg>
                         {user.first_name ? <span className="header-nav__text" id="user-profile">{user.first_name}</span> : <span className="header-nav__text" id="user-profile">User</span>}
                         {this.props.showProfileDropdown && this.renderProfileDropdown()}
