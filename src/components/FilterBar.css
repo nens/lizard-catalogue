@@ -108,3 +108,43 @@
 .filter__checked-item button:focus {
     outline: none;
 }
+
+/*SWITCHER BETWEEN RASTERS AND WMS VIEW*/
+.switcher {
+    display: flex;
+    justify-content: space-between;
+    height: 10%;
+}
+
+.switcher-button {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #fff;
+    border: none;
+    padding: 0;
+    background-color: #55cbac;
+    border-radius: .6rem;
+    box-shadow: .1rem .2rem .4rem rgba(12, 12, 12, 0.5);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70%;
+    width: 45%;
+    cursor: pointer;
+}
+
+.switcher-button:focus {
+    outline: none;
+}
+
+.switcher-button:active {
+    transform: translateY(2px);
+}
+
+.switcher-button:disabled {
+    background-color: #BFBFBF;
+    cursor: not-allowed;
+}

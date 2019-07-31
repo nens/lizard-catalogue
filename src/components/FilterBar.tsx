@@ -83,6 +83,10 @@ class FilterBar extends React.Component<MyProps, MyState> {
 
         return (
             <div className="filter-box">
+                <div className="switcher">
+                    <button className="switcher-button switcher-button-raster">Raster</button>
+                    <button className="switcher-button switcher-button-wms">WMS</button>
+                </div>
                 <div className="filter-organisation">
                     <h4 title="Filter by Organisation">Organisation</h4>
                     <form onSubmit={this.onOrgSubmit} className="raster-list__searchbar" title="Type organisation name">
