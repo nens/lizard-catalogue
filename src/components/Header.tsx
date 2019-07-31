@@ -7,7 +7,6 @@ import './Header.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../utils/latLngZoomCalculation';
 import { openRastersInLizard } from '../utils/openRaster';
-import { PROXY_SERVER } from '../api';
 
 interface MyProps {
     showProfileDropdown: boolean,
@@ -51,7 +50,7 @@ class Header extends React.Component<HeaderProps> {
             :
             (
                 <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
-                    <a href={`/accounts/login/?domain=${PROXY_SERVER}&next=/catalogue/`}>
+                    <a href={`/accounts/login/?next=/catalogue/`}>
                         <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
                         Login
                     </a>
