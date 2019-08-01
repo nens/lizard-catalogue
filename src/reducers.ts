@@ -248,6 +248,14 @@ export const getRaster = (state: MyStore, uuid: string) => {
     return state.allRasters[uuid];
 };
 
+export const getCurrentWMSList = (state: MyStore) => {
+    return state.currentWMSList;
+};
+
+export const getWMS = (state: MyStore, uuid: string) => {
+    return state.allWMS[uuid];
+};
+
 export const getObservationTypes = (state: MyStore) => {
     //Remove observation types with empty parameter
     const observationTypes = state.observationTypes.filter(observationType => observationType.parameter !== "");
