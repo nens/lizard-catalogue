@@ -1,29 +1,54 @@
 import request from 'superagent';
 import { baseUrl } from './api';
 import { Dispatch } from 'redux';
-import { RastersFetched, 
-    RasterSelected, 
-    RasterListObject, 
-    BasketAdded, 
-    ObservationType, 
-    Organisation, 
-    Raster, 
-    ItemRemoved, 
+import {
+    RastersFetched,
+    RasterSelected,
+    RasterListObject,
+    BasketAdded,
+    ObservationType,
+    Organisation,
+    Raster,
+    ItemRemoved,
     ObservationTypesFetched,
-    OrganisationsFetched
+    OrganisationsFetched,
+    RastersRequested,
+    RequestLizardBootstrap,
+    ReceiveLizardBootstrap
 } from './interface';
 
+//MARK: Bootsrap
+export const REQUEST_LIZARD_BOOTSTRAP = "REQUEST_LIZARD_BOOTSTRAP";
+export const RECEIVE_LIZARD_BOOTSTRAP = "RECEIVE_LIZARD_BOOTSTRAP";
+
+const requestLizardBootsrap = (): RequestLizardBootstrap => ({
+    type: REQUEST_LIZARD_BOOTSTRAP
+});
+
+const receiveLizardBootstrap = (data): ReceiveLizardBootstrap => ({
+    type: RECEIVE_LIZARD_BOOTSTRAP,
+    payload: data
+});
+
+export const fetchLizardBootstrap = (dispatch) => {
+    dispatch(requestLizardBootsrap());
+    fetch("/bootstrap/lizard/", {
+        credentials: "same-origin"
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data && data.user && data.user.authenticated === true) {
+            dispatch(receiveLizardBootstrap(data));
+        } 
+    });
+};
+
+//MARK: Raster
 export const RASTERS_REQUESTED = 'RASTERS_REQUESTED';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
 export const RASTER_SELECTED = 'RASTER_SELECTED';
 
-export const OBSERVATION_TYPES_FETCHED = 'OBSERVATION_TYPES_FETCHED';
-export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
-
-export const BASKET_UPDATED = 'BASKET_UPDATED';
-export const ITEM_REMOVED = 'ITEM_REMOVED'
-
-const rastersRequested = () => ({
+const rastersRequested = (): RastersRequested => ({
     type: RASTERS_REQUESTED
 });
 
@@ -71,23 +96,9 @@ export const selectRaster = (uuid: string, dispatch: Dispatch<RasterSelected>): 
     dispatch(rasterSelected(uuid));
 };
 
-const basketUpdated = (basket: string[]): BasketAdded => ({
-    type: BASKET_UPDATED,
-    payload: basket
-});
-
-export const updateBasket = (basket: string[], dispatch: Dispatch<BasketAdded>): void => {
-    dispatch(basketUpdated(basket))
-};
-
-const itemRemoved = (raster: Raster): ItemRemoved => ({
-    type: ITEM_REMOVED,
-    payload: raster.uuid
-});
-
-export const removeItem = (raster: Raster, dispatch: Dispatch<ItemRemoved>): void => {
-    dispatch(itemRemoved(raster))
-};
+//MARK: Observation types and Organisation
+export const OBSERVATION_TYPES_FETCHED = 'OBSERVATION_TYPES_FETCHED';
+export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
 
 const observationTypesFetched = (observationTypes: ObservationType[]): ObservationTypesFetched => ({
     type: OBSERVATION_TYPES_FETCHED,
@@ -115,4 +126,26 @@ export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>): vo
             dispatch(organisationsFetched(response.body))
         })
         .catch(console.error)
+};
+
+//MARK: Basket
+export const BASKET_UPDATED = 'BASKET_UPDATED';
+export const ITEM_REMOVED = 'ITEM_REMOVED'
+
+const basketUpdated = (basket: string[]): BasketAdded => ({
+    type: BASKET_UPDATED,
+    payload: basket
+});
+
+export const updateBasket = (basket: string[], dispatch: Dispatch<BasketAdded>): void => {
+    dispatch(basketUpdated(basket))
+};
+
+const itemRemoved = (raster: Raster): ItemRemoved => ({
+    type: ITEM_REMOVED,
+    payload: raster.uuid
+});
+
+export const removeItem = (raster: Raster, dispatch: Dispatch<ItemRemoved>): void => {
+    dispatch(itemRemoved(raster))
 };

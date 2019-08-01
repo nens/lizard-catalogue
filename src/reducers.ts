@@ -6,7 +6,9 @@ import {
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
     ITEM_REMOVED,
-    RASTERS_REQUESTED
+    RASTERS_REQUESTED,
+    REQUEST_LIZARD_BOOTSTRAP,
+    RECEIVE_LIZARD_BOOTSTRAP
 } from "./action";
 import {
     RastersFetched,
@@ -18,23 +20,56 @@ import {
     Basket,
     OrganisationsFetched,
     ObservationTypesFetched,
+    Bootstrap,
+    BootstrapActionType,
 } from './interface';
 
 export interface MyStore {
-    observationTypes: ObservationType[];
-    organisations: Organisation[];
+    bootstrap: Bootstrap,
+    observationTypes: ObservationType[],
+    organisations: Organisation[],
     currentRasterList: {
-        count: number;
-        previous: string | null;
-        next: string | null;
-        rasterList: string[];
+        count: number,
+        previous: string | null,
+        next: string | null,
+        rasterList: string[],
         isFetching: boolean
-    } | null;
+    } | null,
     allRasters: {
-        [index: string]: Raster;
-    } | {};
-    selectedRaster: string | null;
-    basket: string[];
+        [index: string]: Raster,
+    } | {},
+    selectedRaster: string | null,
+    basket: string[]
+};
+
+const bootstrap = (
+    state: MyStore['bootstrap'] = {
+        user: {
+            first_name: null,
+            username: null,
+            authenticated: false
+        },
+        isFetching: false
+    },
+    action: BootstrapActionType
+): MyStore['bootstrap'] => {
+    switch (action.type) {
+        case REQUEST_LIZARD_BOOTSTRAP:
+            return { ...state, isFetching: true };
+        case RECEIVE_LIZARD_BOOTSTRAP:
+            const { user } = action.payload
+            return {
+                ...state,
+                user: {
+                    first_name: user.first_name,
+                    username: user.username,
+                    authenticated: user.authenticated
+                },
+                isFetching: false
+            };
+        default:
+            return state;
+    }
 };
 
 const currentRasterList = (state: MyStore['currentRasterList'] = null, action: RasterActionType): MyStore['currentRasterList'] => {
@@ -167,6 +202,7 @@ export const getOrganisations = (state: MyStore) => {
 }
 
 export default combineReducers({
+    bootstrap,
     currentRasterList,
     allRasters,
     selectedRaster,

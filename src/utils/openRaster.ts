@@ -1,8 +1,7 @@
 import { Raster, LatLng } from "../interface";
-import { PROXY_SERVER } from "../api";
 
 export const openRasterInAPI = (raster: Raster) => {
-    window.open(`${PROXY_SERVER}/api/v4/rasters/${raster.uuid}`)
+    window.open(`/api/v4/rasters/${raster.uuid}`)
 };
 
 export const openRastersInLizard = (basket: Raster[], centerPoint: LatLng, zoom: number) => {
@@ -13,5 +12,5 @@ export const openRastersInLizard = (basket: Raster[], centerPoint: LatLng, zoom:
     //the format of the url is something like: ',raster$rasterID1,raster$rasterID2,...,raster$rasterIDn'
     const urlPath = idArray.map(id => `,raster$${id}`).join('');
     
-    window.open(`${PROXY_SERVER}/nl/map/topography${urlPath}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
+    window.open(`/nl/map/topography${urlPath}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };
