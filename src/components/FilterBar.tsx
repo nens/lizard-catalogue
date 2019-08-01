@@ -8,9 +8,12 @@ interface MyProps {
     bootstrap: Bootstrap,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
+    fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => void,
+    fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => void,
     onObservationTypeCheckbox: (obsType: ObservationType) => void,
     onOrganisationCheckbox: (organisation: Organisation) => void,
-    switchView: () => void
+    switchView: () => void,
+    onViewChange: () => void
 };
 
 interface MyState {
@@ -73,7 +76,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
     render() {
         const { searchObs, searchOrg } = this.state;
 
-        const { observationTypes, organisations, bootstrap, onObservationTypeCheckbox, onOrganisationCheckbox, switchView } = this.props;
+        const { observationTypes, organisations, bootstrap, onObservationTypeCheckbox, onOrganisationCheckbox, switchView, onViewChange } = this.props;
 
         //Filter observation types & organisations at the client side instead of fetching again from the server after each search
         const filteredObservationTypes = observationTypes.filter(observationTypes => observationTypes.parameter.toLowerCase().includes(this.state.searchObs.toLowerCase()));
@@ -88,14 +91,42 @@ class FilterBar extends React.Component<MyProps, MyState> {
                 <div className="switcher">
                     <button 
                         className="switcher-button switcher-button-raster"
-                        onClick={switchView}
+                        onClick={() => {
+                            //Switching between Rasters and WMS layers will fetch rasters/wms again with initial values
+                            //then it will set the local state of this component to initial state
+                            //and also set the state of its parent component (the main container) to its initial state
+                            //finally remove all the checked organisation and observation type
+                            switchView();
+                            this.props.fetchRasters(1, '', '', '', '');
+                            onViewChange();
+                            this.setState({
+                                searchObs: '',
+                                searchOrg: '',
+                                obsItems: 7,
+                                orgItems: 7
+                            });
+                            organisations.map(org => org.checked = false);
+                            observationTypes.map(obs => obs.checked = false);
+                        }}
                         disabled={!bootstrap.viewWMS ? true : false}
                     >
                         Raster
                     </button>
                     <button 
                         className="switcher-button switcher-button-wms" 
-                        onClick={switchView}
+                        onClick={() => {
+                            switchView();
+                            this.props.fetchWMSLayers(1, '', '', '');
+                            onViewChange();
+                            this.setState({
+                                searchObs: '',
+                                searchOrg: '',
+                                obsItems: 7,
+                                orgItems: 7
+                            });
+                            organisations.map(org => org.checked = false);
+                            observationTypes.map(obs => obs.checked = false);
+                        }}
                         disabled={bootstrap.viewWMS ? true : false}
                     >
                         WMS
