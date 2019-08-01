@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { fetchRasters, selectRaster, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchView } from '../action';
+import { fetchRasters, selectRaster, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchView, fetchWMSLayers } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getLizardBootstrap } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, Bootstrap } from '../interface';
 import RasterList from './RasterList';
+import WMSList from './WMS/WMSList';
 import RasterDetails from './RasterDetails';
 import FilterBar from './FilterBar';
 import Header from './Header';
@@ -24,7 +25,8 @@ interface PropsFromDispatch {
     updateBasket: (basket: MyStore['basket']) => void,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
-    switchView: () => void
+    switchView: () => void,
+    fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => void,
 };
 
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
@@ -122,6 +124,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     componentDidMount() {
         this.props.getLizardBootstrap();
         this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
+        this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
     };
 
     //Component will fetch the Rasters again each time the value of this.state.organisationName changes
@@ -156,17 +159,31 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                         switchView={this.props.switchView}
                         bootstrap={bootstrap}
                     />
-                    <RasterList
-                        searchTerm={this.state.searchTerm}
-                        page={this.state.page}
-                        currentRasterList={this.props.currentRasterList}
-                        selectRaster={this.props.selectRaster}
-                        updateBasket={this.props.updateBasket}
-                        onPageClick={this.onPageClick}
-                        onSearchChange={this.onSearchChange}
-                        onSearchSubmit={this.onSearchSubmit}
-                        onSorting={this.onSorting}
-                    />
+                    {!bootstrap.viewWMS ?
+                        <RasterList
+                            searchTerm={this.state.searchTerm}
+                            page={this.state.page}
+                            currentRasterList={this.props.currentRasterList}
+                            selectRaster={this.props.selectRaster}
+                            updateBasket={this.props.updateBasket}
+                            onPageClick={this.onPageClick}
+                            onSearchChange={this.onSearchChange}
+                            onSearchSubmit={this.onSearchSubmit}
+                            onSorting={this.onSorting}
+                        />
+                        :
+                        <WMSList
+                            searchTerm={this.state.searchTerm}
+                            page={this.state.page}
+                            currentRasterList={this.props.currentRasterList}
+                            selectRaster={this.props.selectRaster}
+                            updateBasket={this.props.updateBasket}
+                            onPageClick={this.onPageClick}
+                            onSearchChange={this.onSearchChange}
+                            onSearchSubmit={this.onSearchSubmit}
+                            onSorting={this.onSorting}
+                        />
+                    }
                     <RasterDetails />
                 </div>
             </div>
@@ -189,6 +206,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | Filte
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
     switchView: () => switchView(dispatch),
+    fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => fetchWMSLayers(page, searchTerm, organisationName, ordering, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RasterContainer);
