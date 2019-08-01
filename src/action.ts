@@ -14,7 +14,8 @@ import {
     OrganisationsFetched,
     RastersRequested,
     RequestLizardBootstrap,
-    ReceiveLizardBootstrap
+    ReceiveLizardBootstrap,
+    WMSObject
 } from './interface';
 
 //MARK: Bootsrap
@@ -94,6 +95,49 @@ const rasterSelected = (uuid: string): RasterSelected => ({
 
 export const selectRaster = (uuid: string, dispatch: Dispatch<RasterSelected>): void => {
     dispatch(rasterSelected(uuid));
+};
+
+//MARK: WMS
+export const REQUEST_WMS = 'REQUEST_WMS';
+export const RECEIVE_WMS = 'RECEIVE_WMS';
+export const SELECT_WMS = 'SELECT_WMS';
+
+const wmsRequested = () => ({
+    type: REQUEST_WMS
+});
+
+const wmsReceived = (wmsObject: WMSObject) => ({
+    type: RECEIVE_WMS,
+    payload: wmsObject
+});
+
+export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, ordering: string, dispatch): void => {
+    dispatch(wmsRequested());
+    request
+        .get(`${baseUrl}/wmslayers?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&ordering=${ordering}`)
+        .then(response => {
+            if(response.body.count === 0) {
+                //If could not find any raster with the search term by raster's name then look for raster's uuid
+                request
+                    .get(`${baseUrl}/wmslayers?uuid=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&ordering=${ordering}`)
+                    .then(response => {
+                        dispatch(wmsReceived(response.body))
+                    })
+                    .catch(console.error)
+            } else {
+                dispatch(wmsReceived(response.body))
+            }
+        })
+        .catch(console.error)
+};
+
+const wmsSelected = (uuid: string) => ({
+    type: SELECT_WMS,
+    payload: uuid
+});
+
+export const selectWMS = (uuid: string, dispatch): void => {
+    dispatch(wmsSelected(uuid));
 };
 
 //MARK: Observation types and Organisation
