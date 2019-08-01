@@ -9,7 +9,10 @@ import {
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
     RECEIVE_LIZARD_BOOTSTRAP,
-    SWITCH_VIEW
+    SWITCH_VIEW,
+    REQUEST_WMS,
+    RECEIVE_WMS,
+    SELECT_WMS
 } from "./action";
 import {
     RastersFetched,
@@ -23,6 +26,7 @@ import {
     ObservationTypesFetched,
     Bootstrap,
     BootstrapActionType,
+    WMS,
 } from './interface';
 
 export interface MyStore {
@@ -40,6 +44,17 @@ export interface MyStore {
         [index: string]: Raster,
     } | {},
     selectedRaster: string | null,
+    currentWMSList: {
+        count: number,
+        previous: string | null,
+        next: string | null,
+        wmsList: string[],
+        isFetching: boolean
+    } | null,
+    allWMS: {
+        [index: string]: WMS,
+    } | {},
+    selectedWMS: string | null,
     basket: string[]
 };
 
@@ -119,6 +134,52 @@ const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched): 
 const selectedRaster = (state: MyStore['selectedRaster'] = null, action: RasterSelected): MyStore['selectedRaster'] => {
     switch (action.type) {
         case RASTER_SELECTED:
+            return action.payload;
+        default:
+            return state;
+    };
+};
+
+const currentWMSList = (state: MyStore['currentWMSList'] = null, action): MyStore['currentWMSList'] => {
+    switch (action.type) {
+        case REQUEST_WMS:
+            return {
+                count: 0,
+                previous: null,
+                next: null,
+                wmsList: [],
+                isFetching: true
+            }
+        case RECEIVE_WMS:
+            const { count, previous, next } = action.payload;
+            return {
+                count: count,
+                previous: previous,
+                next: next,
+                wmsList: action.payload.results.map(wms => wms.uuid),
+                isFetching: false
+            };
+        default:
+            return state;
+    };
+};
+
+const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
+    switch (action.type) {
+        case RECEIVE_WMS:
+            const newState = { ...state };
+            action.payload.results.forEach(wms => {
+                newState[wms.uuid] = wms;
+            });
+            return newState;
+        default:
+            return state;
+    };
+};
+
+const selectedWMS = (state: MyStore['selectedWMS'] = null, action): MyStore['selectedWMS'] => {
+    switch (action.type) {
+        case SELECT_WMS:
             return action.payload;
         default:
             return state;
@@ -217,6 +278,9 @@ export default combineReducers({
     currentRasterList,
     allRasters,
     selectedRaster,
+    currentWMSList,
+    allWMS,
+    selectedWMS,
     basket,
     observationTypes,
     organisations,
