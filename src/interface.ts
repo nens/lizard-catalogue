@@ -7,7 +7,10 @@ import {
     ORGANISATIONS_FETCHED,
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
-    RECEIVE_LIZARD_BOOTSTRAP
+    RECEIVE_LIZARD_BOOTSTRAP,
+    RECEIVE_WMS,
+    REQUEST_WMS,
+    SELECT_WMS
 } from "./action";
 
 //ACTION INTERFACE
@@ -37,6 +40,22 @@ export interface RasterSelected {
 };
 
 export type RasterActionType = RastersRequested | RastersFetched | RasterSelected;
+
+export interface RequestWMS {
+    type: typeof REQUEST_WMS
+};
+
+export interface ReceiveWMS {
+    type: typeof RECEIVE_WMS,
+    payload: WMSObject
+};
+
+export interface SelectWMS {
+    type: typeof SELECT_WMS,
+    payload: string
+};
+
+export type WMSActionType = RequestWMS | ReceiveWMS | SelectWMS;
 
 export interface BasketAdded {
     type: typeof BASKET_UPDATED,
