@@ -62,7 +62,9 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
 
     onPageClick = (page: number) => {
         if (page < 1) return page = 1;
-        this.props.fetchRasters(page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
+        !this.props.bootstrap.viewWMS ? 
+            this.props.fetchRasters(page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering) :
+            this.props.fetchWMSLayers(page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
         this.setState({
             page: page,
         });
@@ -80,7 +82,9 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
             page: 1
         });
 
-        this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
+        !this.props.bootstrap.viewWMS ? 
+            this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering) :
+            this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
     };
 
     //When click on the checkbox in the filter bar, this function will update the observation type state in this component
