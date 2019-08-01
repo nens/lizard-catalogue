@@ -62,7 +62,7 @@ export interface OrganisationsFetched {
 
 export type FilterActionType = ObservationTypesFetched | OrganisationsFetched;
 
-//INTERFACES
+//LIZARD BOOTSTRAP
 export interface Bootstrap {
     user: {
         first_name: string | null,
@@ -72,6 +72,7 @@ export interface Bootstrap {
     isFetching: boolean
 };
 
+//RASTER
 export interface RasterListObject {
     count: number,
     previous: string,
@@ -106,6 +107,30 @@ export interface Raster {
     }
 };
 
+//WMS
+export interface WMSObject {
+    count: number,
+    previous: string,
+    next: string,
+    results: WMS[]
+};
+
+export interface WMS {
+    uuid: string,
+    name: string,
+    description: string,
+    slug: string,
+    get_feature_info: boolean,
+    get_feature_info_url: string,
+    legend_url: string,
+    min_zoom: number,
+    max_zoom: number,
+    url: string,
+    organisation: Organisation,
+    access_modifier: string
+};
+
+//ORGANISATION
 export interface Organisation {
     url: string,
     name: string,
@@ -113,6 +138,7 @@ export interface Organisation {
     checked: boolean
 };
 
+//OBSERVATION TYPE
 export interface ObservationType {
     url: string,
     code: string,
