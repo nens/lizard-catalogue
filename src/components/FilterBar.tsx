@@ -129,7 +129,11 @@ class FilterBar extends React.Component<MyProps, MyState> {
                         }
                     </ul>
                 </div>
-                <div className="filter-observation-type">
+                <div 
+                    className="filter-observation-type"
+                    //Only show the observation type filter option for Rasters, not for WMS layers
+                    style={{ visibility: !this.props.bootstrap.viewWMS ? "visible" : "hidden" }}
+                >
                     <h4 title="Filter by Observation Type">Observation Type</h4>
                     <form onSubmit={this.onObsSubmit} className="raster-list__searchbar" title="Type observation type's parameter name">
                         <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onObsChange} value={searchObs} />
