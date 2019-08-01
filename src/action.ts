@@ -15,7 +15,10 @@ import {
     RastersRequested,
     RequestLizardBootstrap,
     ReceiveLizardBootstrap,
-    WMSObject
+    WMSObject,
+    RequestWMS,
+    ReceiveWMS,
+    SelectWMS
 } from './interface';
 
 //MARK: Bootsrap
@@ -102,11 +105,11 @@ export const REQUEST_WMS = 'REQUEST_WMS';
 export const RECEIVE_WMS = 'RECEIVE_WMS';
 export const SELECT_WMS = 'SELECT_WMS';
 
-const wmsRequested = () => ({
+const wmsRequested = (): RequestWMS => ({
     type: REQUEST_WMS
 });
 
-const wmsReceived = (wmsObject: WMSObject) => ({
+const wmsReceived = (wmsObject: WMSObject): ReceiveWMS => ({
     type: RECEIVE_WMS,
     payload: wmsObject
 });
@@ -131,7 +134,7 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
         .catch(console.error)
 };
 
-const wmsSelected = (uuid: string) => ({
+const wmsSelected = (uuid: string): SelectWMS => ({
     type: SELECT_WMS,
     payload: uuid
 });
