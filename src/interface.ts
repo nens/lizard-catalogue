@@ -25,7 +25,7 @@ export type BootstrapActionType = RequestLizardBootstrap | ReceiveLizardBootstra
 
 export interface SwitchDataType {
     type: typeof SWITCH_DATA_TYPE,
-    payload: string
+    payload: "Raster" | "WMS"
 };
 
 export interface RastersRequested {

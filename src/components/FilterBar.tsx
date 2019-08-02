@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ObservationType, Organisation } from '../interface';
+import { ObservationType, Organisation, SwitchDataType } from '../interface';
 import { MyStore } from '../reducers';
 import './FilterBar.css';
 
@@ -11,7 +11,7 @@ interface MyProps {
     fetchOrganisations: () => void,
     onObservationTypeCheckbox: (obsType: ObservationType) => void,
     onOrganisationCheckbox: (organisation: Organisation) => void,
-    switchDataType: (dataType: string) => void
+    switchDataType: (dataType: SwitchDataType['payload']) => void
 };
 
 interface MyState {

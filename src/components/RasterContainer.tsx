@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { fetchRasters, selectRaster, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType } from '../reducers';
-import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType } from '../interface';
+import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType } from '../interface';
 import RasterList from './RasterList';
 import RasterDetails from './RasterDetails';
 import FilterBar from './FilterBar';
@@ -24,7 +24,7 @@ interface PropsFromDispatch {
     updateBasket: (basket: MyStore['basket']) => void,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
-    switchDataType: (dataType: string) => void
+    switchDataType: (dataType: SwitchDataType['payload']) => void
 };
 
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
@@ -186,7 +186,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | Filte
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
-    switchDataType: (dataType: string) => switchDataType(dataType, dispatch),
+    switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RasterContainer);

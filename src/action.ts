@@ -14,7 +14,8 @@ import {
     OrganisationsFetched,
     RastersRequested,
     RequestLizardBootstrap,
-    ReceiveLizardBootstrap
+    ReceiveLizardBootstrap,
+    SwitchDataType
 } from './interface';
 
 //MARK: Bootsrap
@@ -46,12 +47,12 @@ export const fetchLizardBootstrap = (dispatch) => {
 //MARK: Switch between rasters and wms layers
 export const SWITCH_DATA_TYPE = 'SWITCH_DATA_TYPE';
 
-const dataTypeSwitched = (dataType: string) => ({
+const dataTypeSwitched = (dataType: SwitchDataType['payload']): SwitchDataType => ({
     type: SWITCH_DATA_TYPE,
     payload: dataType
 });
 
-export const switchDataType = (dataType: string, dispatch): void => {
+export const switchDataType = (dataType: SwitchDataType['payload'], dispatch): void => {
     dispatch(dataTypeSwitched(dataType));
 };
 
