@@ -9,7 +9,7 @@ import {
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
     RECEIVE_LIZARD_BOOTSTRAP,
-    SWITCH_VIEW
+    SWITCH_DATA_TYPE
 } from "./action";
 import {
     RastersFetched,
@@ -23,12 +23,14 @@ import {
     ObservationTypesFetched,
     Bootstrap,
     BootstrapActionType,
+    SwitchDataType,
 } from './interface';
 
 export interface MyStore {
     bootstrap: Bootstrap,
     observationTypes: ObservationType[],
     organisations: Organisation[],
+    currentDataType: string,
     currentRasterList: {
         count: number,
         previous: string | null,
@@ -39,7 +41,7 @@ export interface MyStore {
     allRasters: {
         [index: string]: Raster,
     } | {},
-    selectedRaster: string | null,
+    selectedItem: string | null,
     basket: string[]
 };
 
@@ -50,8 +52,7 @@ const bootstrap = (
             username: null,
             authenticated: false
         },
-        isFetching: false,
-        viewWMS: false 
+        isFetching: false
     },
     action: BootstrapActionType
 ): MyStore['bootstrap'] => {
@@ -69,14 +70,18 @@ const bootstrap = (
                 },
                 isFetching: false
             };
-        case SWITCH_VIEW:
-            return {
-                ...state,
-                viewWMS: !state.viewWMS
-            }
         default:
             return state;
     }
+};
+
+const currentDataType = (state: MyStore['currentDataType'] = "Raster", action: SwitchDataType): MyStore['currentDataType'] => {
+    switch (action.type) {
+        case SWITCH_DATA_TYPE:
+            return action.payload;
+        default:
+            return state;
+    };
 };
 
 const currentRasterList = (state: MyStore['currentRasterList'] = null, action: RasterActionType): MyStore['currentRasterList'] => {
@@ -116,7 +121,7 @@ const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched): 
     };
 };
 
-const selectedRaster = (state: MyStore['selectedRaster'] = null, action: RasterSelected): MyStore['selectedRaster'] => {
+const selectedItem = (state: MyStore['selectedItem'] = null, action: RasterSelected): MyStore['selectedItem'] => {
     switch (action.type) {
         case RASTER_SELECTED:
             return action.payload;
@@ -179,6 +184,10 @@ export const getLizardBootstrap = (state: MyStore) => {
     return state.bootstrap;
 };
 
+export const getCurrentDataType = (state: MyStore) => {
+    return state.currentDataType;
+};
+
 export const getCurrentRasterList = (state: MyStore) => {
     return state.currentRasterList;
 };
@@ -214,9 +223,10 @@ export const getOrganisations = (state: MyStore) => {
 
 export default combineReducers({
     bootstrap,
+    currentDataType,
     currentRasterList,
     allRasters,
-    selectedRaster,
+    selectedItem,
     basket,
     observationTypes,
     organisations,

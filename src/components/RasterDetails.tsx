@@ -108,11 +108,11 @@ class RasterDetails extends React.Component<PropsFromState> {
 };
 
 const mapStateToProps = (state: MyStore): PropsFromState => {
-    if (!state.selectedRaster) return {
+    if (!state.selectedItem) return {
         raster: null
     };
     return {
-        raster: getRaster(state, state.selectedRaster)
+        raster: getRaster(state, state.selectedItem)
     };
 };
 

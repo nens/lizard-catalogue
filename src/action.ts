@@ -44,14 +44,15 @@ export const fetchLizardBootstrap = (dispatch) => {
 };
 
 //MARK: Switch between rasters and wms layers
-export const SWITCH_VIEW = 'SWITCH_VIEW';
+export const SWITCH_DATA_TYPE = 'SWITCH_DATA_TYPE';
 
-const viewSwitched = () => ({
-    type: SWITCH_VIEW
+const dataTypeSwitched = (dataType: string) => ({
+    type: SWITCH_DATA_TYPE,
+    payload: dataType
 });
 
-export const switchView = (dispatch): void => {
-    dispatch(viewSwitched());
+export const switchDataType = (dataType: string, dispatch): void => {
+    dispatch(dataTypeSwitched(dataType));
 };
 
 //MARK: Raster
