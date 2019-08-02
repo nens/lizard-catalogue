@@ -1,6 +1,5 @@
 import {
     RASTERS_FETCHED,
-    RASTER_SELECTED,
     BASKET_UPDATED,
     ITEM_REMOVED,
     OBSERVATION_TYPES_FETCHED,
@@ -10,7 +9,8 @@ import {
     RECEIVE_LIZARD_BOOTSTRAP,
     RECEIVE_WMS,
     REQUEST_WMS,
-    SELECT_WMS
+    SWITCH_DATA_TYPE,
+    ITEM_SELECTED,
 } from "./action";
 
 //ACTION INTERFACE
@@ -25,6 +25,11 @@ export interface ReceiveLizardBootstrap {
 
 export type BootstrapActionType = RequestLizardBootstrap | ReceiveLizardBootstrap;
 
+export interface SwitchDataType {
+    type: typeof SWITCH_DATA_TYPE,
+    payload: "Raster" | "WMS"
+};
+
 export interface RastersRequested {
     type: typeof RASTERS_REQUESTED
 };
@@ -34,12 +39,7 @@ export interface RastersFetched {
     payload: RasterListObject
 };
 
-export interface RasterSelected {
-    type: typeof RASTER_SELECTED,
-    payload: string
-};
-
-export type RasterActionType = RastersRequested | RastersFetched | RasterSelected;
+export type RasterActionType = RastersRequested | RastersFetched;
 
 export interface RequestWMS {
     type: typeof REQUEST_WMS
@@ -50,12 +50,12 @@ export interface ReceiveWMS {
     payload: WMSObject
 };
 
-export interface SelectWMS {
-    type: typeof SELECT_WMS,
-    payload: string
-};
+export type WMSActionType = RequestWMS | ReceiveWMS;
 
-export type WMSActionType = RequestWMS | ReceiveWMS | SelectWMS;
+export interface ItemSelected {
+    type: typeof ITEM_SELECTED,
+    payload: string
+}
 
 export interface BasketAdded {
     type: typeof BASKET_UPDATED,

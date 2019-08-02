@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { fetchRasters, selectRaster, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap } from '../action';
-import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations } from '../reducers';
-import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType } from '../interface';
+import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem } from '../action';
+import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType } from '../reducers';
+import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType } from '../interface';
 import RasterList from './RasterList';
 import RasterDetails from './RasterDetails';
 import FilterBar from './FilterBar';
@@ -13,16 +13,18 @@ import './Raster.css';
 interface PropsFromState {
     currentRasterList: MyStore['currentRasterList'] | null,
     observationTypes: ObservationType[],
-    organisations: Organisation[]
+    organisations: Organisation[],
+    currentDataType: MyStore['currentDataType'],
 };
 
 interface PropsFromDispatch {
-    getLizardBootstrap: () => void,
-    selectRaster: (uuid: string) => void,
+    fetchLizardBootstrap: () => void,
+    selectItem: (uuid: string) => void,
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => void,
     updateBasket: (basket: MyStore['basket']) => void,
     fetchObservationTypes: () => void,
-    fetchOrganisations: () => void
+    fetchOrganisations: () => void,
+    switchDataType: (dataType: SwitchDataType['payload']) => void
 };
 
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
@@ -118,7 +120,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     };
 
     componentDidMount() {
-        this.props.getLizardBootstrap();
+        this.props.fetchLizardBootstrap();
         this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
     };
 
@@ -136,7 +138,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         return (
             <div className="raster-container" onClick={this.toggleProfileDropdown}>
                 <div className="raster-header">
-                    <Header 
+                    <Header
                         showProfileDropdown={this.state.showProfileDropdown}
                         toggleProfileDropdown={this.toggleProfileDropdown}
                     />
@@ -149,12 +151,14 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                         organisations={this.props.organisations}
                         onObservationTypeCheckbox={this.onObservationTypeCheckbox}
                         onOrganisationCheckbox={this.onOrganisationCheckbox}
+                        switchDataType={this.props.switchDataType}
+                        currentDataType={this.props.currentDataType}
                     />
                     <RasterList
                         searchTerm={this.state.searchTerm}
                         page={this.state.page}
                         currentRasterList={this.props.currentRasterList}
-                        selectRaster={this.props.selectRaster}
+                        selectItem={this.props.selectItem}
                         updateBasket={this.props.updateBasket}
                         onPageClick={this.onPageClick}
                         onSearchChange={this.onSearchChange}
@@ -171,16 +175,18 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
 const mapStateToProps = (state: MyStore): PropsFromState => ({
     currentRasterList: getCurrentRasterList(state),
     observationTypes: getObservationTypes(state),
-    organisations: getOrganisations(state)
+    organisations: getOrganisations(state),
+    currentDataType: getCurrentDataType(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType>): PropsFromDispatch => ({
-    getLizardBootstrap: () => fetchLizardBootstrap(dispatch),
+    fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, ordering, dispatch),
-    selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
+    selectItem: (uuid: string) => selectItem(uuid, dispatch),
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
-    fetchOrganisations: () => fetchOrganisations(dispatch)
+    fetchOrganisations: () => fetchOrganisations(dispatch),
+    switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RasterContainer);

@@ -1,14 +1,17 @@
 import * as React from 'react';
-import { ObservationType, Organisation } from '../interface';
+import { ObservationType, Organisation, SwitchDataType } from '../interface';
+import { MyStore } from '../reducers';
 import './FilterBar.css';
 
 interface MyProps {
     observationTypes: ObservationType[],
     organisations: Organisation[],
+    currentDataType: MyStore['currentDataType'],
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
     onObservationTypeCheckbox: (obsType: ObservationType) => void,
-    onOrganisationCheckbox: (organisation: Organisation) => void
+    onOrganisationCheckbox: (organisation: Organisation) => void,
+    switchDataType: (dataType: SwitchDataType['payload']) => void
 };
 
 interface MyState {
@@ -71,7 +74,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
     render() {
         const { searchObs, searchOrg } = this.state;
 
-        const { observationTypes, organisations, onObservationTypeCheckbox, onOrganisationCheckbox } = this.props;
+        const { observationTypes, organisations, onObservationTypeCheckbox, onOrganisationCheckbox, currentDataType, switchDataType } = this.props;
 
         //Filter observation types & organisations at the client side instead of fetching again from the server after each search
         const filteredObservationTypes = observationTypes.filter(observationTypes => observationTypes.parameter.toLowerCase().includes(this.state.searchObs.toLowerCase()));
@@ -83,6 +86,22 @@ class FilterBar extends React.Component<MyProps, MyState> {
 
         return (
             <div className="filter-box">
+                <div className="switcher">
+                    <button 
+                        className="switcher-button switcher-button-raster"
+                        onClick={() => switchDataType("Raster")}
+                        disabled={currentDataType === "Raster" ? true : false}
+                    >
+                        Raster
+                    </button>
+                    <button 
+                        className="switcher-button switcher-button-wms" 
+                        onClick={() => switchDataType("WMS")}
+                        disabled={currentDataType === "WMS" ? true : false}
+                    >
+                        WMS
+                    </button>
+                </div>
                 <div className="filter-organisation">
                     <h4 title="Filter by Organisation">Organisation</h4>
                     <form onSubmit={this.onOrgSubmit} className="raster-list__searchbar" title="Type organisation name">

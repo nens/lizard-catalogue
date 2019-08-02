@@ -16,7 +16,7 @@ interface MyProps {
     onSearchSubmit: (event: object) => void,
     onSorting: (ordering: string) => void,
 
-    selectRaster: (uuid: string) => void,
+    selectItem: (uuid: string) => void,
     updateBasket: (basket: MyStore['basket']) => void
 };
 
@@ -58,7 +58,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
 
     render() {
         //Destructure all props of the Raster List component
-        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentRasterList, selectRaster, updateBasket, rasters } = this.props;
+        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentRasterList, selectItem, updateBasket, rasters } = this.props;
 
         //If nothing is fetched, show loading screen
         if (!currentRasterList) return <this.renderLoadingScreen />;
@@ -138,7 +138,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             }
 
                             return (
-                                <li className="raster-list__row-li" key={raster.uuid} onClick={() => selectRaster(raster.uuid)} >
+                                <li className="raster-list__row-li" key={raster.uuid} onClick={() => selectItem(raster.uuid)} >
                                     <input className="raster-list__row raster-list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(raster.uuid)} checked={checked} />
                                     {raster.temporal ? 
                                         <img className="raster-list__row raster-list__row-type" src="image/raster-temporal.svg" alt="raster" /> :
