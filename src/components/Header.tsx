@@ -7,7 +7,6 @@ import './Header.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../utils/latLngZoomCalculation';
 import { openRastersInLizard } from '../utils/openRaster';
-import { PROXY_SERVER } from '../api';
 
 interface MyProps {
     showProfileDropdown: boolean,
@@ -51,7 +50,7 @@ class Header extends React.Component<HeaderProps> {
             :
             (
                 <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
-                    <a href={`/accounts/login/?domain=${PROXY_SERVER}&next=/catalogue/`}>
+                    <a href={`/accounts/login/?next=/catalogue/`}>
                         <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
                         Login
                     </a>
@@ -88,11 +87,6 @@ class Header extends React.Component<HeaderProps> {
                     <h3 className="header-logo__text">Lizard Catalogue</h3>
                 </div>
                 <div className="header-nav">
-                    <a href="#information" className="header-nav__icon-box" title="Info">
-                        <svg className="header-nav__icon info-box">
-                            <use xlinkHref="image/symbols.svg#icon-info" />
-                        </svg>
-                    </a>
                     <a href="#basket" className="header-nav__icon-box" title={`${basket.length} items in the basket`}>
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-shopping-basket" />
@@ -100,12 +94,6 @@ class Header extends React.Component<HeaderProps> {
                         {basket.length === 0 ? <span /> : <span className="header-nav__notification">{basket.length}</span>}
                         <span className="header-nav__text">Basket</span>
                     </a>
-                    {/* <div className="header-nav__icon-box">
-                        <svg className="header-nav__icon">
-                            <use xlinkHref="image/symbols.svg#icon-apps" />
-                        </svg>
-                        <span className="header-nav__text">Apps</span>
-                    </div> */}
                     <div className="header-nav__icon-box user-profile" id="user-profile">
                         <svg className="header-nav__icon" id="user-profile">
                             <use xlinkHref="image/symbols.svg#icon-user" id="user-profile" />
@@ -113,12 +101,11 @@ class Header extends React.Component<HeaderProps> {
                         <span className="header-nav__text" id="user-profile">{user.first_name}</span>
                         {this.props.showProfileDropdown && this.renderProfileDropdown()}
                     </div>
-                    {/* <div className="header-nav__icon-box">
-                        <svg className="header-nav__icon">
-                            <use xlinkHref="image/symbols.svg#icon-sort" />
+                    <a href="#information" className="header-nav__icon-box" title="Info">
+                        <svg className="header-nav__icon info-box">
+                            <use xlinkHref="image/symbols.svg#icon-info" />
                         </svg>
-                        <span className="header-nav__text">Nelen &amp; Schuurmans</span>
-                    </div> */}
+                    </a>
                 </div>
                 {/*This is the PopUp window when the basket is clicked*/}
                 <div className="header-popup" id="basket">
