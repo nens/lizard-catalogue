@@ -21,12 +21,12 @@ export interface ReceiveLizardBootstrap {
     payload: Bootstrap
 };
 
+export type BootstrapActionType = RequestLizardBootstrap | ReceiveLizardBootstrap;
+
 export interface SwitchDataType {
     type: typeof SWITCH_DATA_TYPE,
     payload: string
 };
-
-export type BootstrapActionType = RequestLizardBootstrap | ReceiveLizardBootstrap | SwitchDataType;
 
 export interface RastersRequested {
     type: typeof RASTERS_REQUESTED
