@@ -3,7 +3,6 @@ import { baseUrl } from './api';
 import { Dispatch } from 'redux';
 import {
     RastersFetched,
-    RasterSelected,
     RasterListObject,
     BasketAdded,
     ObservationType,
@@ -18,7 +17,8 @@ import {
     WMSObject,
     RequestWMS,
     ReceiveWMS,
-    SelectWMS
+    SwitchDataType,
+    ItemSelected
 } from './interface';
 
 //MARK: Bootsrap
@@ -48,20 +48,20 @@ export const fetchLizardBootstrap = (dispatch) => {
 };
 
 //MARK: Switch between rasters and wms layers
-export const SWITCH_VIEW = 'SWITCH_VIEW';
+export const SWITCH_DATA_TYPE = 'SWITCH_DATA_TYPE';
 
-const viewSwitched = () => ({
-    type: SWITCH_VIEW
+const dataTypeSwitched = (dataType: SwitchDataType['payload']): SwitchDataType => ({
+    type: SWITCH_DATA_TYPE,
+    payload: dataType
 });
 
-export const switchView = (dispatch): void => {
-    dispatch(viewSwitched());
+export const switchDataType = (dataType: SwitchDataType['payload'], dispatch): void => {
+    dispatch(dataTypeSwitched(dataType));
 };
 
 //MARK: Raster
 export const RASTERS_REQUESTED = 'RASTERS_REQUESTED';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
-export const RASTER_SELECTED = 'RASTER_SELECTED';
 
 const rastersRequested = (): RastersRequested => ({
     type: RASTERS_REQUESTED
@@ -102,19 +102,9 @@ export const fetchRastersOnUuid = (searchUuid: string, dispatch: Dispatch<Raster
         .catch(console.error)
 };
 
-const rasterSelected = (uuid: string): RasterSelected => ({
-    type: RASTER_SELECTED,
-    payload: uuid
-});
-
-export const selectRaster = (uuid: string, dispatch: Dispatch<RasterSelected>): void => {
-    dispatch(rasterSelected(uuid));
-};
-
 //MARK: WMS
 export const REQUEST_WMS = 'REQUEST_WMS';
 export const RECEIVE_WMS = 'RECEIVE_WMS';
-export const SELECT_WMS = 'SELECT_WMS';
 
 const wmsRequested = (): RequestWMS => ({
     type: REQUEST_WMS
@@ -145,13 +135,16 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
         .catch(console.error)
 };
 
-const wmsSelected = (uuid: string): SelectWMS => ({
-    type: SELECT_WMS,
+//MARK: Select Item to view (Raster or WMS layer)
+export const ITEM_SELECTED = 'ITEM_SELECTED';
+
+const itemSelected = (uuid: string): ItemSelected => ({
+    type: ITEM_SELECTED,
     payload: uuid
 });
 
-export const selectWMS = (uuid: string, dispatch): void => {
-    dispatch(wmsSelected(uuid));
+export const selectItem = (uuid: string, dispatch): void => {
+    dispatch(itemSelected(uuid));
 };
 
 //MARK: Observation types and Organisation

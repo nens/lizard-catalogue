@@ -1,19 +1,20 @@
 import * as React from 'react';
-import { ObservationType, Organisation, Bootstrap } from '../interface';
+import { ObservationType, Organisation, SwitchDataType } from '../interface';
+import { MyStore } from '../reducers';
 import './FilterBar.css';
 
 interface MyProps {
     observationTypes: ObservationType[],
     organisations: Organisation[],
-    bootstrap: Bootstrap,
+    currentDataType: MyStore['currentDataType'],
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => void,
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => void,
     onObservationTypeCheckbox: (obsType: ObservationType) => void,
     onOrganisationCheckbox: (organisation: Organisation) => void,
-    switchView: () => void,
     onViewChange: () => void
+    switchDataType: (dataType: SwitchDataType['payload']) => void
 };
 
 interface MyState {
@@ -76,7 +77,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
     render() {
         const { searchObs, searchOrg } = this.state;
 
-        const { observationTypes, organisations, bootstrap, onObservationTypeCheckbox, onOrganisationCheckbox, switchView, onViewChange } = this.props;
+        const { observationTypes, organisations, onObservationTypeCheckbox, onOrganisationCheckbox, currentDataType, switchDataType, onViewChange } = this.props;
 
         //Filter observation types & organisations at the client side instead of fetching again from the server after each search
         const filteredObservationTypes = observationTypes.filter(observationTypes => observationTypes.parameter.toLowerCase().includes(this.state.searchObs.toLowerCase()));
@@ -96,7 +97,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                             //then it will set the local state of this component to initial state
                             //and also set the state of its parent component (the main container) to its initial state
                             //finally remove all the checked organisation and observation type
-                            switchView();
+                            switchDataType("Raster");
                             this.props.fetchRasters(1, '', '', '', '');
                             onViewChange();
                             this.setState({
@@ -108,14 +109,14 @@ class FilterBar extends React.Component<MyProps, MyState> {
                             organisations.map(org => org.checked = false);
                             observationTypes.map(obs => obs.checked = false);
                         }}
-                        disabled={!bootstrap.viewWMS ? true : false}
+                        disabled={currentDataType === "Raster" ? true : false}
                     >
                         Raster
                     </button>
                     <button 
                         className="switcher-button switcher-button-wms" 
                         onClick={() => {
-                            switchView();
+                            switchDataType("WMS");
                             this.props.fetchWMSLayers(1, '', '', '');
                             onViewChange();
                             this.setState({
@@ -127,7 +128,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                             organisations.map(org => org.checked = false);
                             observationTypes.map(obs => obs.checked = false);
                         }}
-                        disabled={bootstrap.viewWMS ? true : false}
+                        disabled={currentDataType === "WMS" ? true : false}
                     >
                         WMS
                     </button>
@@ -162,8 +163,8 @@ class FilterBar extends React.Component<MyProps, MyState> {
                 </div>
                 <div 
                     className="filter-observation-type"
-                    //Only show the observation type filter option for Rasters, not for WMS layers
-                    style={{ visibility: !this.props.bootstrap.viewWMS ? "visible" : "hidden" }}
+                    //Only show the observation type filter option for Rasters
+                    style={{ visibility: this.props.currentDataType === "Raster" ? "visible" : "hidden" }}
                 >
                     <h4 title="Filter by Observation Type">Observation Type</h4>
                     <form onSubmit={this.onObsSubmit} className="raster-list__searchbar" title="Type observation type's parameter name">

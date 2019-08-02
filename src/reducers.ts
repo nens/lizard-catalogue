@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux';
 import {
     RASTERS_FETCHED,
-    RASTER_SELECTED,
     BASKET_UPDATED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
@@ -9,14 +8,13 @@ import {
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
     RECEIVE_LIZARD_BOOTSTRAP,
-    SWITCH_VIEW,
     REQUEST_WMS,
     RECEIVE_WMS,
-    SELECT_WMS
+    SWITCH_DATA_TYPE,
+    ITEM_SELECTED,
 } from "./action";
 import {
     RastersFetched,
-    RasterSelected,
     RasterActionType,
     Raster,
     ObservationType,
@@ -27,12 +25,15 @@ import {
     Bootstrap,
     BootstrapActionType,
     WMS,
+    SwitchDataType,
+    ItemSelected,
 } from './interface';
 
 export interface MyStore {
     bootstrap: Bootstrap,
     observationTypes: ObservationType[],
     organisations: Organisation[],
+    currentDataType: string,
     currentRasterList: {
         count: number,
         previous: string | null,
@@ -43,7 +44,6 @@ export interface MyStore {
     allRasters: {
         [index: string]: Raster,
     } | {},
-    selectedRaster: string | null,
     currentWMSList: {
         count: number,
         previous: string | null,
@@ -54,7 +54,7 @@ export interface MyStore {
     allWMS: {
         [index: string]: WMS,
     } | {},
-    selectedWMS: string | null,
+    selectedItem: string | null,
     basket: string[]
 };
 
@@ -65,8 +65,7 @@ const bootstrap = (
             username: null,
             authenticated: false
         },
-        isFetching: false,
-        viewWMS: false 
+        isFetching: false
     },
     action: BootstrapActionType
 ): MyStore['bootstrap'] => {
@@ -84,14 +83,18 @@ const bootstrap = (
                 },
                 isFetching: false
             };
-        case SWITCH_VIEW:
-            return {
-                ...state,
-                viewWMS: !state.viewWMS
-            }
         default:
             return state;
     }
+};
+
+const currentDataType = (state: MyStore['currentDataType'] = "Raster", action: SwitchDataType): MyStore['currentDataType'] => {
+    switch (action.type) {
+        case SWITCH_DATA_TYPE:
+            return action.payload;
+        default:
+            return state;
+    };
 };
 
 const currentRasterList = (state: MyStore['currentRasterList'] = null, action: RasterActionType): MyStore['currentRasterList'] => {
@@ -126,15 +129,6 @@ const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched): 
                 newState[raster.uuid] = raster;
             });
             return newState;
-        default:
-            return state;
-    };
-};
-
-const selectedRaster = (state: MyStore['selectedRaster'] = null, action: RasterSelected): MyStore['selectedRaster'] => {
-    switch (action.type) {
-        case RASTER_SELECTED:
-            return action.payload;
         default:
             return state;
     };
@@ -177,9 +171,9 @@ const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
     };
 };
 
-const selectedWMS = (state: MyStore['selectedWMS'] = null, action): MyStore['selectedWMS'] => {
+const selectedItem = (state: MyStore['selectedItem'] = null, action: ItemSelected): MyStore['selectedItem'] => {
     switch (action.type) {
-        case SELECT_WMS:
+        case ITEM_SELECTED:
             return action.payload;
         default:
             return state;
@@ -240,6 +234,10 @@ export const getLizardBootstrap = (state: MyStore) => {
     return state.bootstrap;
 };
 
+export const getCurrentDataType = (state: MyStore) => {
+    return state.currentDataType;
+};
+
 export const getCurrentRasterList = (state: MyStore) => {
     return state.currentRasterList;
 };
@@ -283,12 +281,12 @@ export const getOrganisations = (state: MyStore) => {
 
 export default combineReducers({
     bootstrap,
+    currentDataType,
     currentRasterList,
     allRasters,
-    selectedRaster,
     currentWMSList,
     allWMS,
-    selectedWMS,
+    selectedItem,
     basket,
     observationTypes,
     organisations,

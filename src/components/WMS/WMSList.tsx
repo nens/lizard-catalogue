@@ -16,7 +16,7 @@ interface MyProps {
     onSearchSubmit: (event: object) => void,
     onSorting: (ordering: string) => void,
 
-    selectWMS: (uuid: string) => void,
+    selectItem: (uuid: string) => void,
     updateBasket: (basket: MyStore['basket']) => void
 };
 
@@ -58,7 +58,7 @@ class WMSList extends React.Component<WMSListProps, MyState> {
 
     render() {
         //Destructure all props of the WMS List component
-        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentWMSList, selectWMS, updateBasket, wmsLayers } = this.props;
+        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentWMSList, selectItem, updateBasket, wmsLayers } = this.props;
 
         //If nothing is fetched, show loading screen
         if (!currentWMSList) return <this.renderLoadingScreen />;
@@ -126,7 +126,7 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                             }
 
                             return (
-                                <li className="raster-list__row-li" key={wms.uuid} onClick={() => selectWMS(wms.uuid)} >
+                                <li className="raster-list__row-li" key={wms.uuid} onClick={() => selectItem(wms.uuid)} >
                                     <input className="raster-list__row raster-list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(wms.uuid)} checked={checked} />
                                     <div className="raster-list__row raster-list__row-name">{wms.name}</div>
                                     <div className="raster-list__row raster-list__row-org">{wms.organisation && wms.organisation.name}</div>

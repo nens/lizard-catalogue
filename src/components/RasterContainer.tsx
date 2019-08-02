@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { fetchRasters, selectRaster, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchView, fetchWMSLayers, selectWMS } from '../action';
-import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getLizardBootstrap, getCurrentWMSList } from '../reducers';
-import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, Bootstrap } from '../interface';
+import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers } from '../action';
+import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
+import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType } from '../interface';
 import RasterList from './RasterList';
 import WMSList from './WMS/WMSList';
 import RasterDetails from './RasterDetails';
@@ -16,19 +16,18 @@ interface PropsFromState {
     currentWMSList: MyStore['currentWMSList'] | null,
     observationTypes: ObservationType[],
     organisations: Organisation[],
-    bootstrap: Bootstrap
+    currentDataType: MyStore['currentDataType'],
 };
 
 interface PropsFromDispatch {
-    getLizardBootstrap: () => void,
-    selectRaster: (uuid: string) => void,
-    selectWMS: (uuid: string) => void,
+    fetchLizardBootstrap: () => void,
+    selectItem: (uuid: string) => void,
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => void,
     updateBasket: (basket: MyStore['basket']) => void,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
-    switchView: () => void,
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => void,
+    switchDataType: (dataType: SwitchDataType['payload']) => void
 };
 
 type RasterContainerProps = PropsFromState & PropsFromDispatch;
@@ -62,7 +61,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
 
     onPageClick = (page: number) => {
         if (page < 1) return page = 1;
-        !this.props.bootstrap.viewWMS ?
+        this.props.currentDataType === "Raster" ? 
             this.props.fetchRasters(page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering) :
             this.props.fetchWMSLayers(page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
         this.setState({
@@ -82,7 +81,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
             page: 1
         });
 
-        !this.props.bootstrap.viewWMS ?
+        this.props.currentDataType === "Raster" ? 
             this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering) :
             this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
     };
@@ -139,7 +138,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     };
 
     componentDidMount() {
-        this.props.getLizardBootstrap();
+        this.props.fetchLizardBootstrap();
         this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
         // this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
     };
@@ -147,7 +146,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     //Component will fetch the Rasters again each time the value of this.state.organisationName changes
     componentWillUpdate(nextProps: RasterContainerProps, nextState: MyState) {
         if (nextProps && (nextState.organisationName !== this.state.organisationName || nextState.observationType !== this.state.observationType || nextState.ordering !== this.state.ordering)) {
-            !this.props.bootstrap.viewWMS ?
+            this.props.currentDataType === "Raster" ? 
                 this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, nextState.organisationName, nextState.observationType, nextState.ordering) :
                 this.props.fetchWMSLayers(this.state.initialPage, this.state.searchTerm, nextState.organisationName, nextState.ordering);
             this.setState({
@@ -157,8 +156,6 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     };
 
     render() {
-        const { bootstrap } = this.props;
-
         return (
             <div className="raster-container" onClick={this.toggleProfileDropdown}>
                 <div className="raster-header">
@@ -175,18 +172,18 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                         organisations={this.props.organisations}
                         onObservationTypeCheckbox={this.onObservationTypeCheckbox}
                         onOrganisationCheckbox={this.onOrganisationCheckbox}
-                        switchView={this.props.switchView}
-                        bootstrap={bootstrap}
                         onViewChange={this.onViewChange}
                         fetchRasters={this.props.fetchRasters}
                         fetchWMSLayers={this.props.fetchWMSLayers}
+                        switchDataType={this.props.switchDataType}
+                        currentDataType={this.props.currentDataType}
                     />
-                    {!bootstrap.viewWMS ?
+                    {this.props.currentDataType === "Raster" ?
                         <RasterList
                             searchTerm={this.state.searchTerm}
                             page={this.state.page}
                             currentRasterList={this.props.currentRasterList}
-                            selectRaster={this.props.selectRaster}
+                            selectItem={this.props.selectItem}
                             updateBasket={this.props.updateBasket}
                             onPageClick={this.onPageClick}
                             onSearchChange={this.onSearchChange}
@@ -198,7 +195,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                             searchTerm={this.state.searchTerm}
                             page={this.state.page}
                             currentWMSList={this.props.currentWMSList}
-                            selectWMS={this.props.selectWMS}
+                            selectItem={this.props.selectItem}
                             updateBasket={this.props.updateBasket}
                             onPageClick={this.onPageClick}
                             onSearchChange={this.onSearchChange}
@@ -218,19 +215,18 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     currentWMSList: getCurrentWMSList(state),
     observationTypes: getObservationTypes(state),
     organisations: getOrganisations(state),
-    bootstrap: getLizardBootstrap(state)
+    currentDataType: getCurrentDataType(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType>): PropsFromDispatch => ({
-    getLizardBootstrap: () => fetchLizardBootstrap(dispatch),
+    fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, ordering, dispatch),
-    selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
-    selectWMS: (uuid: string) => selectWMS(uuid, dispatch),
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
-    switchView: () => switchView(dispatch),
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => fetchWMSLayers(page, searchTerm, organisationName, ordering, dispatch),
+    selectItem: (uuid: string) => selectItem(uuid, dispatch),
+    switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RasterContainer);
