@@ -43,6 +43,18 @@ export const fetchLizardBootstrap = (dispatch) => {
     });
 };
 
+//MARK: Switch between rasters and wms layers
+export const SWITCH_DATA_TYPE = 'SWITCH_DATA_TYPE';
+
+const dataTypeSwitched = (dataType: string) => ({
+    type: SWITCH_DATA_TYPE,
+    payload: dataType
+});
+
+export const switchDataType = (dataType: string, dispatch): void => {
+    dispatch(dataTypeSwitched(dataType));
+};
+
 //MARK: Raster
 export const RASTERS_REQUESTED = 'RASTERS_REQUESTED';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';

@@ -7,7 +7,8 @@ import {
     ORGANISATIONS_FETCHED,
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
-    RECEIVE_LIZARD_BOOTSTRAP
+    RECEIVE_LIZARD_BOOTSTRAP,
+    SWITCH_DATA_TYPE
 } from "./action";
 
 //ACTION INTERFACE
@@ -21,6 +22,11 @@ export interface ReceiveLizardBootstrap {
 };
 
 export type BootstrapActionType = RequestLizardBootstrap | ReceiveLizardBootstrap;
+
+export interface SwitchDataType {
+    type: typeof SWITCH_DATA_TYPE,
+    payload: string
+};
 
 export interface RastersRequested {
     type: typeof RASTERS_REQUESTED
