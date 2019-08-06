@@ -122,14 +122,25 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
         } else {
             this.setState({
                 ordering: `-${ordering}`
-            })
+            });
         };
+    };
+
+    //When switch the view from Rasters to WMS layers and vice versa, set the state of this main container back to initial state
+    onViewChange = () => {
+        this.setState({
+            page: 1,
+            searchTerm: '',
+            organisationName: '',
+            observationType: '',
+            ordering: '',
+        });
     };
 
     componentDidMount() {
         this.props.fetchLizardBootstrap();
         this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
-        this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
+        // this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
     };
 
     //Component will fetch the Rasters again each time the value of this.state.organisationName changes
@@ -161,6 +172,9 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                         organisations={this.props.organisations}
                         onObservationTypeCheckbox={this.onObservationTypeCheckbox}
                         onOrganisationCheckbox={this.onOrganisationCheckbox}
+                        onViewChange={this.onViewChange}
+                        fetchRasters={this.props.fetchRasters}
+                        fetchWMSLayers={this.props.fetchWMSLayers}
                         switchDataType={this.props.switchDataType}
                         currentDataType={this.props.currentDataType}
                     />
