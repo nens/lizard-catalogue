@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux';
 import {
     RASTERS_FETCHED,
-    RASTER_SELECTED,
     BASKET_UPDATED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
@@ -9,11 +8,13 @@ import {
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
     RECEIVE_LIZARD_BOOTSTRAP,
-    SWITCH_DATA_TYPE
+    REQUEST_WMS,
+    RECEIVE_WMS,
+    SWITCH_DATA_TYPE,
+    ITEM_SELECTED,
 } from "./action";
 import {
     RastersFetched,
-    RasterSelected,
     RasterActionType,
     Raster,
     ObservationType,
@@ -23,7 +24,9 @@ import {
     ObservationTypesFetched,
     Bootstrap,
     BootstrapActionType,
+    WMS,
     SwitchDataType,
+    ItemSelected,
 } from './interface';
 
 export interface MyStore {
@@ -40,6 +43,16 @@ export interface MyStore {
     } | null,
     allRasters: {
         [index: string]: Raster,
+    } | {},
+    currentWMSList: {
+        count: number,
+        previous: string | null,
+        next: string | null,
+        wmsList: string[],
+        isFetching: boolean
+    } | null,
+    allWMS: {
+        [index: string]: WMS,
     } | {},
     selectedItem: string | null,
     basket: string[]
@@ -121,9 +134,46 @@ const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched): 
     };
 };
 
-const selectedItem = (state: MyStore['selectedItem'] = null, action: RasterSelected): MyStore['selectedItem'] => {
+const currentWMSList = (state: MyStore['currentWMSList'] = null, action): MyStore['currentWMSList'] => {
     switch (action.type) {
-        case RASTER_SELECTED:
+        case REQUEST_WMS:
+            return {
+                count: 0,
+                previous: null,
+                next: null,
+                wmsList: [],
+                isFetching: true
+            }
+        case RECEIVE_WMS:
+            const { count, previous, next } = action.payload;
+            return {
+                count: count,
+                previous: previous,
+                next: next,
+                wmsList: action.payload.results.map(wms => wms.uuid),
+                isFetching: false
+            };
+        default:
+            return state;
+    };
+};
+
+const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
+    switch (action.type) {
+        case RECEIVE_WMS:
+            const newState = { ...state };
+            action.payload.results.forEach(wms => {
+                newState[wms.uuid] = wms;
+            });
+            return newState;
+        default:
+            return state;
+    };
+};
+
+const selectedItem = (state: MyStore['selectedItem'] = null, action: ItemSelected): MyStore['selectedItem'] => {
+    switch (action.type) {
+        case ITEM_SELECTED:
             return action.payload;
         default:
             return state;
@@ -196,6 +246,14 @@ export const getRaster = (state: MyStore, uuid: string) => {
     return state.allRasters[uuid];
 };
 
+export const getCurrentWMSList = (state: MyStore) => {
+    return state.currentWMSList;
+};
+
+export const getWMS = (state: MyStore, uuid: string) => {
+    return state.allWMS[uuid];
+};
+
 export const getObservationTypes = (state: MyStore) => {
     //Remove observation types with empty parameter
     const observationTypes = state.observationTypes.filter(observationType => observationType.parameter !== "");
@@ -226,6 +284,8 @@ export default combineReducers({
     currentDataType,
     currentRasterList,
     allRasters,
+    currentWMSList,
+    allWMS,
     selectedItem,
     basket,
     observationTypes,

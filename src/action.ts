@@ -3,7 +3,6 @@ import { baseUrl } from './api';
 import { Dispatch } from 'redux';
 import {
     RastersFetched,
-    RasterSelected,
     RasterListObject,
     BasketAdded,
     ObservationType,
@@ -15,7 +14,11 @@ import {
     RastersRequested,
     RequestLizardBootstrap,
     ReceiveLizardBootstrap,
-    SwitchDataType
+    WMSObject,
+    RequestWMS,
+    ReceiveWMS,
+    SwitchDataType,
+    ItemSelected
 } from './interface';
 
 //MARK: Bootsrap
@@ -59,7 +62,6 @@ export const switchDataType = (dataType: SwitchDataType['payload'], dispatch): v
 //MARK: Raster
 export const RASTERS_REQUESTED = 'RASTERS_REQUESTED';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
-export const RASTER_SELECTED = 'RASTER_SELECTED';
 
 const rastersRequested = (): RastersRequested => ({
     type: RASTERS_REQUESTED
@@ -100,13 +102,49 @@ export const fetchRastersOnUuid = (searchUuid: string, dispatch: Dispatch<Raster
         .catch(console.error)
 };
 
-const rasterSelected = (uuid: string): RasterSelected => ({
-    type: RASTER_SELECTED,
+//MARK: WMS
+export const REQUEST_WMS = 'REQUEST_WMS';
+export const RECEIVE_WMS = 'RECEIVE_WMS';
+
+const wmsRequested = (): RequestWMS => ({
+    type: REQUEST_WMS
+});
+
+const wmsReceived = (wmsObject: WMSObject): ReceiveWMS => ({
+    type: RECEIVE_WMS,
+    payload: wmsObject
+});
+
+export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, ordering: string, dispatch): void => {
+    dispatch(wmsRequested());
+    request
+        .get(`${baseUrl}/wmslayers?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&ordering=${ordering}`)
+        .then(response => {
+            if(response.body.count === 0) {
+                //If could not find any raster with the search term by raster's name then look for raster's uuid
+                request
+                    .get(`${baseUrl}/wmslayers?uuid=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&ordering=${ordering}`)
+                    .then(response => {
+                        dispatch(wmsReceived(response.body))
+                    })
+                    .catch(console.error)
+            } else {
+                dispatch(wmsReceived(response.body))
+            }
+        })
+        .catch(console.error)
+};
+
+//MARK: Select Item to view (Raster or WMS layer)
+export const ITEM_SELECTED = 'ITEM_SELECTED';
+
+const itemSelected = (uuid: string): ItemSelected => ({
+    type: ITEM_SELECTED,
     payload: uuid
 });
 
-export const selectRaster = (uuid: string, dispatch: Dispatch<RasterSelected>): void => {
-    dispatch(rasterSelected(uuid));
+export const selectItem = (uuid: string, dispatch): void => {
+    dispatch(itemSelected(uuid));
 };
 
 //MARK: Observation types and Organisation

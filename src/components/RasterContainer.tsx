@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { fetchRasters, selectRaster, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType } from '../action';
+import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType } from '../interface';
 import RasterList from './RasterList';
@@ -19,7 +19,7 @@ interface PropsFromState {
 
 interface PropsFromDispatch {
     fetchLizardBootstrap: () => void,
-    selectRaster: (uuid: string) => void,
+    selectItem: (uuid: string) => void,
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => void,
     updateBasket: (basket: MyStore['basket']) => void,
     fetchObservationTypes: () => void,
@@ -158,7 +158,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                         searchTerm={this.state.searchTerm}
                         page={this.state.page}
                         currentRasterList={this.props.currentRasterList}
-                        selectRaster={this.props.selectRaster}
+                        selectItem={this.props.selectItem}
                         updateBasket={this.props.updateBasket}
                         onPageClick={this.onPageClick}
                         onSearchChange={this.onSearchChange}
@@ -182,7 +182,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType>): PropsFromDispatch => ({
     fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, ordering, dispatch),
-    selectRaster: (uuid: string) => selectRaster(uuid, dispatch),
+    selectItem: (uuid: string) => selectItem(uuid, dispatch),
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),

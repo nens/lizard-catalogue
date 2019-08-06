@@ -1,6 +1,5 @@
 import {
     RASTERS_FETCHED,
-    RASTER_SELECTED,
     BASKET_UPDATED,
     ITEM_REMOVED,
     OBSERVATION_TYPES_FETCHED,
@@ -8,7 +7,10 @@ import {
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
     RECEIVE_LIZARD_BOOTSTRAP,
-    SWITCH_DATA_TYPE
+    RECEIVE_WMS,
+    REQUEST_WMS,
+    SWITCH_DATA_TYPE,
+    ITEM_SELECTED,
 } from "./action";
 
 //ACTION INTERFACE
@@ -37,12 +39,23 @@ export interface RastersFetched {
     payload: RasterListObject
 };
 
-export interface RasterSelected {
-    type: typeof RASTER_SELECTED,
-    payload: string
+export type RasterActionType = RastersRequested | RastersFetched;
+
+export interface RequestWMS {
+    type: typeof REQUEST_WMS
 };
 
-export type RasterActionType = RastersRequested | RastersFetched | RasterSelected;
+export interface ReceiveWMS {
+    type: typeof RECEIVE_WMS,
+    payload: WMSObject
+};
+
+export type WMSActionType = RequestWMS | ReceiveWMS;
+
+export interface ItemSelected {
+    type: typeof ITEM_SELECTED,
+    payload: string
+}
 
 export interface BasketAdded {
     type: typeof BASKET_UPDATED,
@@ -68,7 +81,7 @@ export interface OrganisationsFetched {
 
 export type FilterActionType = ObservationTypesFetched | OrganisationsFetched;
 
-//INTERFACES
+//LIZARD BOOTSTRAP
 export interface Bootstrap {
     user: {
         first_name: string | null,
@@ -78,6 +91,7 @@ export interface Bootstrap {
     isFetching: boolean
 };
 
+//RASTER
 export interface RasterListObject {
     count: number,
     previous: string,
@@ -112,6 +126,30 @@ export interface Raster {
     }
 };
 
+//WMS
+export interface WMSObject {
+    count: number,
+    previous: string,
+    next: string,
+    results: WMS[]
+};
+
+export interface WMS {
+    uuid: string,
+    name: string,
+    description: string,
+    slug: string,
+    get_feature_info: boolean,
+    get_feature_info_url: string,
+    legend_url: string,
+    min_zoom: number,
+    max_zoom: number,
+    url: string,
+    organisation: Organisation,
+    access_modifier: string
+};
+
+//ORGANISATION
 export interface Organisation {
     url: string,
     name: string,
@@ -119,6 +157,7 @@ export interface Organisation {
     checked: boolean
 };
 
+//OBSERVATION TYPE
 export interface ObservationType {
     url: string,
     code: string,
