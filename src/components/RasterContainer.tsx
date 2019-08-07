@@ -7,6 +7,7 @@ import { RasterActionType, ObservationType, Organisation, Basket, FilterActionTy
 import RasterList from './RasterList';
 import WMSList from './WMS/WMSList';
 import RasterDetails from './RasterDetails';
+import WMSDetails from './WMS/WMSDetails';
 import FilterBar from './FilterBar';
 import Header from './Header';
 import './Raster.css';
@@ -203,7 +204,11 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
                             onSorting={this.onSorting}
                         />
                     }
-                    <RasterDetails />
+                    {this.props.currentDataType === "Raster" ?
+                        <RasterDetails />
+                        :
+                        <WMSDetails />
+                    }
                 </div>
             </div>
         );
