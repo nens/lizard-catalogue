@@ -1,7 +1,11 @@
-import { Raster, LatLng } from "../interface";
+import { Raster, WMS, LatLng } from "../interface";
 
 export const openRasterInAPI = (raster: Raster) => {
     window.open(`/api/v4/rasters/${raster.uuid}`)
+};
+
+export const openWMSInAPI = (wms: WMS) => {
+    window.open(`/api/v4/wmslayers/${wms.uuid}`)
 };
 
 export const openRastersInLizard = (basket: Raster[], centerPoint: LatLng, zoom: number) => {

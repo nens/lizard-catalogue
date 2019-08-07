@@ -6,7 +6,7 @@ import { Raster, LatLng, Bootstrap } from '../interface';
 import './Header.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../utils/latLngZoomCalculation';
-import { openRastersInLizard } from '../utils/openRaster';
+import { openRastersInLizard } from '../utils/url';
 
 interface MyProps {
     showProfileDropdown: boolean,
