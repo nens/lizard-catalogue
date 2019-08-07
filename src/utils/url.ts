@@ -18,3 +18,10 @@ export const openRastersInLizard = (basket: Raster[], centerPoint: LatLng, zoom:
     
     window.open(`/nl/map/topography${urlPath}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };
+
+export const openWMSInLizard = (wms: WMS) => {
+    //create short UUID of the WMS layer
+    const wmsShortUUID = wms.uuid.substr(0, 7);
+
+    window.open(`/nl/map/topography,wmslayer$${wmsShortUUID}`);
+};

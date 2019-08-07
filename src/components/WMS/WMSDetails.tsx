@@ -4,7 +4,7 @@ import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getWMS } from '../../reducers';
 import { WMS } from '../../interface';
 import './../RasterDetails.css';
-import { openWMSInAPI } from '../../utils/url';
+import { openWMSInAPI, openWMSInLizard } from '../../utils/url';
 
 interface PropsFromState {
     wms: WMS | null
@@ -42,7 +42,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                     <h4>View data in</h4>
                     <div>
                         <button className="raster-details__button button-api" onClick={() => openWMSInAPI(wms)}>API</button>
-                        <button className="raster-details__button button-lizard">PORTAL</button>
+                        <button className="raster-details__button button-lizard" onClick={() => openWMSInLizard(wms)}>PORTAL</button>
                     </div>
                 </div>
             </div>
