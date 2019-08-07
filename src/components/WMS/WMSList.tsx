@@ -152,6 +152,8 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                             className="raster-list__button-basket"
                             disabled={this.state.checkedWMSLayers.length === 0 ? true : false}
                             onClick={addToBasket}
+                            //For now, only rasters can be added to the basket. For WMS, don't show this button
+                            style={{ display: "none" }}
                         >
                             ADD TO BASKET
                         </button>
