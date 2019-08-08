@@ -41,7 +41,7 @@ class Header extends React.Component<HeaderProps> {
                         <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
                         Edit Profile
                     </a>
-                    <a href="/accounts/logout/">
+                    <a href="/accounts/logout/?next=/catalogue/">
                         <i className="fa fa-power-off" style={{ paddingRight: "2rem" }} />
                         Logout
                     </a>
@@ -50,7 +50,7 @@ class Header extends React.Component<HeaderProps> {
             :
             (
                 <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
-                    <a href={`/accounts/login/?next=/catalogue/`}>
+                    <a href="/accounts/login/?next=/catalogue/">
                         <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
                         Login
                     </a>
