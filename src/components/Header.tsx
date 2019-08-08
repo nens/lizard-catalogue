@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { MyStore, getRaster } from '../reducers';
 import { removeItem } from '../action';
 import { Raster, LatLng, Bootstrap } from '../interface';
-import './Header.css';
+import './styles/Header.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../utils/latLngZoomCalculation';
 import { openRastersInLizard } from '../utils/url';
@@ -136,7 +136,7 @@ class Header extends React.Component<HeaderProps> {
                         </ul>
                         <p className="header-popup__content-onderste-laag">Onderste laag</p>
                         <button
-                            className="header-popup__content-button raster-list__button-basket"
+                            className="header-popup__content-button list__button-basket"
                             disabled={basket.length === 0 ? true : false}
                             onClick={() => openInLizard(basket)}
                         >

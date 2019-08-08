@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ObservationType, Organisation, SwitchDataType } from '../interface';
 import { MyStore } from '../reducers';
-import './FilterBar.css';
+import './styles/FilterBar.css';
 
 interface MyProps {
     observationTypes: ObservationType[],
@@ -92,6 +92,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                 <div className="switcher">
                     <button 
                         className="switcher-button switcher-button-raster"
+                        title="Raster"
                         onClick={() => {
                             //Switching between Rasters and WMS layers will fetch rasters/wms again with initial values
                             //then it will set the local state of this component to initial state
@@ -114,7 +115,8 @@ class FilterBar extends React.Component<MyProps, MyState> {
                         Raster
                     </button>
                     <button 
-                        className="switcher-button switcher-button-wms" 
+                        className="switcher-button switcher-button-wms"
+                        title="WMS layer"
                         onClick={() => {
                             switchDataType("WMS");
                             this.props.fetchWMSLayers(1, '', '', '');
@@ -135,10 +137,10 @@ class FilterBar extends React.Component<MyProps, MyState> {
                 </div>
                 <div className="filter-organisation">
                     <h4 title="Filter by Organisation">Organisation</h4>
-                    <form onSubmit={this.onOrgSubmit} className="raster-list__searchbar" title="Type organisation name">
-                        <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onOrgChange} value={searchOrg} />
-                        <button className="raster-list__searchbar-button" type="submit">
-                            <svg className="raster-list__searchbar-icon">
+                    <form onSubmit={this.onOrgSubmit} className="list__searchbar" title="Type organisation name">
+                        <input type="text" className="filter-box___searchbar-input list__searchbar-input" placeholder="search" onChange={this.onOrgChange} value={searchOrg} />
+                        <button className="list__searchbar-button" type="submit">
+                            <svg className="list__searchbar-icon">
                                 <use xlinkHref="image/symbols.svg#icon-search" />
                             </svg>
                         </button>
@@ -167,10 +169,10 @@ class FilterBar extends React.Component<MyProps, MyState> {
                     style={{ visibility: this.props.currentDataType === "Raster" ? "visible" : "hidden" }}
                 >
                     <h4 title="Filter by Observation Type">Observation Type</h4>
-                    <form onSubmit={this.onObsSubmit} className="raster-list__searchbar" title="Type observation type's parameter name">
-                        <input type="text" className="filter-box___searchbar-input raster-list__searchbar-input" placeholder="search" onChange={this.onObsChange} value={searchObs} />
-                        <button className="raster-list__searchbar-button" type="submit">
-                            <svg className="raster-list__searchbar-icon">
+                    <form onSubmit={this.onObsSubmit} className="list__searchbar" title="Type observation type's parameter name">
+                        <input type="text" className="filter-box___searchbar-input list__searchbar-input" placeholder="search" onChange={this.onObsChange} value={searchObs} />
+                        <button className="list__searchbar-button" type="submit">
+                            <svg className="list__searchbar-icon">
                                 <use xlinkHref="image/symbols.svg#icon-search" />
                             </svg>
                         </button>

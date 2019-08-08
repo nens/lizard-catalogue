@@ -4,13 +4,13 @@ import { Dispatch } from 'redux';
 import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType } from '../interface';
-import RasterList from './RasterList';
-import WMSList from './WMS/WMSList';
-import RasterDetails from './RasterDetails';
-import WMSDetails from './WMS/WMSDetails';
+import RasterList from './rasters/RasterList';
+import RasterDetails from './rasters/RasterDetails';
+import WMSList from './wms/WMSList';
+import WMSDetails from './wms/WMSDetails';
 import FilterBar from './FilterBar';
 import Header from './Header';
-import './Raster.css';
+import './styles/MainApp.css';
 
 interface PropsFromState {
     currentRasterList: MyStore['currentRasterList'] | null,
@@ -31,7 +31,7 @@ interface PropsFromDispatch {
     switchDataType: (dataType: SwitchDataType['payload']) => void
 };
 
-type RasterContainerProps = PropsFromState & PropsFromDispatch;
+type MainAppProps = PropsFromState & PropsFromDispatch;
 
 interface MyState {
     showProfileDropdown: boolean,
@@ -43,7 +43,7 @@ interface MyState {
     ordering: string,
 };
 
-class RasterContainer extends React.Component<RasterContainerProps, MyState> {
+class MainApp extends React.Component<MainAppProps, MyState> {
     state: MyState = {
         showProfileDropdown: false,
         page: 1,
@@ -145,7 +145,7 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
     };
 
     //Component will fetch the Rasters again each time the value of this.state.organisationName changes
-    componentWillUpdate(nextProps: RasterContainerProps, nextState: MyState) {
+    componentWillUpdate(nextProps: MainAppProps, nextState: MyState) {
         if (nextProps && (nextState.organisationName !== this.state.organisationName || nextState.observationType !== this.state.observationType || nextState.ordering !== this.state.ordering)) {
             this.props.currentDataType === "Raster" ? 
                 this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, nextState.organisationName, nextState.observationType, nextState.ordering) :
@@ -158,14 +158,14 @@ class RasterContainer extends React.Component<RasterContainerProps, MyState> {
 
     render() {
         return (
-            <div className="raster-container" onClick={this.toggleProfileDropdown}>
-                <div className="raster-header">
+            <div className="main-container" onClick={this.toggleProfileDropdown}>
+                <div className="main-header">
                     <Header
                         showProfileDropdown={this.state.showProfileDropdown}
                         toggleProfileDropdown={this.toggleProfileDropdown}
                     />
                 </div>
-                <div className="raster-main">
+                <div className="main-body">
                     <FilterBar
                         fetchObservationTypes={this.props.fetchObservationTypes}
                         observationTypes={this.props.observationTypes}
@@ -234,4 +234,4 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | Filte
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RasterContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(MainApp);

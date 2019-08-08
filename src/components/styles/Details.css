@@ -1,4 +1,4 @@
-.raster-details {
+.details {
     font-size: 1.3rem;
     line-height: 1.5rem;
     width: 30%;
@@ -16,42 +16,46 @@
     justify-content: space-between;
 }
 
-.raster-details__loading {
+.wms-details {
+    display: block;
+}
+
+.details__loading {
     font-size: 1.3rem;
     align-items: center;
     justify-content: center;
     color: #A9A9A9;
 }
 
-.raster-details h3 {
+.details h3 {
     font-size: 1.3rem;
     font-weight: 550;
     text-decoration: underline;
     margin: 0 0 1rem 0;
 }
 
-.raster-details__uuid {
+.details__uuid {
     font-size: 1.1rem;
     font-weight: 200;
     margin-bottom: 1rem;
     color: grey;
 }
 
-.raster-details__main-box {
+.details__main-box {
     display: flex;
     justify-content: space-between;
 
     height: 45%;
 }
 
-.raster-details__description-box {
+.details__description-box {
     min-width: 0;
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 
-.raster-details__description-box h4 {
+.details__description-box h4 {
     margin: .8rem 0 .5rem 0;
 }
 
@@ -60,7 +64,7 @@
     overflow-x: hidden; 
 }
 
-.raster-details__map-box {
+.details__map-box {
     flex: 1.2;
     display: flex;
     justify-content: flex-end;
@@ -74,7 +78,7 @@
     width: 95%;
 }
 
-.raster-details__metadata {
+.details__metadata {
     height: 40%;
     margin-top: 2rem;
 }
@@ -102,7 +106,7 @@
     font-weight: bold;
 }
 
-.raster-details__button-container {
+.details__button-container {
     height: 15%;
     margin-bottom: 1rem;
 
@@ -111,7 +115,7 @@
     justify-content: space-around;
 }
 
-.raster-details__button {
+.details__button {
     font-size: 1.4rem;
     line-height: 1.6rem;
     background-color: #2FCBAB;
@@ -125,7 +129,7 @@
     box-shadow: .1rem .2rem .4rem rgba(12, 12, 12, 0.5);
 }
 
-.raster-details__button:focus {
+.details__button:focus {
     outline: none;
 }
 

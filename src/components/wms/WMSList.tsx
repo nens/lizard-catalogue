@@ -3,7 +3,7 @@ import MDSpinner from "react-md-spinner";
 import { connect } from 'react-redux';
 import { WMS } from '../../interface';
 import { MyStore, getWMS } from '../../reducers';
-import './../RasterList.css';
+import '../styles/List.css';
 
 interface MyProps {
     page: number,
@@ -53,7 +53,7 @@ class WMSList extends React.Component<WMSListProps, MyState> {
     };
 
     renderLoadingScreen() {
-        return <div className="raster-list loading-screen"><MDSpinner size={50}/></div>;
+        return <div className="list loading-screen"><MDSpinner size={50}/></div>;
     };
 
     render() {
@@ -82,32 +82,32 @@ class WMSList extends React.Component<WMSListProps, MyState> {
         };
         
         return (
-            <div className="raster-list">
-                <div className="raster-list__top">
-                    <form onSubmit={onSearchSubmit} className="raster-list__searchbar" title="Type raster name or raster's UUID">
-                        <input type="text" className="raster-list__searchbar-input" placeholder="Search in Lizard or type an UUID" onChange={onSearchChange} value={searchTerm} />
-                        <button className="raster-list__searchbar-button" type="submit">
-                            <svg className="raster-list__searchbar-icon">
+            <div className="list">
+                <div className="list__top">
+                    <form onSubmit={onSearchSubmit} className="list__searchbar" title="Type WMS layer's name or UUID">
+                        <input type="text" className="list__searchbar-input" placeholder="Search in Lizard or type an UUID" onChange={onSearchChange} value={searchTerm} />
+                        <button className="list__searchbar-button" type="submit">
+                            <svg className="list__searchbar-icon">
                                 <use xlinkHref="image/symbols.svg#icon-search" />
                             </svg>
                         </button>
                     </form>
-                    <div className="raster-list__length">{count} Items</div>
+                    <div className="list__length">{count} Items</div>
                 </div>
 
-                <div className="raster-list__content">
-                    <ul className="raster-list__list">
-                        <li className="raster-list__row-title">
-                            <div className="raster-list__row raster-list__row-box" />
-                            <div className="raster-list__row raster-list__row-name">
+                <div className="list__content">
+                    <ul className="list__list">
+                        <li className="list__row-title">
+                            <div className="list__row list__row-box" />
+                            <div className="list__row list__row-name">
                                 Name 
                                 <i className="fa fa-sort" onClick={() => onSorting('name')}/>
                             </div>
-                            <div className="raster-list__row raster-list__row-org">
+                            <div className="list__row list__row-org">
                                 Organisation 
                                 <i className="fa fa-sort" onClick={() => onSorting('organisation__name')}/>
                             </div>
-                            <div className="raster-list__row raster-list__row-access" />
+                            <div className="list__row list__row-access" />
                         </li>
                         {wmsLayers.map((wms: WMS) => {
                             //Here is a logic to define whether a wms layer has been selected (check-box has been checked or not)
@@ -126,30 +126,30 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                             }
 
                             return (
-                                <li className="raster-list__row-li" key={wms.uuid} onClick={() => selectItem(wms.uuid)} >
-                                    <input className="raster-list__row raster-list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(wms.uuid)} checked={checked} />
-                                    <div className="raster-list__row raster-list__row-name">{wms.name}</div>
-                                    <div className="raster-list__row raster-list__row-org">{wms.organisation && wms.organisation.name}</div>
-                                    <div className="raster-list__row raster-list__row-access">{renderAccessModifier()}</div>
+                                <li className="list__row-li" key={wms.uuid} onClick={() => selectItem(wms.uuid)} >
+                                    <input className="list__row list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(wms.uuid)} checked={checked} />
+                                    <div className="list__row list__row-name">{wms.name}</div>
+                                    <div className="list__row list__row-org">{wms.organisation && wms.organisation.name}</div>
+                                    <div className="list__row list__row-access">{renderAccessModifier()}</div>
                                 </li>
                             )
                         })}
                     </ul>
                 </div>
-                <div className="raster-list__button-container">
-                    <div className="raster-list__button-pagination">
-                        {!previous ? <button className="raster-list__button-grey">&lsaquo;</button> : <button className="raster-list__button-previous" onClick={() => onPageClick(page - 1)}>&lsaquo;</button>}
-                        <ul className="raster-list__button-pagination-ul">
-                            <li className="raster-list__button-pagination-li" onClick={() => onPageClick(page - 2)}>{page <= 2 ? null : page - 2}</li>
-                            <li className="raster-list__button-pagination-li" onClick={() => onPageClick(page - 1)}>{page <= 1 ? null : page - 1}</li>
-                            <li className="raster-list__button-pagination-li raster-list__button-pagination-li-active">{page}</li>
-                            <li className="raster-list__button-pagination-li" onClick={() => onPageClick(page + 1)}>{page >= Math.ceil(currentWMSList.count/10) ? null : page + 1}</li>
-                            <li className="raster-list__button-pagination-li" onClick={() => onPageClick(page + 2)}>{page >= (Math.ceil(currentWMSList.count/10) - 1) ? null : page + 2}</li>
+                <div className="list__button-container">
+                    <div className="list__button-pagination">
+                        {!previous ? <button className="list__button-grey">&lsaquo;</button> : <button className="list__button-previous" onClick={() => onPageClick(page - 1)}>&lsaquo;</button>}
+                        <ul className="list__button-pagination-ul">
+                            <li className="list__button-pagination-li" onClick={() => onPageClick(page - 2)}>{page <= 2 ? null : page - 2}</li>
+                            <li className="list__button-pagination-li" onClick={() => onPageClick(page - 1)}>{page <= 1 ? null : page - 1}</li>
+                            <li className="list__button-pagination-li list__button-pagination-li-active">{page}</li>
+                            <li className="list__button-pagination-li" onClick={() => onPageClick(page + 1)}>{page >= Math.ceil(currentWMSList.count/10) ? null : page + 1}</li>
+                            <li className="list__button-pagination-li" onClick={() => onPageClick(page + 2)}>{page >= (Math.ceil(currentWMSList.count/10) - 1) ? null : page + 2}</li>
                         </ul>
-                        {!next ? <button className="raster-list__button-grey">&rsaquo;</button> : <button className="raster-list__button-next" onClick={() => onPageClick(page + 1)}>&rsaquo;</button>}
+                        {!next ? <button className="list__button-grey">&rsaquo;</button> : <button className="list__button-next" onClick={() => onPageClick(page + 1)}>&rsaquo;</button>}
                     </div>
                         <button 
-                            className="raster-list__button-basket"
+                            className="list__button-basket"
                             disabled={this.state.checkedWMSLayers.length === 0 ? true : false}
                             onClick={addToBasket}
                             //For now, only rasters can be added to the basket. For WMS, don't show this button
@@ -159,11 +159,11 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                         </button>
                 </div>
                 {/*Notification popup when click on the Add to Basket button*/}
-                <div className="raster-list__popup" id="notification">
-                    <div className="raster-list__popup-content">
+                <div className="list__popup" id="notification">
+                    <div className="list__popup-content">
                         <p>Items successfully added to the Basket. Go to your basket to see which items have been added.</p>
                         {/* eslint-disable-next-line */}
-                        <a href="#" className="raster-list__popup-close">OK</a>
+                        <a href="#" className="list__popup-close">OK</a>
                     </div>
                 </div>
             </div>
