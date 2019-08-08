@@ -1,9 +1,9 @@
 import * as React from 'react';
 import MDSpinner from "react-md-spinner";
 import { connect } from 'react-redux';
-import { Raster } from '../interface';
-import { MyStore, getRaster } from '../reducers';
-import './RasterList.css';
+import { Raster } from '../../interface';
+import { MyStore, getRaster } from '../../reducers';
+import '../styles/List.css';
 
 interface MyProps {
     page: number,
@@ -53,7 +53,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
     };
 
     renderLoadingScreen() {
-        return <div className="raster-list loading-screen"><MDSpinner size={50}/></div>;
+        return <div className="list loading-screen"><MDSpinner size={50}/></div>;
     };
 
     render() {
@@ -82,44 +82,44 @@ class RasterList extends React.Component<RasterListProps, MyState> {
         };
         
         return (
-            <div className="raster-list">
-                <div className="raster-list__top">
-                    <form onSubmit={onSearchSubmit} className="raster-list__searchbar" title="Type raster name or raster's UUID">
-                        <input type="text" className="raster-list__searchbar-input" placeholder="Search in Lizard or type an UUID" onChange={onSearchChange} value={searchTerm} />
-                        <button className="raster-list__searchbar-button" type="submit">
-                            <svg className="raster-list__searchbar-icon">
+            <div className="list">
+                <div className="list__top">
+                    <form onSubmit={onSearchSubmit} className="list__searchbar" title="Type raster name or raster's UUID">
+                        <input type="text" className="list__searchbar-input" placeholder="Search in Lizard or type an UUID" onChange={onSearchChange} value={searchTerm} />
+                        <button className="list__searchbar-button" type="submit">
+                            <svg className="list__searchbar-icon">
                                 <use xlinkHref="image/symbols.svg#icon-search" />
                             </svg>
                         </button>
                     </form>
-                    <div className="raster-list__length">{count} Items</div>
+                    <div className="list__length">{count} Items</div>
                 </div>
 
-                <div className="raster-list__content">
-                    <ul className="raster-list__list">
-                        <li className="raster-list__row-title">
-                            <div className="raster-list__row raster-list__row-box" />
-                            <div className="raster-list__row raster-list__row-type">
+                <div className="list__content">
+                    <ul className="list__list">
+                        <li className="list__row-title">
+                            <div className="list__row list__row-box" />
+                            <div className="list__row list__row-type">
                                 Type 
                                 <i className="fa fa-sort" onClick={() => onSorting('temporal')}/>
                             </div>
-                            <div className="raster-list__row raster-list__row-name">
+                            <div className="list__row list__row-name">
                                 Name 
                                 <i className="fa fa-sort" onClick={() => onSorting('name')}/>
                             </div>
-                            <div className="raster-list__row raster-list__row-org">
+                            <div className="list__row list__row-org">
                                 Organisation 
                                 <i className="fa fa-sort" onClick={() => onSorting('organisation__name')}/>
                             </div>
-                            <div className="raster-list__row raster-list__row-obs">
+                            <div className="list__row list__row-obs">
                                 Obs.Type 
                                 <i className="fa fa-sort" onClick={() => onSorting('observation_type__parameter')}/>
                             </div>
-                            <div className="raster-list__row raster-list__row-time">
+                            <div className="list__row list__row-time">
                                 Latest update
                                 <i className="fa fa-sort" onClick={() => onSorting('last_modified')}/>
                             </div>
-                            <div className="raster-list__row raster-list__row-access" />
+                            <div className="list__row list__row-access" />
                         </li>
                         {rasters.map((raster: Raster) => {
                             //Here is a logic to define whether a raster has been selected (check-box has been checked or not)
@@ -138,36 +138,36 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             }
 
                             return (
-                                <li className="raster-list__row-li" key={raster.uuid} onClick={() => selectItem(raster.uuid)} >
-                                    <input className="raster-list__row raster-list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(raster.uuid)} checked={checked} />
+                                <li className="list__row-li" key={raster.uuid} onClick={() => selectItem(raster.uuid)} >
+                                    <input className="list__row list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(raster.uuid)} checked={checked} />
                                     {raster.temporal ? 
-                                        <img className="raster-list__row raster-list__row-type" src="image/raster-temporal.svg" alt="raster" /> :
-                                        <img className="raster-list__row raster-list__row-type" src="image/raster-non-temporal.svg" alt="raster" />
+                                        <img className="list__row list__row-type" src="image/raster-temporal.svg" alt="raster" /> :
+                                        <img className="list__row list__row-type" src="image/raster-non-temporal.svg" alt="raster" />
                                     }
-                                    <div className="raster-list__row raster-list__row-name">{raster.name}</div>
-                                    <div className="raster-list__row raster-list__row-org">{raster.organisation && raster.organisation.name}</div>
-                                    <div className="raster-list__row raster-list__row-obs">{raster.observation_type && raster.observation_type.parameter}</div>
-                                    <div className="raster-list__row raster-list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
-                                    <div className="raster-list__row raster-list__row-access">{renderAccessModifier()}</div>
+                                    <div className="list__row list__row-name">{raster.name}</div>
+                                    <div className="list__row list__row-org">{raster.organisation && raster.organisation.name}</div>
+                                    <div className="list__row list__row-obs">{raster.observation_type && raster.observation_type.parameter}</div>
+                                    <div className="list__row list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
+                                    <div className="list__row list__row-access">{renderAccessModifier()}</div>
                                 </li>
                             )
                         })}
                     </ul>
                 </div>
-                <div className="raster-list__button-container">
-                    <div className="raster-list__button-pagination">
-                        {!previous ? <button className="raster-list__button-grey">&lsaquo;</button> : <button className="raster-list__button-previous" onClick={() => onPageClick(page - 1)}>&lsaquo;</button>}
-                        <ul className="raster-list__button-pagination-ul">
-                            <li className="raster-list__button-pagination-li" onClick={() => onPageClick(page - 2)}>{page <= 2 ? null : page - 2}</li>
-                            <li className="raster-list__button-pagination-li" onClick={() => onPageClick(page - 1)}>{page <= 1 ? null : page - 1}</li>
-                            <li className="raster-list__button-pagination-li raster-list__button-pagination-li-active">{page}</li>
-                            <li className="raster-list__button-pagination-li" onClick={() => onPageClick(page + 1)}>{page >= Math.ceil(currentRasterList.count/10) ? null : page + 1}</li>
-                            <li className="raster-list__button-pagination-li" onClick={() => onPageClick(page + 2)}>{page >= (Math.ceil(currentRasterList.count/10) - 1) ? null : page + 2}</li>
+                <div className="list__button-container">
+                    <div className="list__button-pagination">
+                        {!previous ? <button className="list__button-grey">&lsaquo;</button> : <button className="list__button-previous" onClick={() => onPageClick(page - 1)}>&lsaquo;</button>}
+                        <ul className="list__button-pagination-ul">
+                            <li className="list__button-pagination-li" onClick={() => onPageClick(page - 2)}>{page <= 2 ? null : page - 2}</li>
+                            <li className="list__button-pagination-li" onClick={() => onPageClick(page - 1)}>{page <= 1 ? null : page - 1}</li>
+                            <li className="list__button-pagination-li list__button-pagination-li-active">{page}</li>
+                            <li className="list__button-pagination-li" onClick={() => onPageClick(page + 1)}>{page >= Math.ceil(currentRasterList.count/10) ? null : page + 1}</li>
+                            <li className="list__button-pagination-li" onClick={() => onPageClick(page + 2)}>{page >= (Math.ceil(currentRasterList.count/10) - 1) ? null : page + 2}</li>
                         </ul>
-                        {!next ? <button className="raster-list__button-grey">&rsaquo;</button> : <button className="raster-list__button-next" onClick={() => onPageClick(page + 1)}>&rsaquo;</button>}
+                        {!next ? <button className="list__button-grey">&rsaquo;</button> : <button className="list__button-next" onClick={() => onPageClick(page + 1)}>&rsaquo;</button>}
                     </div>
                         <button 
-                            className="raster-list__button-basket"
+                            className="list__button-basket"
                             disabled={this.state.checkedRasters.length === 0 ? true : false}
                             onClick={addToBasket}
                         >
@@ -175,11 +175,11 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                         </button>
                 </div>
                 {/*Notification popup when click on the Add to Basket button*/}
-                <div className="raster-list__popup" id="notification">
-                    <div className="raster-list__popup-content">
+                <div className="list__popup" id="notification">
+                    <div className="list__popup-content">
                         <p>Items successfully added to the Basket. Go to your basket to see which items have been added.</p>
                         {/* eslint-disable-next-line */}
-                        <a href="#" className="raster-list__popup-close">OK</a>
+                        <a href="#" className="list__popup-close">OK</a>
                     </div>
                 </div>
             </div>

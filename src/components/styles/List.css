@@ -2,7 +2,7 @@ li {
     list-style: none;
 }
 
-.raster-list {
+.list {
     width: 52%;
     border-radius: .4rem;
     padding: 1rem;
@@ -22,16 +22,16 @@ li {
     align-items: center;
 }
 
-.raster-list__top {
+.list__top {
     height: 8%;
 }
 
-.raster-list__searchbar {
+.list__searchbar {
     display: flex;
     align-items: center;
 }
 
-.raster-list__searchbar-input {
+.list__searchbar-input {
     font-family: inherit;
     font-size: 1.1rem;
     font-weight: 300;
@@ -44,43 +44,43 @@ li {
     width: 98%;
 }
 
-.raster-list__searchbar-input:focus {
+.list__searchbar-input:focus {
     outline-color: #41a086;
 }
 
-.raster-list__searchbar-button {
+.list__searchbar-button {
     border: none;
     background-color: inherit;
     width: 2rem;
 }
 
-.raster-list__searchbar-button:focus {
+.list__searchbar-button:focus {
     outline: none;
 }
 
-.raster-list__searchbar-button:active {
+.list__searchbar-button:active {
     transform: translateY(2px);
 }
 
-.raster-list__searchbar-icon {
+.list__searchbar-icon {
     height: 1.5rem;
     width: 1.5rem;
     fill: grey;
 }
 
-.raster-list__length {
+.list__length {
     color: #686868;
     margin: 1rem 0 0 1rem;
 }
 
-.raster-list__content {
+.list__content {
     height: 80%;
 
     font-size: 1.3rem;
     line-height: 1.5rem;
 }
 
-.raster-list__list {
+.list__list {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -92,7 +92,7 @@ li {
     padding: 0;
 }
 
-.raster-list__row-title {
+.list__row-title {
     font-weight: bold;
     width: 100%;
     margin: 0.5rem auto;
@@ -101,7 +101,7 @@ li {
     height: 5%;
 }
 
-.raster-list__row-li {
+.list__row-li {
     border-radius: .8rem;
     margin: 0.5rem auto;
     background-color: #fff;
@@ -116,51 +116,51 @@ li {
     justify-content: space-between;
 }
 
-.raster-list__row-li:hover {
+.list__row-li:hover {
     border: 1px solid #2FCBAB;
 }
 
-.raster-list__row-li img {
+.list__row-li img {
     width: 3rem;
     height: 3rem;
 }
 
-.raster-list__row {
+.list__row {
     flex: 1;
     text-align: center;
     margin: auto 2px;
     overflow: hidden;
 }
 
-.raster-list__row i {
+.list__row i {
     cursor: pointer;
     margin-left: .5rem;
 }
 
-.raster-list__row-box {
+.list__row-box {
     flex: .5;
 }
 
-.raster-list__row-name {
+.list__row-name {
     flex: 2;
     text-align: left;
 }
 
-.raster-list__row-org {
+.list__row-org {
     flex: 3;
     text-align: left;
 }
 
-.raster-list__row-obs {
+.list__row-obs {
     flex: 2;
     text-align: left;
 }
 
-.raster-list__row-time {
+.list__row-time {
     flex: 2;
 }
 
-.raster-list__row-access {
+.list__row-access {
     flex: .8;
 }
 
@@ -183,14 +183,14 @@ li {
     background-color: #FFA500;
 }
 
-.raster-list__button-container {
+.list__button-container {
     position: relative;
     height: 5%;
     width: 100%;
     margin: 0 0 0 auto;
 }
 
-.raster-list__button-pagination {
+.list__button-pagination {
     position: absolute;
     margin: 0 auto;
     left: 0;
@@ -202,7 +202,7 @@ li {
     justify-content: space-between;
 }
 
-.raster-list__button-pagination button {
+.list__button-pagination button {
     border: none;
     background-color: transparent;
     font-size: 2rem;
@@ -210,37 +210,37 @@ li {
     cursor: pointer;
 }
 
-.raster-list__button-pagination button:focus {
+.list__button-pagination button:focus {
     outline: none;
 }
 
-.raster-list__button-grey {
+.list__button-grey {
     color: grey;
     cursor: not-allowed !important;
 }
 
-.raster-list__button-pagination-ul {
+.list__button-pagination-ul {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 0 2rem;
 }
 
-.raster-list__button-pagination-li {
+.list__button-pagination-li {
     margin: 0 .3rem;
     padding: .2rem;
     text-align: center;
     cursor: pointer;
 }
 
-.raster-list__button-pagination-li-active {
+.list__button-pagination-li-active {
     background: #009F86;
     color: #fff;
     border-radius: .3rem;
     cursor: unset;
 }
 
-.raster-list__button-basket {
+.list__button-basket {
     font-size: 1.4rem;
     text-transform: uppercase;
     
@@ -256,21 +256,21 @@ li {
     cursor: pointer;
 }
 
-.raster-list__button-basket:focus {
+.list__button-basket:focus {
     outline: none;
 }
 
-.raster-list__button-basket:active {
+.list__button-basket:active {
     transform: translateY(2px);
 }
 
-.raster-list__button-basket:disabled {    
+.list__button-basket:disabled {    
     background-color: #BFBFBF;
     cursor: not-allowed;
 }
 
 /*POPUP WINDOW WHEN CLICK ON THE ADD TO BASKET BUTTON*/
-.raster-list__popup {
+.list__popup {
     height: 100vh;
     width: 100%;
     position: fixed;
@@ -283,12 +283,12 @@ li {
     transition: all .3s;
 }
 
-.raster-list__popup:target {
+.list__popup:target {
     opacity: 1;
     visibility: visible;
 }
 
-.raster-list__popup-content {
+.list__popup-content {
     width: 24%;
     min-height: 12rem;
     border: 1px solid #BEBEBE;
@@ -309,7 +309,7 @@ li {
     padding: 2rem;
 }
 
-.raster-list__popup-close {
+.list__popup-close {
     background-color: #2FCBAB;
     text-decoration: none;
     color: #fff;

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
-import { MyStore, getRaster } from '../reducers';
-import { Raster, LatLng } from '../interface';
-import './RasterDetails.css';
+import { MyStore, getRaster } from '../../reducers';
+import { Raster, LatLng } from '../../interface';
+import '../styles/Details.css';
 
-import { zoomLevelCalculation, getCenterPoint } from '../utils/latLngZoomCalculation';
-import { openRasterInAPI, openRastersInLizard } from '../utils/url';
+import { zoomLevelCalculation, getCenterPoint } from '../../utils/latLngZoomCalculation';
+import { openRasterInAPI, openRastersInLizard } from '../../utils/url';
 
 interface PropsFromState {
     raster: Raster | null
@@ -18,7 +18,7 @@ class RasterDetails extends React.Component<PropsFromState> {
         const { raster } = this.props;
 
         //If no raster is selected, display a text
-        if (!raster) return <div className="raster-details raster-details__loading">Please select a raster</div>;
+        if (!raster) return <div className="details details__loading">Please select a raster</div>;
 
         //Set the Map with bounds coming from spatial_bounds of the Raster
         //If spatial_bounds is null then set the projection to the whole globe which is at [[85, 180], [-85, -180]]
@@ -47,25 +47,25 @@ class RasterDetails extends React.Component<PropsFromState> {
         const resolution = raster.projection === "EPSG:4326" ? rasterResolution.toFixed(6) + " deg2" : rasterResolution + " m2"
 
         return (
-            <div className="raster-details">
+            <div className="details">
                 <h3 title="Raster's name">{raster.name}</h3>
-                <span className="raster-details__uuid" title="Raster's UUID">{raster.uuid}</span>
-                <div className="raster-details__main-box">
-                    <div className="raster-details__description-box">
+                <span className="details__uuid" title="Raster's UUID">{raster.uuid}</span>
+                <div className="details__main-box">
+                    <div className="details__description-box">
                         <h4>Description</h4>
                         <div className="description">{raster.description}</div>
                         <br />
                         <h4>Organisation</h4>
                         <span>{raster.organisation && raster.organisation.name}</span>
                     </div>
-                    <div className="raster-details__map-box">
+                    <div className="details__map-box">
                         <Map bounds={bounds} >
                             <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
                             <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} />
                         </Map>
                     </div>
                 </div>
-                <div className="raster-details__metadata">
+                <div className="details__metadata">
                     <div className="row">
                         <p className="column column-1">Temporal</p><p className="column column-2">{raster.temporal ? 'Yes' : 'No'} </p>
                     </div>
@@ -95,11 +95,11 @@ class RasterDetails extends React.Component<PropsFromState> {
                     </div>
                 </div>
                 <br />
-                <div className="raster-details__button-container">
+                <div className="details__button-container">
                     <h4>View data in</h4>
                     <div>
-                        <button className="raster-details__button button-api" onClick={() => openRasterInAPI(raster)}>API</button>
-                        <button className="raster-details__button button-lizard" onClick={() => openRastersInLizard([raster], centerPoint, zoom)}>PORTAL</button>
+                        <button className="details__button button-api" onClick={() => openRasterInAPI(raster)}>API</button>
+                        <button className="details__button button-lizard" onClick={() => openRastersInLizard([raster], centerPoint, zoom)}>PORTAL</button>
                     </div>
                 </div>
             </div>
