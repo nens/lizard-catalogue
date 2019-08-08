@@ -6,7 +6,7 @@ import { Raster, LatLng } from '../interface';
 import './RasterDetails.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../utils/latLngZoomCalculation';
-import { openRasterInAPI, openRastersInLizard } from '../utils/openRaster';
+import { openRasterInAPI, openRastersInLizard } from '../utils/url';
 
 interface PropsFromState {
     raster: Raster | null

@@ -1,7 +1,11 @@
-import { Raster, LatLng } from "../interface";
+import { Raster, WMS, LatLng } from "../interface";
 
 export const openRasterInAPI = (raster: Raster) => {
     window.open(`/api/v4/rasters/${raster.uuid}`)
+};
+
+export const openWMSInAPI = (wms: WMS) => {
+    window.open(`/api/v4/wmslayers/${wms.uuid}`)
 };
 
 export const openRastersInLizard = (basket: Raster[], centerPoint: LatLng, zoom: number) => {
@@ -13,4 +17,11 @@ export const openRastersInLizard = (basket: Raster[], centerPoint: LatLng, zoom:
     const urlPath = idArray.map(id => `,raster$${id}`).join('');
     
     window.open(`/nl/map/topography${urlPath}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
+};
+
+export const openWMSInLizard = (wms: WMS) => {
+    //create short UUID of the WMS layer
+    const wmsShortUUID = wms.uuid.substr(0, 7);
+
+    window.open(`/nl/map/topography,wmslayer$${wmsShortUUID}`);
 };
