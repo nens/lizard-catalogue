@@ -16,10 +16,6 @@
     justify-content: space-between;
 }
 
-.wms-details {
-    display: block;
-}
-
 .details__loading {
     font-size: 1.3rem;
     align-items: center;
@@ -135,4 +131,19 @@
 
 .button-api {
     margin-right: 2rem;
+}
+
+/*FOR WMS LAYER*/
+.wms-details {
+    display: block;
+}
+
+.wms-details__info {
+    overflow-wrap: break-word;
+}
+
+.wms-details__button-container {
+    position: absolute;
+    bottom: 3%;
+    justify-content: space-evenly;
 }
