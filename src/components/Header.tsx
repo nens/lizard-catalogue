@@ -27,35 +27,22 @@ type HeaderProps = MyProps & PropsFromState & PropsFromDispatch;
 class Header extends React.Component<HeaderProps> {
 
     renderProfileDropdown() {
-        const { user } = this.props;
-
-        //Show the dropdown with options for logged-in user and anonymous user
-        return user.authenticated ?
-            (
-                <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
-                    <a
-                        href="https://sso.lizard.net/accounts/profile/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
-                        Edit Profile
-                    </a>
-                    <a href="/accounts/logout/?next=/catalogue/">
-                        <i className="fa fa-power-off" style={{ paddingRight: "2rem" }} />
-                        Logout
-                    </a>
-                </div>
-            )
-            :
-            (
-                <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
-                    <a href="/accounts/login/?next=/catalogue/">
-                        <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
-                        Login
-                    </a>
-                </div>
-            )
+        return (
+            <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
+                <a
+                    href="https://sso.lizard.net/accounts/profile/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
+                    Edit Profile
+                </a>
+                <a href="/accounts/logout/?next=/catalogue/">
+                    <i className="fa fa-power-off" style={{ paddingRight: "2rem" }} />
+                    Logout
+                </a>
+            </div>
+        )
     };
 
     render() {
@@ -94,13 +81,22 @@ class Header extends React.Component<HeaderProps> {
                         {basket.length === 0 ? <span /> : <span className="header-nav__notification">{basket.length}</span>}
                         <span className="header-nav__text">Basket</span>
                     </a>
-                    <div className="header-nav__icon-box user-profile" id="user-profile">
-                        <svg className="header-nav__icon" id="user-profile">
-                            <use xlinkHref="image/symbols.svg#icon-user" id="user-profile" />
-                        </svg>
-                        <span className="header-nav__text" id="user-profile">{user.first_name}</span>
-                        {this.props.showProfileDropdown && this.renderProfileDropdown()}
-                    </div>
+                    {user.authenticated ?
+                        <div className="header-nav__icon-box user-profile" id="user-profile">
+                            <svg className="header-nav__icon" id="user-profile">
+                                <use xlinkHref="image/symbols.svg#icon-user" id="user-profile" />
+                            </svg>
+                            <span className="header-nav__text" id="user-profile">{user.first_name}</span>
+                            {this.props.showProfileDropdown && this.renderProfileDropdown()}
+                        </div>
+                        :
+                        <a href="/accounts/login/?next=/catalogue/" className="header-nav__icon-box user-profile">
+                            <svg className="header-nav__icon" id="user-profile">
+                                <use xlinkHref="image/symbols.svg#icon-user" id="user-profile" />
+                            </svg>
+                            <span className="header-nav__text">Login</span>
+                        </a>
+                    }
                     <a href="#information" className="header-nav__icon-box" title="Info">
                         <svg className="header-nav__icon info-box">
                             <use xlinkHref="image/symbols.svg#icon-info" />
