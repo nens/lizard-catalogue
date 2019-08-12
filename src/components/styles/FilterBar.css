@@ -2,18 +2,11 @@
     width: 15%;
     min-width: 0;
     margin: 0 0 1rem 1rem;
-
     border-radius: .4rem;
     padding: 1.5rem;
     background-color: #f2f2f2;
     box-shadow: .1rem .3rem .4rem rgba(12, 12, 12, 0.4);
-
     overflow: hidden;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-
     height: 100%;
 }
 
@@ -113,7 +106,7 @@
 .switcher {
     display: flex;
     justify-content: space-between;
-    height: 10%;
+    height: 6rem;
 }
 
 .switcher-button {
