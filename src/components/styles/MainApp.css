@@ -1,6 +1,7 @@
 .main-container {
     display: flex;
     flex-direction: column;
+    min-width: 100rem;
 }
 
 .main-header {
@@ -11,6 +12,7 @@
 
 .main-body {
     display: flex;
-
     justify-content: space-between;
+    height: 90vh;
+    min-height: 80rem;
 }

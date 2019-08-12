@@ -135,7 +135,13 @@ class FilterBar extends React.Component<MyProps, MyState> {
                         WMS
                     </button>
                 </div>
-                <div className="filter-organisation">
+                <div 
+                    className="filter-organisation"
+                    //if there is no organisation in the filter bar then don't show this section
+                    style={{
+                        display: organisations.length === 0 ? "none" : ""
+                    }}
+                >
                     <h4 title="Filter by Organisation">Organisation</h4>
                     <form onSubmit={this.onOrgSubmit} className="list__searchbar" title="Type organisation name">
                         <input type="text" className="filter-box___searchbar-input list__searchbar-input" placeholder="search" onChange={this.onOrgChange} value={searchOrg} />
@@ -165,8 +171,11 @@ class FilterBar extends React.Component<MyProps, MyState> {
                 </div>
                 <div 
                     className="filter-observation-type"
-                    //Only show the observation type filter option for Rasters
-                    style={{ visibility: this.props.currentDataType === "Raster" ? "visible" : "hidden" }}
+                    //if there is no observation type in the filter bar then don't show this section
+                    //Also don't show the observation type filter option for WMS layers
+                    style={{ 
+                        display: observationTypes.length === 0 || this.props.currentDataType === "WMS" ? "none" : "" 
+                    }}
                 >
                     <h4 title="Filter by Observation Type">Observation Type</h4>
                     <form onSubmit={this.onObsSubmit} className="list__searchbar" title="Type observation type's parameter name">

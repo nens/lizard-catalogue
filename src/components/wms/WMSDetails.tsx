@@ -37,8 +37,15 @@ class WMSDetails extends React.Component<PropsFromState> {
                         </Map>
                     </div>
                 </div>
+                <div className="wms-details__info">
+                    <h4>WMS layer's URL</h4>
+                    <span>{wms.url}</span>
+                    <br />
+                    <h4>Slug</h4>
+                    <span>{wms.slug}</span>
+                </div>
                 <br />
-                <div className="details__button-container">
+                <div className="details__button-container wms-details__button-container">
                     <h4>View data in</h4>
                     <div>
                         <button className="details__button button-api" onClick={() => openWMSInAPI(wms)}>API</button>
