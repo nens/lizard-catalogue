@@ -54,6 +54,11 @@
     position: relative;
 }
 
+.user-profile .header-nav__text {
+    width: 70%;
+    overflow: hidden;
+}
+
 .header-nav__icon {
     height: 2.5rem;
     width: 3rem;
