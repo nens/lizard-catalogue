@@ -12,6 +12,8 @@ import FilterBar from './FilterBar';
 import Header from './Header';
 import './styles/MainApp.css';
 
+import { RouteComponentProps } from 'react-router';
+
 interface PropsFromState {
     currentRasterList: MyStore['currentRasterList'] | null,
     currentWMSList: MyStore['currentWMSList'] | null,
@@ -31,7 +33,7 @@ interface PropsFromDispatch {
     switchDataType: (dataType: SwitchDataType['payload']) => void
 };
 
-type MainAppProps = PropsFromState & PropsFromDispatch;
+type MainAppProps = RouteComponentProps<any> & PropsFromState & PropsFromDispatch;
 
 interface MyState {
     showProfileDropdown: boolean,
@@ -138,7 +140,21 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         });
     };
 
+    getUrlParams = () => {
+        if (!this.props.location.search) return new URLSearchParams();
+        return new URLSearchParams(this.props.location.search);
+    }
+
+    getName = () => {
+        let search = this.getUrlParams();
+        return search.get('name') || '';
+    }
+
     componentDidMount() {
+        let search = this.getName();
+        this.setState({
+            searchTerm: search
+        })
         this.props.fetchLizardBootstrap();
         this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
         // this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
@@ -157,6 +173,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     };
 
     render() {
+        console.log(this.props.location)
         return (
             <div className="main-container" onClick={this.toggleProfileDropdown}>
                 <div className="main-header">
