@@ -43,7 +43,7 @@ A wizard will follow. Usually just choose the defaults everywhere by hitting ent
 
 Instructions for first-time deployment, follow these extra steps first before the actual deployment:
 - Create a Personal Access Token on GitHub (if you do not have it yet);
-- Export your personal GitHub token by running the following command: `$export GITHUB_TOKEN=$your_personal_github_token`;
+- Export your personal GitHub token by running the following command: `export GITHUB_TOKEN=$your_personal_github_token`;
 - Try running this command in your terminal: `ssh -v s-web-ws-d10.external-nens.local`.<br>
 If the message in the console is: "Could not resolve hostname: Name or service not known", then edit your resolv.config file as follows:
   + Open resolv.config by running `sudo gedit /etc/resolv.conf`;
