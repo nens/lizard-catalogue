@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getWMS } from '../../reducers';
-import { WMS } from '../../interface';
+import { WMS, WMSBounds } from '../../interface';
 import '../styles/Details.css';
 import { openWMSInAPI, openWMSInLizard } from '../../utils/url';
 
@@ -11,12 +11,7 @@ interface PropsFromState {
 };
 
 interface PropsFromMainApp {
-    wmsBounds: {
-        north: number,
-        east: number,
-        south: number,
-        west: number
-    }
+    wmsBounds: WMSBounds
 };
 
 class WMSDetails extends React.Component<PropsFromState & PropsFromMainApp> {
