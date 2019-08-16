@@ -2,13 +2,15 @@ import request from 'superagent';
 import X2JS from 'x2js';
 import { WMS, WMSBounds } from "../interface";
 
-export const getBoundsFromWmsLayer = (wms: WMS, wmsBoundsUpdateOnClick: (wmsBounds: WMSBounds) => void) => {
+export const getBoundsFromWmsLayer = (wms: WMS, updateWmsBounds: (wmsBounds: WMSBounds) => void) => {
     //This proxy URL is to avoid the request is blocked by CORS or CORB
     //In production, it should be working without the prefix /proxy/
-    const proxyUrl = `/proxy/${wms.url}?request=getCapabilities`;
+    const proxyUrl = `/proxy/${wms.url}`;
 
     request
-        .get(proxyUrl)
+        .get(proxyUrl, {
+            request: "getCapabilities"
+        })
         .then(response => {
             //response is in XML format so use X2JS library to convert it to JSON format
             const xml2Json = new X2JS();
@@ -35,8 +37,8 @@ export const getBoundsFromWmsLayer = (wms: WMS, wmsBoundsUpdateOnClick: (wmsBoun
                     south: parseFloat(wmsLayer[0].EX_GeographicBoundingBox.southBoundLatitude),
                     west: parseFloat(wmsLayer[0].EX_GeographicBoundingBox.westBoundLongitude),
                 };
-            //Set the wmsBounds state with these new values using the wmsBoundsUpdateOnClick() function
-            wmsBoundsUpdateOnClick(wmsBounds);
+            //Set the wmsBounds state with these new values using the updateWmsBounds() function
+            updateWmsBounds(wmsBounds);
         })
         .catch(e => console.log(e));
 };

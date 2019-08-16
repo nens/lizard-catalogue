@@ -54,7 +54,7 @@ class WMSDetails extends React.Component<PropsFromState & PropsFromMainApp> {
                     <h4>View data in</h4>
                     <div>
                         <button className="details__button button-api" onClick={() => openWMSInAPI(wms)}>API</button>
-                        <button className="details__button button-lizard" onClick={() => openWMSInLizard(wms)}>PORTAL</button>
+                        <button className="details__button button-lizard" onClick={() => openWMSInLizard(wms, wmsBounds)}>PORTAL</button>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,5 @@
-import { Raster, WMS, LatLng } from "../interface";
+import { Raster, WMS, LatLng, WMSBounds } from "../interface";
+import { getCenterPoint, zoomLevelCalculation } from "./latLngZoomCalculation";
 
 export const openRasterInAPI = (raster: Raster) => {
     window.open(`/api/v4/rasters/${raster.uuid}`)
@@ -19,9 +20,16 @@ export const openRastersInLizard = (basket: Raster[], centerPoint: LatLng, zoom:
     window.open(`/nl/map/topography${urlPath}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };
 
-export const openWMSInLizard = (wms: WMS) => {
+export const openWMSInLizard = (wms: WMS, wmsBounds: WMSBounds) => {
     //create short UUID of the WMS layer
     const wmsShortUUID = wms.uuid.substr(0, 7);
 
-    window.open(`/nl/map/topography,wmslayer$${wmsShortUUID}`);
+    //destructure wmsBounds
+    const { north, east, south, west } = wmsBounds;
+    //Get the center point based on the bounds
+    const centerPoint: LatLng = getCenterPoint(north, east, south, west);
+    //Calculate the zoom level by using the zoomLevelCalculation function
+    const zoom = zoomLevelCalculation(north, east, south, west) - 1;
+
+    window.open(`/nl/map/topography,wmslayer$${wmsShortUUID}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };
