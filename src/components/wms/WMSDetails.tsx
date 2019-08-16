@@ -10,10 +10,20 @@ interface PropsFromState {
     wms: WMS | null
 };
 
-class WMSDetails extends React.Component<PropsFromState> {
+interface PropsFromMainApp {
+    wmsBounds: {
+        north: number,
+        east: number,
+        south: number,
+        west: number
+    }
+};
+
+class WMSDetails extends React.Component<PropsFromState & PropsFromMainApp> {
     render() {
         //Destructure the props
-        const { wms } = this.props;
+        const { wms, wmsBounds } = this.props;
+        const { north, east, south, west } = wmsBounds
 
         //If no WMS layer is selected, display a text
         if (!wms) return <div className="details details__loading">Please select a WMS Layer</div>;
@@ -31,7 +41,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                         <span>{wms.organisation && wms.organisation.name}</span>
                     </div>
                     <div className="details__map-box">
-                        <Map center={[0,0]} zoom={wms.min_zoom} >
+                        <Map bounds={[[north, east], [south, west]]} >
                             <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
                             <WMSTileLayer url={wms.url} layers={wms.slug} transparent={true} format="image/png" />
                         </Map>

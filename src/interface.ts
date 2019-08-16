@@ -149,6 +149,13 @@ export interface WMS {
     access_modifier: string
 };
 
+export interface WMSBounds {
+    north: number,
+    east: number,
+    south: number,
+    west: number
+};
+
 //ORGANISATION
 export interface Organisation {
     url: string,

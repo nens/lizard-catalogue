@@ -1,21 +1,20 @@
 import * as React from 'react';
 import MDSpinner from "react-md-spinner";
 import { connect } from 'react-redux';
-import { WMS } from '../../interface';
+import { WMS, WMSBounds } from '../../interface';
 import { MyStore, getWMS } from '../../reducers';
+import { getBoundsFromWmsLayer } from '../../utils/getBoundsFromWmsLayer';
 import '../styles/List.css';
 
 interface MyProps {
     page: number,
     searchTerm: string,
-
     currentWMSList: MyStore['currentWMSList'] | null,
-
     onPageClick: (page: number) => void,
     onSearchChange: (event: object) => void,
     onSearchSubmit: (event: object) => void,
     onSorting: (ordering: string) => void,
-
+    updateWmsBounds: (bounds: WMSBounds) => void,
     selectItem: (uuid: string) => void,
     updateBasket: (basket: MyStore['basket']) => void
 };
@@ -32,7 +31,7 @@ interface MyState {
 
 class WMSList extends React.Component<WMSListProps, MyState> {
     state: MyState = {
-        checkedWMSLayers: []
+        checkedWMSLayers: [],
     };
 
     onCheckboxSelect = (uuid: string) => {
@@ -53,16 +52,16 @@ class WMSList extends React.Component<WMSListProps, MyState> {
     };
 
     renderLoadingScreen() {
-        return <div className="list loading-screen"><MDSpinner size={50}/></div>;
+        return <div className="list loading-screen"><MDSpinner size={50} /></div>;
     };
 
     render() {
         //Destructure all props of the WMS List component
-        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentWMSList, selectItem, updateBasket, wmsLayers } = this.props;
+        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentWMSList, selectItem, updateBasket, wmsLayers, updateWmsBounds } = this.props;
 
         //If nothing is fetched, show loading screen
         if (!currentWMSList) return <this.renderLoadingScreen />;
-        
+
         //If data is being requested from the API, show loading screen
         if (currentWMSList.isFetching) return <this.renderLoadingScreen />;
 
@@ -76,11 +75,11 @@ class WMSList extends React.Component<WMSListProps, MyState> {
         const addToBasket = () => {
             //Click the button will open the notification popup
             window.location.href = '#notification';
-            
-            updateBasket(this.state.checkedWMSLayers); 
-            this.setState({checkedWMSLayers: []});
+
+            updateBasket(this.state.checkedWMSLayers);
+            this.setState({ checkedWMSLayers: [] });
         };
-        
+
         return (
             <div className="list">
                 <div className="list__top">
@@ -100,12 +99,12 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                         <li className="list__row-title">
                             <div className="list__row list__row-box" />
                             <div className="list__row list__row-name">
-                                Name 
-                                <i className="fa fa-sort" onClick={() => onSorting('name')}/>
+                                Name
+                                <i className="fa fa-sort" onClick={() => onSorting('name')} />
                             </div>
                             <div className="list__row list__row-org">
-                                Organisation 
-                                <i className="fa fa-sort" onClick={() => onSorting('organisation__name')}/>
+                                Organisation
+                                <i className="fa fa-sort" onClick={() => onSorting('organisation__name')} />
                             </div>
                             <div className="list__row list__row-access" />
                         </li>
@@ -126,7 +125,11 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                             }
 
                             return (
-                                <li className="list__row-li" key={wms.uuid} onClick={() => selectItem(wms.uuid)} >
+                                <li
+                                    className="list__row-li"
+                                    key={wms.uuid}
+                                    onClick={() => ((selectItem(wms.uuid), getBoundsFromWmsLayer(wms, updateWmsBounds)))}
+                                >
                                     <input className="list__row list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(wms.uuid)} checked={checked} />
                                     <div className="list__row list__row-name">{wms.name}</div>
                                     <div className="list__row list__row-org">{wms.organisation && wms.organisation.name}</div>
@@ -143,20 +146,20 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                             <li className="list__button-pagination-li" onClick={() => onPageClick(page - 2)}>{page <= 2 ? null : page - 2}</li>
                             <li className="list__button-pagination-li" onClick={() => onPageClick(page - 1)}>{page <= 1 ? null : page - 1}</li>
                             <li className="list__button-pagination-li list__button-pagination-li-active">{page}</li>
-                            <li className="list__button-pagination-li" onClick={() => onPageClick(page + 1)}>{page >= Math.ceil(currentWMSList.count/10) ? null : page + 1}</li>
-                            <li className="list__button-pagination-li" onClick={() => onPageClick(page + 2)}>{page >= (Math.ceil(currentWMSList.count/10) - 1) ? null : page + 2}</li>
+                            <li className="list__button-pagination-li" onClick={() => onPageClick(page + 1)}>{page >= Math.ceil(currentWMSList.count / 10) ? null : page + 1}</li>
+                            <li className="list__button-pagination-li" onClick={() => onPageClick(page + 2)}>{page >= (Math.ceil(currentWMSList.count / 10) - 1) ? null : page + 2}</li>
                         </ul>
                         {!next ? <button className="list__button-grey">&rsaquo;</button> : <button className="list__button-next" onClick={() => onPageClick(page + 1)}>&rsaquo;</button>}
                     </div>
-                        <button 
-                            className="list__button-basket"
-                            disabled={this.state.checkedWMSLayers.length === 0 ? true : false}
-                            onClick={addToBasket}
-                            //For now, only rasters can be added to the basket. For WMS, don't show this button
-                            style={{ display: "none" }}
-                        >
-                            ADD TO BASKET
-                        </button>
+                    <button
+                        className="list__button-basket"
+                        disabled={this.state.checkedWMSLayers.length === 0 ? true : false}
+                        onClick={addToBasket}
+                        //For now, only rasters can be added to the basket. For WMS, don't show this button
+                        style={{ display: "none" }}
+                    >
+                        ADD TO BASKET
+                    </button>
                 </div>
                 {/*Notification popup when click on the Add to Basket button*/}
                 <div className="list__popup" id="notification">

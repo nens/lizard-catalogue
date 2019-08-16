@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
-import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType } from '../interface';
+import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType, WMSBounds } from '../interface';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
@@ -41,6 +41,7 @@ interface MyState {
     organisationName: string,
     observationType: string,
     ordering: string,
+    wmsBounds: WMSBounds
 };
 
 class MainApp extends React.Component<MainAppProps, MyState> {
@@ -52,6 +53,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         organisationName: '',
         observationType: '',
         ordering: '',
+        wmsBounds: {
+            //Set initial bounds of the WMS to global scale
+            north: 85,
+            east: 180,
+            south: -85,
+            west: -180
+        }
     };
 
     toggleProfileDropdown = (event) => {
@@ -138,6 +146,18 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         });
     };
 
+    //Function to update the WMS bounding box coordinates in state
+    updateWmsBounds = (bounds: WMSBounds) => {
+        this.setState({
+            wmsBounds: {
+                north: bounds.north,
+                east: bounds.east,
+                south: bounds.south,
+                west: bounds.west
+            }
+        });
+    };
+
     componentDidMount() {
         this.props.fetchLizardBootstrap();
         this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
@@ -202,12 +222,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                             onSearchChange={this.onSearchChange}
                             onSearchSubmit={this.onSearchSubmit}
                             onSorting={this.onSorting}
+                            updateWmsBounds={this.updateWmsBounds}
                         />
                     }
                     {this.props.currentDataType === "Raster" ?
                         <RasterDetails />
                         :
-                        <WMSDetails />
+                        <WMSDetails wmsBounds={this.state.wmsBounds}/>
                     }
                 </div>
             </div>
