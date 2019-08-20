@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
-import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType, WMSBounds } from '../interface';
+import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType, WMSBounds, WMS } from '../interface';
+import { getBoundsFromWmsLayer } from '../utils/getBoundsFromWmsLayer';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
@@ -158,6 +159,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         });
     };
 
+    //When select a WMS layer in the WMS list, it will dispatch a SELECT_ITEM action
+    //and also determine the bounding box of the WMS layer by the getBoundsFromWMSLayer() function
+    selectWMSLayer = (wms: WMS) => {
+        this.props.selectItem(wms.uuid);
+        getBoundsFromWmsLayer(wms, this.updateWmsBounds);
+    };
+
     componentDidMount() {
         this.props.fetchLizardBootstrap();
         this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
@@ -216,13 +224,12 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                             searchTerm={this.state.searchTerm}
                             page={this.state.page}
                             currentWMSList={this.props.currentWMSList}
-                            selectItem={this.props.selectItem}
+                            selectWMSLayer={this.selectWMSLayer}
                             updateBasket={this.props.updateBasket}
                             onPageClick={this.onPageClick}
                             onSearchChange={this.onSearchChange}
                             onSearchSubmit={this.onSearchSubmit}
                             onSorting={this.onSorting}
-                            updateWmsBounds={this.updateWmsBounds}
                         />
                     }
                     {this.props.currentDataType === "Raster" ?

@@ -1,9 +1,8 @@
 import * as React from 'react';
 import MDSpinner from "react-md-spinner";
 import { connect } from 'react-redux';
-import { WMS, WMSBounds } from '../../interface';
+import { WMS } from '../../interface';
 import { MyStore, getWMS } from '../../reducers';
-import { getBoundsFromWmsLayer } from '../../utils/getBoundsFromWmsLayer';
 import '../styles/List.css';
 
 interface MyProps {
@@ -14,8 +13,7 @@ interface MyProps {
     onSearchChange: (event: object) => void,
     onSearchSubmit: (event: object) => void,
     onSorting: (ordering: string) => void,
-    updateWmsBounds: (bounds: WMSBounds) => void,
-    selectItem: (uuid: string) => void,
+    selectWMSLayer: (wms: WMS) => void,
     updateBasket: (basket: MyStore['basket']) => void
 };
 
@@ -57,7 +55,7 @@ class WMSList extends React.Component<WMSListProps, MyState> {
 
     render() {
         //Destructure all props of the WMS List component
-        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentWMSList, selectItem, updateBasket, wmsLayers, updateWmsBounds } = this.props;
+        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentWMSList, selectWMSLayer, updateBasket, wmsLayers } = this.props;
 
         //If nothing is fetched, show loading screen
         if (!currentWMSList) return <this.renderLoadingScreen />;
@@ -128,7 +126,7 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                                 <li
                                     className="list__row-li"
                                     key={wms.uuid}
-                                    onClick={() => ((selectItem(wms.uuid), getBoundsFromWmsLayer(wms, updateWmsBounds)))}
+                                    onClick={() => selectWMSLayer(wms)}
                                 >
                                     <input className="list__row list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(wms.uuid)} checked={checked} />
                                     <div className="list__row list__row-name">{wms.name}</div>
