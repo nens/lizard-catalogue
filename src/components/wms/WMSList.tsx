@@ -53,21 +53,25 @@ class WMSList extends React.Component<WMSListProps, MyState> {
     };
 
     renderLoadingScreen() {
-        return <div className="list loading-screen"><MDSpinner size={50}/></div>;
+        return <div className="list loading-screen"><MDSpinner size={50} /></div>;
     };
 
     render() {
         //Destructure all props of the WMS List component
         const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentWMSList, selectItem, updateBasket, wmsLayers } = this.props;
 
+        //number of pages displayed in the pagination bar stored in an array with 5 pages
+        const paginatedPages = [page - 2, page - 1, page, page + 1, page + 2];
+
         //If nothing is fetched, show loading screen
         if (!currentWMSList) return <this.renderLoadingScreen />;
-        
+
         //If data is being requested from the API, show loading screen
         if (currentWMSList.isFetching) return <this.renderLoadingScreen />;
 
         //Destructure the currentWMSList object
-        const { count, previous, next } = currentWMSList;
+        const { count } = currentWMSList;
+        const totalPages = Math.ceil(count / 10);
 
         //Add to basket function which will do the followings
         //1- open the notification box
@@ -76,11 +80,11 @@ class WMSList extends React.Component<WMSListProps, MyState> {
         const addToBasket = () => {
             //Click the button will open the notification popup
             window.location.href = '#notification';
-            
-            updateBasket(this.state.checkedWMSLayers); 
-            this.setState({checkedWMSLayers: []});
+
+            updateBasket(this.state.checkedWMSLayers);
+            this.setState({ checkedWMSLayers: [] });
         };
-        
+
         return (
             <div className="list">
                 <div className="list__top">
@@ -100,12 +104,12 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                         <li className="list__row-title">
                             <div className="list__row list__row-box" />
                             <div className="list__row list__row-name">
-                                Name 
-                                <i className="fa fa-sort" onClick={() => onSorting('name')}/>
+                                Name
+                                <i className="fa fa-sort" onClick={() => onSorting('name')} />
                             </div>
                             <div className="list__row list__row-org">
-                                Organisation 
-                                <i className="fa fa-sort" onClick={() => onSorting('organisation__name')}/>
+                                Organisation
+                                <i className="fa fa-sort" onClick={() => onSorting('organisation__name')} />
                             </div>
                             <div className="list__row list__row-access" />
                         </li>
@@ -136,27 +140,54 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                         })}
                     </ul>
                 </div>
-                <div className="list__button-container">
-                    <div className="list__button-pagination">
-                        {!previous ? <button className="list__button-grey">&lsaquo;</button> : <button className="list__button-previous" onClick={() => onPageClick(page - 1)}>&lsaquo;</button>}
-                        <ul className="list__button-pagination-ul">
-                            <li className="list__button-pagination-li" onClick={() => onPageClick(page - 2)}>{page <= 2 ? null : page - 2}</li>
-                            <li className="list__button-pagination-li" onClick={() => onPageClick(page - 1)}>{page <= 1 ? null : page - 1}</li>
-                            <li className="list__button-pagination-li list__button-pagination-li-active">{page}</li>
-                            <li className="list__button-pagination-li" onClick={() => onPageClick(page + 1)}>{page >= Math.ceil(currentWMSList.count/10) ? null : page + 1}</li>
-                            <li className="list__button-pagination-li" onClick={() => onPageClick(page + 2)}>{page >= (Math.ceil(currentWMSList.count/10) - 1) ? null : page + 2}</li>
-                        </ul>
-                        {!next ? <button className="list__button-grey">&rsaquo;</button> : <button className="list__button-next" onClick={() => onPageClick(page + 1)}>&rsaquo;</button>}
-                    </div>
-                        <button 
-                            className="list__button-basket"
-                            disabled={this.state.checkedWMSLayers.length === 0 ? true : false}
-                            onClick={addToBasket}
-                            //For now, only rasters can be added to the basket. For WMS, don't show this button
-                            style={{ display: "none" }}
+                <div className="list__footer">
+                    <div
+                        className="list__pagination"
+                        style={{
+                            visibility: count === 0 ? "hidden" : "visible"
+                        }}
+                    >
+                        <button
+                            onClick={() => onPageClick(page - 1)}
+                            disabled={page > 1 ? false : true}
                         >
-                            ADD TO BASKET
+                            &lsaquo;
                         </button>
+                        <div className="list__pagination-pages">
+                            {paginatedPages.map(pageNumber => {
+                                if (pageNumber > 0 && pageNumber <= totalPages) {
+                                    return (
+                                        <span
+                                            key={pageNumber}
+                                            onClick={() => onPageClick(pageNumber)}
+                                            className={pageNumber === page
+                                                ? "list__pagination-current-page"
+                                                : "list__pagination-page"
+                                            }
+                                        >
+                                            {pageNumber}
+                                        </span>
+                                    )
+                                }
+                                return null;
+                            })}
+                        </div>
+                        <button
+                            onClick={() => onPageClick(page + 1)}
+                            disabled={page < totalPages ? false : true}
+                        >
+                            &rsaquo;
+                        </button>
+                    </div>
+                    <button
+                        className="list__button-basket"
+                        disabled={this.state.checkedWMSLayers.length === 0 ? true : false}
+                        onClick={addToBasket}
+                        //For now, only rasters can be added to the basket. For WMS, don't show this button
+                        style={{ display: "none" }}
+                    >
+                        ADD TO BASKET
+                    </button>
                 </div>
                 {/*Notification popup when click on the Add to Basket button*/}
                 <div className="list__popup" id="notification">

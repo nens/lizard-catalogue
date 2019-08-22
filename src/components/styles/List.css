@@ -183,57 +183,55 @@ li {
     background-color: #FFA500;
 }
 
-.list__button-container {
+.list__footer {
     position: relative;
     height: 5%;
     width: 100%;
-    margin: 0 0 0 auto;
 }
 
-.list__button-pagination {
-    position: absolute;
-    margin: 0 auto;
-    left: 0;
-    right: 0;
-    width: 30%;
+.list__pagination {
     height: 100%;
-
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
 }
 
-.list__button-pagination button {
+.list__pagination button {
+    color: #009F86;
     border: none;
     background-color: transparent;
-    font-size: 2rem;
-    text-align: center;
+    font-size: 3rem;
     cursor: pointer;
 }
 
-.list__button-pagination button:focus {
+.list__pagination button:disabled {
+    color: darkgrey;
+    cursor: not-allowed;
+}
+
+.list__pagination button:focus {
     outline: none;
 }
 
-.list__button-grey {
-    color: grey;
-    cursor: not-allowed !important;
+.list__pagination button:active {
+    transform: translateY(2px);
 }
 
-.list__button-pagination-ul {
+.list__pagination-pages {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 0 2rem;
 }
 
-.list__button-pagination-li {
+.list__pagination-page {
     margin: 0 .3rem;
     padding: .2rem;
     text-align: center;
     cursor: pointer;
 }
 
-.list__button-pagination-li-active {
+.list__pagination-current-page {
+    padding: .2rem .6rem;
     background: #009F86;
     color: #fff;
     border-radius: .3rem;
@@ -245,6 +243,7 @@ li {
     text-transform: uppercase;
     
     position: absolute;
+    top: 0;
     right: 0;
 
     padding: .8rem;
