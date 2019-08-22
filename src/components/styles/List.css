@@ -196,15 +196,13 @@ li {
 }
 
 .list__pagination button {
-    color: #009F86;
     border: none;
     background-color: transparent;
-    font-size: 3rem;
+    font-size: 2rem;
     cursor: pointer;
 }
 
 .list__pagination button:disabled {
-    color: darkgrey;
     cursor: not-allowed;
 }
 

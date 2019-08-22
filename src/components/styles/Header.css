@@ -230,9 +230,31 @@
 }
 
 .header-popup__content-button {
+    font-size: 1.4rem;
+    text-transform: uppercase;
     position: absolute;
     bottom: 2rem;
     right: 2rem;
+    padding: .8rem;
+    border-radius: .2rem;
+    border: none;
+    background-color: #55cbac;
+    color: #fff;
+    box-shadow: .2rem .4rem .4rem rgba(12, 12, 12, 0.4);
+    cursor: pointer;
+}
+
+.header-popup__content-button:focus {
+    outline: none;
+}
+
+.header-popup__content-button:active {
+    transform: translateY(2px);
+}
+
+.header-popup__content-button:disabled {    
+    background-color: #BFBFBF;
+    cursor: not-allowed;
 }
 
 /*ICON DECORATION*/

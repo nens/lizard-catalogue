@@ -59,6 +59,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
     render() {
         //Destructure all props of the Raster List component
         const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentRasterList, selectItem, updateBasket, rasters } = this.props;
+        const { checkedRasters } = this.state;
 
         //number of pages displayed in the pagination bar stored in an array with 5 pages
         const paginatedPages = [page - 2, page - 1, page, page + 1, page + 2];
@@ -81,8 +82,10 @@ class RasterList extends React.Component<RasterListProps, MyState> {
             //Click the button will open the notification popup
             window.location.href = '#notification';
 
-            updateBasket(this.state.checkedRasters);
-            this.setState({ checkedRasters: [] });
+            updateBasket(checkedRasters);
+            this.setState({ 
+                checkedRasters: [] 
+            });
         };
 
         return (
@@ -129,7 +132,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             //Here is a logic to define whether a raster has been selected (check-box has been checked or not)
                             //if yes then the checked value of the input field will be true
                             //if no then the checked value of the input field will be false
-                            const checked = this.state.checkedRasters.filter(uuid => uuid === raster.uuid).length === 0 ? false : true;
+                            const checked = checkedRasters.filter(uuid => uuid === raster.uuid).length === 0 ? false : true;
 
                             const renderAccessModifier = () => {
                                 if (raster.access_modifier === "Public" || raster.access_modifier === "Publiek") {
@@ -199,7 +202,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                     </div>
                     <button
                         className="list__button-basket"
-                        disabled={this.state.checkedRasters.length === 0 ? true : false}
+                        disabled={checkedRasters.length === 0 ? true : false}
                         onClick={addToBasket}
                     >
                         ADD TO BASKET
