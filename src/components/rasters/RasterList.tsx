@@ -180,7 +180,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                                     return (
                                         <span
                                             key={pageNumber}
-                                            onClick={() => onPageClick(pageNumber)}
+                                            onClick={() => pageNumber !== page ? onPageClick(pageNumber) : null}
                                             className={pageNumber === page
                                                 ? "list__pagination-current-page"
                                                 : "list__pagination-page"
