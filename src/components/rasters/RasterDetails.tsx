@@ -75,15 +75,6 @@ class RasterDetails extends React.Component<PropsFromState> {
                     <div className="row">
                         <p className="column column-1">Data type</p><p className="column column-2">Raster</p>
                     </div>
-                    <div className="row" style={{display: raster.temporal ? 'flex' : 'none'}}>
-                        <p className="column column-1">Interval</p><p className="column column-2">{raster.interval}</p>
-                    </div>
-                    <div className="row" style={{display: raster.temporal ? 'flex' : 'none'}}>
-                        <p className="column column-1">Start</p><p className="column column-2">{start}</p>
-                    </div>
-                    <div className="row" style={{display: raster.temporal ? 'flex' : 'none'}}>
-                        <p className="column column-1">End</p><p className="column column-2">{stop}</p>
-                    </div>
                     <div className="row">
                         <p className="column column-1">Observation type</p><p className="column column-2">{raster.observation_type && raster.observation_type.parameter}</p>
                     </div>
@@ -92,6 +83,15 @@ class RasterDetails extends React.Component<PropsFromState> {
                     </div>
                     <div className="row">
                         <p className="column column-1">Scale</p><p className="column column-2">{raster.observation_type && raster.observation_type.scale}</p>
+                    </div>
+                    <div className="row" style={{display: raster.temporal ? 'flex' : 'none'}}>
+                        <p className="column column-1">Interval</p><p className="column column-2">{raster.interval}</p>
+                    </div>
+                    <div className="row" style={{display: raster.temporal ? 'flex' : 'none'}}>
+                        <p className="column column-1">Start</p><p className="column column-2">{start}</p>
+                    </div>
+                    <div className="row" style={{display: raster.temporal ? 'flex' : 'none'}}>
+                        <p className="column column-1">End</p><p className="column column-2">{stop}</p>
                     </div>
                 </div>
                 <br />
