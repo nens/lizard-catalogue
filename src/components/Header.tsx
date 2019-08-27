@@ -132,7 +132,7 @@ class Header extends React.Component<HeaderProps> {
                         </ul>
                         <p className="header-popup__content-onderste-laag">Onderste laag</p>
                         <button
-                            className="header-popup__content-button list__button-basket"
+                            className="header-popup__content-button"
                             disabled={basket.length === 0 ? true : false}
                             onClick={() => openInLizard(basket)}
                         >

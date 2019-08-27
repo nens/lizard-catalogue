@@ -129,6 +129,10 @@
     outline: none;
 }
 
+.details__button:active {
+    transform: translateY(1px)
+}
+
 .button-api {
     margin-right: 2rem;
 }
