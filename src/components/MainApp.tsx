@@ -84,9 +84,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             page: 1
         });
 
-        this.props.currentDataType === "Raster" ? 
-            this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering) :
-            this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
+        this.props.currentDataType === "Raster" ? this.props.fetchRasters(
+            this.state.initialPage, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering
+        ) : this.props.fetchWMSLayers(
+            this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering
+        );
+        //Update the URL with the search params    
+        this.props.history.push(`/catalogue${this.props.location.search}`)
     };
 
     //When click on the checkbox in the filter bar, this function will update the observation type state in this component
@@ -141,6 +145,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     };
 
     getUrlParams = () => {
+        console.log(this.props.location)
         if (!this.props.location.search) return new URLSearchParams();
         return new URLSearchParams(this.props.location.search);
     }
@@ -154,14 +159,19 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         let search = this.getName();
         this.setState({
             searchTerm: search
-        })
+        });
         this.props.fetchLizardBootstrap();
-        this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
+        this.props.fetchRasters(this.state.page, search, this.state.organisationName, this.state.observationType, this.state.ordering);
         // this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
     };
 
     //Component will fetch the Rasters again each time the value of this.state.organisationName changes
     componentWillUpdate(nextProps: MainAppProps, nextState: MyState) {
+        let search = this.getName();
+        if (search !== this.state.searchTerm) {
+            return this.props.location.search = `?name=${this.state.searchTerm}`
+        };
+
         if (nextProps && (nextState.organisationName !== this.state.organisationName || nextState.observationType !== this.state.observationType || nextState.ordering !== this.state.ordering)) {
             this.props.currentDataType === "Raster" ? 
                 this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, nextState.organisationName, nextState.observationType, nextState.ordering) :
@@ -173,7 +183,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     };
 
     render() {
-        console.log(this.props.location)
         return (
             <div className="main-container" onClick={this.toggleProfileDropdown}>
                 <div className="main-header">
