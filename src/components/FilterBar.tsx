@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { ObservationType, Organisation, SwitchDataType } from '../interface';
 import { MyStore } from '../reducers';
 import './styles/FilterBar.css';
@@ -24,7 +25,7 @@ interface MyState {
     orgItems: number
 };
 
-class FilterBar extends React.Component<MyProps, MyState> {
+class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> {
     state: MyState = {
         searchObs: '',
         searchOrg: '',
@@ -109,6 +110,8 @@ class FilterBar extends React.Component<MyProps, MyState> {
                             });
                             organisations.map(org => org.checked = false);
                             observationTypes.map(obs => obs.checked = false);
+                            //Update the URL and remove all the search parameters
+                            this.props.history.push('/');
                         }}
                         disabled={currentDataType === "Raster" ? true : false}
                     >
@@ -129,6 +132,8 @@ class FilterBar extends React.Component<MyProps, MyState> {
                             });
                             organisations.map(org => org.checked = false);
                             observationTypes.map(obs => obs.checked = false);
+                            //Update the URL and remove all the search parameters
+                            this.props.history.push('/');
                         }}
                         disabled={currentDataType === "WMS" ? true : false}
                     >
@@ -209,4 +214,4 @@ class FilterBar extends React.Component<MyProps, MyState> {
     };
 };
 
-export default FilterBar;
+export default withRouter(FilterBar);
