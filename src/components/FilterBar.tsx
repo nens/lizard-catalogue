@@ -111,7 +111,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                             organisations.map(org => org.checked = false);
                             observationTypes.map(obs => obs.checked = false);
                             //Update the URL and remove all the search parameters
-                            this.props.history.push('/');
+                            this.props.history.push('?data=Raster');
                         }}
                         disabled={currentDataType === "Raster" ? true : false}
                     >
@@ -133,7 +133,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                             organisations.map(org => org.checked = false);
                             observationTypes.map(obs => obs.checked = false);
                             //Update the URL and remove all the search parameters
-                            this.props.history.push('/');
+                            this.props.history.push('?data=WMS');
                         }}
                         disabled={currentDataType === "WMS" ? true : false}
                     >

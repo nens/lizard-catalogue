@@ -33,7 +33,7 @@ export interface MyStore {
     bootstrap: Bootstrap,
     observationTypes: ObservationType[],
     organisations: Organisation[],
-    currentDataType: string,
+    currentDataType: 'Raster' | 'WMS',
     currentRasterList: {
         count: number,
         previous: string | null,
