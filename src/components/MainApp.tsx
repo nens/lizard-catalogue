@@ -102,6 +102,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 observationType: ''
             });
         };
+        //Update the URL search params with the selected observation type
+        this.props.history.push(`/catalogue?search=${this.state.searchTerm}&organisation=${this.state.organisationName}&observation=${obsType.checked ? '' : obsType.parameter}`);
     };
 
     //When click on the checkbox in the filter bar, this function will update the organisation name state in this component
@@ -116,7 +118,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             });
         };
         //Update the URL search params with the selected organisation
-        this.props.history.push(`/catalogue?search=${this.state.searchTerm}&organisation=${organisation.checked ? '' : organisation.name}`);
+        this.props.history.push(`/catalogue?search=${this.state.searchTerm}&organisation=${organisation.checked ? '' : organisation.name}&observation=${this.state.observationType}`);
     };
 
     //When click on the sorting icon in the raster list, this function will update the ordering state in this component
@@ -149,27 +151,34 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         if (!this.props.location.search) return new URLSearchParams();
         return new URLSearchParams(this.props.location.search);
     };
-    //Capture the value of the search property in the params object
+    //Capture the value of the search property in the search params object
     getSearch = () => {
         let search = this.getUrlParams();
         return search.get('search') || '';
     };
-    //Capture the value of the search property in the params object
+    //Capture the value of the organisation property in the search params object
     getOrganisation = () => {
         let search = this.getUrlParams();
         return search.get('organisation') || '';
+    };
+    //Capture the value of the observation type property in the search params object
+    getObservationType = () => {
+        let search = this.getUrlParams();
+        return search.get('observation') || '';
     };
 
     componentDidMount() {
         //When component first mount, capture the search params in the URL and update the component's state
         let search = this.getSearch();
         let organisation = this.getOrganisation();
+        let observation = this.getObservationType();
         this.setState({
             searchTerm: search,
-            organisationName: organisation
+            organisationName: organisation,
+            observationType: observation
         });
         this.props.fetchLizardBootstrap();
-        this.props.fetchRasters(this.state.page, search, organisation, this.state.observationType, this.state.ordering);
+        this.props.fetchRasters(this.state.page, search, organisation, observation, this.state.ordering);
         // this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
     };
 
@@ -178,7 +187,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         //Keep the search params in URL and the searchTerm in the component's state in sync with each other
         let search = this.getSearch();
         if (search !== this.state.searchTerm) {
-            return this.props.location.search = `?search=${this.state.searchTerm}&organisation=${this.state.organisationName}`;
+            return this.props.location.search = `?search=${this.state.searchTerm}&organisation=${this.state.organisationName}&observation=${this.state.observationType}`;
         };
 
         if (nextProps && (nextState.organisationName !== this.state.organisationName || nextState.observationType !== this.state.observationType || nextState.ordering !== this.state.ordering)) {
