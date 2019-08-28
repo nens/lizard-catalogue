@@ -115,6 +115,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 organisationName: ''
             });
         };
+        //Update the URL search params with the selected organisation
+        this.props.history.push(`/catalogue?search=${this.state.searchTerm}&organisation=${organisation.checked ? '' : organisation.name}`);
     };
 
     //When click on the sorting icon in the raster list, this function will update the ordering state in this component
@@ -152,15 +154,22 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         let search = this.getUrlParams();
         return search.get('search') || '';
     };
+    //Capture the value of the search property in the params object
+    getOrganisation = () => {
+        let search = this.getUrlParams();
+        return search.get('organisation') || '';
+    };
 
     componentDidMount() {
         //When component first mount, capture the search params in the URL and update the component's state
         let search = this.getSearch();
+        let organisation = this.getOrganisation();
         this.setState({
-            searchTerm: search
+            searchTerm: search,
+            organisationName: organisation
         });
         this.props.fetchLizardBootstrap();
-        this.props.fetchRasters(this.state.page, search, this.state.organisationName, this.state.observationType, this.state.ordering);
+        this.props.fetchRasters(this.state.page, search, organisation, this.state.observationType, this.state.ordering);
         // this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
     };
 
@@ -169,7 +178,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         //Keep the search params in URL and the searchTerm in the component's state in sync with each other
         let search = this.getSearch();
         if (search !== this.state.searchTerm) {
-            return this.props.location.search = `?search=${this.state.searchTerm}`;
+            return this.props.location.search = `?search=${this.state.searchTerm}&organisation=${this.state.organisationName}`;
         };
 
         if (nextProps && (nextState.organisationName !== this.state.organisationName || nextState.observationType !== this.state.observationType || nextState.ordering !== this.state.ordering)) {
