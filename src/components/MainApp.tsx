@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
 import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
@@ -31,7 +32,7 @@ interface PropsFromDispatch {
     switchDataType: (dataType: SwitchDataType['payload']) => void
 };
 
-type MainAppProps = PropsFromState & PropsFromDispatch;
+type MainAppProps = PropsFromState & PropsFromDispatch & RouteComponentProps;
 
 interface MyState {
     showProfileDropdown: boolean,
@@ -85,6 +86,9 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.props.currentDataType === "Raster" ? 
             this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering) :
             this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
+        
+        //Update the URL search params with the new search term
+        this.props.history.push(`/catalogue${this.props.location.search}`);
     };
 
     //When click on the checkbox in the filter bar, this function will update the observation type state in this component
@@ -138,14 +142,36 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         });
     };
 
+    //Capture the search params in the URL and turn it into an object using URLSearchParams() method
+    getUrlParams = () => {
+        if (!this.props.location.search) return new URLSearchParams();
+        return new URLSearchParams(this.props.location.search);
+    };
+    //Capture the value of the search property in the params object
+    getSearch = () => {
+        let search = this.getUrlParams();
+        return search.get('search') || '';
+    };
+
     componentDidMount() {
+        //When component first mount, capture the search params in the URL and update the component's state
+        let search = this.getSearch();
+        this.setState({
+            searchTerm: search
+        });
         this.props.fetchLizardBootstrap();
-        this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
+        this.props.fetchRasters(this.state.page, search, this.state.organisationName, this.state.observationType, this.state.ordering);
         // this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
     };
 
     //Component will fetch the Rasters again each time the value of this.state.organisationName changes
     componentWillUpdate(nextProps: MainAppProps, nextState: MyState) {
+        //Keep the search params in URL and the searchTerm in the component's state in sync with each other
+        let search = this.getSearch();
+        if (search !== this.state.searchTerm) {
+            return this.props.location.search = `?search=${this.state.searchTerm}`;
+        };
+
         if (nextProps && (nextState.organisationName !== this.state.organisationName || nextState.observationType !== this.state.observationType || nextState.ordering !== this.state.ordering)) {
             this.props.currentDataType === "Raster" ? 
                 this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, nextState.organisationName, nextState.observationType, nextState.ordering) :
