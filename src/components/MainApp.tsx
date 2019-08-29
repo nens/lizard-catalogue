@@ -58,7 +58,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         showAlert: false,
     };
 
-    toggleProfileDropdown = (event) => {
+    toggleProfileDropdownAndAlertMessage = (event) => {
+        if (this.state.showAlert === true) this.setState({ showAlert: false });
         return event.target.id === "user-profile" ?
             this.setState({ showProfileDropdown: !this.state.showProfileDropdown }) :
             this.setState({ showProfileDropdown: false });
@@ -231,11 +232,11 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 
     render() {
         return (
-            <div className="main-container" onClick={this.toggleProfileDropdown}>
+            <div className="main-container" onClick={this.toggleProfileDropdownAndAlertMessage}>
                 <div className="main-header">
                     <Header
                         showProfileDropdown={this.state.showProfileDropdown}
-                        toggleProfileDropdown={this.toggleProfileDropdown}
+                        toggleProfileDropdown={this.toggleProfileDropdownAndAlertMessage}
                     />
                 </div>
                 <div className="main-body">
