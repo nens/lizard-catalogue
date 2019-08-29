@@ -11,6 +11,8 @@ import {
     REQUEST_WMS,
     SWITCH_DATA_TYPE,
     ITEM_SELECTED,
+    UPDATE_ORGANISATION_CHECKBOX,
+    UPDATE_OBSERVATION_CHECKBOX,
 } from "./action";
 
 //ACTION INTERFACE
@@ -80,6 +82,18 @@ export interface OrganisationsFetched {
 };
 
 export type FilterActionType = ObservationTypesFetched | OrganisationsFetched;
+
+export interface UpdateOrganisationCheckbox {
+    type: typeof UPDATE_ORGANISATION_CHECKBOX,
+    payload: Organisation
+};
+
+export interface UpdateObservationTypeCheckbox {
+    type: typeof UPDATE_OBSERVATION_CHECKBOX,
+    payload: ObservationType
+};
+
+export type UpdateCheckboxActionType = UpdateOrganisationCheckbox | UpdateObservationTypeCheckbox;
 
 //LIZARD BOOTSTRAP
 export interface Bootstrap {

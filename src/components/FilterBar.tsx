@@ -14,7 +14,9 @@ interface MyProps {
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => void,
     onObservationTypeCheckbox: (obsType: ObservationType) => void,
     onOrganisationCheckbox: (organisation: Organisation) => void,
-    onViewChange: () => void
+    updateObservationTypeCheckbox: (obsType: ObservationType) => void,
+    updateOrganisationCheckbox: (organisation: Organisation) => void,
+    onDataTypeChange: () => void
     switchDataType: (dataType: SwitchDataType['payload']) => void
 };
 
@@ -55,21 +57,6 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
         event.preventDefault();
     };
 
-    //Handling changes when click on the checkbox
-    onObservationTypeChange = (observationType: ObservationType, observationTypes: MyProps['observationTypes']) => {
-        //Toggle the checked property on click
-        observationType.checked = !observationType.checked;
-        //Only one observation type can be selected at a time
-        observationTypes.filter(obs => obs.parameter !== observationType.parameter).map(obs => obs.checked = false);
-    };
-
-    onOrganisationChange = (organisation: Organisation, organisations: MyProps['organisations']) => {
-        //Toggle the checked property on click
-        organisation.checked = !organisation.checked;
-        //Only one organisation can be selected at a time
-        organisations.filter(org => org.uuid !== organisation.uuid).map(org => org.checked = false);
-    };
-
     componentDidMount() {
         this.props.fetchObservationTypes();
         this.props.fetchOrganisations();
@@ -78,7 +65,17 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
     render() {
         const { searchObs, searchOrg } = this.state;
 
-        const { observationTypes, organisations, onObservationTypeCheckbox, onOrganisationCheckbox, currentDataType, switchDataType, onViewChange } = this.props;
+        const {
+            observationTypes,
+            organisations,
+            onObservationTypeCheckbox,
+            onOrganisationCheckbox,
+            updateObservationTypeCheckbox,
+            updateOrganisationCheckbox,
+            currentDataType,
+            switchDataType,
+            onDataTypeChange
+        } = this.props;
 
         //Filter observation types & organisations at the client side instead of fetching again from the server after each search
         const filteredObservationTypes = observationTypes.filter(observationTypes => observationTypes.parameter.toLowerCase().includes(this.state.searchObs.toLowerCase()));
@@ -101,15 +98,15 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                             //finally remove all the checked organisation and observation type
                             switchDataType("Raster");
                             this.props.fetchRasters(1, '', '', '', '');
-                            onViewChange();
+                            onDataTypeChange();
                             this.setState({
                                 searchObs: '',
                                 searchOrg: '',
                                 obsItems: 7,
                                 orgItems: 7
                             });
-                            organisations.map(org => org.checked = false);
-                            observationTypes.map(obs => obs.checked = false);
+                            if (checkedObservationType) updateObservationTypeCheckbox(checkedObservationType);
+                            if (checkedOrganisation) updateOrganisationCheckbox(checkedOrganisation);
                             //Update the URL and remove all the search parameters
                             this.props.history.push('?data=Raster');
                         }}
@@ -123,15 +120,15 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                         onClick={() => {
                             switchDataType("WMS");
                             this.props.fetchWMSLayers(1, '', '', '');
-                            onViewChange();
+                            onDataTypeChange();
                             this.setState({
                                 searchObs: '',
                                 searchOrg: '',
                                 obsItems: 7,
                                 orgItems: 7
                             });
-                            organisations.map(org => org.checked = false);
-                            observationTypes.map(obs => obs.checked = false);
+                            if (checkedObservationType) updateObservationTypeCheckbox(checkedObservationType);
+                            if (checkedOrganisation) updateOrganisationCheckbox(checkedOrganisation);
                             //Update the URL and remove all the search parameters
                             this.props.history.push('?data=WMS');
                         }}
@@ -158,13 +155,17 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                     </form>
                     {checkedOrganisation ?
                         //Showing the checked item and the option the remove this checked item from the filter
-                        <div className="filter__checked-item"><button onClick={() => { onOrganisationCheckbox(checkedOrganisation); checkedOrganisation.checked = !checkedOrganisation.checked }}>x</button>{checkedOrganisation.name}</div> :
+                        <div className="filter__checked-item">
+                            <button onClick={() => onOrganisationCheckbox(checkedOrganisation)}>x</button>
+                            {checkedOrganisation.name}
+                        </div>
+                        :
                         <div className="filter__checked-item" />
                     }
                     <ul className="filter-list">
                         {filteredOrganisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
                             <li className="filter-item" key={organisation.uuid}>
-                                <input type="checkbox" className="filter-checkbox" onClick={() => onOrganisationCheckbox(organisation)} onChange={() => this.onOrganisationChange(organisation, organisations)} checked={organisation.checked} />
+                                <input type="checkbox" className="filter-checkbox" onChange={() => onOrganisationCheckbox(organisation)} checked={organisation.checked} />
                                 <span className="filter-item-name">{organisation.name}</span>
                             </li>
                         ))}
@@ -193,13 +194,17 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                     </form>
                     {checkedObservationType ?
                         //Showing the checked item and the option the remove this checked item from the filter
-                        <div className="filter__checked-item"><button onClick={() => { onObservationTypeCheckbox(checkedObservationType); checkedObservationType.checked = !checkedObservationType.checked }}>x</button>{checkedObservationType.parameter}</div> :
+                        <div className="filter__checked-item">
+                            <button onClick={() => onObservationTypeCheckbox(checkedObservationType)}>x</button>
+                            {checkedObservationType.parameter}
+                        </div>
+                        :
                         <div className="filter__checked-item" />
                     }
                     <ul className="filter-list">
                         {filteredObservationTypes.slice(0, this.state.obsItems).map((observationType: ObservationType) => (
                             <li className="filter-item" key={observationType.code}>
-                                <input type="checkbox" className="filter-checkbox" onClick={() => onObservationTypeCheckbox(observationType)} onChange={() => this.onObservationTypeChange(observationType, observationTypes)} checked={observationType.checked} />
+                                <input type="checkbox" className="filter-checkbox" onChange={() => onObservationTypeCheckbox(observationType)} checked={observationType.checked} />
                                 <span className="filter-item-name">{observationType.parameter}</span>
                             </li>
                         ))}

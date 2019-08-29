@@ -2,9 +2,9 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
-import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers } from '../action';
+import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationCheckbox, updateObservationTypeCheckbox } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
-import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType } from '../interface';
+import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType, UpdateCheckboxActionType } from '../interface';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
@@ -28,6 +28,8 @@ interface PropsFromDispatch {
     updateBasket: (basket: MyStore['basket']) => void,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
+    updateObservationTypeCheckbox: (obsType: ObservationType) => void,
+    updateOrganisationCheckbox: (organisation: Organisation) => void,
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void
 };
@@ -88,8 +90,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
     };
 
-    //When click on the checkbox in the filter bar, this function will update the observation type state in this component
+    //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the observation type
+    //and update the observation type state in this component
     onObservationTypeCheckbox = (obsType: ObservationType) => {
+        this.props.updateObservationTypeCheckbox(obsType);
         if (!obsType.checked) {
             this.setState({
                 observationType: obsType.parameter
@@ -101,8 +105,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         };
     };
 
-    //When click on the checkbox in the filter bar, this function will update the organisation name state in this component
+    //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the organisation
+    //and update the organisation name state in this component
     onOrganisationCheckbox = (organisation: Organisation) => {
+        this.props.updateOrganisationCheckbox(organisation);
         if (!organisation.checked) {
             this.setState({
                 organisationName: organisation.name
@@ -129,7 +135,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     };
 
     //When switch the view from Rasters to WMS layers and vice versa, set the state of this main container back to initial state
-    onViewChange = () => {
+    onDataTypeChange = () => {
         this.setState({
             page: 1,
             searchTerm: '',
@@ -230,7 +236,9 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         organisations={this.props.organisations}
                         onObservationTypeCheckbox={this.onObservationTypeCheckbox}
                         onOrganisationCheckbox={this.onOrganisationCheckbox}
-                        onViewChange={this.onViewChange}
+                        updateObservationTypeCheckbox={this.props.updateObservationTypeCheckbox}
+                        updateOrganisationCheckbox={this.props.updateOrganisationCheckbox}
+                        onDataTypeChange={this.onDataTypeChange}
                         fetchRasters={this.props.fetchRasters}
                         fetchWMSLayers={this.props.fetchWMSLayers}
                         switchDataType={this.props.switchDataType}
@@ -280,12 +288,14 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     currentDataType: getCurrentDataType(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType>): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType | UpdateCheckboxActionType>): PropsFromDispatch => ({
     fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, ordering, dispatch),
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
+    updateObservationTypeCheckbox: (obsType: ObservationType) =>updateObservationTypeCheckbox(obsType, dispatch), 
+    updateOrganisationCheckbox: (organisation: Organisation) => updateOrganisationCheckbox(organisation, dispatch),
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => fetchWMSLayers(page, searchTerm, organisationName, ordering, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
