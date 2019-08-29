@@ -11,6 +11,7 @@ import WMSList from './wms/WMSList';
 import WMSDetails from './wms/WMSDetails';
 import FilterBar from './FilterBar';
 import Header from './Header';
+import { baseUrl } from '../api';
 import './styles/MainApp.css';
 
 interface PropsFromState {
@@ -42,6 +43,7 @@ interface MyState {
     organisationName: string,
     observationType: string,
     ordering: string,
+    showAlert: boolean,
 };
 
 class MainApp extends React.Component<MainAppProps, MyState> {
@@ -53,6 +55,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         organisationName: '',
         observationType: '',
         ordering: '',
+        showAlert: false,
     };
 
     toggleProfileDropdown = (event) => {
@@ -166,7 +169,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         return search.get('data') === 'WMS' ? 'WMS' : 'Raster';
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         //When component first mount, capture the search params in the URL and update the component's state
         let search = this.getSearch();
         let organisation = this.getOrganisation();
@@ -190,6 +193,19 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         ) : this.props.fetchWMSLayers(
             this.state.page, search, organisation, this.state.ordering
         );
+
+        //Do an attempt to fetch Rasters/WMS layers and see if there are any results back
+        //If no raster or WMS layer returns back then display an alert to users to warn them about their authorisation right
+        //This alert only shows once when you open the app
+        if (dataType === 'Raster') {
+            const response = await fetch(`${baseUrl}/rasters?name__icontains=${search}&page=${this.state.page}&organisation__name__icontains=${organisation}&observation_type__parameter__icontains=${observation}&ordering=${this.state.ordering}`);
+            const data = await response.json();
+            if (data.count === 0) this.setState({ showAlert: true });
+        } else {
+            const response = await fetch(`${baseUrl}/wmslayers?name__icontains=${search}&page=${this.state.page}&organisation__name__icontains=${organisation}&ordering=${this.state.ordering}`);
+            const data = await response.json();
+            if (data.count === 0) this.setState({ showAlert: true });
+        };
     };
 
     //Component will fetch the Rasters again each time the value of this.state.organisationName changes
@@ -266,6 +282,17 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         :
                         <WMSDetails />
                     }
+                </div>
+                {/* ALERT POPUP */}
+                <div
+                    className="authorisation-alert"
+                    style={{
+                        display: this.state.showAlert ? "flex" : "none"
+                    }}
+                    onClick={() => this.setState({ showAlert: false })}
+                >
+                    No Rasters/WMS layers found! You may need to login or might have insufficient right to view
+                    the Rasters/WMS layers
                 </div>
             </div>
         );
