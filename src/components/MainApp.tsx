@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationCheckbox } from '../action';
+import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationCheckbox, updateObservationCheckbox } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
-import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType } from '../interface';
+import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType, UpdateCheckboxActionType } from '../interface';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
@@ -27,6 +27,7 @@ interface PropsFromDispatch {
     updateBasket: (basket: MyStore['basket']) => void,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
+    updateObservationCheckbox: (obsType: ObservationType) => void,
     updateOrganisationCheckbox: (organisation: Organisation) => void,
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void
@@ -88,8 +89,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
     };
 
-    //When click on the checkbox in the filter bar, this function will update the observation type state in this component
+    //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the observation type
+    //and update the observation type state in this component
     onObservationTypeCheckbox = (obsType: ObservationType) => {
+        this.props.updateObservationCheckbox(obsType);
         if (!obsType.checked) {
             this.setState({
                 observationType: obsType.parameter
@@ -226,12 +229,13 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     currentDataType: getCurrentDataType(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType>): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType | UpdateCheckboxActionType>): PropsFromDispatch => ({
     fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, ordering, dispatch),
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
+    updateObservationCheckbox: (obsType: ObservationType) =>updateObservationCheckbox(obsType, dispatch), 
     updateOrganisationCheckbox: (organisation: Organisation) => updateOrganisationCheckbox(organisation, dispatch),
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => fetchWMSLayers(page, searchTerm, organisationName, ordering, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),

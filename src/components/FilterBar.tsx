@@ -54,14 +54,6 @@ class FilterBar extends React.Component<MyProps, MyState> {
         event.preventDefault();
     };
 
-    //Handling changes when click on the checkbox
-    onObservationTypeChange = (observationType: ObservationType, observationTypes: MyProps['observationTypes']) => {
-        //Toggle the checked property on click
-        observationType.checked = !observationType.checked;
-        //Only one observation type can be selected at a time
-        observationTypes.filter(obs => obs.parameter !== observationType.parameter).map(obs => obs.checked = false);
-    };
-
     componentDidMount() {
         this.props.fetchObservationTypes();
         this.props.fetchOrganisations();
@@ -185,13 +177,17 @@ class FilterBar extends React.Component<MyProps, MyState> {
                     </form>
                     {checkedObservationType ?
                         //Showing the checked item and the option the remove this checked item from the filter
-                        <div className="filter__checked-item"><button onClick={() => { onObservationTypeCheckbox(checkedObservationType); checkedObservationType.checked = !checkedObservationType.checked }}>x</button>{checkedObservationType.parameter}</div> :
+                        <div className="filter__checked-item">
+                            <button onClick={() => onObservationTypeCheckbox(checkedObservationType)}>x</button>
+                            {checkedObservationType.parameter}
+                        </div>
+                        :
                         <div className="filter__checked-item" />
                     }
                     <ul className="filter-list">
                         {filteredObservationTypes.slice(0, this.state.obsItems).map((observationType: ObservationType) => (
                             <li className="filter-item" key={observationType.code}>
-                                <input type="checkbox" className="filter-checkbox" onClick={() => onObservationTypeCheckbox(observationType)} onChange={() => this.onObservationTypeChange(observationType, observationTypes)} checked={observationType.checked} />
+                                <input type="checkbox" className="filter-checkbox" onChange={() => onObservationTypeCheckbox(observationType)} checked={observationType.checked} />
                                 <span className="filter-item-name">{observationType.parameter}</span>
                             </li>
                         ))}

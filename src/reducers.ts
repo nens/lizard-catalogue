@@ -13,6 +13,7 @@ import {
     SWITCH_DATA_TYPE,
     ITEM_SELECTED,
     UPDATE_ORGANISATION_CHECKBOX,
+    UPDATE_OBSERVATION_CHECKBOX,
 } from "./action";
 import {
     RastersFetched,
@@ -29,6 +30,7 @@ import {
     SwitchDataType,
     ItemSelected,
     UpdateOrganisationCheckbox,
+    UpdateObservationCheckbox,
 } from './interface';
 
 export interface MyStore {
@@ -197,7 +199,7 @@ const basket = (state: MyStore['basket'] = [], action: Basket): MyStore['basket'
     };
 };
 
-const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched): MyStore['observationTypes'] => {
+const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched & UpdateObservationCheckbox): MyStore['observationTypes'] => {
     switch (action.type) {
         case OBSERVATION_TYPES_FETCHED:
             return action.payload.map(observation => {
@@ -211,6 +213,22 @@ const observationTypes = (state: MyStore['observationTypes'] = [], action: Obser
                     checked: false
                 };
             });
+        case UPDATE_OBSERVATION_CHECKBOX:
+            const observationTypes = [...state];
+            const checkedObservationType = action.payload;
+            return observationTypes.map(obsType => {
+                if (obsType.code === checkedObservationType.code) {
+                    return {
+                        ...obsType,
+                        checked: !obsType.checked
+                    };
+                } else {
+                    return {
+                        ...obsType,
+                        checked: false
+                    };
+                };
+            })
         default:
             return state;
     };
