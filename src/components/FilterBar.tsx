@@ -13,6 +13,8 @@ interface MyProps {
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => void,
     onObservationTypeCheckbox: (obsType: ObservationType) => void,
     onOrganisationCheckbox: (organisation: Organisation) => void,
+    updateObservationCheckbox: (obsType: ObservationType) => void,
+    updateOrganisationCheckbox: (organisation: Organisation) => void,
     onViewChange: () => void
     switchDataType: (dataType: SwitchDataType['payload']) => void
 };
@@ -62,7 +64,17 @@ class FilterBar extends React.Component<MyProps, MyState> {
     render() {
         const { searchObs, searchOrg } = this.state;
 
-        const { observationTypes, organisations, onObservationTypeCheckbox, onOrganisationCheckbox, currentDataType, switchDataType, onViewChange } = this.props;
+        const {
+            observationTypes,
+            organisations,
+            onObservationTypeCheckbox,
+            onOrganisationCheckbox,
+            updateObservationCheckbox,
+            updateOrganisationCheckbox,
+            currentDataType,
+            switchDataType,
+            onViewChange
+        } = this.props;
 
         //Filter observation types & organisations at the client side instead of fetching again from the server after each search
         const filteredObservationTypes = observationTypes.filter(observationTypes => observationTypes.parameter.toLowerCase().includes(this.state.searchObs.toLowerCase()));
@@ -92,8 +104,8 @@ class FilterBar extends React.Component<MyProps, MyState> {
                                 obsItems: 7,
                                 orgItems: 7
                             });
-                            organisations.map(org => org.checked = false);
-                            observationTypes.map(obs => obs.checked = false);
+                            if (checkedObservationType) updateObservationCheckbox(checkedObservationType);
+                            if (checkedOrganisation) updateOrganisationCheckbox(checkedOrganisation);
                         }}
                         disabled={currentDataType === "Raster" ? true : false}
                     >
@@ -112,8 +124,8 @@ class FilterBar extends React.Component<MyProps, MyState> {
                                 obsItems: 7,
                                 orgItems: 7
                             });
-                            organisations.map(org => org.checked = false);
-                            observationTypes.map(obs => obs.checked = false);
+                            if (checkedObservationType) updateObservationCheckbox(checkedObservationType);
+                            if (checkedOrganisation) updateOrganisationCheckbox(checkedOrganisation);
                         }}
                         disabled={currentDataType === "WMS" ? true : false}
                     >

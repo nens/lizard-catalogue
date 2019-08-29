@@ -179,6 +179,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         organisations={this.props.organisations}
                         onObservationTypeCheckbox={this.onObservationTypeCheckbox}
                         onOrganisationCheckbox={this.onOrganisationCheckbox}
+                        updateObservationCheckbox={this.props.updateObservationCheckbox}
+                        updateOrganisationCheckbox={this.props.updateOrganisationCheckbox}
                         onViewChange={this.onViewChange}
                         fetchRasters={this.props.fetchRasters}
                         fetchWMSLayers={this.props.fetchWMSLayers}
