@@ -15,7 +15,7 @@ interface MyProps {
     onOrganisationCheckbox: (organisation: Organisation) => void,
     updateObservationCheckbox: (obsType: ObservationType) => void,
     updateOrganisationCheckbox: (organisation: Organisation) => void,
-    onViewChange: () => void
+    onDataTypeChange: () => void
     switchDataType: (dataType: SwitchDataType['payload']) => void
 };
 
@@ -73,7 +73,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
             updateOrganisationCheckbox,
             currentDataType,
             switchDataType,
-            onViewChange
+            onDataTypeChange
         } = this.props;
 
         //Filter observation types & organisations at the client side instead of fetching again from the server after each search
@@ -97,7 +97,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                             //finally remove all the checked organisation and observation type
                             switchDataType("Raster");
                             this.props.fetchRasters(1, '', '', '', '');
-                            onViewChange();
+                            onDataTypeChange();
                             this.setState({
                                 searchObs: '',
                                 searchOrg: '',
@@ -117,7 +117,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                         onClick={() => {
                             switchDataType("WMS");
                             this.props.fetchWMSLayers(1, '', '', '');
-                            onViewChange();
+                            onDataTypeChange();
                             this.setState({
                                 searchObs: '',
                                 searchOrg: '',

@@ -134,7 +134,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     };
 
     //When switch the view from Rasters to WMS layers and vice versa, set the state of this main container back to initial state
-    onViewChange = () => {
+    onDataTypeChange = () => {
         this.setState({
             page: 1,
             searchTerm: '',
@@ -181,7 +181,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         onOrganisationCheckbox={this.onOrganisationCheckbox}
                         updateObservationCheckbox={this.props.updateObservationCheckbox}
                         updateOrganisationCheckbox={this.props.updateOrganisationCheckbox}
-                        onViewChange={this.onViewChange}
+                        onDataTypeChange={this.onDataTypeChange}
                         fetchRasters={this.props.fetchRasters}
                         fetchWMSLayers={this.props.fetchWMSLayers}
                         switchDataType={this.props.switchDataType}
