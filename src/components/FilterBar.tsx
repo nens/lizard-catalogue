@@ -62,13 +62,6 @@ class FilterBar extends React.Component<MyProps, MyState> {
         observationTypes.filter(obs => obs.parameter !== observationType.parameter).map(obs => obs.checked = false);
     };
 
-    onOrganisationChange = (organisation: Organisation, organisations: MyProps['organisations']) => {
-        //Toggle the checked property on click
-        organisation.checked = !organisation.checked;
-        //Only one organisation can be selected at a time
-        organisations.filter(org => org.uuid !== organisation.uuid).map(org => org.checked = false);
-    };
-
     componentDidMount() {
         this.props.fetchObservationTypes();
         this.props.fetchOrganisations();
@@ -153,13 +146,17 @@ class FilterBar extends React.Component<MyProps, MyState> {
                     </form>
                     {checkedOrganisation ?
                         //Showing the checked item and the option the remove this checked item from the filter
-                        <div className="filter__checked-item"><button onClick={() => { onOrganisationCheckbox(checkedOrganisation); checkedOrganisation.checked = !checkedOrganisation.checked }}>x</button>{checkedOrganisation.name}</div> :
+                        <div className="filter__checked-item">
+                            <button onClick={() => onOrganisationCheckbox(checkedOrganisation)}>x</button>
+                            {checkedOrganisation.name}
+                        </div>
+                        :
                         <div className="filter__checked-item" />
                     }
                     <ul className="filter-list">
                         {filteredOrganisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
                             <li className="filter-item" key={organisation.uuid}>
-                                <input type="checkbox" className="filter-checkbox" onClick={() => onOrganisationCheckbox(organisation)} onChange={() => this.onOrganisationChange(organisation, organisations)} checked={organisation.checked} />
+                                <input type="checkbox" className="filter-checkbox" onChange={() => onOrganisationCheckbox(organisation)} checked={organisation.checked} />
                                 <span className="filter-item-name">{organisation.name}</span>
                             </li>
                         ))}

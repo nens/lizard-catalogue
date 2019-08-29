@@ -179,6 +179,18 @@ export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>): vo
         .catch(console.error)
 };
 
+export const UPDATE_ORGANISATION_CHECKBOX = 'UPDATE_ORGANISATION_CHECKBOX';
+export const UPDATE_OBSERVATION_CHECKBOX = 'UPDATE_OBSERVATION_CHECKBOX';
+
+const organisationCheckboxUpdated = (organisation: Organisation) => ({
+    type: UPDATE_ORGANISATION_CHECKBOX,
+    payload: organisation
+});
+
+export const updateOrganisationCheckbox = (organisation: Organisation, dispatch) => {
+    dispatch(organisationCheckboxUpdated(organisation))
+};
+
 //MARK: Basket
 export const BASKET_UPDATED = 'BASKET_UPDATED';
 export const ITEM_REMOVED = 'ITEM_REMOVED'

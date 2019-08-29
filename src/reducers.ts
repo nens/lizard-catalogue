@@ -12,6 +12,7 @@ import {
     RECEIVE_WMS,
     SWITCH_DATA_TYPE,
     ITEM_SELECTED,
+    UPDATE_ORGANISATION_CHECKBOX,
 } from "./action";
 import {
     RastersFetched,
@@ -27,6 +28,7 @@ import {
     WMS,
     SwitchDataType,
     ItemSelected,
+    UpdateOrganisationCheckbox,
 } from './interface';
 
 export interface MyStore {
@@ -214,7 +216,7 @@ const observationTypes = (state: MyStore['observationTypes'] = [], action: Obser
     };
 };
 
-const organisations = (state: MyStore['organisations'] = [], action: OrganisationsFetched): MyStore['organisations'] => {
+const organisations = (state: MyStore['organisations'] = [], action: OrganisationsFetched & UpdateOrganisationCheckbox): MyStore['organisations'] => {
     switch (action.type) {
         case ORGANISATIONS_FETCHED:
             return action.payload.map(organisation => {
@@ -223,6 +225,22 @@ const organisations = (state: MyStore['organisations'] = [], action: Organisatio
                     name: organisation.name,
                     uuid: organisation.uuid,
                     checked: false
+                };
+            });
+        case UPDATE_ORGANISATION_CHECKBOX:
+            const organisations = [...state];
+            const checkedOrganisation = action.payload
+            return organisations.map(organisation => {
+                if (organisation.uuid === checkedOrganisation.uuid) {
+                    return {
+                        ...organisation,
+                        checked: !organisation.checked
+                    };
+                } else {
+                    return {
+                        ...organisation,
+                        checked: false
+                    };
                 };
             });
         default:
