@@ -30,7 +30,7 @@ import {
     SwitchDataType,
     ItemSelected,
     UpdateOrganisationCheckbox,
-    UpdateObservationCheckbox,
+    UpdateObservationTypeCheckbox,
 } from './interface';
 
 export interface MyStore {
@@ -199,7 +199,7 @@ const basket = (state: MyStore['basket'] = [], action: Basket): MyStore['basket'
     };
 };
 
-const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched & UpdateObservationCheckbox): MyStore['observationTypes'] => {
+const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched & UpdateObservationTypeCheckbox): MyStore['observationTypes'] => {
     switch (action.type) {
         case OBSERVATION_TYPES_FETCHED:
             return action.payload.map(observation => {

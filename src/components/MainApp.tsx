@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationCheckbox, updateObservationCheckbox } from '../action';
+import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationCheckbox, updateObservationTypeCheckbox } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType, UpdateCheckboxActionType } from '../interface';
 import RasterList from './rasters/RasterList';
@@ -27,7 +27,7 @@ interface PropsFromDispatch {
     updateBasket: (basket: MyStore['basket']) => void,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
-    updateObservationCheckbox: (obsType: ObservationType) => void,
+    updateObservationTypeCheckbox: (obsType: ObservationType) => void,
     updateOrganisationCheckbox: (organisation: Organisation) => void,
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void
@@ -92,7 +92,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the observation type
     //and update the observation type state in this component
     onObservationTypeCheckbox = (obsType: ObservationType) => {
-        this.props.updateObservationCheckbox(obsType);
+        this.props.updateObservationTypeCheckbox(obsType);
         if (!obsType.checked) {
             this.setState({
                 observationType: obsType.parameter
@@ -179,7 +179,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         organisations={this.props.organisations}
                         onObservationTypeCheckbox={this.onObservationTypeCheckbox}
                         onOrganisationCheckbox={this.onOrganisationCheckbox}
-                        updateObservationCheckbox={this.props.updateObservationCheckbox}
+                        updateObservationTypeCheckbox={this.props.updateObservationTypeCheckbox}
                         updateOrganisationCheckbox={this.props.updateOrganisationCheckbox}
                         onDataTypeChange={this.onDataTypeChange}
                         fetchRasters={this.props.fetchRasters}
@@ -237,7 +237,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | Filte
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
-    updateObservationCheckbox: (obsType: ObservationType) =>updateObservationCheckbox(obsType, dispatch), 
+    updateObservationTypeCheckbox: (obsType: ObservationType) =>updateObservationTypeCheckbox(obsType, dispatch), 
     updateOrganisationCheckbox: (organisation: Organisation) => updateOrganisationCheckbox(organisation, dispatch),
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => fetchWMSLayers(page, searchTerm, organisationName, ordering, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),

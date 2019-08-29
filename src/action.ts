@@ -20,7 +20,7 @@ import {
     SwitchDataType,
     ItemSelected,
     UpdateOrganisationCheckbox,
-    UpdateObservationCheckbox
+    UpdateObservationTypeCheckbox
 } from './interface';
 
 //MARK: Bootsrap
@@ -193,13 +193,13 @@ export const updateOrganisationCheckbox = (organisation: Organisation, dispatch:
     dispatch(organisationCheckboxUpdated(organisation));
 };
 
-const observationCheckboxUpdated = (observationType: ObservationType): UpdateObservationCheckbox => ({
+const observationTypeCheckboxUpdated = (observationType: ObservationType): UpdateObservationTypeCheckbox => ({
     type: UPDATE_OBSERVATION_CHECKBOX,
     payload: observationType
 });
 
-export const updateObservationCheckbox = (observationType: ObservationType, dispatch: Dispatch<UpdateObservationCheckbox>) => {
-    dispatch(observationCheckboxUpdated(observationType));
+export const updateObservationTypeCheckbox = (observationType: ObservationType, dispatch: Dispatch<UpdateObservationTypeCheckbox>) => {
+    dispatch(observationTypeCheckboxUpdated(observationType));
 };
 
 //MARK: Basket

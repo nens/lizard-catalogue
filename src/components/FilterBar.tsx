@@ -13,7 +13,7 @@ interface MyProps {
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => void,
     onObservationTypeCheckbox: (obsType: ObservationType) => void,
     onOrganisationCheckbox: (organisation: Organisation) => void,
-    updateObservationCheckbox: (obsType: ObservationType) => void,
+    updateObservationTypeCheckbox: (obsType: ObservationType) => void,
     updateOrganisationCheckbox: (organisation: Organisation) => void,
     onDataTypeChange: () => void
     switchDataType: (dataType: SwitchDataType['payload']) => void
@@ -69,7 +69,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
             organisations,
             onObservationTypeCheckbox,
             onOrganisationCheckbox,
-            updateObservationCheckbox,
+            updateObservationTypeCheckbox,
             updateOrganisationCheckbox,
             currentDataType,
             switchDataType,
@@ -104,7 +104,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                                 obsItems: 7,
                                 orgItems: 7
                             });
-                            if (checkedObservationType) updateObservationCheckbox(checkedObservationType);
+                            if (checkedObservationType) updateObservationTypeCheckbox(checkedObservationType);
                             if (checkedOrganisation) updateOrganisationCheckbox(checkedOrganisation);
                         }}
                         disabled={currentDataType === "Raster" ? true : false}
@@ -124,7 +124,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
                                 obsItems: 7,
                                 orgItems: 7
                             });
-                            if (checkedObservationType) updateObservationCheckbox(checkedObservationType);
+                            if (checkedObservationType) updateObservationTypeCheckbox(checkedObservationType);
                             if (checkedOrganisation) updateOrganisationCheckbox(checkedOrganisation);
                         }}
                         disabled={currentDataType === "WMS" ? true : false}

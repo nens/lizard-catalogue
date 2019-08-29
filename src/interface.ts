@@ -88,12 +88,12 @@ export interface UpdateOrganisationCheckbox {
     payload: Organisation
 };
 
-export interface UpdateObservationCheckbox {
+export interface UpdateObservationTypeCheckbox {
     type: typeof UPDATE_OBSERVATION_CHECKBOX,
     payload: ObservationType
 };
 
-export type UpdateCheckboxActionType = UpdateOrganisationCheckbox | UpdateObservationCheckbox;
+export type UpdateCheckboxActionType = UpdateOrganisationCheckbox | UpdateObservationTypeCheckbox;
 
 //LIZARD BOOTSTRAP
 export interface Bootstrap {
