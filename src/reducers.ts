@@ -12,6 +12,8 @@ import {
     RECEIVE_WMS,
     SWITCH_DATA_TYPE,
     ITEM_SELECTED,
+    UPDATE_ORGANISATION_CHECKBOX,
+    UPDATE_OBSERVATION_CHECKBOX,
 } from "./action";
 import {
     RastersFetched,
@@ -27,6 +29,8 @@ import {
     WMS,
     SwitchDataType,
     ItemSelected,
+    UpdateOrganisationCheckbox,
+    UpdateObservationTypeCheckbox,
 } from './interface';
 
 export interface MyStore {
@@ -195,7 +199,7 @@ const basket = (state: MyStore['basket'] = [], action: Basket): MyStore['basket'
     };
 };
 
-const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched): MyStore['observationTypes'] => {
+const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched & UpdateObservationTypeCheckbox): MyStore['observationTypes'] => {
     switch (action.type) {
         case OBSERVATION_TYPES_FETCHED:
             return action.payload.map(observation => {
@@ -209,12 +213,28 @@ const observationTypes = (state: MyStore['observationTypes'] = [], action: Obser
                     checked: false
                 };
             });
+        case UPDATE_OBSERVATION_CHECKBOX:
+            const observationTypes = [...state];
+            const checkedObservationType = action.payload;
+            return observationTypes.map(obsType => {
+                if (obsType.code === checkedObservationType.code) {
+                    return {
+                        ...obsType,
+                        checked: !obsType.checked
+                    };
+                } else {
+                    return {
+                        ...obsType,
+                        checked: false
+                    };
+                };
+            })
         default:
             return state;
     };
 };
 
-const organisations = (state: MyStore['organisations'] = [], action: OrganisationsFetched): MyStore['organisations'] => {
+const organisations = (state: MyStore['organisations'] = [], action: OrganisationsFetched & UpdateOrganisationCheckbox): MyStore['organisations'] => {
     switch (action.type) {
         case ORGANISATIONS_FETCHED:
             return action.payload.map(organisation => {
@@ -223,6 +243,22 @@ const organisations = (state: MyStore['organisations'] = [], action: Organisatio
                     name: organisation.name,
                     uuid: organisation.uuid,
                     checked: false
+                };
+            });
+        case UPDATE_ORGANISATION_CHECKBOX:
+            const organisations = [...state];
+            const checkedOrganisation = action.payload
+            return organisations.map(organisation => {
+                if (organisation.uuid === checkedOrganisation.uuid) {
+                    return {
+                        ...organisation,
+                        checked: !organisation.checked
+                    };
+                } else {
+                    return {
+                        ...organisation,
+                        checked: false
+                    };
                 };
             });
         default:

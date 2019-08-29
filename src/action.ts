@@ -18,7 +18,9 @@ import {
     RequestWMS,
     ReceiveWMS,
     SwitchDataType,
-    ItemSelected
+    ItemSelected,
+    UpdateOrganisationCheckbox,
+    UpdateObservationTypeCheckbox
 } from './interface';
 
 //MARK: Bootsrap
@@ -177,6 +179,27 @@ export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>): vo
             dispatch(organisationsFetched(response.body))
         })
         .catch(console.error)
+};
+
+export const UPDATE_ORGANISATION_CHECKBOX = 'UPDATE_ORGANISATION_CHECKBOX';
+export const UPDATE_OBSERVATION_CHECKBOX = 'UPDATE_OBSERVATION_CHECKBOX';
+
+const organisationCheckboxUpdated = (organisation: Organisation): UpdateOrganisationCheckbox => ({
+    type: UPDATE_ORGANISATION_CHECKBOX,
+    payload: organisation
+});
+
+export const updateOrganisationCheckbox = (organisation: Organisation, dispatch: Dispatch<UpdateOrganisationCheckbox>) => {
+    dispatch(organisationCheckboxUpdated(organisation));
+};
+
+const observationTypeCheckboxUpdated = (observationType: ObservationType): UpdateObservationTypeCheckbox => ({
+    type: UPDATE_OBSERVATION_CHECKBOX,
+    payload: observationType
+});
+
+export const updateObservationTypeCheckbox = (observationType: ObservationType, dispatch: Dispatch<UpdateObservationTypeCheckbox>) => {
+    dispatch(observationTypeCheckboxUpdated(observationType));
 };
 
 //MARK: Basket
