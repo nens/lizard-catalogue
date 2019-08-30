@@ -5,6 +5,7 @@ import { Dispatch } from 'redux';
 import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationCheckbox, updateObservationTypeCheckbox } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType, UpdateCheckboxActionType } from '../interface';
+import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataType } from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
@@ -155,45 +156,19 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         });
     };
 
-    //Capture the search params in the URL and turn it into an object using URLSearchParams() method
-    getUrlParams = () => {
-        if (!this.props.location.search) return new URLSearchParams();
-        return new URLSearchParams(this.props.location.search);
-    };
-    //Capture the value of the search property in the search params object
-    getSearch = () => {
-        let search = this.getUrlParams();
-        return search.get('search') || '';
-    };
-    //Capture the value of the organisation property in the search params object
-    getOrganisation = () => {
-        let search = this.getUrlParams();
-        return search.get('organisation') || '';
-    };
-    //Capture the value of the observation type property in the search params object
-    getObservationType = () => {
-        let search = this.getUrlParams();
-        return search.get('observation') || '';
-    };
-    //Capture the current data type selection of the Catalogue (Raster or WMS)
-    getDataType = (): MyStore['currentDataType'] => {
-        let search = this.getUrlParams();
-        //data type can only be WMS or Raster
-        return search.get('data') === 'WMS' ? 'WMS' : 'Raster';
-    };
-
     async componentDidMount() {
         //When component first mount, capture the search params in the URL and update the component's state
-        let search = this.getSearch();
-        let organisation = this.getOrganisation();
-        let observation = this.getObservationType();
+        const urlSearchParams = getUrlParams(this.props.location.search);
+        const search = getSearch(urlSearchParams);
+        const organisation = getOrganisation(urlSearchParams);
+        const observation = getObservationType(urlSearchParams);
         this.setState({
             searchTerm: search,
             organisationName: organisation,
             observationType: observation
         });
 
-        let dataType = this.getDataType();
+        const dataType = getDataType(urlSearchParams);
         //Dispatch the switchDataType action to update the currentDataType state in Redux store with the data param
         this.props.switchDataType(dataType);
 
