@@ -296,7 +296,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                     }}
                     onClick={() => this.setState({ showAlert: false })}
                 >
-                    No Rasters/WMS layers found! You may need to login or might have insufficient right to view
+                    No Rasters/WMS layers found!
+                    Please check your search selection
+                    <br/>
+                    You may need to login or might have insufficient right to view
                     the Rasters/WMS layers
                 </div>
             </div>
