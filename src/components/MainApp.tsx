@@ -131,6 +131,17 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${organisation.checked ? '' : `&organisation=${organisation.name}`}${this.state.observationType === '' ? '' : `&observation=${this.state.observationType}`}`);
     };
 
+    //Submit the form in organisation filter bar will update the checkbox and set the organisationName state of this component
+    //then update the URL search params
+    onOrganisationFormSubmit = (name: string) => {
+        this.props.updateOrganisationCheckbox(name);
+        this.setState({
+            organisationName: name
+        });
+        //Update the URL search params with the selected organisation
+        this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${name === '' ? '' : `&organisation=${name}`}${this.state.observationType === '' ? '' : `&observation=${this.state.observationType}`}`);
+    };
+
     //When click on the sorting icon in the raster list, this function will update the ordering state in this component
     onSorting = (ordering: string) => {
         //Sorting rasters in 2 ways if user clicks on the sorting icon multiple times
@@ -209,6 +220,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     };
 
     render() {
+        console.log(this.state.organisationName)
         return (
             <div className="main-container" onClick={this.toggleProfileDropdownAndAlertMessage}>
                 <div className="main-header">
@@ -232,6 +244,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         fetchWMSLayers={this.props.fetchWMSLayers}
                         switchDataType={this.props.switchDataType}
                         currentDataType={this.props.currentDataType}
+                        onOrganisationFormSubmit={this.onOrganisationFormSubmit}
                     />
                     {this.props.currentDataType === "Raster" ?
                         <RasterList

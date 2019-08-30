@@ -3,6 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { ObservationType, Organisation, SwitchDataType } from '../interface';
 import { MyStore } from '../reducers';
 import './styles/FilterBar.css';
+import { getUrlParams, getOrganisation, getObservationType } from '../utils/getUrlParams';
 
 interface MyProps {
     observationTypes: ObservationType[],
@@ -17,7 +18,8 @@ interface MyProps {
     updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) => void,
     updateOrganisationCheckbox: (name: Organisation['name']) => void,
     onDataTypeChange: () => void
-    switchDataType: (dataType: SwitchDataType['payload']) => void
+    switchDataType: (dataType: SwitchDataType['payload']) => void,
+    onOrganisationFormSubmit: (name: string) => void,
 };
 
 interface MyState {
@@ -55,15 +57,24 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
 
     onOrgSubmit = (event) => {
         event.preventDefault();
+        this.props.onOrganisationFormSubmit(this.state.searchOrg);
     };
 
     componentDidMount() {
         this.props.fetchObservationTypes();
         this.props.fetchOrganisations();
+        const urlSearchParams = getUrlParams(this.props.location.search);
+        const organisation = getOrganisation(urlSearchParams);
+        const observation = getObservationType(urlSearchParams);
+        this.setState({
+            searchOrg: organisation,
+            searchObs: observation
+        });
     };
 
     render() {
         const { searchObs, searchOrg } = this.state;
+        console.log(searchOrg)
 
         const {
             observationTypes,
