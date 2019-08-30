@@ -184,22 +184,22 @@ export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>): vo
 export const UPDATE_ORGANISATION_CHECKBOX = 'UPDATE_ORGANISATION_CHECKBOX';
 export const UPDATE_OBSERVATION_CHECKBOX = 'UPDATE_OBSERVATION_CHECKBOX';
 
-const organisationCheckboxUpdated = (organisation: Organisation): UpdateOrganisationCheckbox => ({
+const organisationCheckboxUpdated = (name: Organisation['name']): UpdateOrganisationCheckbox => ({
     type: UPDATE_ORGANISATION_CHECKBOX,
-    payload: organisation
+    payload: name
 });
 
-export const updateOrganisationCheckbox = (organisation: Organisation, dispatch: Dispatch<UpdateOrganisationCheckbox>) => {
-    dispatch(organisationCheckboxUpdated(organisation));
+export const updateOrganisationCheckbox = (name: Organisation['name'], dispatch: Dispatch<UpdateOrganisationCheckbox>) => {
+    dispatch(organisationCheckboxUpdated(name));
 };
 
-const observationTypeCheckboxUpdated = (observationType: ObservationType): UpdateObservationTypeCheckbox => ({
+const observationTypeCheckboxUpdated = (parameter: ObservationType['parameter']): UpdateObservationTypeCheckbox => ({
     type: UPDATE_OBSERVATION_CHECKBOX,
-    payload: observationType
+    payload: parameter
 });
 
-export const updateObservationTypeCheckbox = (observationType: ObservationType, dispatch: Dispatch<UpdateObservationTypeCheckbox>) => {
-    dispatch(observationTypeCheckboxUpdated(observationType));
+export const updateObservationTypeCheckbox = (parameter: ObservationType['parameter'], dispatch: Dispatch<UpdateObservationTypeCheckbox>) => {
+    dispatch(observationTypeCheckboxUpdated(parameter));
 };
 
 //MARK: Basket

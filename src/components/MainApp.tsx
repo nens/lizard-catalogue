@@ -27,8 +27,8 @@ interface PropsFromDispatch {
     updateBasket: (basket: MyStore['basket']) => void,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
-    updateObservationTypeCheckbox: (obsType: ObservationType) => void,
-    updateOrganisationCheckbox: (organisation: Organisation) => void,
+    updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) => void,
+    updateOrganisationCheckbox: (name: Organisation['name']) => void,
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void
 };
@@ -92,7 +92,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the observation type
     //and update the observation type state in this component
     onObservationTypeCheckbox = (obsType: ObservationType) => {
-        this.props.updateObservationTypeCheckbox(obsType);
+        this.props.updateObservationTypeCheckbox(obsType.parameter);
         if (!obsType.checked) {
             this.setState({
                 observationType: obsType.parameter
@@ -107,7 +107,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the organisation
     //and update the organisation name state in this component
     onOrganisationCheckbox = (organisation: Organisation) => {
-        this.props.updateOrganisationCheckbox(organisation);
+        this.props.updateOrganisationCheckbox(organisation.name);
         if (!organisation.checked) {
             this.setState({
                 organisationName: organisation.name
@@ -237,8 +237,8 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | Filte
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
-    updateObservationTypeCheckbox: (obsType: ObservationType) =>updateObservationTypeCheckbox(obsType, dispatch), 
-    updateOrganisationCheckbox: (organisation: Organisation) => updateOrganisationCheckbox(organisation, dispatch),
+    updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) =>updateObservationTypeCheckbox(parameter, dispatch),
+    updateOrganisationCheckbox: (name: Organisation['name']) => updateOrganisationCheckbox(name, dispatch),
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => fetchWMSLayers(page, searchTerm, organisationName, ordering, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
