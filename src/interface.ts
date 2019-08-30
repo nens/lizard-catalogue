@@ -85,12 +85,12 @@ export type FilterActionType = ObservationTypesFetched | OrganisationsFetched;
 
 export interface UpdateOrganisationCheckbox {
     type: typeof UPDATE_ORGANISATION_CHECKBOX,
-    payload: Organisation
+    payload: Organisation['name']
 };
 
 export interface UpdateObservationTypeCheckbox {
     type: typeof UPDATE_OBSERVATION_CHECKBOX,
-    payload: ObservationType
+    payload: ObservationType['parameter']
 };
 
 export type UpdateCheckboxActionType = UpdateOrganisationCheckbox | UpdateObservationTypeCheckbox;
