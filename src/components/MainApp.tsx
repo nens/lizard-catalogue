@@ -5,6 +5,7 @@ import { Dispatch } from 'redux';
 import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationCheckbox, updateObservationTypeCheckbox } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType, UpdateCheckboxActionType } from '../interface';
+import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataType } from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
@@ -113,6 +114,17 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${this.state.organisationName === '' ? '' : `&organisation=${this.state.organisationName}`}${obsType.checked ? '' : `&observation=${obsType.parameter}`}`);
     };
 
+    //Submit the form in observation type filter bar will update the checkbox and set the observationType state of this component
+    //then update the URL search params
+    onObservationTypeFormSubmit = (obsTypeParameter: string) => {
+        this.props.updateObservationTypeCheckbox(obsTypeParameter);
+        this.setState({
+            observationType: obsTypeParameter
+        });
+        //Update the URL search params with the selected observation type
+        this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${this.state.organisationName === '' ? '' : `&organisation=${this.state.organisationName}`}${obsTypeParameter === '' ? '' : `&observation=${obsTypeParameter}`}`);
+    };
+
     //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the organisation
     //and update the organisation name state in this component
     onOrganisationCheckbox = (organisation: Organisation) => {
@@ -128,6 +140,17 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         };
         //Update the URL search params with the selected organisation
         this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${organisation.checked ? '' : `&organisation=${organisation.name}`}${this.state.observationType === '' ? '' : `&observation=${this.state.observationType}`}`);
+    };
+
+    //Submit the form in organisation filter bar will update the checkbox and set the organisationName state of this component
+    //then update the URL search params
+    onOrganisationFormSubmit = (organisationName: string) => {
+        this.props.updateOrganisationCheckbox(organisationName);
+        this.setState({
+            organisationName: organisationName
+        });
+        //Update the URL search params with the selected organisation
+        this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${organisationName === '' ? '' : `&organisation=${organisationName}`}${this.state.observationType === '' ? '' : `&observation=${this.state.observationType}`}`);
     };
 
     //When click on the sorting icon in the raster list, this function will update the ordering state in this component
@@ -155,45 +178,19 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         });
     };
 
-    //Capture the search params in the URL and turn it into an object using URLSearchParams() method
-    getUrlParams = () => {
-        if (!this.props.location.search) return new URLSearchParams();
-        return new URLSearchParams(this.props.location.search);
-    };
-    //Capture the value of the search property in the search params object
-    getSearch = () => {
-        let search = this.getUrlParams();
-        return search.get('search') || '';
-    };
-    //Capture the value of the organisation property in the search params object
-    getOrganisation = () => {
-        let search = this.getUrlParams();
-        return search.get('organisation') || '';
-    };
-    //Capture the value of the observation type property in the search params object
-    getObservationType = () => {
-        let search = this.getUrlParams();
-        return search.get('observation') || '';
-    };
-    //Capture the current data type selection of the Catalogue (Raster or WMS)
-    getDataType = (): MyStore['currentDataType'] => {
-        let search = this.getUrlParams();
-        //data type can only be WMS or Raster
-        return search.get('data') === 'WMS' ? 'WMS' : 'Raster';
-    };
-
     async componentDidMount() {
         //When component first mount, capture the search params in the URL and update the component's state
-        let search = this.getSearch();
-        let organisation = this.getOrganisation();
-        let observation = this.getObservationType();
+        const urlSearchParams = getUrlParams(this.props.location.search);
+        const search = getSearch(urlSearchParams);
+        const organisation = getOrganisation(urlSearchParams);
+        const observation = getObservationType(urlSearchParams);
         this.setState({
             searchTerm: search,
             organisationName: organisation,
             observationType: observation
         });
 
-        let dataType = this.getDataType();
+        const dataType = getDataType(urlSearchParams);
         //Dispatch the switchDataType action to update the currentDataType state in Redux store with the data param
         this.props.switchDataType(dataType);
 
@@ -252,6 +249,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         onOrganisationCheckbox={this.onOrganisationCheckbox}
                         updateObservationTypeCheckbox={this.props.updateObservationTypeCheckbox}
                         updateOrganisationCheckbox={this.props.updateOrganisationCheckbox}
+                        onOrganisationFormSubmit={this.onOrganisationFormSubmit}
+                        onObservationTypeFormSubmit={this.onObservationTypeFormSubmit}
                         onDataTypeChange={this.onDataTypeChange}
                         fetchRasters={this.props.fetchRasters}
                         fetchWMSLayers={this.props.fetchWMSLayers}
@@ -297,7 +296,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                     }}
                     onClick={() => this.setState({ showAlert: false })}
                 >
-                    No Rasters/WMS layers found! You may need to login or might have insufficient right to view
+                    No Rasters/WMS layers found!
+                    Please check your search selection
+                    <br/>
+                    You may need to login or might have insufficient right to view
                     the Rasters/WMS layers
                 </div>
             </div>
