@@ -52,6 +52,7 @@ li {
     border: none;
     background-color: inherit;
     width: 2rem;
+    cursor: pointer;
 }
 
 .list__searchbar-button:focus {
