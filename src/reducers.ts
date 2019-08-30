@@ -215,9 +215,9 @@ const observationTypes = (state: MyStore['observationTypes'] = [], action: Obser
             });
         case UPDATE_OBSERVATION_CHECKBOX:
             const observationTypes = [...state];
-            const checkedObservationType = action.payload;
+            const checkedObservationTypeParameter = action.payload;
             return observationTypes.map(obsType => {
-                if (obsType.code === checkedObservationType.code) {
+                if (obsType.parameter === checkedObservationTypeParameter) {
                     return {
                         ...obsType,
                         checked: !obsType.checked
@@ -247,9 +247,9 @@ const organisations = (state: MyStore['organisations'] = [], action: Organisatio
             });
         case UPDATE_ORGANISATION_CHECKBOX:
             const organisations = [...state];
-            const checkedOrganisation = action.payload
+            const checkedOrganisationName = action.payload
             return organisations.map(organisation => {
-                if (organisation.uuid === checkedOrganisation.uuid) {
+                if (organisation.name === checkedOrganisationName) {
                     return {
                         ...organisation,
                         checked: !organisation.checked
