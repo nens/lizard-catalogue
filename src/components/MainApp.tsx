@@ -92,6 +92,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.props.currentDataType === "Raster" ? 
             this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering) :
             this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
+        //Update the URL search params with the new search term
+        this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${this.state.organisationName === '' ? '' : `&organisation=${this.state.organisationName}`}${this.state.observationType === '' ? '' : `&observation=${this.state.observationType}`}`);
     };
 
     //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the observation type
@@ -107,6 +109,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 observationType: ''
             });
         };
+        //Update the URL search params with the selected observation type
+        this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${this.state.organisationName === '' ? '' : `&organisation=${this.state.organisationName}`}${obsType.checked ? '' : `&observation=${obsType.parameter}`}`);
     };
 
     //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the organisation
@@ -122,6 +126,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 organisationName: ''
             });
         };
+        //Update the URL search params with the selected organisation
+        this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${organisation.checked ? '' : `&organisation=${organisation.name}`}${this.state.observationType === '' ? '' : `&observation=${this.state.observationType}`}`);
     };
 
     //When click on the sorting icon in the raster list, this function will update the ordering state in this component
@@ -217,15 +223,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 
     //Component will fetch the Rasters again each time the value of this.state.organisationName changes
     componentWillUpdate(nextProps: MainAppProps, nextState: MyState) {
-        //Keep the search params in URL and the searchTerm in the component's state in sync with each other
-        let search = this.getSearch();
-        let observationType = this.getObservationType();
-        let organisation = this.getOrganisation();
-        if (search !== this.state.searchTerm || organisation !== this.state.organisationName || observationType !== this.state.observationType) {
-            this.props.location.search = `?data=${this.props.currentDataType}&search=${this.state.searchTerm}&organisation=${this.state.organisationName}&observation=${this.state.observationType}`;
-            this.props.history.push(`${this.props.location.search}`);
-        };
-
         if (nextProps && (nextState.organisationName !== this.state.organisationName || nextState.observationType !== this.state.observationType || nextState.ordering !== this.state.ordering)) {
             this.props.currentDataType === "Raster" ? 
                 this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, nextState.organisationName, nextState.observationType, nextState.ordering) :
