@@ -20,6 +20,7 @@ interface MyProps {
     onDataTypeChange: () => void
     switchDataType: (dataType: SwitchDataType['payload']) => void,
     onOrganisationFormSubmit: (name: string) => void,
+    onObservationTypeFormSubmit: (obsTypeParameter: string) => void,
 };
 
 interface MyState {
@@ -46,6 +47,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
 
     onObsSubmit = (event) => {
         event.preventDefault();
+        this.props.onObservationTypeFormSubmit(this.state.searchObs);
     };
 
     //Handling on change and on submit for the Organisation search
@@ -74,7 +76,6 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
 
     render() {
         const { searchObs, searchOrg } = this.state;
-        console.log(searchOrg)
 
         const {
             observationTypes,

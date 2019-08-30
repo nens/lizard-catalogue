@@ -114,6 +114,17 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${this.state.organisationName === '' ? '' : `&organisation=${this.state.organisationName}`}${obsType.checked ? '' : `&observation=${obsType.parameter}`}`);
     };
 
+    //Submit the form in observation type filter bar will update the checkbox and set the observationType state of this component
+    //then update the URL search params
+    onObservationTypeFormSubmit = (obsTypeParameter: string) => {
+        this.props.updateObservationTypeCheckbox(obsTypeParameter);
+        this.setState({
+            observationType: obsTypeParameter
+        });
+        //Update the URL search params with the selected observation type
+        this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${this.state.organisationName === '' ? '' : `&organisation=${this.state.organisationName}`}${obsTypeParameter === '' ? '' : `&observation=${obsTypeParameter}`}`);
+    };
+
     //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the organisation
     //and update the organisation name state in this component
     onOrganisationCheckbox = (organisation: Organisation) => {
@@ -133,13 +144,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 
     //Submit the form in organisation filter bar will update the checkbox and set the organisationName state of this component
     //then update the URL search params
-    onOrganisationFormSubmit = (name: string) => {
-        this.props.updateOrganisationCheckbox(name);
+    onOrganisationFormSubmit = (organisationName: string) => {
+        this.props.updateOrganisationCheckbox(organisationName);
         this.setState({
-            organisationName: name
+            organisationName: organisationName
         });
         //Update the URL search params with the selected organisation
-        this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${name === '' ? '' : `&organisation=${name}`}${this.state.observationType === '' ? '' : `&observation=${this.state.observationType}`}`);
+        this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${organisationName === '' ? '' : `&organisation=${organisationName}`}${this.state.observationType === '' ? '' : `&observation=${this.state.observationType}`}`);
     };
 
     //When click on the sorting icon in the raster list, this function will update the ordering state in this component
@@ -220,7 +231,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     };
 
     render() {
-        console.log(this.state.organisationName)
         return (
             <div className="main-container" onClick={this.toggleProfileDropdownAndAlertMessage}>
                 <div className="main-header">
@@ -239,12 +249,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         onOrganisationCheckbox={this.onOrganisationCheckbox}
                         updateObservationTypeCheckbox={this.props.updateObservationTypeCheckbox}
                         updateOrganisationCheckbox={this.props.updateOrganisationCheckbox}
+                        onOrganisationFormSubmit={this.onOrganisationFormSubmit}
+                        onObservationTypeFormSubmit={this.onObservationTypeFormSubmit}
                         onDataTypeChange={this.onDataTypeChange}
                         fetchRasters={this.props.fetchRasters}
                         fetchWMSLayers={this.props.fetchWMSLayers}
                         switchDataType={this.props.switchDataType}
                         currentDataType={this.props.currentDataType}
-                        onOrganisationFormSubmit={this.onOrganisationFormSubmit}
                     />
                     {this.props.currentDataType === "Raster" ?
                         <RasterList
