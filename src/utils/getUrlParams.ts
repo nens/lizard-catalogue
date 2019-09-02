@@ -1,3 +1,5 @@
+import { ObservationType, Organisation } from "../interface";
+
 //Methods to capture search params in the URL
 //Capture the search params in the URL and turn it into an object using URLSearchParams() method
 export const getUrlParams = (search: string) => {
@@ -21,4 +23,32 @@ export const getObservationType = (urlSearchParams) => {
 export const getDataType = (urlSearchParams) => {
     //data type can only be WMS or Raster
     return urlSearchParams.get('data') === 'WMS' ? 'WMS' : 'Raster';
+};
+
+//Generate new URLs with different search params for sharing searches
+export const newURL = (dataType: string, searchTerm: string, organisationName: string, observationTypeParameter: string) => {
+    const dataTypeParam = `data=${dataType}`;
+    const searchParam = searchTerm === '' ? '' : `&search=${searchTerm}`;
+    const organisationParam = organisationName === '' ? '' : `&organisation=${organisationName}`;
+    const observationParam = observationTypeParameter === '' ? '' : `&observation=${observationTypeParameter}`;
+
+    return `?${dataTypeParam}${searchParam}${organisationParam}${observationParam}`;
+};
+
+export const newURLWithObservationTypeOnCheckboxClick = (dataType: string, searchTerm: string, organisationName: string, observationType: ObservationType) => {
+    const dataTypeParam = `data=${dataType}`;
+    const searchParam = searchTerm === '' ? '' : `&search=${searchTerm}`;
+    const organisationParam = organisationName === '' ? '' : `&organisation=${organisationName}`;
+    const observationParam = observationType.checked ? '' : `&observation=${observationType.parameter}`;
+
+    return `?${dataTypeParam}${searchParam}${organisationParam}${observationParam}`;
+};
+
+export const newURLWithOrganisationOnCheckboxClick = (dataType: string, searchTerm: string, organisation: Organisation, observationTypeParameter: string) => {
+    const dataTypeParam = `data=${dataType}`;
+    const searchParam = searchTerm === '' ? '' : `&search=${searchTerm}`;
+    const organisationParam = organisation.checked ? '' : `&organisation=${organisation.name}`;
+    const observationParam = observationTypeParameter === '' ? '' : `&observation=${observationTypeParameter}`;
+
+    return `?${dataTypeParam}${searchParam}${organisationParam}${observationParam}`;
 };

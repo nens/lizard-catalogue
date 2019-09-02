@@ -5,7 +5,7 @@ import { Dispatch } from 'redux';
 import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationCheckbox, updateObservationTypeCheckbox } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType, UpdateCheckboxActionType } from '../interface';
-import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataType } from '../utils/getUrlParams';
+import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataType, newURL, newURLWithObservationTypeOnCheckboxClick, newURLWithOrganisationOnCheckboxClick } from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
@@ -94,7 +94,12 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering) :
             this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
         //Update the URL search params with the new search term
-        this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${this.state.organisationName === '' ? '' : `&organisation=${this.state.organisationName}`}${this.state.observationType === '' ? '' : `&observation=${this.state.observationType}`}`);
+        const url = newURL(this.props.currentDataType, this.state.searchTerm, this.state.organisationName, this.state.observationType);
+        this.updateURL(url);
+    };
+
+    updateURL = (url: string) => {
+        this.props.history.push(`${url}`);
     };
 
     //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the observation type
@@ -111,7 +116,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             });
         };
         //Update the URL search params with the selected observation type
-        this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${this.state.organisationName === '' ? '' : `&organisation=${this.state.organisationName}`}${obsType.checked ? '' : `&observation=${obsType.parameter}`}`);
+        const url = newURLWithObservationTypeOnCheckboxClick(this.props.currentDataType, this.state.searchTerm, this.state.organisationName, obsType);
+        this.updateURL(url);
     };
 
     //Submit the form in observation type filter bar will update the checkbox and set the observationType state of this component
@@ -122,7 +128,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             observationType: obsTypeParameter
         });
         //Update the URL search params with the selected observation type
-        this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${this.state.organisationName === '' ? '' : `&organisation=${this.state.organisationName}`}${obsTypeParameter === '' ? '' : `&observation=${obsTypeParameter}`}`);
+        const url = newURL(this.props.currentDataType, this.state.searchTerm, this.state.organisationName, obsTypeParameter);
+        this.updateURL(url);
     };
 
     //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the organisation
@@ -139,7 +146,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             });
         };
         //Update the URL search params with the selected organisation
-        this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${organisation.checked ? '' : `&organisation=${organisation.name}`}${this.state.observationType === '' ? '' : `&observation=${this.state.observationType}`}`);
+        const url = newURLWithOrganisationOnCheckboxClick(this.props.currentDataType, this.state.searchTerm, organisation, this.state.observationType);
+        this.updateURL(url);
     };
 
     //Submit the form in organisation filter bar will update the checkbox and set the organisationName state of this component
@@ -150,7 +158,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             organisationName: organisationName
         });
         //Update the URL search params with the selected organisation
-        this.props.history.push(`?data=${this.props.currentDataType}${this.state.searchTerm === '' ? '' : `&search=${this.state.searchTerm}`}${organisationName === '' ? '' : `&organisation=${organisationName}`}${this.state.observationType === '' ? '' : `&observation=${this.state.observationType}`}`);
+        const url = newURL(this.props.currentDataType, this.state.searchTerm, organisationName, this.state.observationType);
+        this.updateURL(url);
     };
 
     //When click on the sorting icon in the raster list, this function will update the ordering state in this component
