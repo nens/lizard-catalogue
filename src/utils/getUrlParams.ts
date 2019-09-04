@@ -28,27 +28,27 @@ export const getDataType = (urlSearchParams) => {
 //Generate new URLs with different search params for sharing searches
 export const newURL = (dataType: string, searchTerm: string, organisationName: string, observationTypeParameter: string) => {
     const dataTypeParam = `data=${dataType}`;
-    const searchParam = searchTerm === '' ? '' : `&search=${searchTerm}`;
-    const organisationParam = organisationName === '' ? '' : `&organisation=${organisationName}`;
-    const observationParam = observationTypeParameter === '' ? '' : `&observation=${observationTypeParameter}`;
+    const searchParam = searchTerm === '' ? '' : `&search=${encodeURIComponent(searchTerm)}`;
+    const organisationParam = organisationName === '' ? '' : `&organisation=${encodeURIComponent(organisationName)}`;
+    const observationParam = observationTypeParameter === '' ? '' : `&observation=${encodeURIComponent(observationTypeParameter)}`;
 
     return `?${dataTypeParam}${searchParam}${organisationParam}${observationParam}`;
 };
 
 export const newURLWithObservationTypeOnCheckboxClick = (dataType: string, searchTerm: string, organisationName: string, observationType: ObservationType) => {
     const dataTypeParam = `data=${dataType}`;
-    const searchParam = searchTerm === '' ? '' : `&search=${searchTerm}`;
-    const organisationParam = organisationName === '' ? '' : `&organisation=${organisationName}`;
-    const observationParam = observationType.checked ? '' : `&observation=${observationType.parameter}`;
+    const searchParam = searchTerm === '' ? '' : `&search=${encodeURIComponent(searchTerm)}`;
+    const organisationParam = organisationName === '' ? '' : `&organisation=${encodeURIComponent(organisationName)}`;
+    const observationParam = observationType.checked ? '' : `&observation=${encodeURIComponent(observationType.parameter)}`;
 
     return `?${dataTypeParam}${searchParam}${organisationParam}${observationParam}`;
 };
 
 export const newURLWithOrganisationOnCheckboxClick = (dataType: string, searchTerm: string, organisation: Organisation, observationTypeParameter: string) => {
     const dataTypeParam = `data=${dataType}`;
-    const searchParam = searchTerm === '' ? '' : `&search=${searchTerm}`;
-    const organisationParam = organisation.checked ? '' : `&organisation=${organisation.name}`;
-    const observationParam = observationTypeParameter === '' ? '' : `&observation=${observationTypeParameter}`;
+    const searchParam = searchTerm === '' ? '' : `&search=${encodeURIComponent(searchTerm)}`;
+    const organisationParam = organisation.checked ? '' : `&organisation=${encodeURIComponent(organisation.name)}`;
+    const observationParam = observationTypeParameter === '' ? '' : `&observation=${encodeURIComponent(observationTypeParameter)}`;
 
     return `?${dataTypeParam}${searchParam}${organisationParam}${observationParam}`;
 };
