@@ -1,5 +1,3 @@
-import { ObservationType, Organisation } from "../interface";
-
 //Methods to capture search params in the URL
 //Capture the search params in the URL and turn it into an object using URLSearchParams() method
 export const getUrlParams = (search: string) => {
@@ -30,24 +28,6 @@ export const newURL = (dataType: string, searchTerm: string, organisationName: s
     const dataTypeParam = `data=${dataType}`;
     const searchParam = searchTerm === '' ? '' : `&search=${encodeURIComponent(searchTerm)}`;
     const organisationParam = organisationName === '' ? '' : `&organisation=${encodeURIComponent(organisationName)}`;
-    const observationParam = observationTypeParameter === '' ? '' : `&observation=${encodeURIComponent(observationTypeParameter)}`;
-
-    return `?${dataTypeParam}${searchParam}${organisationParam}${observationParam}`;
-};
-
-export const newURLWithObservationTypeOnCheckboxClick = (dataType: string, searchTerm: string, organisationName: string, observationType: ObservationType) => {
-    const dataTypeParam = `data=${dataType}`;
-    const searchParam = searchTerm === '' ? '' : `&search=${encodeURIComponent(searchTerm)}`;
-    const organisationParam = organisationName === '' ? '' : `&organisation=${encodeURIComponent(organisationName)}`;
-    const observationParam = observationType.checked ? '' : `&observation=${encodeURIComponent(observationType.parameter)}`;
-
-    return `?${dataTypeParam}${searchParam}${organisationParam}${observationParam}`;
-};
-
-export const newURLWithOrganisationOnCheckboxClick = (dataType: string, searchTerm: string, organisation: Organisation, observationTypeParameter: string) => {
-    const dataTypeParam = `data=${dataType}`;
-    const searchParam = searchTerm === '' ? '' : `&search=${encodeURIComponent(searchTerm)}`;
-    const organisationParam = organisation.checked ? '' : `&organisation=${encodeURIComponent(organisation.name)}`;
     const observationParam = observationTypeParameter === '' ? '' : `&observation=${encodeURIComponent(observationTypeParameter)}`;
 
     return `?${dataTypeParam}${searchParam}${organisationParam}${observationParam}`;

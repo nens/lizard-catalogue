@@ -5,7 +5,7 @@ import { Dispatch } from 'redux';
 import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationCheckbox, updateObservationTypeCheckbox } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType, UpdateCheckboxActionType } from '../interface';
-import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataType, newURL, newURLWithObservationTypeOnCheckboxClick, newURLWithOrganisationOnCheckboxClick } from '../utils/getUrlParams';
+import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataType, newURL } from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
@@ -116,7 +116,12 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             });
         };
         //Update the URL search params with the selected observation type
-        const url = newURLWithObservationTypeOnCheckboxClick(this.props.currentDataType, this.state.searchTerm, this.state.organisationName, obsType);
+        const url = newURL(
+            this.props.currentDataType, 
+            this.state.searchTerm, 
+            this.state.organisationName, 
+            (obsType.checked ? obsType.parameter : "")
+        );        
         this.updateURL(url);
     };
 
@@ -146,7 +151,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             });
         };
         //Update the URL search params with the selected organisation
-        const url = newURLWithOrganisationOnCheckboxClick(this.props.currentDataType, this.state.searchTerm, organisation, this.state.observationType);
+        const url = newURL(
+            this.props.currentDataType, 
+            this.state.searchTerm, 
+            (organisation.checked? organisation.name : ""), 
+            this.state.observationType
+        );
+
         this.updateURL(url);
     };
 
