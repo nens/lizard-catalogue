@@ -120,7 +120,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.props.currentDataType, 
             this.state.searchTerm, 
             this.state.organisationName, 
-            (obsType.checked ? obsType.parameter : "")
+            (!obsType.checked ? obsType.parameter : "")
         );        
         this.updateURL(url);
     };
@@ -154,7 +154,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         const url = newURL(
             this.props.currentDataType, 
             this.state.searchTerm, 
-            (organisation.checked? organisation.name : ""), 
+            (!organisation.checked ? organisation.name : ""),
             this.state.observationType
         );
 
