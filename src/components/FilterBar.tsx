@@ -1,7 +1,9 @@
 import * as React from 'react';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { ObservationType, Organisation, SwitchDataType } from '../interface';
 import { MyStore } from '../reducers';
 import './styles/FilterBar.css';
+import { getUrlParams, getOrganisation, getObservationType } from '../utils/getUrlParams';
 
 interface MyProps {
     observationTypes: ObservationType[],
@@ -16,7 +18,9 @@ interface MyProps {
     updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) => void,
     updateOrganisationCheckbox: (name: Organisation['name']) => void,
     onDataTypeChange: () => void
-    switchDataType: (dataType: SwitchDataType['payload']) => void
+    switchDataType: (dataType: SwitchDataType['payload']) => void,
+    onOrganisationSearchSubmit: (name: string) => void,
+    onObservationTypeSearchSubmit: (obsTypeParameter: string) => void,
 };
 
 interface MyState {
@@ -26,7 +30,7 @@ interface MyState {
     orgItems: number
 };
 
-class FilterBar extends React.Component<MyProps, MyState> {
+class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> {
     state: MyState = {
         searchObs: '',
         searchOrg: '',
@@ -43,6 +47,7 @@ class FilterBar extends React.Component<MyProps, MyState> {
 
     onObsSubmit = (event) => {
         event.preventDefault();
+        this.props.onObservationTypeSearchSubmit(this.state.searchObs);
     };
 
     //Handling on change and on submit for the Organisation search
@@ -54,11 +59,19 @@ class FilterBar extends React.Component<MyProps, MyState> {
 
     onOrgSubmit = (event) => {
         event.preventDefault();
+        this.props.onOrganisationSearchSubmit(this.state.searchOrg);
     };
 
     componentDidMount() {
         this.props.fetchObservationTypes();
         this.props.fetchOrganisations();
+        const urlSearchParams = getUrlParams(this.props.location.search);
+        const organisation = getOrganisation(urlSearchParams);
+        const observation = getObservationType(urlSearchParams);
+        this.setState({
+            searchOrg: organisation,
+            searchObs: observation
+        });
     };
 
     render() {
@@ -106,6 +119,8 @@ class FilterBar extends React.Component<MyProps, MyState> {
                             });
                             if (checkedObservationType) updateObservationTypeCheckbox(checkedObservationType.parameter);
                             if (checkedOrganisation) updateOrganisationCheckbox(checkedOrganisation.name);
+                            //Update the URL and remove all the search parameters
+                            this.props.history.push('?data=Raster');
                         }}
                         disabled={currentDataType === "Raster" ? true : false}
                     >
@@ -126,6 +141,8 @@ class FilterBar extends React.Component<MyProps, MyState> {
                             });
                             if (checkedObservationType) updateObservationTypeCheckbox(checkedObservationType.parameter);
                             if (checkedOrganisation) updateOrganisationCheckbox(checkedOrganisation.name);
+                            //Update the URL and remove all the search parameters
+                            this.props.history.push('?data=WMS');
                         }}
                         disabled={currentDataType === "WMS" ? true : false}
                     >
@@ -214,4 +231,4 @@ class FilterBar extends React.Component<MyProps, MyState> {
     };
 };
 
-export default FilterBar;
+export default withRouter(FilterBar);

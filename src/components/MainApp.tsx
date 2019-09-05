@@ -1,15 +1,18 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
 import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationCheckbox, updateObservationTypeCheckbox } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType, UpdateCheckboxActionType } from '../interface';
+import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataType, newURL } from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
 import WMSDetails from './wms/WMSDetails';
 import FilterBar from './FilterBar';
 import Header from './Header';
+import { baseUrl } from '../api';
 import './styles/MainApp.css';
 
 interface PropsFromState {
@@ -33,7 +36,7 @@ interface PropsFromDispatch {
     switchDataType: (dataType: SwitchDataType['payload']) => void
 };
 
-type MainAppProps = PropsFromState & PropsFromDispatch;
+type MainAppProps = PropsFromState & PropsFromDispatch & RouteComponentProps;
 
 interface MyState {
     showProfileDropdown: boolean,
@@ -43,6 +46,7 @@ interface MyState {
     organisationName: string,
     observationType: string,
     ordering: string,
+    showAlert: boolean,
 };
 
 class MainApp extends React.Component<MainAppProps, MyState> {
@@ -54,9 +58,11 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         organisationName: '',
         observationType: '',
         ordering: '',
+        showAlert: false,
     };
 
-    toggleProfileDropdown = (event) => {
+    toggleProfileDropdownAndAlertMessage = (event) => {
+        if (this.state.showAlert === true) this.setState({ showAlert: false });
         return event.target.id === "user-profile" ?
             this.setState({ showProfileDropdown: !this.state.showProfileDropdown }) :
             this.setState({ showProfileDropdown: false });
@@ -64,9 +70,18 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 
     onPageClick = (page: number) => {
         if (page < 1) return page = 1;
-        this.props.currentDataType === "Raster" ? 
-            this.props.fetchRasters(page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering) :
-            this.props.fetchWMSLayers(page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
+        this.props.currentDataType === "Raster" ? this.props.fetchRasters(
+            page,
+            this.state.searchTerm,
+            this.state.organisationName,
+            this.state.observationType,
+            this.state.ordering
+        ) : this.props.fetchWMSLayers(
+            page,
+            this.state.searchTerm,
+            this.state.organisationName,
+            this.state.ordering
+        );
         this.setState({
             page: page,
         });
@@ -84,9 +99,30 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             page: 1
         });
 
-        this.props.currentDataType === "Raster" ? 
-            this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering) :
-            this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
+        this.props.currentDataType === "Raster" ? this.props.fetchRasters(
+            this.state.initialPage,
+            this.state.searchTerm,
+            this.state.organisationName,
+            this.state.observationType,
+            this.state.ordering
+        ) : this.props.fetchWMSLayers(
+            this.state.page,
+            this.state.searchTerm,
+            this.state.organisationName,
+            this.state.ordering
+        );
+        //Update the URL search params with the new search term
+        const url = newURL(
+            this.props.currentDataType,
+            this.state.searchTerm,
+            this.state.organisationName,
+            this.state.observationType
+        );
+        this.updateURL(url);
+    };
+
+    updateURL = (url: string) => {
+        this.props.history.push(`${url}`);
     };
 
     //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the observation type
@@ -102,6 +138,31 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 observationType: ''
             });
         };
+        //Update the URL search params with the selected observation type
+        const url = newURL(
+            this.props.currentDataType,
+            this.state.searchTerm,
+            this.state.organisationName,
+            (!obsType.checked ? obsType.parameter : '')
+        );
+        this.updateURL(url);
+    };
+
+    //Submit the search in observation type filter bar will update the checkbox and set the observationType state of this component
+    //then update the URL search params
+    onObservationTypeSearchSubmit = (obsTypeParameter: string) => {
+        this.props.updateObservationTypeCheckbox(obsTypeParameter);
+        this.setState({
+            observationType: obsTypeParameter
+        });
+        //Update the URL search params with the selected observation type
+        const url = newURL(
+            this.props.currentDataType,
+            this.state.searchTerm,
+            this.state.organisationName,
+            obsTypeParameter
+        );
+        this.updateURL(url);
     };
 
     //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the organisation
@@ -117,6 +178,31 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 organisationName: ''
             });
         };
+        //Update the URL search params with the selected organisation
+        const url = newURL(
+            this.props.currentDataType,
+            this.state.searchTerm,
+            (!organisation.checked ? organisation.name : ''),
+            this.state.observationType
+        );
+        this.updateURL(url);
+    };
+
+    //Submit the search in organisation filter bar will update the checkbox and set the organisationName state of this component
+    //then update the URL search params
+    onOrganisationSearchSubmit = (organisationName: string) => {
+        this.props.updateOrganisationCheckbox(organisationName);
+        this.setState({
+            organisationName: organisationName
+        });
+        //Update the URL search params with the selected organisation
+        const url = newURL(
+            this.props.currentDataType,
+            this.state.searchTerm,
+            organisationName,
+            this.state.observationType
+        );
+        this.updateURL(url);
     };
 
     //When click on the sorting icon in the raster list, this function will update the ordering state in this component
@@ -144,18 +230,61 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         });
     };
 
-    componentDidMount() {
+    async componentDidMount() {
+        //When component first mount, capture the search params in the URL and update the component's state
+        const urlSearchParams = getUrlParams(this.props.location.search);
+        const search = getSearch(urlSearchParams);
+        const organisation = getOrganisation(urlSearchParams);
+        const observation = getObservationType(urlSearchParams);
+        this.setState({
+            searchTerm: search,
+            organisationName: organisation,
+            observationType: observation
+        });
+
+        const dataType = getDataType(urlSearchParams);
+        //Dispatch the switchDataType action to update the currentDataType state in Redux store with the data param
+        this.props.switchDataType(dataType);
+
+        //Fetch Lizard Bootstrap
         this.props.fetchLizardBootstrap();
-        this.props.fetchRasters(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering);
-        // this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
+
+        //Fetch Rasters or WMS layers depends on the selected data type
+        dataType === 'Raster' ? this.props.fetchRasters(
+            this.state.page, search, organisation, observation, this.state.ordering
+        ) : this.props.fetchWMSLayers(
+            this.state.page, search, organisation, this.state.ordering
+        );
+
+        //Do an attempt to fetch Rasters/WMS layers and see if there are any results back
+        //If no raster or WMS layer returns back then display an alert to users to warn them about their authorisation right
+        //This alert only shows once when you open the app
+        if (dataType === 'Raster') {
+            const response = await fetch(`${baseUrl}/rasters?name__icontains=${search}&page=${this.state.page}&organisation__name__icontains=${organisation}&observation_type__parameter__icontains=${observation}&ordering=${this.state.ordering}`);
+            const data = await response.json();
+            if (data.count === 0) this.setState({ showAlert: true });
+        } else {
+            const response = await fetch(`${baseUrl}/wmslayers?name__icontains=${search}&page=${this.state.page}&organisation__name__icontains=${organisation}&ordering=${this.state.ordering}`);
+            const data = await response.json();
+            if (data.count === 0) this.setState({ showAlert: true });
+        };
     };
 
     //Component will fetch the Rasters again each time the value of this.state.organisationName changes
     componentWillUpdate(nextProps: MainAppProps, nextState: MyState) {
         if (nextProps && (nextState.organisationName !== this.state.organisationName || nextState.observationType !== this.state.observationType || nextState.ordering !== this.state.ordering)) {
-            this.props.currentDataType === "Raster" ? 
-                this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, nextState.organisationName, nextState.observationType, nextState.ordering) :
-                this.props.fetchWMSLayers(this.state.initialPage, this.state.searchTerm, nextState.organisationName, nextState.ordering);
+            this.props.currentDataType === "Raster" ? this.props.fetchRasters(
+                this.state.initialPage,
+                this.state.searchTerm,
+                nextState.organisationName,
+                nextState.observationType,
+                nextState.ordering
+            ) : this.props.fetchWMSLayers(
+                this.state.initialPage,
+                this.state.searchTerm,
+                nextState.organisationName,
+                nextState.ordering
+            );
             this.setState({
                 page: 1
             });
@@ -164,11 +293,11 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 
     render() {
         return (
-            <div className="main-container" onClick={this.toggleProfileDropdown}>
+            <div className="main-container" onClick={this.toggleProfileDropdownAndAlertMessage}>
                 <div className="main-header">
                     <Header
                         showProfileDropdown={this.state.showProfileDropdown}
-                        toggleProfileDropdown={this.toggleProfileDropdown}
+                        toggleProfileDropdown={this.toggleProfileDropdownAndAlertMessage}
                     />
                 </div>
                 <div className="main-body">
@@ -181,6 +310,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         onOrganisationCheckbox={this.onOrganisationCheckbox}
                         updateObservationTypeCheckbox={this.props.updateObservationTypeCheckbox}
                         updateOrganisationCheckbox={this.props.updateOrganisationCheckbox}
+                        onOrganisationSearchSubmit={this.onOrganisationSearchSubmit}
+                        onObservationTypeSearchSubmit={this.onObservationTypeSearchSubmit}
                         onDataTypeChange={this.onDataTypeChange}
                         fetchRasters={this.props.fetchRasters}
                         fetchWMSLayers={this.props.fetchWMSLayers}
@@ -218,6 +349,20 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         <WMSDetails />
                     }
                 </div>
+                {/* ALERT POPUP */}
+                <div
+                    className="authorisation-alert"
+                    style={{
+                        display: this.state.showAlert ? "flex" : "none"
+                    }}
+                    onClick={() => this.setState({ showAlert: false })}
+                >
+                    No Rasters/WMS layers found!
+                    Please check your search selection
+                    <br />
+                    You may need to login or might have insufficient right to view
+                    the Rasters/WMS layers
+                </div>
             </div>
         );
     };
@@ -233,11 +378,17 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType | UpdateCheckboxActionType>): PropsFromDispatch => ({
     fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
-    fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, ordering, dispatch),
+    fetchRasters: (
+        page: number,
+        searchTerm: string,
+        organisationName: string,
+        observationTypeParameter: string,
+        ordering: string
+    ) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, ordering, dispatch),
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
-    updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) =>updateObservationTypeCheckbox(parameter, dispatch),
+    updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) => updateObservationTypeCheckbox(parameter, dispatch),
     updateOrganisationCheckbox: (name: Organisation['name']) => updateOrganisationCheckbox(name, dispatch),
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => fetchWMSLayers(page, searchTerm, organisationName, ordering, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
