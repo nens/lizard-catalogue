@@ -70,9 +70,18 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 
     onPageClick = (page: number) => {
         if (page < 1) return page = 1;
-        this.props.currentDataType === "Raster" ? 
-            this.props.fetchRasters(page, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering) :
-            this.props.fetchWMSLayers(page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
+        this.props.currentDataType === "Raster" ? this.props.fetchRasters(
+            page,
+            this.state.searchTerm,
+            this.state.organisationName,
+            this.state.observationType,
+            this.state.ordering
+        ) : this.props.fetchWMSLayers(
+            page,
+            this.state.searchTerm,
+            this.state.organisationName,
+            this.state.ordering
+        );
         this.setState({
             page: page,
         });
@@ -90,11 +99,25 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             page: 1
         });
 
-        this.props.currentDataType === "Raster" ? 
-            this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, this.state.organisationName, this.state.observationType, this.state.ordering) :
-            this.props.fetchWMSLayers(this.state.page, this.state.searchTerm, this.state.organisationName, this.state.ordering);
+        this.props.currentDataType === "Raster" ? this.props.fetchRasters(
+            this.state.initialPage,
+            this.state.searchTerm,
+            this.state.organisationName,
+            this.state.observationType,
+            this.state.ordering
+        ) : this.props.fetchWMSLayers(
+            this.state.page,
+            this.state.searchTerm,
+            this.state.organisationName,
+            this.state.ordering
+        );
         //Update the URL search params with the new search term
-        const url = newURL(this.props.currentDataType, this.state.searchTerm, this.state.organisationName, this.state.observationType);
+        const url = newURL(
+            this.props.currentDataType,
+            this.state.searchTerm,
+            this.state.organisationName,
+            this.state.observationType
+        );
         this.updateURL(url);
     };
 
@@ -117,23 +140,28 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         };
         //Update the URL search params with the selected observation type
         const url = newURL(
-            this.props.currentDataType, 
-            this.state.searchTerm, 
-            this.state.organisationName, 
-            (!obsType.checked ? obsType.parameter : "")
-        );        
+            this.props.currentDataType,
+            this.state.searchTerm,
+            this.state.organisationName,
+            (!obsType.checked ? obsType.parameter : '')
+        );
         this.updateURL(url);
     };
 
-    //Submit the form in observation type filter bar will update the checkbox and set the observationType state of this component
+    //Submit the search in observation type filter bar will update the checkbox and set the observationType state of this component
     //then update the URL search params
-    onObservationTypeFormSubmit = (obsTypeParameter: string) => {
+    onObservationTypeSearchSubmit = (obsTypeParameter: string) => {
         this.props.updateObservationTypeCheckbox(obsTypeParameter);
         this.setState({
             observationType: obsTypeParameter
         });
         //Update the URL search params with the selected observation type
-        const url = newURL(this.props.currentDataType, this.state.searchTerm, this.state.organisationName, obsTypeParameter);
+        const url = newURL(
+            this.props.currentDataType,
+            this.state.searchTerm,
+            this.state.organisationName,
+            obsTypeParameter
+        );
         this.updateURL(url);
     };
 
@@ -152,24 +180,28 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         };
         //Update the URL search params with the selected organisation
         const url = newURL(
-            this.props.currentDataType, 
-            this.state.searchTerm, 
-            (!organisation.checked ? organisation.name : ""),
+            this.props.currentDataType,
+            this.state.searchTerm,
+            (!organisation.checked ? organisation.name : ''),
             this.state.observationType
         );
-
         this.updateURL(url);
     };
 
-    //Submit the form in organisation filter bar will update the checkbox and set the organisationName state of this component
+    //Submit the search in organisation filter bar will update the checkbox and set the organisationName state of this component
     //then update the URL search params
-    onOrganisationFormSubmit = (organisationName: string) => {
+    onOrganisationSearchSubmit = (organisationName: string) => {
         this.props.updateOrganisationCheckbox(organisationName);
         this.setState({
             organisationName: organisationName
         });
         //Update the URL search params with the selected organisation
-        const url = newURL(this.props.currentDataType, this.state.searchTerm, organisationName, this.state.observationType);
+        const url = newURL(
+            this.props.currentDataType,
+            this.state.searchTerm,
+            organisationName,
+            this.state.observationType
+        );
         this.updateURL(url);
     };
 
@@ -241,9 +273,18 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     //Component will fetch the Rasters again each time the value of this.state.organisationName changes
     componentWillUpdate(nextProps: MainAppProps, nextState: MyState) {
         if (nextProps && (nextState.organisationName !== this.state.organisationName || nextState.observationType !== this.state.observationType || nextState.ordering !== this.state.ordering)) {
-            this.props.currentDataType === "Raster" ? 
-                this.props.fetchRasters(this.state.initialPage, this.state.searchTerm, nextState.organisationName, nextState.observationType, nextState.ordering) :
-                this.props.fetchWMSLayers(this.state.initialPage, this.state.searchTerm, nextState.organisationName, nextState.ordering);
+            this.props.currentDataType === "Raster" ? this.props.fetchRasters(
+                this.state.initialPage,
+                this.state.searchTerm,
+                nextState.organisationName,
+                nextState.observationType,
+                nextState.ordering
+            ) : this.props.fetchWMSLayers(
+                this.state.initialPage,
+                this.state.searchTerm,
+                nextState.organisationName,
+                nextState.ordering
+            );
             this.setState({
                 page: 1
             });
@@ -269,8 +310,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         onOrganisationCheckbox={this.onOrganisationCheckbox}
                         updateObservationTypeCheckbox={this.props.updateObservationTypeCheckbox}
                         updateOrganisationCheckbox={this.props.updateOrganisationCheckbox}
-                        onOrganisationFormSubmit={this.onOrganisationFormSubmit}
-                        onObservationTypeFormSubmit={this.onObservationTypeFormSubmit}
+                        onOrganisationSearchSubmit={this.onOrganisationSearchSubmit}
+                        onObservationTypeSearchSubmit={this.onObservationTypeSearchSubmit}
                         onDataTypeChange={this.onDataTypeChange}
                         fetchRasters={this.props.fetchRasters}
                         fetchWMSLayers={this.props.fetchWMSLayers}
@@ -318,7 +359,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 >
                     No Rasters/WMS layers found!
                     Please check your search selection
-                    <br/>
+                    <br />
                     You may need to login or might have insufficient right to view
                     the Rasters/WMS layers
                 </div>
@@ -337,11 +378,17 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType | UpdateCheckboxActionType>): PropsFromDispatch => ({
     fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
-    fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, ordering, dispatch),
+    fetchRasters: (
+        page: number,
+        searchTerm: string,
+        organisationName: string,
+        observationTypeParameter: string,
+        ordering: string
+    ) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, ordering, dispatch),
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
-    updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) =>updateObservationTypeCheckbox(parameter, dispatch),
+    updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) => updateObservationTypeCheckbox(parameter, dispatch),
     updateOrganisationCheckbox: (name: Organisation['name']) => updateOrganisationCheckbox(name, dispatch),
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => fetchWMSLayers(page, searchTerm, organisationName, ordering, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
