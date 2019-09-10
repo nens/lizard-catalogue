@@ -25,7 +25,7 @@ interface MyProps {
     switchDataType: (dataType: SwitchDataType['payload']) => void,
     onOrganisationSearchSubmit: (name: string) => void,
     onObservationTypeSearchSubmit: (obsTypeParameter: string) => void,
-    onDatasetSearchSubmit: (name: string) => void,  //? I think name, because name of org and parameter for obsType
+    onDatasetSearchSubmit: (slug: string) => void,
 };
 
 interface MyState {
