@@ -136,7 +136,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                             //Switching between Rasters and WMS layers will fetch rasters/wms again with initial values
                             //then it will set the local state of this component to initial state
                             //and also set the state of its parent component (the main container) to its initial state
-                            //finally remove all the checked organisation and observation type
+                            //finally remove all the checked organisation, observation type and dataset
                             switchDataType("Raster");
                             this.props.fetchRasters(1, '', '', '', '', '');
                             onDataTypeChange();
