@@ -353,7 +353,7 @@ export const getOrganisations = (state: MyStore) => {
 }
 
 export const getDatasets = (state: MyStore) => {
-    //Remove organisations with empty name
+    //Remove datasets with empty name
     return state.datasets.filter(dataset => dataset.slug !== "");
 }
 
