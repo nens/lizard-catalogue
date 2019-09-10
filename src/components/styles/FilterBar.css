@@ -11,8 +11,8 @@
 }
 
 .filter-box h4 {
-    font-size: 1.6rem;
-    font-weight: 500;
+    font-size: 1.4rem;
+    font-weight: 600;
     white-space: nowrap;
     margin: 0;
     margin-bottom: 2rem;
@@ -44,7 +44,7 @@
 .filter-list {
     padding-left: 0;
     overflow-y: scroll;
-    height: 70%;
+    height: 55%;
     margin: 1rem 0 0 0;
 }
 
@@ -79,7 +79,7 @@
 
     display: flex;
     width: 90%;
-    height: 2rem;
+    height: 1.5rem;
     align-items: center;
     padding-left: 2rem;
     
