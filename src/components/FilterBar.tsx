@@ -122,9 +122,9 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
         const filteredDatasets = datasets.filter(dataset => dataset.slug.toLowerCase().includes(this.state.searchDataset.toLowerCase()));
 
         //Find the the observation type and the organisation and the dataset that have been checked in the filter list
-        const checkedObservationType = observationTypes.find(observationType => observationType.checked)
-        const checkedOrganisation = organisations.find(organisation => organisation.checked)
-        const checkedDataset = datasets.find(dataset => dataset.checked)
+        const checkedObservationType = observationTypes.find(observationType => observationType.checked);
+        const checkedOrganisation = organisations.find(organisation => organisation.checked);
+        const checkedDataset = datasets.find(dataset => dataset.checked);
 
         return (
             <div className="filter-box">
