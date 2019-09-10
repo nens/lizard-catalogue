@@ -355,24 +355,6 @@ export const getOrganisations = (state: MyStore) => {
 export const getDatasets = (state: MyStore) => {
     //Remove organisations with empty name
     return state.datasets.filter(dataset => dataset.slug !== "");
-    // //Remove datasets with empty slug
-    // const datasets = state.datasets.filter(dataset => dataset.slug !== "");  // Todo
-
-    // //Remove duplicates in slugs using reduce() method
-    // const slugs = datasets.map(dataset => dataset.slug);
-    // const slugsWithoutDuplicates = slugs.reduce((a: string[], b) => {
-    //     if (a.indexOf(b) < 0) a.push(b);
-    //     return a;
-    // }, []);
-
-    // //Return all datasets based on their slugs
-    // return slugsWithoutDuplicates;
-    // // //For datasets with same slugs, only select one of them as we are interested in getting one single result only
-    // // //So in this case, we select the first one from the array
-    // // return parametersWithoutDuplicates.map(parameter => {
-    // //     //Get all the observation types with this parameter and select the first one
-    // //     return observationTypes.filter(observationType => observationType.parameter === parameter)[0];
-    // // });
 }
 
 export default combineReducers({

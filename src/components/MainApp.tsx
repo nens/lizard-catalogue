@@ -34,7 +34,7 @@ interface PropsFromDispatch {
     fetchDatasets: () => void,
     updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) => void,
     updateOrganisationCheckbox: (name: Organisation['name']) => void,
-    updateDatasetCheckbox: (name: Dataset['slug']) => void,
+    updateDatasetCheckbox: (slug: Dataset['slug']) => void,
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void
 };
