@@ -20,7 +20,7 @@ interface MyProps {
     onDatasetCheckbox: (dataset: Dataset) => void,
     updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) => void,
     updateOrganisationCheckbox: (name: Organisation['name']) => void,
-    updateDatasetCheckbox: (name: Dataset['slug']) => void,
+    updateDatasetCheckbox: (slug: Dataset['slug']) => void,
     onDataTypeChange: () => void
     switchDataType: (dataType: SwitchDataType['payload']) => void,
     onOrganisationSearchSubmit: (name: string) => void,
