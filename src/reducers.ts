@@ -4,6 +4,7 @@ import {
     BASKET_UPDATED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
+    DATASETS_FETCHED,
     ITEM_REMOVED,
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
@@ -14,6 +15,7 @@ import {
     ITEM_SELECTED,
     UPDATE_ORGANISATION_CHECKBOX,
     UPDATE_OBSERVATION_CHECKBOX,
+    UPDATE_DATASET_CHECKBOX,
 } from "./action";
 import {
     RastersFetched,
@@ -21,9 +23,11 @@ import {
     Raster,
     ObservationType,
     Organisation,
+    Dataset,
     Basket,
     OrganisationsFetched,
     ObservationTypesFetched,
+    DatasetsFetched,
     Bootstrap,
     BootstrapActionType,
     WMS,
@@ -31,12 +35,14 @@ import {
     ItemSelected,
     UpdateOrganisationCheckbox,
     UpdateObservationTypeCheckbox,
+    UpdateDatasetCheckbox,
 } from './interface';
 
 export interface MyStore {
     bootstrap: Bootstrap,
     observationTypes: ObservationType[],
     organisations: Organisation[],
+    datasets: Dataset[],
     currentDataType: 'Raster' | 'WMS',
     currentRasterList: {
         count: number,
@@ -266,6 +272,37 @@ const organisations = (state: MyStore['organisations'] = [], action: Organisatio
     };
 };
 
+const datasets = (state: MyStore['datasets'] = [], action: DatasetsFetched & UpdateDatasetCheckbox): MyStore['datasets'] => {
+    switch (action.type) {
+        case DATASETS_FETCHED:
+            return action.payload.map(dataset => {
+                return {
+                    slug: dataset.slug,
+                    organisation: dataset.organisation,
+                    checked: false
+                };
+            });
+        case UPDATE_DATASET_CHECKBOX:
+            const datasets = [...state];
+            const checkedDatasetSlug = action.payload
+            return datasets.map(dataset => {
+                if (dataset.slug === checkedDatasetSlug) {
+                    return {
+                        ...dataset,
+                        checked: !dataset.checked
+                    };
+                } else {
+                    return {
+                        ...dataset,
+                        checked: false
+                    };
+                };
+            });
+        default:
+            return state;
+    };
+};
+
 export const getLizardBootstrap = (state: MyStore) => {
     return state.bootstrap;
 };
@@ -315,6 +352,29 @@ export const getOrganisations = (state: MyStore) => {
     return state.organisations.filter(organisation => organisation.name !== "");
 }
 
+export const getDatasets = (state: MyStore) => {
+    //Remove organisations with empty name
+    return state.datasets.filter(dataset => dataset.slug !== "");
+    // //Remove datasets with empty slug
+    // const datasets = state.datasets.filter(dataset => dataset.slug !== "");  // Todo
+
+    // //Remove duplicates in slugs using reduce() method
+    // const slugs = datasets.map(dataset => dataset.slug);
+    // const slugsWithoutDuplicates = slugs.reduce((a: string[], b) => {
+    //     if (a.indexOf(b) < 0) a.push(b);
+    //     return a;
+    // }, []);
+
+    // //Return all datasets based on their slugs
+    // return slugsWithoutDuplicates;
+    // // //For datasets with same slugs, only select one of them as we are interested in getting one single result only
+    // // //So in this case, we select the first one from the array
+    // // return parametersWithoutDuplicates.map(parameter => {
+    // //     //Get all the observation types with this parameter and select the first one
+    // //     return observationTypes.filter(observationType => observationType.parameter === parameter)[0];
+    // // });
+}
+
 export default combineReducers({
     bootstrap,
     currentDataType,
@@ -326,4 +386,5 @@ export default combineReducers({
     basket,
     observationTypes,
     organisations,
+    datasets,
 });

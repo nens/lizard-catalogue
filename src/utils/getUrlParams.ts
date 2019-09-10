@@ -17,6 +17,10 @@ export const getOrganisation = (urlSearchParams) => {
 export const getObservationType = (urlSearchParams) => {
     return urlSearchParams.get('observation') || '';
 };
+//Capture the value of the dataset property in the search params object
+export const getDataset = (urlSearchParams) => {
+    return urlSearchParams.get('dataset') || '';
+};
 //Capture the current data type selection of the Catalogue (Raster or WMS)
 export const getDataType = (urlSearchParams) => {
     //data type can only be WMS or Raster
@@ -24,11 +28,12 @@ export const getDataType = (urlSearchParams) => {
 };
 
 //Generate new URLs with different search params for sharing searches
-export const newURL = (dataType: string, searchTerm: string, organisationName: string, observationTypeParameter: string) => {
+export const newURL = (dataType: string, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string) => {
     const dataTypeParam = `data=${dataType}`;
     const searchParam = searchTerm === '' ? '' : `&search=${encodeURIComponent(searchTerm)}`;
     const organisationParam = organisationName === '' ? '' : `&organisation=${encodeURIComponent(organisationName)}`;
     const observationParam = observationTypeParameter === '' ? '' : `&observation=${encodeURIComponent(observationTypeParameter)}`;
+    const datasetParam = datasetSlug === '' ? '' : `&dataset=${encodeURIComponent(datasetSlug)}`;
 
-    return `?${dataTypeParam}${searchParam}${organisationParam}${observationParam}`;
+    return `?${dataTypeParam}${searchParam}${organisationParam}${observationParam}${datasetParam}`;
 };

@@ -27,12 +27,17 @@
 }
 
 .filter-observation-type {
-    height: 44%;
+    height: 27%;
     margin-bottom: 2rem;
 }
 
 .filter-organisation {
-    height: 44%;
+    height: 27%;
+    margin-bottom: 2rem;
+}
+
+.filter-dataset {
+    height: 27%;
     margin-bottom: 2rem;
 }
 
