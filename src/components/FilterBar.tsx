@@ -177,7 +177,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                     <ul className="filter-list">
                         {filteredOrganisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
                             <li className="filter-item" key={organisation.uuid}>
-                                <input type="checkbox" className="filter-checkbox" onChange={() => onOrganisationCheckbox(organisation)} checked={organisation.checked} />
+                                <input type="radio" className="filter-checkbox" onChange={() => onOrganisationCheckbox(organisation)} checked={organisation.checked} />
                                 <span className="filter-item-name">{organisation.name}</span>
                             </li>
                         ))}
@@ -216,7 +216,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                     <ul className="filter-list">
                         {filteredObservationTypes.slice(0, this.state.obsItems).map((observationType: ObservationType) => (
                             <li className="filter-item" key={observationType.code}>
-                                <input type="checkbox" className="filter-checkbox" onChange={() => onObservationTypeCheckbox(observationType)} checked={observationType.checked} />
+                                <input type="radio" className="filter-checkbox" onChange={() => onObservationTypeCheckbox(observationType)} checked={observationType.checked} />
                                 <span className="filter-item-name">{observationType.parameter}</span>
                             </li>
                         ))}
