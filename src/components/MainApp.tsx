@@ -2,9 +2,9 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
-import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationCheckbox, updateObservationTypeCheckbox, updateDatasetCheckbox } from '../action';
+import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationRadiobutton, updateObservationTypeRadiobutton, updateDatasetRadiobutton } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList } from '../reducers';
-import { RasterActionType, ObservationType, Organisation, Dataset, Basket, FilterActionType, SwitchDataType, UpdateCheckboxActionType } from '../interface';
+import { RasterActionType, ObservationType, Organisation, Dataset, Basket, FilterActionType, SwitchDataType, UpdateRadiobuttonActionType } from '../interface';
 import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL } from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
@@ -32,9 +32,9 @@ interface PropsFromDispatch {
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
     fetchDatasets: () => void,
-    updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) => void,
-    updateOrganisationCheckbox: (name: Organisation['name']) => void,
-    updateDatasetCheckbox: (slug: Dataset['slug']) => void,
+    updateObservationTypeRadiobutton: (parameter: ObservationType['parameter']) => void,
+    updateOrganisationRadiobutton: (name: Organisation['name']) => void,
+    updateDatasetRadiobutton: (slug: Dataset['slug']) => void,
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void
 };
@@ -135,10 +135,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.props.history.push(`${url}`);
     };
 
-    //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the observation type
+    //When click on the radio button in the filter bar, this function will dispatch an action to toggle the checked property of the observation type
     //and update the observation type state in this component
-    onObservationTypeCheckbox = (obsType: ObservationType) => {
-        this.props.updateObservationTypeCheckbox(obsType.parameter);
+    onObservationTypeRadiobutton = (obsType: ObservationType) => {
+        this.props.updateObservationTypeRadiobutton(obsType.parameter);
         if (!obsType.checked) {
             this.setState({
                 observationType: obsType.parameter
@@ -159,10 +159,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.updateURL(url);
     };
 
-    //Submit the search in observation type filter bar will update the checkbox and set the observationType state of this component
+    //Submit the search in observation type filter bar will update the radio button and set the observationType state of this component
     //then update the URL search params
     onObservationTypeSearchSubmit = (obsTypeParameter: string) => {
-        this.props.updateObservationTypeCheckbox(obsTypeParameter);
+        this.props.updateObservationTypeRadiobutton(obsTypeParameter);
         this.setState({
             observationType: obsTypeParameter
         });
@@ -177,10 +177,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.updateURL(url);
     };
 
-    //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the organisation
+    //When click on the radio button in the filter bar, this function will dispatch an action to toggle the checked property of the organisation
     //and update the organisation name state in this component
-    onOrganisationCheckbox = (organisation: Organisation) => {
-        this.props.updateOrganisationCheckbox(organisation.name);
+    onOrganisationRadiobutton = (organisation: Organisation) => {
+        this.props.updateOrganisationRadiobutton(organisation.name);
         if (!organisation.checked) {
             this.setState({
                 organisationName: organisation.name
@@ -201,10 +201,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.updateURL(url);
     };
 
-    //Submit the search in organisation filter bar will update the checkbox and set the organisationName state of this component
+    //Submit the search in organisation filter bar will update the radio button and set the organisationName state of this component
     //then update the URL search params
     onOrganisationSearchSubmit = (organisationName: string) => {
-        this.props.updateOrganisationCheckbox(organisationName);
+        this.props.updateOrganisationRadiobutton(organisationName);
         this.setState({
             organisationName: organisationName
         });
@@ -219,10 +219,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.updateURL(url);
     };
 
-    //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the dataset
+    //When click on the radio button in the filter bar, this function will dispatch an action to toggle the checked property of the dataset
     //and update the dataset state in this component
-    onDatasetCheckbox = (dataset: Dataset) => {
-        this.props.updateDatasetCheckbox(dataset.slug);
+    onDatasetRadiobutton = (dataset: Dataset) => {
+        this.props.updateDatasetRadiobutton(dataset.slug);
         if (!dataset.checked) {
             this.setState({
                 datasetSlug: dataset.slug
@@ -243,10 +243,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.updateURL(url);
     };
 
-    //Submit the search in dataset filter bar will update the checkbox and set the datasetSlug state of this component
+    //Submit the search in dataset filter bar will update the radio button and set the datasetSlug state of this component
     //then update the URL search params
     onDatasetSearchSubmit = (datasetSlug: string) => {
-        this.props.updateDatasetCheckbox(datasetSlug);
+        this.props.updateDatasetRadiobutton(datasetSlug);
         this.setState({
             datasetSlug: datasetSlug
         });
@@ -369,12 +369,12 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         organisations={this.props.organisations}
                         fetchDatasets={this.props.fetchDatasets}
                         datasets={this.props.datasets}
-                        onObservationTypeCheckbox={this.onObservationTypeCheckbox}
-                        onOrganisationCheckbox={this.onOrganisationCheckbox}
-                        onDatasetCheckbox={this.onDatasetCheckbox}
-                        updateObservationTypeCheckbox={this.props.updateObservationTypeCheckbox}
-                        updateOrganisationCheckbox={this.props.updateOrganisationCheckbox}
-                        updateDatasetCheckbox={this.props.updateDatasetCheckbox}
+                        onObservationTypeRadiobutton={this.onObservationTypeRadiobutton}
+                        onOrganisationRadiobutton={this.onOrganisationRadiobutton}
+                        onDatasetRadiobutton={this.onDatasetRadiobutton}
+                        updateObservationTypeRadiobutton={this.props.updateObservationTypeRadiobutton}
+                        updateOrganisationRadiobutton={this.props.updateOrganisationRadiobutton}
+                        updateDatasetRadiobutton={this.props.updateDatasetRadiobutton}
                         onOrganisationSearchSubmit={this.onOrganisationSearchSubmit}
                         onObservationTypeSearchSubmit={this.onObservationTypeSearchSubmit}
                         onDatasetSearchSubmit={this.onDatasetSearchSubmit}
@@ -443,7 +443,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     currentDataType: getCurrentDataType(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType | UpdateCheckboxActionType>): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType | UpdateRadiobuttonActionType>): PropsFromDispatch => ({
     fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
     fetchRasters: (
         page: number,
@@ -457,9 +457,9 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | Filte
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
     fetchDatasets: () => fetchDatasets(dispatch),
-    updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) => updateObservationTypeCheckbox(parameter, dispatch),
-    updateOrganisationCheckbox: (name: Organisation['name']) => updateOrganisationCheckbox(name, dispatch),
-    updateDatasetCheckbox: (slug: Dataset['slug']) => updateDatasetCheckbox(slug, dispatch),
+    updateObservationTypeRadiobutton: (parameter: ObservationType['parameter']) => updateObservationTypeRadiobutton(parameter, dispatch),
+    updateOrganisationRadiobutton: (name: Organisation['name']) => updateOrganisationRadiobutton(name, dispatch),
+    updateDatasetRadiobutton: (slug: Dataset['slug']) => updateDatasetRadiobutton(slug, dispatch),
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string) => fetchWMSLayers(page, searchTerm, organisationName, datasetSlug, ordering, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),

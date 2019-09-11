@@ -12,9 +12,9 @@ import {
     REQUEST_WMS,
     SWITCH_DATA_TYPE,
     ITEM_SELECTED,
-    UPDATE_ORGANISATION_CHECKBOX,
-    UPDATE_OBSERVATION_CHECKBOX,
-    UPDATE_DATASET_CHECKBOX,
+    UPDATE_ORGANISATION_RADIOBUTTON,
+    UPDATE_OBSERVATION_RADIOBUTTON,
+    UPDATE_DATASET_RADIOBUTTON,
 } from "./action";
 
 //ACTION INTERFACE
@@ -90,22 +90,22 @@ export interface DatasetsFetched {
 
 export type FilterActionType = ObservationTypesFetched | OrganisationsFetched | DatasetsFetched;
 
-export interface UpdateOrganisationCheckbox {
-    type: typeof UPDATE_ORGANISATION_CHECKBOX,
+export interface UpdateOrganisationRadiobutton {
+    type: typeof UPDATE_ORGANISATION_RADIOBUTTON,
     payload: Organisation['name']
 };
 
-export interface UpdateObservationTypeCheckbox {
-    type: typeof UPDATE_OBSERVATION_CHECKBOX,
+export interface UpdateObservationTypeRadiobutton {
+    type: typeof UPDATE_OBSERVATION_RADIOBUTTON,
     payload: ObservationType['parameter']
 };
 
-export interface UpdateDatasetCheckbox {
-    type: typeof UPDATE_DATASET_CHECKBOX,
+export interface UpdateDatasetRadiobutton {
+    type: typeof UPDATE_DATASET_RADIOBUTTON,
     payload: Dataset['slug']
 };
 
-export type UpdateCheckboxActionType = UpdateOrganisationCheckbox | UpdateObservationTypeCheckbox | UpdateDatasetCheckbox;
+export type UpdateRadiobuttonActionType = UpdateOrganisationRadiobutton | UpdateObservationTypeRadiobutton | UpdateDatasetRadiobutton;
 
 //LIZARD BOOTSTRAP
 export interface Bootstrap {
