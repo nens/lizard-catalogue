@@ -2,9 +2,9 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
-import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationCheckbox, updateObservationTypeCheckbox } from '../action';
+import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationRadiobutton, updateObservationTypeRadiobutton } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
-import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType, UpdateCheckboxActionType } from '../interface';
+import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType, UpdateRadiobuttonActionType } from '../interface';
 import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataType, newURL } from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
@@ -30,8 +30,8 @@ interface PropsFromDispatch {
     updateBasket: (basket: MyStore['basket']) => void,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
-    updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) => void,
-    updateOrganisationCheckbox: (name: Organisation['name']) => void,
+    updateObservationTypeRadiobutton: (parameter: ObservationType['parameter']) => void,
+    updateOrganisationRadiobutton: (name: Organisation['name']) => void,
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void
 };
@@ -125,10 +125,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.props.history.push(`${url}`);
     };
 
-    //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the observation type
+    //When click on the radio button in the filter bar, this function will dispatch an action to toggle the checked property of the observation type
     //and update the observation type state in this component
-    onObservationTypeCheckbox = (obsType: ObservationType) => {
-        this.props.updateObservationTypeCheckbox(obsType.parameter);
+    onObservationTypeRadiobutton = (obsType: ObservationType) => {
+        this.props.updateObservationTypeRadiobutton(obsType.parameter);
         if (!obsType.checked) {
             this.setState({
                 observationType: obsType.parameter
@@ -148,10 +148,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.updateURL(url);
     };
 
-    //Submit the search in observation type filter bar will update the checkbox and set the observationType state of this component
+    //Submit the search in observation type filter bar will update the radio button and set the observationType state of this component
     //then update the URL search params
     onObservationTypeSearchSubmit = (obsTypeParameter: string) => {
-        this.props.updateObservationTypeCheckbox(obsTypeParameter);
+        this.props.updateObservationTypeRadiobutton(obsTypeParameter);
         this.setState({
             observationType: obsTypeParameter
         });
@@ -165,10 +165,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.updateURL(url);
     };
 
-    //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the organisation
+    //When click on the radio button in the filter bar, this function will dispatch an action to toggle the checked property of the organisation
     //and update the organisation name state in this component
-    onOrganisationCheckbox = (organisation: Organisation) => {
-        this.props.updateOrganisationCheckbox(organisation.name);
+    onOrganisationRadiobutton = (organisation: Organisation) => {
+        this.props.updateOrganisationRadiobutton(organisation.name);
         if (!organisation.checked) {
             this.setState({
                 organisationName: organisation.name
@@ -188,10 +188,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.updateURL(url);
     };
 
-    //Submit the search in organisation filter bar will update the checkbox and set the organisationName state of this component
+    //Submit the search in organisation filter bar will update the radio button and set the organisationName state of this component
     //then update the URL search params
     onOrganisationSearchSubmit = (organisationName: string) => {
-        this.props.updateOrganisationCheckbox(organisationName);
+        this.props.updateOrganisationRadiobutton(organisationName);
         this.setState({
             organisationName: organisationName
         });
@@ -306,10 +306,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         observationTypes={this.props.observationTypes}
                         fetchOrganisations={this.props.fetchOrganisations}
                         organisations={this.props.organisations}
-                        onObservationTypeCheckbox={this.onObservationTypeCheckbox}
-                        onOrganisationCheckbox={this.onOrganisationCheckbox}
-                        updateObservationTypeCheckbox={this.props.updateObservationTypeCheckbox}
-                        updateOrganisationCheckbox={this.props.updateOrganisationCheckbox}
+                        onObservationTypeRadiobutton={this.onObservationTypeRadiobutton}
+                        onOrganisationRadiobutton={this.onOrganisationRadiobutton}
+                        updateObservationTypeRadiobutton={this.props.updateObservationTypeRadiobutton}
+                        updateOrganisationRadiobutton={this.props.updateOrganisationRadiobutton}
                         onOrganisationSearchSubmit={this.onOrganisationSearchSubmit}
                         onObservationTypeSearchSubmit={this.onObservationTypeSearchSubmit}
                         onDataTypeChange={this.onDataTypeChange}
@@ -376,7 +376,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     currentDataType: getCurrentDataType(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType | UpdateCheckboxActionType>): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType | UpdateRadiobuttonActionType>): PropsFromDispatch => ({
     fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
     fetchRasters: (
         page: number,
@@ -388,8 +388,8 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | Filte
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
-    updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) => updateObservationTypeCheckbox(parameter, dispatch),
-    updateOrganisationCheckbox: (name: Organisation['name']) => updateOrganisationCheckbox(name, dispatch),
+    updateObservationTypeRadiobutton: (parameter: ObservationType['parameter']) => updateObservationTypeRadiobutton(parameter, dispatch),
+    updateOrganisationRadiobutton: (name: Organisation['name']) => updateOrganisationRadiobutton(name, dispatch),
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => fetchWMSLayers(page, searchTerm, organisationName, ordering, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),

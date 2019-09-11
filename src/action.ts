@@ -19,8 +19,8 @@ import {
     ReceiveWMS,
     SwitchDataType,
     ItemSelected,
-    UpdateOrganisationCheckbox,
-    UpdateObservationTypeCheckbox
+    UpdateOrganisationRadiobutton,
+    UpdateObservationTypeRadiobutton
 } from './interface';
 
 //MARK: Bootsrap
@@ -181,25 +181,25 @@ export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>): vo
         .catch(console.error)
 };
 
-export const UPDATE_ORGANISATION_CHECKBOX = 'UPDATE_ORGANISATION_CHECKBOX';
-export const UPDATE_OBSERVATION_CHECKBOX = 'UPDATE_OBSERVATION_CHECKBOX';
+export const UPDATE_ORGANISATION_RADIOBUTTON = 'UPDATE_ORGANISATION_RADIOBUTTON';
+export const UPDATE_OBSERVATION_RADIOBUTTON = 'UPDATE_OBSERVATION_RADIOBUTTON';
 
-const organisationCheckboxUpdated = (name: Organisation['name']): UpdateOrganisationCheckbox => ({
-    type: UPDATE_ORGANISATION_CHECKBOX,
+const organisationRadiobuttonUpdated = (name: Organisation['name']): UpdateOrganisationRadiobutton => ({
+    type: UPDATE_ORGANISATION_RADIOBUTTON,
     payload: name
 });
 
-export const updateOrganisationCheckbox = (name: Organisation['name'], dispatch: Dispatch<UpdateOrganisationCheckbox>) => {
-    dispatch(organisationCheckboxUpdated(name));
+export const updateOrganisationRadiobutton = (name: Organisation['name'], dispatch: Dispatch<UpdateOrganisationRadiobutton>) => {
+    dispatch(organisationRadiobuttonUpdated(name));
 };
 
-const observationTypeCheckboxUpdated = (parameter: ObservationType['parameter']): UpdateObservationTypeCheckbox => ({
-    type: UPDATE_OBSERVATION_CHECKBOX,
+const observationTypeRadiobuttonUpdated = (parameter: ObservationType['parameter']): UpdateObservationTypeRadiobutton => ({
+    type: UPDATE_OBSERVATION_RADIOBUTTON,
     payload: parameter
 });
 
-export const updateObservationTypeCheckbox = (parameter: ObservationType['parameter'], dispatch: Dispatch<UpdateObservationTypeCheckbox>) => {
-    dispatch(observationTypeCheckboxUpdated(parameter));
+export const updateObservationTypeRadiobutton = (parameter: ObservationType['parameter'], dispatch: Dispatch<UpdateObservationTypeRadiobutton>) => {
+    dispatch(observationTypeRadiobuttonUpdated(parameter));
 };
 
 //MARK: Basket
