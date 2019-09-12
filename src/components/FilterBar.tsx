@@ -105,21 +105,12 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
             observationTypes,
             organisations,
             datasets,
-<<<<<<< HEAD
             onObservationTypeRadiobutton,
             onOrganisationRadiobutton,
             onDatasetRadiobutton,
             updateObservationTypeRadiobutton,
             updateOrganisationRadiobutton,
             updateDatasetRadiobutton,
-=======
-            onObservationTypeCheckbox,
-            onOrganisationCheckbox,
-            onDatasetCheckbox,
-            updateObservationTypeCheckbox,
-            updateOrganisationCheckbox,
-            updateDatasetCheckbox,
->>>>>>> master
             currentDataType,
             switchDataType,
             onDataTypeChange
