@@ -4,6 +4,7 @@ import {
     BASKET_UPDATED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
+    DATASETS_FETCHED,
     ITEM_REMOVED,
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
@@ -14,6 +15,7 @@ import {
     ITEM_SELECTED,
     UPDATE_ORGANISATION_RADIOBUTTON,
     UPDATE_OBSERVATION_RADIOBUTTON,
+    UPDATE_DATASET_RADIOBUTTON,
 } from "./action";
 import {
     RastersFetched,
@@ -21,9 +23,11 @@ import {
     Raster,
     ObservationType,
     Organisation,
+    Dataset,
     Basket,
     OrganisationsFetched,
     ObservationTypesFetched,
+    DatasetsFetched,
     Bootstrap,
     BootstrapActionType,
     WMS,
@@ -31,12 +35,14 @@ import {
     ItemSelected,
     UpdateOrganisationRadiobutton,
     UpdateObservationTypeRadiobutton,
+    UpdateDatasetRadiobutton,
 } from './interface';
 
 export interface MyStore {
     bootstrap: Bootstrap,
     observationTypes: ObservationType[],
     organisations: Organisation[],
+    datasets: Dataset[],
     currentDataType: 'Raster' | 'WMS',
     currentRasterList: {
         count: number,
@@ -266,6 +272,37 @@ const organisations = (state: MyStore['organisations'] = [], action: Organisatio
     };
 };
 
+const datasets = (state: MyStore['datasets'] = [], action: DatasetsFetched & UpdateDatasetRadiobutton): MyStore['datasets'] => {
+    switch (action.type) {
+        case DATASETS_FETCHED:
+            return action.payload.map(dataset => {
+                return {
+                    slug: dataset.slug,
+                    organisation: dataset.organisation,
+                    checked: false
+                };
+            });
+        case UPDATE_DATASET_RADIOBUTTON:
+            const datasets = [...state];
+            const checkedDatasetSlug = action.payload
+            return datasets.map(dataset => {
+                if (dataset.slug === checkedDatasetSlug) {
+                    return {
+                        ...dataset,
+                        checked: !dataset.checked
+                    };
+                } else {
+                    return {
+                        ...dataset,
+                        checked: false
+                    };
+                };
+            });
+        default:
+            return state;
+    };
+};
+
 export const getLizardBootstrap = (state: MyStore) => {
     return state.bootstrap;
 };
@@ -315,6 +352,11 @@ export const getOrganisations = (state: MyStore) => {
     return state.organisations.filter(organisation => organisation.name !== "");
 }
 
+export const getDatasets = (state: MyStore) => {
+    //Remove datasets with empty name
+    return state.datasets.filter(dataset => dataset.slug !== "");
+}
+
 export default combineReducers({
     bootstrap,
     currentDataType,
@@ -326,4 +368,5 @@ export default combineReducers({
     basket,
     observationTypes,
     organisations,
+    datasets,
 });

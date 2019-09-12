@@ -7,10 +7,12 @@ import {
     BasketAdded,
     ObservationType,
     Organisation,
+    Dataset,
     Raster,
     ItemRemoved,
     ObservationTypesFetched,
     OrganisationsFetched,
+    DatasetsFetched,
     RastersRequested,
     RequestLizardBootstrap,
     ReceiveLizardBootstrap,
@@ -20,7 +22,8 @@ import {
     SwitchDataType,
     ItemSelected,
     UpdateOrganisationRadiobutton,
-    UpdateObservationTypeRadiobutton
+    UpdateObservationTypeRadiobutton,
+    UpdateDatasetRadiobutton
 } from './interface';
 
 //MARK: Bootsrap
@@ -74,15 +77,15 @@ const rastersFetched = (rasterListObject: RasterListObject): RastersFetched => (
     payload: rasterListObject
 });
 
-export const fetchRasters = (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string, dispatch): void => {
+export const fetchRasters = (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string, dispatch): void => {
     dispatch(rastersRequested());
     request
-        .get(`${baseUrl}/rasters?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&observation_type__parameter__icontains=${observationTypeParameter}&ordering=${ordering}`)
+        .get(`${baseUrl}/rasters?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&observation_type__parameter__icontains=${observationTypeParameter}&datasets__slug__icontains=${datasetSlug}&ordering=${ordering}`)
         .then(response => {
             if(response.body.count === 0) {
                 //If could not find any raster with the search term by raster's name then look for raster's uuid
                 request
-                    .get(`${baseUrl}/rasters?uuid=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&observation_type__parameter__icontains=${observationTypeParameter}`)
+                    .get(`${baseUrl}/rasters?uuid=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&observation_type__parameter__icontains=${observationTypeParameter}&datasets__slug__icontains=${datasetSlug}`)
                     .then(response => {
                         dispatch(rastersFetched(response.body))
                     })
@@ -117,15 +120,15 @@ const wmsReceived = (wmsObject: WMSObject): ReceiveWMS => ({
     payload: wmsObject
 });
 
-export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, ordering: string, dispatch): void => {
+export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string, dispatch): void => {
     dispatch(wmsRequested());
     request
-        .get(`${baseUrl}/wmslayers?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&ordering=${ordering}`)
+        .get(`${baseUrl}/wmslayers?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&datasets__slug__icontains=${datasetSlug}&ordering=${ordering}`)
         .then(response => {
             if(response.body.count === 0) {
                 //If could not find any raster with the search term by raster's name then look for raster's uuid
                 request
-                    .get(`${baseUrl}/wmslayers?uuid=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&ordering=${ordering}`)
+                    .get(`${baseUrl}/wmslayers?uuid=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&datasets__slug__icontains=${datasetSlug}&ordering=${ordering}`)
                     .then(response => {
                         dispatch(wmsReceived(response.body))
                     })
@@ -152,6 +155,7 @@ export const selectItem = (uuid: string, dispatch): void => {
 //MARK: Observation types and Organisation
 export const OBSERVATION_TYPES_FETCHED = 'OBSERVATION_TYPES_FETCHED';
 export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
+export const DATASETS_FETCHED = 'DATASETS_FETCHED';
 
 const observationTypesFetched = (observationTypes: ObservationType[]): ObservationTypesFetched => ({
     type: OBSERVATION_TYPES_FETCHED,
@@ -181,8 +185,23 @@ export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>): vo
         .catch(console.error)
 };
 
+const datasetsFetched = (datasets: Dataset[]): DatasetsFetched => ({
+    type: DATASETS_FETCHED,
+    payload: datasets
+});
+
+export const fetchDatasets = (dispatch: Dispatch<DatasetsFetched>): void => {
+    request
+        .get(`${baseUrl}/datasets?page_size=0`)
+        .then(response => {
+            dispatch(datasetsFetched(response.body))
+        })
+        .catch(console.error)
+};
+
 export const UPDATE_ORGANISATION_RADIOBUTTON = 'UPDATE_ORGANISATION_RADIOBUTTON';
 export const UPDATE_OBSERVATION_RADIOBUTTON = 'UPDATE_OBSERVATION_RADIOBUTTON';
+export const UPDATE_DATASET_RADIOBUTTON = 'UPDATE_DATASET_RADIOBUTTON';
 
 const organisationRadiobuttonUpdated = (name: Organisation['name']): UpdateOrganisationRadiobutton => ({
     type: UPDATE_ORGANISATION_RADIOBUTTON,
@@ -200,6 +219,15 @@ const observationTypeRadiobuttonUpdated = (parameter: ObservationType['parameter
 
 export const updateObservationTypeRadiobutton = (parameter: ObservationType['parameter'], dispatch: Dispatch<UpdateObservationTypeRadiobutton>) => {
     dispatch(observationTypeRadiobuttonUpdated(parameter));
+};
+
+const datasetRadiobuttonUpdated = (slug: Dataset['slug']): UpdateDatasetRadiobutton => ({
+    type: UPDATE_DATASET_RADIOBUTTON,
+    payload: slug
+});
+
+export const updateDatasetRadiobutton = (slug: Dataset['slug'], dispatch: Dispatch<UpdateDatasetRadiobutton>) => {
+    dispatch(datasetRadiobuttonUpdated(slug));
 };
 
 //MARK: Basket
