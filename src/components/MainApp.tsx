@@ -369,21 +369,12 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         organisations={this.props.organisations}
                         fetchDatasets={this.props.fetchDatasets}
                         datasets={this.props.datasets}
-<<<<<<< HEAD
                         onObservationTypeRadiobutton={this.onObservationTypeRadiobutton}
                         onOrganisationRadiobutton={this.onOrganisationRadiobutton}
                         onDatasetRadiobutton={this.onDatasetRadiobutton}
                         updateObservationTypeRadiobutton={this.props.updateObservationTypeRadiobutton}
                         updateOrganisationRadiobutton={this.props.updateOrganisationRadiobutton}
                         updateDatasetRadiobutton={this.props.updateDatasetRadiobutton}
-=======
-                        onObservationTypeCheckbox={this.onObservationTypeCheckbox}
-                        onOrganisationCheckbox={this.onOrganisationCheckbox}
-                        onDatasetCheckbox={this.onDatasetCheckbox}
-                        updateObservationTypeCheckbox={this.props.updateObservationTypeCheckbox}
-                        updateOrganisationCheckbox={this.props.updateOrganisationCheckbox}
-                        updateDatasetCheckbox={this.props.updateDatasetCheckbox}
->>>>>>> master
                         onOrganisationSearchSubmit={this.onOrganisationSearchSubmit}
                         onObservationTypeSearchSubmit={this.onObservationTypeSearchSubmit}
                         onDatasetSearchSubmit={this.onDatasetSearchSubmit}

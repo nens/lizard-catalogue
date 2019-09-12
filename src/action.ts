@@ -229,15 +229,6 @@ export const updateDatasetRadiobutton = (slug: Dataset['slug'], dispatch: Dispat
     dispatch(datasetRadiobuttonUpdated(slug));
 };
 
-const datasetRadiobuttonUpdated = (slug: Dataset['slug']): UpdateDatasetRadiobutton => ({
-    type: UPDATE_DATASET_RADIOBUTTON,
-    payload: slug
-});
-
-export const updateDatasetRadiobutton = (slug: Dataset['slug'], dispatch: Dispatch<UpdateDatasetRadiobutton>) => {
-    dispatch(datasetRadiobuttonUpdated(slug));
-};
-
 //MARK: Basket
 export const BASKET_UPDATED = 'BASKET_UPDATED';
 export const ITEM_REMOVED = 'ITEM_REMOVED'
