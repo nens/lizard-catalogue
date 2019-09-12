@@ -2,10 +2,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
-import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationCheckbox, updateObservationTypeCheckbox } from '../action';
-import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getCurrentDataType, getCurrentWMSList } from '../reducers';
-import { RasterActionType, ObservationType, Organisation, Basket, FilterActionType, SwitchDataType, UpdateCheckboxActionType } from '../interface';
-import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataType, newURL } from '../utils/getUrlParams';
+import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationCheckbox, updateObservationTypeCheckbox, updateDatasetCheckbox } from '../action';
+import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList } from '../reducers';
+import { RasterActionType, ObservationType, Organisation, Dataset, Basket, FilterActionType, SwitchDataType, UpdateCheckboxActionType } from '../interface';
+import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL } from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
@@ -20,19 +20,22 @@ interface PropsFromState {
     currentWMSList: MyStore['currentWMSList'] | null,
     observationTypes: ObservationType[],
     organisations: Organisation[],
+    datasets: Dataset[],
     currentDataType: MyStore['currentDataType'],
 };
 
 interface PropsFromDispatch {
     fetchLizardBootstrap: () => void,
     selectItem: (uuid: string) => void,
-    fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, ordering: string) => void,
+    fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string) => void,
     updateBasket: (basket: MyStore['basket']) => void,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
+    fetchDatasets: () => void,
     updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) => void,
     updateOrganisationCheckbox: (name: Organisation['name']) => void,
-    fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => void,
+    updateDatasetCheckbox: (slug: Dataset['slug']) => void,
+    fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void
 };
 
@@ -45,6 +48,7 @@ interface MyState {
     searchTerm: string,
     organisationName: string,
     observationType: string,
+    datasetSlug: string,
     ordering: string,
     showAlert: boolean,
 };
@@ -57,6 +61,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         searchTerm: '',
         organisationName: '',
         observationType: '',
+        datasetSlug: '',
         ordering: '',
         showAlert: false,
     };
@@ -75,11 +80,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.state.searchTerm,
             this.state.organisationName,
             this.state.observationType,
+            this.state.datasetSlug,
             this.state.ordering
         ) : this.props.fetchWMSLayers(
             page,
             this.state.searchTerm,
             this.state.organisationName,
+            this.state.datasetSlug,
             this.state.ordering
         );
         this.setState({
@@ -104,11 +111,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.state.searchTerm,
             this.state.organisationName,
             this.state.observationType,
+            this.state.datasetSlug,
             this.state.ordering
         ) : this.props.fetchWMSLayers(
             this.state.page,
             this.state.searchTerm,
             this.state.organisationName,
+            this.state.datasetSlug,
             this.state.ordering
         );
         //Update the URL search params with the new search term
@@ -116,7 +125,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.props.currentDataType,
             this.state.searchTerm,
             this.state.organisationName,
-            this.state.observationType
+            this.state.observationType,
+            this.state.datasetSlug
         );
         this.updateURL(url);
     };
@@ -143,7 +153,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.props.currentDataType,
             this.state.searchTerm,
             this.state.organisationName,
-            (!obsType.checked ? obsType.parameter : '')
+            (!obsType.checked ? obsType.parameter : ''),
+            this.state.datasetSlug
         );
         this.updateURL(url);
     };
@@ -160,7 +171,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.props.currentDataType,
             this.state.searchTerm,
             this.state.organisationName,
-            obsTypeParameter
+            obsTypeParameter,
+            this.state.datasetSlug
         );
         this.updateURL(url);
     };
@@ -183,7 +195,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.props.currentDataType,
             this.state.searchTerm,
             (!organisation.checked ? organisation.name : ''),
-            this.state.observationType
+            this.state.observationType,
+            this.state.datasetSlug
         );
         this.updateURL(url);
     };
@@ -200,7 +213,50 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.props.currentDataType,
             this.state.searchTerm,
             organisationName,
-            this.state.observationType
+            this.state.observationType,
+            this.state.datasetSlug
+        );
+        this.updateURL(url);
+    };
+
+    //When click on the checkbox in the filter bar, this function will dispatch an action to toggle the checked property of the dataset
+    //and update the dataset state in this component
+    onDatasetCheckbox = (dataset: Dataset) => {
+        this.props.updateDatasetCheckbox(dataset.slug);
+        if (!dataset.checked) {
+            this.setState({
+                datasetSlug: dataset.slug
+            });
+        } else {
+            this.setState({
+                datasetSlug: ''
+            });
+        };
+        //Update the URL search params with the selected dataset
+        const url = newURL(
+            this.props.currentDataType,
+            this.state.searchTerm,
+            (!dataset.checked ? dataset.slug : ''),
+            this.state.observationType,
+            this.state.organisationName
+        );
+        this.updateURL(url);
+    };
+
+    //Submit the search in dataset filter bar will update the checkbox and set the datasetSlug state of this component
+    //then update the URL search params
+    onDatasetSearchSubmit = (datasetSlug: string) => {
+        this.props.updateDatasetCheckbox(datasetSlug);
+        this.setState({
+            datasetSlug: datasetSlug
+        });
+        //Update the URL search params with the selected dataset
+        const url = newURL(
+            this.props.currentDataType,
+            this.state.searchTerm,
+            datasetSlug,
+            this.state.observationType,
+            this.state.organisationName
         );
         this.updateURL(url);
     };
@@ -226,6 +282,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             searchTerm: '',
             organisationName: '',
             observationType: '',
+            datasetSlug: '',
             ordering: '',
         });
     };
@@ -236,10 +293,12 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         const search = getSearch(urlSearchParams);
         const organisation = getOrganisation(urlSearchParams);
         const observation = getObservationType(urlSearchParams);
+        const dataset = getDataset(urlSearchParams);
         this.setState({
             searchTerm: search,
             organisationName: organisation,
-            observationType: observation
+            observationType: observation,
+            datasetSlug: dataset
         });
 
         const dataType = getDataType(urlSearchParams);
@@ -251,38 +310,40 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 
         //Fetch Rasters or WMS layers depends on the selected data type
         dataType === 'Raster' ? this.props.fetchRasters(
-            this.state.page, search, organisation, observation, this.state.ordering
+            this.state.page, search, organisation, observation, dataset, this.state.ordering
         ) : this.props.fetchWMSLayers(
-            this.state.page, search, organisation, this.state.ordering
+            this.state.page, search, organisation, dataset, this.state.ordering
         );
 
         //Do an attempt to fetch Rasters/WMS layers and see if there are any results back
         //If no raster or WMS layer returns back then display an alert to users to warn them about their authorisation right
         //This alert only shows once when you open the app
         if (dataType === 'Raster') {
-            const response = await fetch(`${baseUrl}/rasters?name__icontains=${search}&page=${this.state.page}&organisation__name__icontains=${organisation}&observation_type__parameter__icontains=${observation}&ordering=${this.state.ordering}`);
+            const response = await fetch(`${baseUrl}/rasters?name__icontains=${search}&page=${this.state.page}&organisation__name__icontains=${organisation}&observation_type__parameter__icontains=${observation}&datasets__slug__icontains=${dataset}&ordering=${this.state.ordering}`);
             const data = await response.json();
             if (data.count === 0) this.setState({ showAlert: true });
         } else {
-            const response = await fetch(`${baseUrl}/wmslayers?name__icontains=${search}&page=${this.state.page}&organisation__name__icontains=${organisation}&ordering=${this.state.ordering}`);
+            const response = await fetch(`${baseUrl}/wmslayers?name__icontains=${search}&page=${this.state.page}&organisation__name__icontains=${organisation}&datasets__slug__icontains=${dataset}&ordering=${this.state.ordering}`);
             const data = await response.json();
             if (data.count === 0) this.setState({ showAlert: true });
         };
     };
 
-    //Component will fetch the Rasters again each time the value of this.state.organisationName changes
+    //Component will fetch the Rasters again each time the value of this.state.organisationName or observation type or dataset changes
     componentWillUpdate(nextProps: MainAppProps, nextState: MyState) {
-        if (nextProps && (nextState.organisationName !== this.state.organisationName || nextState.observationType !== this.state.observationType || nextState.ordering !== this.state.ordering)) {
+        if (nextProps && (nextState.organisationName !== this.state.organisationName || nextState.observationType !== this.state.observationType || nextState.datasetSlug !== this.state.datasetSlug || nextState.ordering !== this.state.ordering)) {
             this.props.currentDataType === "Raster" ? this.props.fetchRasters(
                 this.state.initialPage,
                 this.state.searchTerm,
                 nextState.organisationName,
                 nextState.observationType,
+                nextState.datasetSlug,
                 nextState.ordering
             ) : this.props.fetchWMSLayers(
                 this.state.initialPage,
                 this.state.searchTerm,
                 nextState.organisationName,
+                nextState.datasetSlug,
                 nextState.ordering
             );
             this.setState({
@@ -306,12 +367,17 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         observationTypes={this.props.observationTypes}
                         fetchOrganisations={this.props.fetchOrganisations}
                         organisations={this.props.organisations}
+                        fetchDatasets={this.props.fetchDatasets}
+                        datasets={this.props.datasets}
                         onObservationTypeCheckbox={this.onObservationTypeCheckbox}
                         onOrganisationCheckbox={this.onOrganisationCheckbox}
+                        onDatasetCheckbox={this.onDatasetCheckbox}
                         updateObservationTypeCheckbox={this.props.updateObservationTypeCheckbox}
                         updateOrganisationCheckbox={this.props.updateOrganisationCheckbox}
+                        updateDatasetCheckbox={this.props.updateDatasetCheckbox}
                         onOrganisationSearchSubmit={this.onOrganisationSearchSubmit}
                         onObservationTypeSearchSubmit={this.onObservationTypeSearchSubmit}
+                        onDatasetSearchSubmit={this.onDatasetSearchSubmit}
                         onDataTypeChange={this.onDataTypeChange}
                         fetchRasters={this.props.fetchRasters}
                         fetchWMSLayers={this.props.fetchWMSLayers}
@@ -373,6 +439,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     currentWMSList: getCurrentWMSList(state),
     observationTypes: getObservationTypes(state),
     organisations: getOrganisations(state),
+    datasets: getDatasets(state),
     currentDataType: getCurrentDataType(state),
 });
 
@@ -383,14 +450,17 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | Filte
         searchTerm: string,
         organisationName: string,
         observationTypeParameter: string,
+        datasetSlug: string,
         ordering: string
-    ) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, ordering, dispatch),
+    ) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, datasetSlug, ordering, dispatch),
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
+    fetchDatasets: () => fetchDatasets(dispatch),
     updateObservationTypeCheckbox: (parameter: ObservationType['parameter']) => updateObservationTypeCheckbox(parameter, dispatch),
     updateOrganisationCheckbox: (name: Organisation['name']) => updateOrganisationCheckbox(name, dispatch),
-    fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, ordering: string) => fetchWMSLayers(page, searchTerm, organisationName, ordering, dispatch),
+    updateDatasetCheckbox: (slug: Dataset['slug']) => updateDatasetCheckbox(slug, dispatch),
+    fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string) => fetchWMSLayers(page, searchTerm, organisationName, datasetSlug, ordering, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
 });

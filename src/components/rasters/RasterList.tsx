@@ -92,7 +92,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
             <div className="list">
                 <div className="list__top">
                     <form onSubmit={onSearchSubmit} className="list__searchbar" title="Type raster name or raster's UUID">
-                        <input type="text" className="list__searchbar-input" placeholder="Search in Lizard or type an UUID" onChange={onSearchChange} value={searchTerm} />
+                        <input type="text" className="list__searchbar-input" placeholder="Search in Lizard or type a UUID" onChange={onSearchChange} value={searchTerm} />
                         <button className="list__searchbar-button" type="submit">
                             <svg className="list__searchbar-icon">
                                 <use xlinkHref="image/symbols.svg#icon-search" />

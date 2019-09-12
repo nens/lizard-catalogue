@@ -4,6 +4,7 @@ import {
     ITEM_REMOVED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
+    DATASETS_FETCHED,
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
     RECEIVE_LIZARD_BOOTSTRAP,
@@ -13,6 +14,7 @@ import {
     ITEM_SELECTED,
     UPDATE_ORGANISATION_CHECKBOX,
     UPDATE_OBSERVATION_CHECKBOX,
+    UPDATE_DATASET_CHECKBOX,
 } from "./action";
 
 //ACTION INTERFACE
@@ -81,7 +83,12 @@ export interface OrganisationsFetched {
     payload: Organisation[]
 };
 
-export type FilterActionType = ObservationTypesFetched | OrganisationsFetched;
+export interface DatasetsFetched {
+    type: typeof DATASETS_FETCHED,
+    payload: Dataset[]
+};
+
+export type FilterActionType = ObservationTypesFetched | OrganisationsFetched | DatasetsFetched;
 
 export interface UpdateOrganisationCheckbox {
     type: typeof UPDATE_ORGANISATION_CHECKBOX,
@@ -93,7 +100,12 @@ export interface UpdateObservationTypeCheckbox {
     payload: ObservationType['parameter']
 };
 
-export type UpdateCheckboxActionType = UpdateOrganisationCheckbox | UpdateObservationTypeCheckbox;
+export interface UpdateDatasetCheckbox {
+    type: typeof UPDATE_DATASET_CHECKBOX,
+    payload: Dataset['slug']
+};
+
+export type UpdateCheckboxActionType = UpdateOrganisationCheckbox | UpdateObservationTypeCheckbox | UpdateDatasetCheckbox;
 
 //LIZARD BOOTSTRAP
 export interface Bootstrap {
@@ -118,6 +130,7 @@ export interface Raster {
     name: string,
     organisation: Organisation,
     observation_type: ObservationType,
+    dataset: Dataset,
     description: string,
     temporal: boolean,
     interval: string,
@@ -160,6 +173,7 @@ export interface WMS {
     max_zoom: number,
     url: string,
     organisation: Organisation,
+    dataset: Dataset,
     access_modifier: string
 };
 
@@ -179,6 +193,17 @@ export interface ObservationType {
     unit: string,
     scale: string,
     description: string,
+    checked: boolean
+};
+
+//DATASET
+export interface Dataset {
+    slug: string,
+    organisation: {
+        url: string,
+        name: string,
+        uuid: string
+    },
     checked: boolean
 };
 
