@@ -105,12 +105,21 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
             observationTypes,
             organisations,
             datasets,
+<<<<<<< HEAD
             onObservationTypeRadiobutton,
             onOrganisationRadiobutton,
             onDatasetRadiobutton,
             updateObservationTypeRadiobutton,
             updateOrganisationRadiobutton,
             updateDatasetRadiobutton,
+=======
+            onObservationTypeCheckbox,
+            onOrganisationCheckbox,
+            onDatasetCheckbox,
+            updateObservationTypeCheckbox,
+            updateOrganisationCheckbox,
+            updateDatasetCheckbox,
+>>>>>>> master
             currentDataType,
             switchDataType,
             onDataTypeChange
@@ -148,9 +157,9 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                                 orgItems: 4,
                                 datasetItems: 4
                             });
-                            if (checkedObservationType) updateObservationTypeRadiobutton(checkedObservationType.parameter);
-                            if (checkedOrganisation) updateOrganisationRadiobutton(checkedOrganisation.name);
-                            if (checkedDataset) updateDatasetRadiobutton(checkedDataset.slug);
+                            if (checkedObservationType) updateObservationTypeCheckbox(checkedObservationType.parameter);
+                            if (checkedOrganisation) updateOrganisationCheckbox(checkedOrganisation.name);
+                            if (checkedDataset) updateDatasetCheckbox(checkedDataset.slug);
                             //Update the URL and remove all the search parameters
                             this.props.history.push('?data=Raster');
                         }}
@@ -173,9 +182,9 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                                 orgItems: 4,
                                 datasetItems: 4
                             });
-                            if (checkedObservationType) updateObservationTypeRadiobutton(checkedObservationType.parameter);
-                            if (checkedOrganisation) updateOrganisationRadiobutton(checkedOrganisation.name);
-                            if (checkedDataset) updateDatasetRadiobutton(checkedDataset.slug);
+                            if (checkedObservationType) updateObservationTypeCheckbox(checkedObservationType.parameter);
+                            if (checkedOrganisation) updateOrganisationCheckbox(checkedOrganisation.name);
+                            if (checkedDataset) updateDatasetCheckbox(checkedDataset.slug);
                             //Update the URL and remove all the search parameters
                             this.props.history.push('?data=WMS');
                         }}

@@ -198,7 +198,6 @@ export const fetchDatasets = (dispatch: Dispatch<DatasetsFetched>): void => {
         })
         .catch(console.error)
 };
-
 export const UPDATE_ORGANISATION_RADIOBUTTON = 'UPDATE_ORGANISATION_RADIOBUTTON';
 export const UPDATE_OBSERVATION_RADIOBUTTON = 'UPDATE_OBSERVATION_RADIOBUTTON';
 export const UPDATE_DATASET_RADIOBUTTON = 'UPDATE_DATASET_RADIOBUTTON';
@@ -219,6 +218,15 @@ const observationTypeRadiobuttonUpdated = (parameter: ObservationType['parameter
 
 export const updateObservationTypeRadiobutton = (parameter: ObservationType['parameter'], dispatch: Dispatch<UpdateObservationTypeRadiobutton>) => {
     dispatch(observationTypeRadiobuttonUpdated(parameter));
+};
+
+const datasetRadiobuttonUpdated = (slug: Dataset['slug']): UpdateDatasetRadiobutton => ({
+    type: UPDATE_DATASET_RADIOBUTTON,
+    payload: slug
+});
+
+export const updateDatasetRadiobutton = (slug: Dataset['slug'], dispatch: Dispatch<UpdateDatasetRadiobutton>) => {
+    dispatch(datasetRadiobuttonUpdated(slug));
 };
 
 const datasetRadiobuttonUpdated = (slug: Dataset['slug']): UpdateDatasetRadiobutton => ({
