@@ -21,9 +21,9 @@ import {
     ReceiveWMS,
     SwitchDataType,
     ItemSelected,
-    UpdateOrganisationCheckbox,
-    UpdateObservationTypeCheckbox,
-    UpdateDatasetCheckbox
+    UpdateOrganisationRadiobutton,
+    UpdateObservationTypeRadiobutton,
+    UpdateDatasetRadiobutton
 } from './interface';
 
 //MARK: Bootsrap
@@ -198,36 +198,35 @@ export const fetchDatasets = (dispatch: Dispatch<DatasetsFetched>): void => {
         })
         .catch(console.error)
 };
+export const UPDATE_ORGANISATION_RADIOBUTTON = 'UPDATE_ORGANISATION_RADIOBUTTON';
+export const UPDATE_OBSERVATION_RADIOBUTTON = 'UPDATE_OBSERVATION_RADIOBUTTON';
+export const UPDATE_DATASET_RADIOBUTTON = 'UPDATE_DATASET_RADIOBUTTON';
 
-export const UPDATE_ORGANISATION_CHECKBOX = 'UPDATE_ORGANISATION_CHECKBOX';
-export const UPDATE_OBSERVATION_CHECKBOX = 'UPDATE_OBSERVATION_CHECKBOX';
-export const UPDATE_DATASET_CHECKBOX = 'UPDATE_DATASET_CHECKBOX';
-
-const organisationCheckboxUpdated = (name: Organisation['name']): UpdateOrganisationCheckbox => ({
-    type: UPDATE_ORGANISATION_CHECKBOX,
+const organisationRadiobuttonUpdated = (name: Organisation['name']): UpdateOrganisationRadiobutton => ({
+    type: UPDATE_ORGANISATION_RADIOBUTTON,
     payload: name
 });
 
-export const updateOrganisationCheckbox = (name: Organisation['name'], dispatch: Dispatch<UpdateOrganisationCheckbox>) => {
-    dispatch(organisationCheckboxUpdated(name));
+export const updateOrganisationRadiobutton = (name: Organisation['name'], dispatch: Dispatch<UpdateOrganisationRadiobutton>) => {
+    dispatch(organisationRadiobuttonUpdated(name));
 };
 
-const observationTypeCheckboxUpdated = (parameter: ObservationType['parameter']): UpdateObservationTypeCheckbox => ({
-    type: UPDATE_OBSERVATION_CHECKBOX,
+const observationTypeRadiobuttonUpdated = (parameter: ObservationType['parameter']): UpdateObservationTypeRadiobutton => ({
+    type: UPDATE_OBSERVATION_RADIOBUTTON,
     payload: parameter
 });
 
-export const updateObservationTypeCheckbox = (parameter: ObservationType['parameter'], dispatch: Dispatch<UpdateObservationTypeCheckbox>) => {
-    dispatch(observationTypeCheckboxUpdated(parameter));
+export const updateObservationTypeRadiobutton = (parameter: ObservationType['parameter'], dispatch: Dispatch<UpdateObservationTypeRadiobutton>) => {
+    dispatch(observationTypeRadiobuttonUpdated(parameter));
 };
 
-const datasetCheckboxUpdated = (slug: Dataset['slug']): UpdateDatasetCheckbox => ({
-    type: UPDATE_DATASET_CHECKBOX,
+const datasetRadiobuttonUpdated = (slug: Dataset['slug']): UpdateDatasetRadiobutton => ({
+    type: UPDATE_DATASET_RADIOBUTTON,
     payload: slug
 });
 
-export const updateDatasetCheckbox = (slug: Dataset['slug'], dispatch: Dispatch<UpdateDatasetCheckbox>) => {
-    dispatch(datasetCheckboxUpdated(slug));
+export const updateDatasetRadiobutton = (slug: Dataset['slug'], dispatch: Dispatch<UpdateDatasetRadiobutton>) => {
+    dispatch(datasetRadiobuttonUpdated(slug));
 };
 
 //MARK: Basket

@@ -13,9 +13,9 @@ import {
     RECEIVE_WMS,
     SWITCH_DATA_TYPE,
     ITEM_SELECTED,
-    UPDATE_ORGANISATION_CHECKBOX,
-    UPDATE_OBSERVATION_CHECKBOX,
-    UPDATE_DATASET_CHECKBOX,
+    UPDATE_ORGANISATION_RADIOBUTTON,
+    UPDATE_OBSERVATION_RADIOBUTTON,
+    UPDATE_DATASET_RADIOBUTTON,
 } from "./action";
 import {
     RastersFetched,
@@ -33,9 +33,9 @@ import {
     WMS,
     SwitchDataType,
     ItemSelected,
-    UpdateOrganisationCheckbox,
-    UpdateObservationTypeCheckbox,
-    UpdateDatasetCheckbox,
+    UpdateOrganisationRadiobutton,
+    UpdateObservationTypeRadiobutton,
+    UpdateDatasetRadiobutton,
 } from './interface';
 
 export interface MyStore {
@@ -205,7 +205,7 @@ const basket = (state: MyStore['basket'] = [], action: Basket): MyStore['basket'
     };
 };
 
-const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched & UpdateObservationTypeCheckbox): MyStore['observationTypes'] => {
+const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched & UpdateObservationTypeRadiobutton): MyStore['observationTypes'] => {
     switch (action.type) {
         case OBSERVATION_TYPES_FETCHED:
             return action.payload.map(observation => {
@@ -219,7 +219,7 @@ const observationTypes = (state: MyStore['observationTypes'] = [], action: Obser
                     checked: false
                 };
             });
-        case UPDATE_OBSERVATION_CHECKBOX:
+        case UPDATE_OBSERVATION_RADIOBUTTON:
             const observationTypes = [...state];
             const checkedObservationTypeParameter = action.payload;
             return observationTypes.map(obsType => {
@@ -240,7 +240,7 @@ const observationTypes = (state: MyStore['observationTypes'] = [], action: Obser
     };
 };
 
-const organisations = (state: MyStore['organisations'] = [], action: OrganisationsFetched & UpdateOrganisationCheckbox): MyStore['organisations'] => {
+const organisations = (state: MyStore['organisations'] = [], action: OrganisationsFetched & UpdateOrganisationRadiobutton): MyStore['organisations'] => {
     switch (action.type) {
         case ORGANISATIONS_FETCHED:
             return action.payload.map(organisation => {
@@ -251,7 +251,7 @@ const organisations = (state: MyStore['organisations'] = [], action: Organisatio
                     checked: false
                 };
             });
-        case UPDATE_ORGANISATION_CHECKBOX:
+        case UPDATE_ORGANISATION_RADIOBUTTON:
             const organisations = [...state];
             const checkedOrganisationName = action.payload
             return organisations.map(organisation => {
@@ -272,7 +272,7 @@ const organisations = (state: MyStore['organisations'] = [], action: Organisatio
     };
 };
 
-const datasets = (state: MyStore['datasets'] = [], action: DatasetsFetched & UpdateDatasetCheckbox): MyStore['datasets'] => {
+const datasets = (state: MyStore['datasets'] = [], action: DatasetsFetched & UpdateDatasetRadiobutton): MyStore['datasets'] => {
     switch (action.type) {
         case DATASETS_FETCHED:
             return action.payload.map(dataset => {
@@ -282,7 +282,7 @@ const datasets = (state: MyStore['datasets'] = [], action: DatasetsFetched & Upd
                     checked: false
                 };
             });
-        case UPDATE_DATASET_CHECKBOX:
+        case UPDATE_DATASET_RADIOBUTTON:
             const datasets = [...state];
             const checkedDatasetSlug = action.payload
             return datasets.map(dataset => {
