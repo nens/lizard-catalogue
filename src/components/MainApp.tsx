@@ -236,8 +236,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         const url = newURL(
             this.props.currentDataType,
             this.state.searchTerm,
-            this.state.observationType,
             this.state.organisationName,
+            this.state.observationType,
             (!dataset.checked ? dataset.slug : '')
         );
         this.updateURL(url);
@@ -254,8 +254,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         const url = newURL(
             this.props.currentDataType,
             this.state.searchTerm,
-            this.state.observationType,
             this.state.organisationName,
+            this.state.observationType,
             datasetSlug
         );
         this.updateURL(url);
