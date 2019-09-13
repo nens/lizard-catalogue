@@ -318,12 +318,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         //Do an attempt to fetch Rasters/WMS layers and see if there are any results back
         //If no raster or WMS layer returns back then display an alert to users to warn them about their authorisation right
         //This alert only shows once when you open the app
+        const datasetParam = dataset === '' ? '' : `&datasets__slug__icontains=${dataset}`;
         if (dataType === 'Raster') {
-            const response = await fetch(`${baseUrl}/rasters?name__icontains=${search}&page=${this.state.page}&organisation__name__icontains=${organisation}&observation_type__parameter__icontains=${observation}&datasets__slug__icontains=${dataset}&ordering=${this.state.ordering}`);
+            const response = await fetch(`${baseUrl}/rasters?name__icontains=${search}&page=${this.state.page}&organisation__name__icontains=${organisation}&observation_type__parameter__icontains=${observation}${datasetParam}&ordering=${this.state.ordering}`);
             const data = await response.json();
             if (data.count === 0) this.setState({ showAlert: true });
         } else {
-            const response = await fetch(`${baseUrl}/wmslayers?name__icontains=${search}&page=${this.state.page}&organisation__name__icontains=${organisation}&datasets__slug__icontains=${dataset}&ordering=${this.state.ordering}`);
+            const response = await fetch(`${baseUrl}/wmslayers?name__icontains=${search}&page=${this.state.page}&organisation__name__icontains=${organisation}${datasetParam}&ordering=${this.state.ordering}`);
             const data = await response.json();
             if (data.count === 0) this.setState({ showAlert: true });
         };

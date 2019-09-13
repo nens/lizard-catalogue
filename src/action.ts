@@ -79,13 +79,14 @@ const rastersFetched = (rasterListObject: RasterListObject): RastersFetched => (
 
 export const fetchRasters = (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string, dispatch): void => {
     dispatch(rastersRequested());
+    const datasetParam = datasetSlug === '' ? '' : `&datasets__slug__icontains=${datasetSlug}`;
     request
-        .get(`${baseUrl}/rasters?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&observation_type__parameter__icontains=${observationTypeParameter}&datasets__slug__icontains=${datasetSlug}&ordering=${ordering}`)
+        .get(`${baseUrl}/rasters?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&observation_type__parameter__icontains=${observationTypeParameter}${datasetParam}&ordering=${ordering}`)
         .then(response => {
             if(response.body.count === 0) {
                 //If could not find any raster with the search term by raster's name then look for raster's uuid
                 request
-                    .get(`${baseUrl}/rasters?uuid=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&observation_type__parameter__icontains=${observationTypeParameter}&datasets__slug__icontains=${datasetSlug}`)
+                    .get(`${baseUrl}/rasters?uuid=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&observation_type__parameter__icontains=${observationTypeParameter}${datasetParam}`)
                     .then(response => {
                         dispatch(rastersFetched(response.body))
                     })
@@ -122,13 +123,14 @@ const wmsReceived = (wmsObject: WMSObject): ReceiveWMS => ({
 
 export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string, dispatch): void => {
     dispatch(wmsRequested());
+    const datasetParam = datasetSlug === '' ? '' : `&datasets__slug__icontains=${datasetSlug}`;
     request
-        .get(`${baseUrl}/wmslayers?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&datasets__slug__icontains=${datasetSlug}&ordering=${ordering}`)
+        .get(`${baseUrl}/wmslayers?name__icontains=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}${datasetParam}&ordering=${ordering}`)
         .then(response => {
             if(response.body.count === 0) {
                 //If could not find any raster with the search term by raster's name then look for raster's uuid
                 request
-                    .get(`${baseUrl}/wmslayers?uuid=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}&datasets__slug__icontains=${datasetSlug}&ordering=${ordering}`)
+                    .get(`${baseUrl}/wmslayers?uuid=${searchTerm}&page=${page}&organisation__name__icontains=${organisationName}${datasetParam}&ordering=${ordering}`)
                     .then(response => {
                         dispatch(wmsReceived(response.body))
                     })
