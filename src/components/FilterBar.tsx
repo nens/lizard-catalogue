@@ -73,14 +73,12 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
 
     //Handling on change and on submit for the Dataset search
     onDatasetChange = (event) => {
-        console.log('[F]onDatasetChange', event.target.value);
         this.setState({
             searchDataset: event.target.value
         });
     };
 
     onDatasetSubmit = (event) => {
-        console.log('[F]onDatasetSearchSubmit', this.state.searchDataset);
         event.preventDefault();
         this.props.onDatasetSearchSubmit(this.state.searchDataset);
     };
@@ -91,11 +89,8 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
         this.props.fetchDatasets();
         const urlSearchParams = getUrlParams(this.props.location.search);
         const organisation = getOrganisation(urlSearchParams);
-        console.log("organisation:", organisation);// string from url
         const observation = getObservationType(urlSearchParams);
-        console.log("observation:", observation);// string from url
         const dataset = getDataset(urlSearchParams);
-        console.log("dataset:", dataset);// string from url
         this.setState({
             searchOrg: organisation,
             searchObs: observation,
@@ -120,30 +115,17 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
             switchDataType,
             onDataTypeChange
         } = this.props;
-        console.log('onDatasetRadiobutton', onDatasetRadiobutton);
 
         //Filter observation types & organisations & datasets at the client side instead of fetching again from the server after each search
         const filteredObservationTypes = observationTypes.filter(observationTypes => observationTypes.parameter.toLowerCase().includes(this.state.searchObs.toLowerCase()));
-        console.log('filteredObservationTypes', filteredObservationTypes);
         const filteredOrganisations = organisations.filter(organisation => organisation.name.toLowerCase().includes(this.state.searchOrg.toLowerCase()));
-        console.log('filteredOrganisations', filteredOrganisations);
         const filteredDatasets = datasets.filter(dataset => dataset.slug.toLowerCase().includes(this.state.searchDataset.toLowerCase()));
-        console.log('filteredDatasets', filteredDatasets);
 
-        // urlParamObservationType = 
+        //Find the the observation type and the organisation and the dataset that have been checked in the filter list
         const urlSearchParams = getUrlParams(this.props.location.search);
         const urlParamOrganisation = getOrganisation(urlSearchParams);
-        console.log("urlParamorganisation:", urlParamOrganisation);// string from url
         const urlParamObservation = getObservationType(urlSearchParams);
-        console.log("urlParamobservation:", urlParamObservation);// string from url
         const urlParamDataset = getDataset(urlSearchParams);
-        console.log("urlParamdataset:", urlParamDataset);// string from url
-        // this.setState({
-        //     searchOrg: organisation,
-        //     searchObs: observation,
-        //     searchDataset: dataset
-        // });
-        //Find the the observation type and the organisation and the dataset that have been checked in the filter list
 
         var obsSelected = filteredObservationTypes.find(obs => obs.parameter === urlParamObservation);
         var checkedObservationType;
