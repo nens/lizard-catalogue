@@ -71,6 +71,16 @@
     overflow: hidden;
 }
 
+.filter-radiobutton {
+    vertical-align: middle;
+    margin: auto;
+    margin-right: 5px;
+}
+
+.filter-item-name {
+    vertical-align: middle;
+}
+
 .filter__checked-item {
     font-size: .9rem;
     color: rgb(44, 44, 44);
