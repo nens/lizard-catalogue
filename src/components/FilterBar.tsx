@@ -73,12 +73,14 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
 
     //Handling on change and on submit for the Dataset search
     onDatasetChange = (event) => {
+        console.log('[F]onDatasetChange', event.target.value);
         this.setState({
             searchDataset: event.target.value
         });
     };
 
     onDatasetSubmit = (event) => {
+        console.log('[F]onDatasetSearchSubmit', this.state.searchDataset);
         event.preventDefault();
         this.props.onDatasetSearchSubmit(this.state.searchDataset);
     };
@@ -89,8 +91,11 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
         this.props.fetchDatasets();
         const urlSearchParams = getUrlParams(this.props.location.search);
         const organisation = getOrganisation(urlSearchParams);
+        console.log("organisation:", organisation);// string from url
         const observation = getObservationType(urlSearchParams);
+        console.log("observation:", observation);// string from url
         const dataset = getDataset(urlSearchParams);
+        console.log("dataset:", dataset);// string from url
         this.setState({
             searchOrg: organisation,
             searchObs: observation,
@@ -115,16 +120,75 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
             switchDataType,
             onDataTypeChange
         } = this.props;
+        console.log('onDatasetRadiobutton', onDatasetRadiobutton);
 
         //Filter observation types & organisations & datasets at the client side instead of fetching again from the server after each search
         const filteredObservationTypes = observationTypes.filter(observationTypes => observationTypes.parameter.toLowerCase().includes(this.state.searchObs.toLowerCase()));
+        console.log('filteredObservationTypes', filteredObservationTypes);
         const filteredOrganisations = organisations.filter(organisation => organisation.name.toLowerCase().includes(this.state.searchOrg.toLowerCase()));
+        console.log('filteredOrganisations', filteredOrganisations);
         const filteredDatasets = datasets.filter(dataset => dataset.slug.toLowerCase().includes(this.state.searchDataset.toLowerCase()));
+        console.log('filteredDatasets', filteredDatasets);
 
+        // urlParamObservationType = 
+        const urlSearchParams = getUrlParams(this.props.location.search);
+        const urlParamOrganisation = getOrganisation(urlSearchParams);
+        console.log("urlParamorganisation:", urlParamOrganisation);// string from url
+        const urlParamObservation = getObservationType(urlSearchParams);
+        console.log("urlParamobservation:", urlParamObservation);// string from url
+        const urlParamDataset = getDataset(urlSearchParams);
+        console.log("urlParamdataset:", urlParamDataset);// string from url
+        // this.setState({
+        //     searchOrg: organisation,
+        //     searchObs: observation,
+        //     searchDataset: dataset
+        // });
         //Find the the observation type and the organisation and the dataset that have been checked in the filter list
-        const checkedObservationType = observationTypes.find(observationType => observationType.checked);
+
+
+        var checkedOrganisation;
+        console.log(filteredOrganisations);
+        console.log(filteredOrganisations[0]);
+        // You got a dataset from the (shared) url
+        if (filteredOrganisations[0] && filteredOrganisations[0].hasOwnProperty('name') && filteredOrganisations[0].name === urlParamOrganisation) {
+            checkedOrganisation = filteredOrganisations[0];
+            checkedOrganisation.checked = true;
+            console.log("checkedOrganisation", checkedOrganisation);
+            console.log("this.state.searchOrg", this.state.searchOrg);
+            console.log("this.state.orgItems", this.state.orgItems);
+        } else {
         const checkedOrganisation = organisations.find(organisation => organisation.checked);
-        const checkedDataset = datasets.find(dataset => dataset.checked);
+        console.log("checkedOrganisation", checkedOrganisation);
+        }
+
+        var checkedDataset;
+        console.log(filteredDatasets[0]);
+        // You got a dataset from the (shared) url
+        if (filteredDatasets[0] && filteredDatasets[0].hasOwnProperty('slug') && filteredDatasets[0].slug === urlParamDataset) {
+            checkedDataset = filteredDatasets[0];
+            checkedDataset.checked = true;
+            // console.log("checkedDataset", checkedDataset);
+            // console.log("this.state.searchDataset", this.state.searchDataset);
+            // console.log("this.state.datasetItems", this.state.datasetItems);
+        } else {
+            checkedDataset = datasets.find(dataset => dataset.checked);
+            // console.log("checkedDataset", checkedDataset);
+        }
+
+        var checkedObservationType;
+        console.log(filteredObservationTypes);
+        console.log(filteredObservationTypes[0]);
+        // You got a dataset from the (shared) url
+        if (filteredObservationTypes[0] && filteredObservationTypes[0].hasOwnProperty('parameter') && filteredObservationTypes[0].parameter === urlParamObservation) {
+            checkedObservationType = filteredObservationTypes[0];
+            checkedObservationType.checked = true;
+            console.log("checkedObservationType", checkedObservationType);
+            console.log("this.state.searchObs", this.state.searchObs);
+            console.log("this.state.obsItems", this.state.obsItems);
+        } else {
+            const checkedObservationType = observationTypes.find(observationType => observationType.checked);
+            console.log("checkedObservationType", checkedObservationType);
+        }
 
         return (
             <div className="filter-box">
