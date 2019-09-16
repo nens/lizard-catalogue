@@ -328,6 +328,21 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             const data = await response.json();
             if (data.count === 0) this.setState({ showAlert: true });
         };
+
+        //Fetch organisations, observation types and datasets
+        //Then wait for the data of all organisations, observation types and datasets
+        //Finally update the checked value of radio button by the parameters got from the URL
+        const organisationResponse = await fetch(`${baseUrl}/organisations?page_size=0`);
+        const organisationData = await organisationResponse.json();
+        if (organisationData && organisation) this.props.updateOrganisationRadiobutton(organisation);
+
+        const observationTypeResponse = await fetch(`${baseUrl}/observationtypes?page_size=0`);
+        const observationTypeData = await observationTypeResponse.json();
+        if (observationTypeData && observation) this.props.updateObservationTypeRadiobutton(observation);
+
+        const datasetResponse = await fetch(`${baseUrl}/datasets?page_size=0`);
+        const datasetData = await datasetResponse.json();
+        if (datasetData && dataset) this.props.updateDatasetRadiobutton(dataset);
     };
 
     //Component will fetch the Rasters again each time the value of this.state.organisationName or observation type or dataset changes
