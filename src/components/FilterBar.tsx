@@ -145,49 +145,31 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
         // });
         //Find the the observation type and the organisation and the dataset that have been checked in the filter list
 
-
-        var checkedOrganisation;
-        console.log(filteredOrganisations);
-        console.log(filteredOrganisations[0]);
-        // You got a dataset from the (shared) url
-        if (filteredOrganisations[0] && filteredOrganisations[0].hasOwnProperty('name') && filteredOrganisations[0].name === urlParamOrganisation) {
-            checkedOrganisation = filteredOrganisations[0];
-            checkedOrganisation.checked = true;
-            console.log("checkedOrganisation", checkedOrganisation);
-            console.log("this.state.searchOrg", this.state.searchOrg);
-            console.log("this.state.orgItems", this.state.orgItems);
+        var obsSelected = filteredObservationTypes.find(obs => obs.parameter === urlParamObservation);
+        var checkedObservationType;
+        if (obsSelected) {
+            checkedObservationType = obsSelected;
+            checkedObservationType.checked = true;
         } else {
-        const checkedOrganisation = organisations.find(organisation => organisation.checked);
-        console.log("checkedOrganisation", checkedOrganisation);
+            checkedObservationType = observationTypes.find(observationType => observationType.checked);
         }
 
+        var orgSelected = filteredOrganisations.find(org => org.name === urlParamOrganisation);
+        var checkedOrganisation;
+        if (orgSelected) {
+            checkedOrganisation = orgSelected;
+            checkedOrganisation.checked = true;
+        } else {
+            checkedOrganisation = organisations.find(organisation => organisation.checked);
+        }
+
+        var datasetSelected = filteredDatasets.find(dataset => dataset.slug === urlParamDataset);
         var checkedDataset;
-        console.log(filteredDatasets[0]);
-        // You got a dataset from the (shared) url
-        if (filteredDatasets[0] && filteredDatasets[0].hasOwnProperty('slug') && filteredDatasets[0].slug === urlParamDataset) {
-            checkedDataset = filteredDatasets[0];
+        if (datasetSelected) {
+            checkedDataset = datasetSelected;
             checkedDataset.checked = true;
-            // console.log("checkedDataset", checkedDataset);
-            // console.log("this.state.searchDataset", this.state.searchDataset);
-            // console.log("this.state.datasetItems", this.state.datasetItems);
         } else {
             checkedDataset = datasets.find(dataset => dataset.checked);
-            // console.log("checkedDataset", checkedDataset);
-        }
-
-        var checkedObservationType;
-        console.log(filteredObservationTypes);
-        console.log(filteredObservationTypes[0]);
-        // You got a dataset from the (shared) url
-        if (filteredObservationTypes[0] && filteredObservationTypes[0].hasOwnProperty('parameter') && filteredObservationTypes[0].parameter === urlParamObservation) {
-            checkedObservationType = filteredObservationTypes[0];
-            checkedObservationType.checked = true;
-            console.log("checkedObservationType", checkedObservationType);
-            console.log("this.state.searchObs", this.state.searchObs);
-            console.log("this.state.obsItems", this.state.obsItems);
-        } else {
-            const checkedObservationType = observationTypes.find(observationType => observationType.checked);
-            console.log("checkedObservationType", checkedObservationType);
         }
 
         return (
