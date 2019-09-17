@@ -169,7 +169,7 @@ export const fetchObservationTypes = (parameter: ObservationType['parameter'], d
         .get(`${baseUrl}/observationtypes?page_size=0`)
         .then(response => {
             dispatch(observationTypesFetched(response.body));
-            updateObservationTypeRadiobutton(parameter, dispatch);
+            if (parameter && parameter !== '') updateObservationTypeRadiobutton(parameter, dispatch);
         })
         .catch(console.error)
 };
@@ -184,7 +184,7 @@ export const fetchOrganisations = (name: Organisation['name'], dispatch: Dispatc
         .get(`${baseUrl}/organisations?page_size=0`)
         .then(response => {
             dispatch(organisationsFetched(response.body));
-            updateOrganisationRadiobutton(name, dispatch);
+            if (name && name !== '') updateOrganisationRadiobutton(name, dispatch);
         })
         .catch(console.error)
 };
@@ -199,7 +199,7 @@ export const fetchDatasets = (slug: Dataset['slug'], dispatch: Dispatch<Datasets
         .get(`${baseUrl}/datasets?page_size=0`)
         .then(response => {
             dispatch(datasetsFetched(response.body));
-            updateDatasetRadiobutton(slug, dispatch);
+            if (slug && slug !== '') updateDatasetRadiobutton(slug, dispatch);
         })
         .catch(console.error)
 };
