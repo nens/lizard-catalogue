@@ -10,9 +10,9 @@ interface MyProps {
     organisations: Organisation[],
     datasets: Dataset[],
     currentDataType: MyStore['currentDataType'],
-    fetchObservationTypes: () => void,
-    fetchOrganisations: () => void,
-    fetchDatasets: () => void,
+    fetchObservationTypes: (parameter: ObservationType['parameter']) => void,
+    fetchOrganisations: (name: Organisation['name']) => void,
+    fetchDatasets: (slug: Dataset['slug']) => void,
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string) => void,
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string) => void,
     onObservationTypeRadiobutton: (obsType: ObservationType) => void,
@@ -84,9 +84,6 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
     };
 
     componentDidMount() {
-        this.props.fetchObservationTypes();
-        this.props.fetchOrganisations();
-        this.props.fetchDatasets();
         const urlSearchParams = getUrlParams(this.props.location.search);
         const organisation = getOrganisation(urlSearchParams);
         const observation = getObservationType(urlSearchParams);
@@ -96,6 +93,9 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
             searchObs: observation,
             searchDataset: dataset
         });
+        this.props.fetchObservationTypes(observation);
+        this.props.fetchOrganisations(organisation);
+        this.props.fetchDatasets(dataset);
     };
 
     render() {

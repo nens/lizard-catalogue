@@ -164,11 +164,12 @@ const observationTypesFetched = (observationTypes: ObservationType[]): Observati
     payload: observationTypes
 });
 
-export const fetchObservationTypes = (dispatch: Dispatch<ObservationTypesFetched>): void => {
+export const fetchObservationTypes = (parameter: ObservationType['parameter'], dispatch: Dispatch<ObservationTypesFetched | UpdateObservationTypeRadiobutton>): void => {
     request
         .get(`${baseUrl}/observationtypes?page_size=0`)
         .then(response => {
-            dispatch(observationTypesFetched(response.body))
+            dispatch(observationTypesFetched(response.body));
+            if (parameter && parameter !== '') updateObservationTypeRadiobutton(parameter, dispatch);
         })
         .catch(console.error)
 };
@@ -178,11 +179,12 @@ const organisationsFetched = (organisations: Organisation[]): OrganisationsFetch
     payload: organisations
 });
 
-export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>): void => {
+export const fetchOrganisations = (name: Organisation['name'], dispatch: Dispatch<OrganisationsFetched | UpdateOrganisationRadiobutton>): void => {
     request
         .get(`${baseUrl}/organisations?page_size=0`)
         .then(response => {
-            dispatch(organisationsFetched(response.body))
+            dispatch(organisationsFetched(response.body));
+            if (name && name !== '') updateOrganisationRadiobutton(name, dispatch);
         })
         .catch(console.error)
 };
@@ -192,11 +194,12 @@ const datasetsFetched = (datasets: Dataset[]): DatasetsFetched => ({
     payload: datasets
 });
 
-export const fetchDatasets = (dispatch: Dispatch<DatasetsFetched>): void => {
+export const fetchDatasets = (slug: Dataset['slug'], dispatch: Dispatch<DatasetsFetched | UpdateDatasetRadiobutton>): void => {
     request
         .get(`${baseUrl}/datasets?page_size=0`)
         .then(response => {
-            dispatch(datasetsFetched(response.body))
+            dispatch(datasetsFetched(response.body));
+            if (slug && slug !== '') updateDatasetRadiobutton(slug, dispatch);
         })
         .catch(console.error)
 };

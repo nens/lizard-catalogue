@@ -29,9 +29,9 @@ interface PropsFromDispatch {
     selectItem: (uuid: string) => void,
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string) => void,
     updateBasket: (basket: MyStore['basket']) => void,
-    fetchObservationTypes: () => void,
-    fetchOrganisations: () => void,
-    fetchDatasets: () => void,
+    fetchObservationTypes: (parameter: ObservationType['parameter']) => void,
+    fetchOrganisations: (name: Organisation['name']) => void,
+    fetchDatasets: (slug: Dataset['slug']) => void,
     updateObservationTypeRadiobutton: (parameter: ObservationType['parameter']) => void,
     updateOrganisationRadiobutton: (name: Organisation['name']) => void,
     updateDatasetRadiobutton: (slug: Dataset['slug']) => void,
@@ -328,21 +328,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             const data = await response.json();
             if (data.count === 0) this.setState({ showAlert: true });
         };
-
-        //Fetch organisations, observation types and datasets
-        //Then wait for the data of all organisations, observation types and datasets
-        //Finally update the checked value of radio button by the parameters got from the URL
-        const organisationResponse = await fetch(`${baseUrl}/organisations?page_size=0`);
-        const organisationData = await organisationResponse.json();
-        if (organisationData && organisation) this.props.updateOrganisationRadiobutton(organisation);
-
-        const observationTypeResponse = await fetch(`${baseUrl}/observationtypes?page_size=0`);
-        const observationTypeData = await observationTypeResponse.json();
-        if (observationTypeData && observation) this.props.updateObservationTypeRadiobutton(observation);
-
-        const datasetResponse = await fetch(`${baseUrl}/datasets?page_size=0`);
-        const datasetData = await datasetResponse.json();
-        if (datasetData && dataset) this.props.updateDatasetRadiobutton(dataset);
     };
 
     //Component will fetch the Rasters again each time the value of this.state.organisationName or observation type or dataset changes
@@ -470,9 +455,9 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | Filte
         ordering: string
     ) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, datasetSlug, ordering, dispatch),
     updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
-    fetchObservationTypes: () => fetchObservationTypes(dispatch),
-    fetchOrganisations: () => fetchOrganisations(dispatch),
-    fetchDatasets: () => fetchDatasets(dispatch),
+    fetchObservationTypes: (parameter: ObservationType['parameter']) => fetchObservationTypes(parameter, dispatch),
+    fetchOrganisations: (name: Organisation['name']) => fetchOrganisations(name, dispatch),
+    fetchDatasets: (slug: Dataset['slug']) => fetchDatasets(slug, dispatch),
     updateObservationTypeRadiobutton: (parameter: ObservationType['parameter']) => updateObservationTypeRadiobutton(parameter, dispatch),
     updateOrganisationRadiobutton: (name: Organisation['name']) => updateOrganisationRadiobutton(name, dispatch),
     updateDatasetRadiobutton: (slug: Dataset['slug']) => updateDatasetRadiobutton(slug, dispatch),
