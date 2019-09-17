@@ -172,6 +172,7 @@ export interface WMS {
     min_zoom: number,
     max_zoom: number,
     url: string,
+    wms_url: string,
     organisation: Organisation,
     dataset: Dataset,
     access_modifier: string

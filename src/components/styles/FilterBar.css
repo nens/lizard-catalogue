@@ -86,15 +86,12 @@
     color: rgb(44, 44, 44);
     font-style: italic;
     white-space: nowrap;
-
     display: flex;
-    width: 90%;
-    height: 1.5rem;
     align-items: center;
-    padding-left: 2rem;
-    
+    justify-content: flex-start;
+    height: 1.5rem;
     overflow: hidden;
-    position: relative;
+    margin-top: .5rem;
 }
 
 .filter__checked-item button {
@@ -104,9 +101,6 @@
     color: rgb(44, 44, 44);
     font-style: italic;
     font-size: 1.2rem;
-    position: absolute;
-    left: 0;
-    top: .1rem;
 }
 
 .filter__checked-item button:hover {
