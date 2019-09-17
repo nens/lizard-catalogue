@@ -23,7 +23,8 @@ import {
     ItemSelected,
     UpdateOrganisationRadiobutton,
     UpdateObservationTypeRadiobutton,
-    UpdateDatasetRadiobutton
+    UpdateDatasetRadiobutton,
+    ToggleAlert
 } from './interface';
 
 //MARK: Bootsrap
@@ -254,4 +255,15 @@ const itemRemoved = (raster: Raster): ItemRemoved => ({
 
 export const removeItem = (raster: Raster, dispatch: Dispatch<ItemRemoved>): void => {
     dispatch(itemRemoved(raster))
+};
+
+//MARK: Toggle the showAlert
+export const TOGGLE_ALERT = 'TOGGLE_ALERT';
+
+const alertToggled = (): ToggleAlert => ({
+    type: TOGGLE_ALERT
+});
+
+export const toggleAlert = (dispatch: Dispatch<ToggleAlert>) => {
+    dispatch(alertToggled());
 };

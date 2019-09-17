@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
-import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationRadiobutton, updateObservationTypeRadiobutton, updateDatasetRadiobutton } from '../action';
+import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationRadiobutton, updateObservationTypeRadiobutton, updateDatasetRadiobutton, toggleAlert } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Dataset, Basket, FilterActionType, SwitchDataType, UpdateRadiobuttonActionType } from '../interface';
 import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL } from '../utils/getUrlParams';
@@ -12,7 +12,6 @@ import WMSList from './wms/WMSList';
 import WMSDetails from './wms/WMSDetails';
 import FilterBar from './FilterBar';
 import Header from './Header';
-import { baseUrl } from '../api';
 import './styles/MainApp.css';
 
 interface PropsFromState {
@@ -36,7 +35,8 @@ interface PropsFromDispatch {
     updateOrganisationRadiobutton: (name: Organisation['name']) => void,
     updateDatasetRadiobutton: (slug: Dataset['slug']) => void,
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string) => void,
-    switchDataType: (dataType: SwitchDataType['payload']) => void
+    switchDataType: (dataType: SwitchDataType['payload']) => void,
+    toggleAlert: () => void,
 };
 
 type MainAppProps = PropsFromState & PropsFromDispatch & RouteComponentProps;
@@ -50,7 +50,6 @@ interface MyState {
     observationType: string,
     datasetSlug: string,
     ordering: string,
-    showAlert: boolean,
 };
 
 class MainApp extends React.Component<MainAppProps, MyState> {
@@ -63,11 +62,11 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         observationType: '',
         datasetSlug: '',
         ordering: '',
-        showAlert: false,
     };
 
     toggleProfileDropdownAndAlertMessage = (event) => {
-        if (this.state.showAlert === true) this.setState({ showAlert: false });
+        if (this.props.currentRasterList && this.props.currentRasterList.showAlert === true) this.props.toggleAlert();
+        if (this.props.currentWMSList && this.props.currentWMSList.showAlert === true) this.props.toggleAlert();
         return event.target.id === "user-profile" ?
             this.setState({ showProfileDropdown: !this.state.showProfileDropdown }) :
             this.setState({ showProfileDropdown: false });
@@ -314,20 +313,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         ) : this.props.fetchWMSLayers(
             this.state.page, search, organisation, dataset, this.state.ordering
         );
-
-        //Do an attempt to fetch Rasters/WMS layers and see if there are any results back
-        //If no raster or WMS layer returns back then display an alert to users to warn them about their authorisation right
-        //This alert only shows once when you open the app
-        const datasetParam = dataset === '' ? '' : `&datasets__slug__icontains=${dataset}`;
-        if (dataType === 'Raster') {
-            const response = await fetch(`${baseUrl}/rasters?name__icontains=${search}&page=${this.state.page}&organisation__name__icontains=${organisation}&observation_type__parameter__icontains=${observation}${datasetParam}&ordering=${this.state.ordering}`);
-            const data = await response.json();
-            if (data.count === 0) this.setState({ showAlert: true });
-        } else {
-            const response = await fetch(`${baseUrl}/wmslayers?name__icontains=${search}&page=${this.state.page}&organisation__name__icontains=${organisation}${datasetParam}&ordering=${this.state.ordering}`);
-            const data = await response.json();
-            if (data.count === 0) this.setState({ showAlert: true });
-        };
     };
 
     //Component will fetch the Rasters again each time the value of this.state.organisationName or observation type or dataset changes
@@ -420,9 +405,9 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 <div
                     className="authorisation-alert"
                     style={{
-                        display: this.state.showAlert ? "flex" : "none"
+                        display: (this.props.currentRasterList && this.props.currentRasterList.showAlert === true) || (this.props.currentWMSList && this.props.currentWMSList.showAlert === true) ? "flex" : "none"
                     }}
-                    onClick={() => this.setState({ showAlert: false })}
+                    onClick={() => this.props.toggleAlert()}
                 >
                     No Rasters/WMS layers found!
                     Please check your search selection
@@ -464,6 +449,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | Filte
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string) => fetchWMSLayers(page, searchTerm, organisationName, datasetSlug, ordering, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
+    toggleAlert: () => toggleAlert(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainApp);
