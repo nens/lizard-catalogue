@@ -33,7 +33,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                     <div className="details__map-box">
                         <Map center={[0,0]} zoom={wms.min_zoom} >
                             <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
-                            <WMSTileLayer url={wms.url} layers={wms.slug} transparent={true} format="image/png" />
+                            <WMSTileLayer url={wms.wms_url || ''} layers={wms.slug} transparent={true} format="image/png" />
                         </Map>
                     </div>
                 </div>
