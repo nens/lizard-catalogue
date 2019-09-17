@@ -164,12 +164,12 @@ const observationTypesFetched = (observationTypes: ObservationType[]): Observati
     payload: observationTypes
 });
 
-export const fetchObservationTypes = (observationType, dispatch): void => {
+export const fetchObservationTypes = (parameter: ObservationType['parameter'], dispatch: Dispatch<ObservationTypesFetched | UpdateObservationTypeRadiobutton>): void => {
     request
         .get(`${baseUrl}/observationtypes?page_size=0`)
         .then(response => {
             dispatch(observationTypesFetched(response.body));
-            updateObservationTypeRadiobutton(observationType, dispatch);
+            updateObservationTypeRadiobutton(parameter, dispatch);
         })
         .catch(console.error)
 };
@@ -179,12 +179,12 @@ const organisationsFetched = (organisations: Organisation[]): OrganisationsFetch
     payload: organisations
 });
 
-export const fetchOrganisations = (organisationName, dispatch): void => {
+export const fetchOrganisations = (name: Organisation['name'], dispatch: Dispatch<OrganisationsFetched | UpdateOrganisationRadiobutton>): void => {
     request
         .get(`${baseUrl}/organisations?page_size=0`)
         .then(response => {
             dispatch(organisationsFetched(response.body));
-            updateOrganisationRadiobutton(organisationName, dispatch);
+            updateOrganisationRadiobutton(name, dispatch);
         })
         .catch(console.error)
 };
@@ -194,12 +194,12 @@ const datasetsFetched = (datasets: Dataset[]): DatasetsFetched => ({
     payload: datasets
 });
 
-export const fetchDatasets = (datasetSlug, dispatch): void => {
+export const fetchDatasets = (slug: Dataset['slug'], dispatch: Dispatch<DatasetsFetched | UpdateDatasetRadiobutton>): void => {
     request
         .get(`${baseUrl}/datasets?page_size=0`)
         .then(response => {
             dispatch(datasetsFetched(response.body));
-            updateDatasetRadiobutton(datasetSlug, dispatch);
+            updateDatasetRadiobutton(slug, dispatch);
         })
         .catch(console.error)
 };
