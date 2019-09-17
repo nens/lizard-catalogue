@@ -44,7 +44,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                 </div>
                 <div className="wms-details__info">
                     <h4>WMS layer's URL</h4>
-                    <span>{wms.url}</span>
+                    <span>{wms.wms_url}</span>
                     <br />
                     <h4>Slug</h4>
                     <span>{wms.slug}</span>
