@@ -164,11 +164,12 @@ const observationTypesFetched = (observationTypes: ObservationType[]): Observati
     payload: observationTypes
 });
 
-export const fetchObservationTypes = (dispatch: Dispatch<ObservationTypesFetched>): void => {
+export const fetchObservationTypes = (observationType, dispatch): void => {
     request
         .get(`${baseUrl}/observationtypes?page_size=0`)
         .then(response => {
-            dispatch(observationTypesFetched(response.body))
+            dispatch(observationTypesFetched(response.body));
+            updateObservationTypeRadiobutton(observationType, dispatch);
         })
         .catch(console.error)
 };
@@ -178,11 +179,12 @@ const organisationsFetched = (organisations: Organisation[]): OrganisationsFetch
     payload: organisations
 });
 
-export const fetchOrganisations = (dispatch: Dispatch<OrganisationsFetched>): void => {
+export const fetchOrganisations = (organisationName, dispatch): void => {
     request
         .get(`${baseUrl}/organisations?page_size=0`)
         .then(response => {
-            dispatch(organisationsFetched(response.body))
+            dispatch(organisationsFetched(response.body));
+            updateOrganisationRadiobutton(organisationName, dispatch);
         })
         .catch(console.error)
 };
@@ -192,11 +194,12 @@ const datasetsFetched = (datasets: Dataset[]): DatasetsFetched => ({
     payload: datasets
 });
 
-export const fetchDatasets = (dispatch: Dispatch<DatasetsFetched>): void => {
+export const fetchDatasets = (datasetSlug, dispatch): void => {
     request
         .get(`${baseUrl}/datasets?page_size=0`)
         .then(response => {
-            dispatch(datasetsFetched(response.body))
+            dispatch(datasetsFetched(response.body));
+            updateDatasetRadiobutton(datasetSlug, dispatch);
         })
         .catch(console.error)
 };
