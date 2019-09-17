@@ -16,6 +16,7 @@ import {
     UPDATE_ORGANISATION_RADIOBUTTON,
     UPDATE_OBSERVATION_RADIOBUTTON,
     UPDATE_DATASET_RADIOBUTTON,
+    TOGGLE_ALERT,
 } from "./action";
 import {
     RastersFetched,
@@ -36,6 +37,7 @@ import {
     UpdateOrganisationRadiobutton,
     UpdateObservationTypeRadiobutton,
     UpdateDatasetRadiobutton,
+    WMSActionType,
 } from './interface';
 
 export interface MyStore {
@@ -49,7 +51,8 @@ export interface MyStore {
         previous: string | null,
         next: string | null,
         rasterList: string[],
-        isFetching: boolean
+        isFetching: boolean,
+        showAlert: boolean
     } | null,
     allRasters: {
         [index: string]: Raster,
@@ -59,7 +62,8 @@ export interface MyStore {
         previous: string | null,
         next: string | null,
         wmsList: string[],
-        isFetching: boolean
+        isFetching: boolean,
+        showAlert: boolean
     } | null,
     allWMS: {
         [index: string]: WMS,
@@ -115,7 +119,8 @@ const currentRasterList = (state: MyStore['currentRasterList'] = null, action: R
                 previous: null,
                 next: null,
                 rasterList: [],
-                isFetching: true
+                isFetching: true,
+                showAlert: false
             }
         case RASTERS_FETCHED:
             const { count, previous, next } = action.payload;
@@ -124,7 +129,17 @@ const currentRasterList = (state: MyStore['currentRasterList'] = null, action: R
                 previous: previous,
                 next: next,
                 rasterList: action.payload.results.map(raster => raster.uuid),
-                isFetching: false
+                isFetching: false,
+                showAlert: count === 0 ? true : false
+            };
+        case TOGGLE_ALERT:
+            if (state) {
+                return {
+                    ...state,
+                    showAlert: false
+                }
+            } else {
+                return state;
             };
         default:
             return state;
@@ -144,7 +159,7 @@ const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched): 
     };
 };
 
-const currentWMSList = (state: MyStore['currentWMSList'] = null, action): MyStore['currentWMSList'] => {
+const currentWMSList = (state: MyStore['currentWMSList'] = null, action: WMSActionType): MyStore['currentWMSList'] => {
     switch (action.type) {
         case REQUEST_WMS:
             return {
@@ -152,7 +167,8 @@ const currentWMSList = (state: MyStore['currentWMSList'] = null, action): MyStor
                 previous: null,
                 next: null,
                 wmsList: [],
-                isFetching: true
+                isFetching: true,
+                showAlert: false
             }
         case RECEIVE_WMS:
             const { count, previous, next } = action.payload;
@@ -161,14 +177,24 @@ const currentWMSList = (state: MyStore['currentWMSList'] = null, action): MyStor
                 previous: previous,
                 next: next,
                 wmsList: action.payload.results.map(wms => wms.uuid),
-                isFetching: false
+                isFetching: false,
+                showAlert: count === 0 ? true : false
+            };
+        case TOGGLE_ALERT:
+            if (state) {
+                return {
+                    ...state,
+                    showAlert: false
+                }
+            } else {
+                return state;
             };
         default:
             return state;
     };
 };
 
-const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
+const allWMS = (state: MyStore['allWMS'] = {}, action: WMSActionType): MyStore['allWMS'] => {
     switch (action.type) {
         case RECEIVE_WMS:
             const newState = { ...state };

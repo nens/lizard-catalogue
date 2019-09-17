@@ -15,6 +15,7 @@ import {
     UPDATE_ORGANISATION_RADIOBUTTON,
     UPDATE_OBSERVATION_RADIOBUTTON,
     UPDATE_DATASET_RADIOBUTTON,
+    TOGGLE_ALERT,
 } from "./action";
 
 //ACTION INTERFACE
@@ -34,6 +35,10 @@ export interface SwitchDataType {
     payload: "Raster" | "WMS"
 };
 
+export interface ToggleAlert {
+    type: typeof TOGGLE_ALERT
+};
+
 export interface RastersRequested {
     type: typeof RASTERS_REQUESTED
 };
@@ -43,7 +48,7 @@ export interface RastersFetched {
     payload: RasterListObject
 };
 
-export type RasterActionType = RastersRequested | RastersFetched;
+export type RasterActionType = RastersRequested | RastersFetched | ToggleAlert;
 
 export interface RequestWMS {
     type: typeof REQUEST_WMS
@@ -54,7 +59,7 @@ export interface ReceiveWMS {
     payload: WMSObject
 };
 
-export type WMSActionType = RequestWMS | ReceiveWMS;
+export type WMSActionType = RequestWMS | ReceiveWMS | ToggleAlert;
 
 export interface ItemSelected {
     type: typeof ITEM_SELECTED,
