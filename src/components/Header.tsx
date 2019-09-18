@@ -109,7 +109,7 @@ class Header extends React.Component<HeaderProps> {
                         <h3>My selection</h3>
                         <div className="header-popup__content-bovenste-laag">
                             <span className="header-popup__content-item">{basket.length} items</span>
-                            <span className="header-popup__content-layer-title">Bovenste laag</span>
+                            <span className="header-popup__content-layer-title">Upper layer</span>
                         </div>
                         <ul className="header-popup__content-ul">
                             {basket.map(raster => (
@@ -130,7 +130,7 @@ class Header extends React.Component<HeaderProps> {
                                 </li>
                             ))}
                         </ul>
-                        <p className="header-popup__content-onderste-laag">Onderste laag</p>
+                        <p className="header-popup__content-onderste-laag">Lower layer</p>
                         <button
                             className="header-popup__content-button"
                             disabled={basket.length === 0 ? true : false}
