@@ -34,10 +34,12 @@ class RasterDetails extends React.Component<PropsFromState> {
         const zoom = zoomLevelCalculation(north, east, south, west);
 
         //Get the Date from the timestamp string
+        const lastestUpdateDate = new Date(raster.last_modified);
         const startDate = new Date(raster.first_value_timestamp);
         const stopDate = new Date(raster.last_value_timestamp);
 
         //Turn the new Date into a string with the date format of DD-MM-YYYY
+        const latestUpdate = lastestUpdateDate.toLocaleDateString();
         const start = startDate.toLocaleDateString();
         const stop = stopDate.toLocaleDateString();
 
@@ -83,6 +85,9 @@ class RasterDetails extends React.Component<PropsFromState> {
                     </div>
                     <div className="row">
                         <p className="column column-1">Scale</p><p className="column column-2">{raster.observation_type && raster.observation_type.scale}</p>
+                    </div>
+                    <div className="row">
+                        <p className="column column-1">Latest update</p><p className="column column-2">{latestUpdate}</p>
                     </div>
                     <div className="row" style={{display: raster.temporal ? 'flex' : 'none'}}>
                         <p className="column column-1">Interval</p><p className="column column-2">{raster.interval}</p>
