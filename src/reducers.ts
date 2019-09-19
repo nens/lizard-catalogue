@@ -151,7 +151,30 @@ const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched): 
         case RASTERS_FETCHED:
             const newState = { ...state };
             action.payload.results.forEach(raster => {
-                newState[raster.uuid] = raster;
+                //There is an exception with Regen raster as its WMS layer name and style
+                //when sending request to get the WMS tile layer is not the same as other rasters
+                //for regen, we should request for either "radar:5min" or "radar:hour" or "radar:day" for layers
+                //and either "radar-5min" or "radar-hour" or "radar-day" for styles
+                //Since the default value used in lizard-client is radar:hour, we will hardcode "radar:hour"
+                //as regen's wms layer name and "radar-hour" as its styles
+                //the UUIDs of regen raster on staging and on production are
+                //"3e5f56a7-b16e-4deb-8449-cc2c88805159" and "730d6675-35dd-4a35-aa9b-bfb8155f9ca7" respectively
+                let layerStyle = raster.options.styles ? raster.options.styles : "";
+                let layerName = raster.wms_info.layer;
+                if (raster.uuid === "3e5f56a7-b16e-4deb-8449-cc2c88805159" || raster.uuid === "730d6675-35dd-4a35-aa9b-bfb8155f9ca7") {
+                    layerName = "radar:hour";
+                    layerStyle = "radar-hour";
+                };
+                newState[raster.uuid] = {
+                    ...raster,
+                    options: {
+                        styles: layerStyle
+                    },
+                    wms_info: {
+                        ...raster.wms_info,
+                        layer: layerName
+                    }
+                };
             });
             return newState;
         default:

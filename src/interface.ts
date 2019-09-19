@@ -155,6 +155,9 @@ export interface Raster {
         east: number,
         north: number,
         south: number
+    },
+    options: {
+        styles: string
     }
 };
 
