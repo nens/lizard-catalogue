@@ -63,7 +63,7 @@ class RasterDetails extends React.Component<PropsFromState> {
                     <div className="details__map-box">
                         <Map bounds={bounds} >
                             <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
-                            <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} />
+                            <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
                         </Map>
                     </div>
                 </div>
