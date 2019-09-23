@@ -412,7 +412,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                     No Rasters/WMS layers found!
                     Please check your search selection
                     <br />
-                    You may need to login or might have insufficient right to view
+                    You may need to login or might have insufficient rights to view
                     the Rasters/WMS layers
                 </div>
             </div>
