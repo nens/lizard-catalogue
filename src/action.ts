@@ -84,12 +84,12 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
     const observationTypeParam = observationTypeParameter === '' ? '' : `&observation_type__parameter__icontains=${observationTypeParameter}`;
     const datasetParam = datasetSlug === '' ? '' : `&datasets__slug__icontains=${datasetSlug}`;
     request
-        .get(`${baseUrl}/rasters?name__icontains=${searchTerm}&page=${page}${organisationParam}${observationTypeParam}${datasetParam}&ordering=${ordering}`)
+        .get(`${baseUrl}/rasters/?name__icontains=${searchTerm}&page=${page}${organisationParam}${observationTypeParam}${datasetParam}&ordering=${ordering}`)
         .then(response => {
             if(response.body.count === 0) {
                 //If could not find any raster with the search term by raster's name then look for raster's uuid
                 request
-                    .get(`${baseUrl}/rasters?uuid=${searchTerm}&page=${page}${organisationParam}${observationTypeParam}${datasetParam}`)
+                    .get(`${baseUrl}/rasters/?uuid=${searchTerm}&page=${page}${organisationParam}${observationTypeParam}${datasetParam}`)
                     .then(response => {
                         dispatch(rastersFetched(response.body))
                     })
@@ -104,7 +104,7 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
 //Decide whether gonna use this fetch function
 export const fetchRastersOnUuid = (searchUuid: string, dispatch: Dispatch<RastersFetched>): void => {
     request
-        .get(`${baseUrl}/rasters?uuid=${searchUuid}`)
+        .get(`${baseUrl}/rasters/?uuid=${searchUuid}`)
         .then(response => {
             dispatch(rastersFetched(response.body))
         })
@@ -129,12 +129,12 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
     const organisationParam = organisationName === '' ? '' : `&organisation__name__icontains=${organisationName}`;
     const datasetParam = datasetSlug === '' ? '' : `&datasets__slug__icontains=${datasetSlug}`;
     request
-        .get(`${baseUrl}/wmslayers?name__icontains=${searchTerm}&page=${page}${organisationParam}${datasetParam}&ordering=${ordering}`)
+        .get(`${baseUrl}/wmslayers/?name__icontains=${searchTerm}&page=${page}${organisationParam}${datasetParam}&ordering=${ordering}`)
         .then(response => {
             if(response.body.count === 0) {
                 //If could not find any raster with the search term by raster's name then look for raster's uuid
                 request
-                    .get(`${baseUrl}/wmslayers?uuid=${searchTerm}&page=${page}${organisationParam}${datasetParam}&ordering=${ordering}`)
+                    .get(`${baseUrl}/wmslayers/?uuid=${searchTerm}&page=${page}${organisationParam}${datasetParam}&ordering=${ordering}`)
                     .then(response => {
                         dispatch(wmsReceived(response.body))
                     })
@@ -170,7 +170,7 @@ const observationTypesFetched = (observationTypes: ObservationType[]): Observati
 
 export const fetchObservationTypes = (parameter: ObservationType['parameter'], dispatch: Dispatch<ObservationTypesFetched | UpdateObservationTypeRadiobutton>): void => {
     request
-        .get(`${baseUrl}/observationtypes?page_size=0`)
+        .get(`${baseUrl}/observationtypes/?page_size=0`)
         .then(response => {
             dispatch(observationTypesFetched(response.body));
             if (parameter && parameter !== '') updateObservationTypeRadiobutton(parameter, dispatch);
@@ -185,7 +185,7 @@ const organisationsFetched = (organisations: Organisation[]): OrganisationsFetch
 
 export const fetchOrganisations = (name: Organisation['name'], dispatch: Dispatch<OrganisationsFetched | UpdateOrganisationRadiobutton>): void => {
     request
-        .get(`${baseUrl}/organisations?page_size=0`)
+        .get(`${baseUrl}/organisations/?page_size=0`)
         .then(response => {
             dispatch(organisationsFetched(response.body));
             if (name && name !== '') updateOrganisationRadiobutton(name, dispatch);
@@ -200,7 +200,7 @@ const datasetsFetched = (datasets: Dataset[]): DatasetsFetched => ({
 
 export const fetchDatasets = (slug: Dataset['slug'], dispatch: Dispatch<DatasetsFetched | UpdateDatasetRadiobutton>): void => {
     request
-        .get(`${baseUrl}/datasets?page_size=0`)
+        .get(`${baseUrl}/datasets/?page_size=0`)
         .then(response => {
             dispatch(datasetsFetched(response.body));
             if (slug && slug !== '') updateDatasetRadiobutton(slug, dispatch);
