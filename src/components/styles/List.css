@@ -131,6 +131,7 @@ li {
     text-align: center;
     margin: auto 2px;
     overflow: hidden;
+    max-height: 90%;
 }
 
 .list__row i {
@@ -165,11 +166,22 @@ li {
     flex: .8;
 }
 
+.list__row-description {
+    flex: 4;
+    text-align: left;
+    margin-right: 2rem;
+    max-height: 70%;
+}
+
 .access-modifier {
     font-size: 1rem;
     color: #fff;
     border-radius: .2rem;
-    width: 5rem;
+    margin-right: .4rem;
+    padding: .2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .public {
