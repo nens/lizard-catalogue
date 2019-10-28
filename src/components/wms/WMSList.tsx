@@ -111,6 +111,9 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                                 Organisation
                                 <i className="fa fa-sort" onClick={() => onSorting('organisation__name')} />
                             </div>
+                            <div className="list__row list__row-description">
+                                Description
+                            </div>
                             <div className="list__row list__row-access" />
                         </li>
                         {wmsLayers.map((wms: WMS) => {
@@ -134,6 +137,7 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                                     <input className="list__row list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(wms.uuid)} checked={checked} />
                                     <div className="list__row list__row-name">{wms.name}</div>
                                     <div className="list__row list__row-org">{wms.organisation && wms.organisation.name}</div>
+                                    <div className="list__row list__row-description">{wms.description}</div>
                                     <div className="list__row list__row-access">{renderAccessModifier()}</div>
                                 </li>
                             )
