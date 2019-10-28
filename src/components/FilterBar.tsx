@@ -223,6 +223,44 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                     </ul>
                 </div>
                 <div 
+                    className="filter-dataset"
+                    //if there is no dataset in the filter bar then don't show this section
+                    style={{
+                        display: datasets.length === 0 ? "none" : ""
+                    }}
+                >
+                    <h4 title="Filter by Dataset">Dataset</h4>
+                    <form onSubmit={this.onDatasetSubmit} className="list__searchbar" title="Type dataset name">
+                        <input type="text" className="filter-box___searchbar-input list__searchbar-input" placeholder="search" onChange={this.onDatasetChange} value={searchDataset} />
+                        <button className="list__searchbar-button" type="submit">
+                            <svg className="list__searchbar-icon">
+                                <use xlinkHref="image/symbols.svg#icon-search" />
+                            </svg>
+                        </button>
+                    </form>
+                    {checkedDataset ?
+                        //Showing the checked item and the option the remove this checked item from the filter
+                        <div className="filter__checked-item">
+                            <button onClick={() => onDatasetRadiobutton(checkedDataset)}>x</button>
+                            {checkedDataset.slug}
+                        </div>
+                        :
+                        <div className="filter__checked-item" />
+                    }
+                    <ul className="filter-list">
+                        {filteredDatasets.slice(0, this.state.datasetItems).map((dataset: Dataset) => (
+                            <li className="filter-item" key={dataset.slug}>
+                                <input type="radio" className="filter-radiobutton" onChange={() => onDatasetRadiobutton(dataset)} checked={dataset.checked} />
+                                <span className="filter-item-name">{dataset.slug}</span>
+                            </li>
+                        ))}
+                        {this.state.datasetItems < filteredDatasets.length ?
+                            <button className="filter-list-button" onClick={() => this.setState({ datasetItems: this.state.datasetItems + 4 })}>more ...</button> :
+                            <button style={{ display: 'none' }} />
+                        }
+                    </ul>
+                </div>
+                <div 
                     className="filter-observation-type"
                     //if there is no observation type in the filter bar then don't show this section
                     //Also don't show the observation type filter option for WMS layers
@@ -257,44 +295,6 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                         ))}
                         {this.state.obsItems < filteredObservationTypes.length ?
                             <button className="filter-list-button" onClick={() => this.setState({ obsItems: this.state.obsItems + 4 })}>more ...</button> :
-                            <button style={{ display: 'none' }} />
-                        }
-                    </ul>
-                </div>
-                <div 
-                    className="filter-dataset"
-                    //if there is no dataset in the filter bar then don't show this section
-                    style={{
-                        display: datasets.length === 0 ? "none" : ""
-                    }}
-                >
-                    <h4 title="Filter by Dataset">Dataset</h4>
-                    <form onSubmit={this.onDatasetSubmit} className="list__searchbar" title="Type dataset name">
-                        <input type="text" className="filter-box___searchbar-input list__searchbar-input" placeholder="search" onChange={this.onDatasetChange} value={searchDataset} />
-                        <button className="list__searchbar-button" type="submit">
-                            <svg className="list__searchbar-icon">
-                                <use xlinkHref="image/symbols.svg#icon-search" />
-                            </svg>
-                        </button>
-                    </form>
-                    {checkedDataset ?
-                        //Showing the checked item and the option the remove this checked item from the filter
-                        <div className="filter__checked-item">
-                            <button onClick={() => onDatasetRadiobutton(checkedDataset)}>x</button>
-                            {checkedDataset.slug}
-                        </div>
-                        :
-                        <div className="filter__checked-item" />
-                    }
-                    <ul className="filter-list">
-                        {filteredDatasets.slice(0, this.state.datasetItems).map((dataset: Dataset) => (
-                            <li className="filter-item" key={dataset.slug}>
-                                <input type="radio" className="filter-radiobutton" onChange={() => onDatasetRadiobutton(dataset)} checked={dataset.checked} />
-                                <span className="filter-item-name">{dataset.slug}</span>
-                            </li>
-                        ))}
-                        {this.state.datasetItems < filteredDatasets.length ?
-                            <button className="filter-list-button" onClick={() => this.setState({ datasetItems: this.state.datasetItems + 4 })}>more ...</button> :
                             <button style={{ display: 'none' }} />
                         }
                     </ul>
