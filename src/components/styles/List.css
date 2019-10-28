@@ -131,7 +131,7 @@ li {
     text-align: center;
     margin: auto 2px;
     overflow: hidden;
-    max-height: 90%;
+    max-height: 80%;
 }
 
 .list__row i {
@@ -146,6 +146,7 @@ li {
 .list__row-name {
     flex: 2;
     text-align: left;
+    margin-right: 2rem;
 }
 
 .list__row-org {
@@ -166,11 +167,18 @@ li {
     flex: .8;
 }
 
-.list__row-description {
+.list__row-wms-description {
     flex: 4;
     text-align: left;
     margin-right: 2rem;
     max-height: 70%;
+}
+
+.list__row-raster-description {
+    flex: 2;
+    text-align: left;
+    margin-right: 2rem;
+    max-height: 60%;
 }
 
 .access-modifier {

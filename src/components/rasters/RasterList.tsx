@@ -118,9 +118,8 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                                 Organisation
                                 <i className="fa fa-sort" onClick={() => onSorting('organisation__name')} />
                             </div>
-                            <div className="list__row list__row-obs">
-                                Obs.Type
-                                <i className="fa fa-sort" onClick={() => onSorting('observation_type__parameter')} />
+                            <div className="list__row list__row-raster-description">
+                                Description
                             </div>
                             <div className="list__row list__row-time">
                                 Latest update
@@ -153,7 +152,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                                     }
                                     <div className="list__row list__row-name">{raster.name}</div>
                                     <div className="list__row list__row-org">{raster.organisation && raster.organisation.name}</div>
-                                    <div className="list__row list__row-obs">{raster.observation_type && raster.observation_type.parameter}</div>
+                                    <div className="list__row list__row-raster-description">{raster.description}</div>
                                     <div className="list__row list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
                                     <div className="list__row list__row-access">{renderAccessModifier()}</div>
                                 </li>
