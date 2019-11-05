@@ -18,14 +18,10 @@ interface MyProps {
     onObservationTypeRadiobutton: (obsType: ObservationType) => void,
     onOrganisationRadiobutton: (organisation: Organisation) => void,
     onDatasetRadiobutton: (dataset: Dataset) => void,
-    updateObservationTypeRadiobutton: (parameter: ObservationType['parameter']) => void,
-    updateOrganisationRadiobutton: (name: Organisation['name']) => void,
-    updateDatasetRadiobutton: (slug: Dataset['slug']) => void,
-    onDataTypeChange: () => void
-    switchDataType: (dataType: SwitchDataType['payload']) => void,
     onOrganisationSearchSubmit: (name: string) => void,
     onObservationTypeSearchSubmit: (obsTypeParameter: string) => void,
     onDatasetSearchSubmit: (slug: string) => void,
+    onDataSelection: (dataType: SwitchDataType['payload']) => void,
 };
 
 interface MyState {
@@ -83,6 +79,17 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
         this.props.onDatasetSearchSubmit(this.state.searchDataset);
     };
 
+    //Switching between Raster and WMS
+    switchingData = (dataType: SwitchDataType['payload']) => {
+        this.props.onDataSelection(dataType);
+        this.setState({
+            ...this.state,
+            searchObs: '',
+            searchOrg: '',
+            searchDataset: ''
+        });
+    };
+
     componentDidMount() {
         const urlSearchParams = getUrlParams(this.props.location.search);
         const organisation = getOrganisation(urlSearchParams);
@@ -108,12 +115,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
             onObservationTypeRadiobutton,
             onOrganisationRadiobutton,
             onDatasetRadiobutton,
-            updateObservationTypeRadiobutton,
-            updateOrganisationRadiobutton,
-            updateDatasetRadiobutton,
-            currentDataType,
-            switchDataType,
-            onDataTypeChange
+            currentDataType
         } = this.props;
 
         //Filter observation types & organisations & datasets at the client side instead of fetching again from the server after each search
@@ -129,62 +131,24 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
         return (
             <div className="filter-box">
                 <div className="switcher">
-                    <button 
+                    <button
                         className="switcher-button switcher-button-raster"
                         title="Raster"
-                        onClick={() => {
-                            //Switching between Rasters and WMS layers will fetch rasters/wms again with initial values
-                            //then it will set the local state of this component to initial state
-                            //and also set the state of its parent component (the main container) to its initial state
-                            //finally remove all the checked organisation, observation type and dataset
-                            switchDataType("Raster");
-                            this.props.fetchRasters(1, '', '', '', '', '');
-                            onDataTypeChange();
-                            this.setState({
-                                searchObs: '',
-                                searchOrg: '',
-                                searchDataset: '',
-                                obsItems: 4,
-                                orgItems: 4,
-                                datasetItems: 4
-                            });
-                            if (checkedObservationType) updateObservationTypeRadiobutton(checkedObservationType.parameter);
-                            if (checkedOrganisation) updateOrganisationRadiobutton(checkedOrganisation.name);
-                            if (checkedDataset) updateDatasetRadiobutton(checkedDataset.slug);
-                            //Update the URL and remove all the search parameters
-                            this.props.history.push('?data=Raster');
-                        }}
+                        onClick={() => this.switchingData("Raster")}
                         disabled={currentDataType === "Raster" ? true : false}
                     >
                         Raster
                     </button>
-                    <button 
+                    <button
                         className="switcher-button switcher-button-wms"
                         title="WMS layer"
-                        onClick={() => {
-                            switchDataType("WMS");
-                            this.props.fetchWMSLayers(1, '', '', '', '');
-                            onDataTypeChange();
-                            this.setState({
-                                searchObs: '',
-                                searchOrg: '',
-                                searchDataset: '',
-                                obsItems: 4,
-                                orgItems: 4,
-                                datasetItems: 4
-                            });
-                            if (checkedObservationType) updateObservationTypeRadiobutton(checkedObservationType.parameter);
-                            if (checkedOrganisation) updateOrganisationRadiobutton(checkedOrganisation.name);
-                            if (checkedDataset) updateDatasetRadiobutton(checkedDataset.slug);
-                            //Update the URL and remove all the search parameters
-                            this.props.history.push('?data=WMS');
-                        }}
+                        onClick={() => this.switchingData("WMS")}
                         disabled={currentDataType === "WMS" ? true : false}
                     >
                         WMS
                     </button>
                 </div>
-                <div 
+                <div
                     className="filter-organisation"
                     //if there is no organisation in the filter bar then don't show this section
                     style={{
@@ -222,7 +186,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                         }
                     </ul>
                 </div>
-                <div 
+                <div
                     className="filter-dataset"
                     //if there is no dataset in the filter bar then don't show this section
                     style={{
@@ -260,12 +224,12 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                         }
                     </ul>
                 </div>
-                <div 
+                <div
                     className="filter-observation-type"
                     //if there is no observation type in the filter bar then don't show this section
                     //Also don't show the observation type filter option for WMS layers
-                    style={{ 
-                        display: observationTypes.length === 0 || this.props.currentDataType === "WMS" ? "none" : "" 
+                    style={{
+                        display: observationTypes.length === 0 || this.props.currentDataType === "WMS" ? "none" : ""
                     }}
                 >
                     <h4 title="Filter by Observation Type">Observation Type</h4>
