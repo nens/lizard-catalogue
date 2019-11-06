@@ -84,12 +84,12 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
     const observationTypeParam = observationTypeParameter === '' ? '' : `&observation_type__parameter__icontains=${observationTypeParameter}`;
     const datasetParam = datasetSlug === '' ? '' : `&datasets__slug__icontains=${datasetSlug}`;
     request
-        .get(`${baseUrl}/rasters/?name__icontains=${searchTerm}&page=${page}${organisationParam}${observationTypeParam}${datasetParam}&ordering=${ordering}`)
+        .get(`${baseUrl}/rasters/?name__icontains=${searchTerm}&page=${page}${organisationParam}${observationTypeParam}${datasetParam}&ordering=${ordering}&scenario__isnull=true`)
         .then(response => {
             if(response.body.count === 0) {
                 //If could not find any raster with the search term by raster's name then look for raster's uuid
                 request
-                    .get(`${baseUrl}/rasters/?uuid=${searchTerm}&page=${page}${organisationParam}${observationTypeParam}${datasetParam}`)
+                    .get(`${baseUrl}/rasters/?uuid=${searchTerm}&page=${page}${organisationParam}${observationTypeParam}${datasetParam}&scenario__isnull=true`)
                     .then(response => {
                         dispatch(rastersFetched(response.body))
                     })
