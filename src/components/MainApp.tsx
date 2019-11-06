@@ -46,10 +46,16 @@ interface MyState {
     page: number,
     initialPage: number,
     searchTerm: string,
-    organisationName: string,
-    observationType: string,
-    datasetSlug: string,
     ordering: string,
+    raster: {
+        organisationName: string,
+        observationType: string,
+        datasetSlug: string,
+    },
+    wms: {
+        organisationName: string,
+        datasetSlug: string,
+    }
 };
 
 class MainApp extends React.Component<MainAppProps, MyState> {
@@ -58,10 +64,16 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         page: 1,
         initialPage: 1,
         searchTerm: '',
-        organisationName: '',
-        observationType: '',
-        datasetSlug: '',
         ordering: '',
+        raster: {
+            organisationName: '',
+            observationType: '',
+            datasetSlug: ''
+        },
+        wms: {
+            organisationName: '',
+            datasetSlug: ''
+        }
     };
 
     toggleProfileDropdownAndAlertMessage = (event) => {
@@ -77,15 +89,15 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.props.currentDataType === "Raster" ? this.props.fetchRasters(
             page,
             this.state.searchTerm,
-            this.state.organisationName,
-            this.state.observationType,
-            this.state.datasetSlug,
+            this.state.raster.organisationName,
+            this.state.raster.observationType,
+            this.state.raster.datasetSlug,
             this.state.ordering
         ) : this.props.fetchWMSLayers(
             page,
             this.state.searchTerm,
-            this.state.organisationName,
-            this.state.datasetSlug,
+            this.state.wms.organisationName,
+            this.state.wms.datasetSlug,
             this.state.ordering
         );
         this.setState({
@@ -105,29 +117,42 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             page: 1
         });
 
-        this.props.currentDataType === "Raster" ? this.props.fetchRasters(
-            this.state.initialPage,
-            this.state.searchTerm,
-            this.state.organisationName,
-            this.state.observationType,
-            this.state.datasetSlug,
-            this.state.ordering
-        ) : this.props.fetchWMSLayers(
-            this.state.page,
-            this.state.searchTerm,
-            this.state.organisationName,
-            this.state.datasetSlug,
-            this.state.ordering
-        );
-        //Update the URL search params with the new search term
-        const url = newURL(
-            this.props.currentDataType,
-            this.state.searchTerm,
-            this.state.organisationName,
-            this.state.observationType,
-            this.state.datasetSlug
-        );
-        this.updateURL(url);
+        if (this.props.currentDataType === 'Raster') {
+            this.props.fetchRasters(
+                this.state.initialPage,
+                this.state.searchTerm,
+                this.state.raster.organisationName,
+                this.state.raster.observationType,
+                this.state.raster.datasetSlug,
+                this.state.ordering
+            );
+            //Update the URL search params with the new search term
+            const url = newURL(
+                this.props.currentDataType,
+                this.state.searchTerm,
+                this.state.raster.organisationName,
+                this.state.raster.observationType,
+                this.state.raster.datasetSlug
+            );
+            this.updateURL(url);
+        } else { // dataType === "WMS"
+            this.props.fetchWMSLayers(
+                this.state.page,
+                this.state.searchTerm,
+                this.state.wms.organisationName,
+                this.state.wms.datasetSlug,
+                this.state.ordering
+            );
+            //Update the URL search params with the new search term
+            const url = newURL(
+                this.props.currentDataType,
+                this.state.searchTerm,
+                this.state.wms.organisationName,
+                '',
+                this.state.wms.datasetSlug
+            );
+            this.updateURL(url);
+        };
     };
 
     updateURL = (url: string) => {
@@ -140,20 +165,26 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.props.updateObservationTypeRadiobutton(obsType.parameter);
         if (!obsType.checked) {
             this.setState({
-                observationType: obsType.parameter
+                raster: {
+                    ...this.state.raster,
+                    observationType: obsType.parameter
+                }
             });
         } else {
             this.setState({
-                observationType: ''
+                raster: {
+                    ...this.state.raster,
+                    observationType: ''
+                }
             });
         };
         //Update the URL search params with the selected observation type
         const url = newURL(
             this.props.currentDataType,
             this.state.searchTerm,
-            this.state.organisationName,
+            this.state.raster.organisationName,
             (!obsType.checked ? obsType.parameter : ''),
-            this.state.datasetSlug
+            this.state.raster.datasetSlug
         );
         this.updateURL(url);
     };
@@ -163,101 +194,212 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     onObservationTypeSearchSubmit = (obsTypeParameter: string) => {
         this.props.updateObservationTypeRadiobutton(obsTypeParameter);
         this.setState({
-            observationType: obsTypeParameter
+            raster: {
+                ...this.state.raster,
+                observationType: obsTypeParameter
+            }
         });
         //Update the URL search params with the selected observation type
         const url = newURL(
             this.props.currentDataType,
             this.state.searchTerm,
-            this.state.organisationName,
+            this.state.raster.organisationName,
             obsTypeParameter,
-            this.state.datasetSlug
+            this.state.raster.datasetSlug
         );
         this.updateURL(url);
     };
 
     //When click on the radio button in the filter bar, this function will dispatch an action to toggle the checked property of the organisation
     //and update the organisation name state in this component
-    onOrganisationRadiobutton = (organisation: Organisation) => {
+    onOrganisationRadiobutton = (organisation: Organisation, dataType: SwitchDataType['payload']) => {
         this.props.updateOrganisationRadiobutton(organisation.name);
-        if (!organisation.checked) {
-            this.setState({
-                organisationName: organisation.name
-            });
-        } else {
-            this.setState({
-                organisationName: ''
-            });
+        if (dataType === 'Raster') {
+            if (!organisation.checked) {
+                this.setState({
+                    raster: {
+                        ...this.state.raster,
+                        organisationName: organisation.name
+                    }
+                });
+            } else {
+                this.setState({
+                    raster: {
+                        ...this.state.raster,
+                        organisationName: ''
+                    }
+                });
+            };
+            //Update the URL search params with the selected organisation
+            const url = newURL(
+                this.props.currentDataType,
+                this.state.searchTerm,
+                (!organisation.checked ? organisation.name : ''),
+                this.state.raster.observationType,
+                this.state.raster.datasetSlug
+            );
+            this.updateURL(url);
+        } else { // dataType === "WMS"
+            if (!organisation.checked) {
+                this.setState({
+                    wms: {
+                        ...this.state.wms,
+                        organisationName: organisation.name
+                    }
+                });
+            } else {
+                this.setState({
+                    wms: {
+                        ...this.state.wms,
+                        organisationName: ''
+                    }
+                });
+            };
+            //Update the URL search params with the selected organisation
+            const url = newURL(
+                this.props.currentDataType,
+                this.state.searchTerm,
+                (!organisation.checked ? organisation.name : ''),
+                '',
+                this.state.wms.datasetSlug
+            );
+            this.updateURL(url);
         };
-        //Update the URL search params with the selected organisation
-        const url = newURL(
-            this.props.currentDataType,
-            this.state.searchTerm,
-            (!organisation.checked ? organisation.name : ''),
-            this.state.observationType,
-            this.state.datasetSlug
-        );
-        this.updateURL(url);
     };
 
     //Submit the search in organisation filter bar will update the radio button and set the organisationName state of this component
     //then update the URL search params
-    onOrganisationSearchSubmit = (organisationName: string) => {
+    onOrganisationSearchSubmit = (organisationName: string, dataType: SwitchDataType['payload']) => {
         this.props.updateOrganisationRadiobutton(organisationName);
-        this.setState({
-            organisationName: organisationName
-        });
-        //Update the URL search params with the selected organisation
-        const url = newURL(
-            this.props.currentDataType,
-            this.state.searchTerm,
-            organisationName,
-            this.state.observationType,
-            this.state.datasetSlug
-        );
-        this.updateURL(url);
+        if (dataType === 'Raster') {
+            this.setState({
+                raster: {
+                    ...this.state.raster,
+                    organisationName: organisationName
+                }
+            });
+            //Update the URL search params with the selected organisation
+            const url = newURL(
+                this.props.currentDataType,
+                this.state.searchTerm,
+                organisationName,
+                this.state.raster.observationType,
+                this.state.raster.datasetSlug
+            );
+            this.updateURL(url);
+        } else { // dataType === "WMS"
+            this.setState({
+                wms: {
+                    ...this.state.wms,
+                    organisationName: organisationName
+                }
+            });
+            //Update the URL search params with the selected organisation
+            const url = newURL(
+                this.props.currentDataType,
+                this.state.searchTerm,
+                organisationName,
+                '',
+                this.state.wms.datasetSlug
+            );
+            this.updateURL(url);
+        };
     };
 
     //When click on the radio button in the filter bar, this function will dispatch an action to toggle the checked property of the dataset
     //and update the dataset state in this component
-    onDatasetRadiobutton = (dataset: Dataset) => {
+    onDatasetRadiobutton = (dataset: Dataset, dataType: SwitchDataType['payload']) => {
         this.props.updateDatasetRadiobutton(dataset.slug);
-        if (!dataset.checked) {
-            this.setState({
-                datasetSlug: dataset.slug
-            });
-        } else {
-            this.setState({
-                datasetSlug: ''
-            });
+        if (dataType === 'Raster') {
+            if (!dataset.checked) {
+                this.setState({
+                    raster: {
+                        ...this.state.raster,
+                        datasetSlug: dataset.slug
+                    }
+                });
+            } else {
+                this.setState({
+                    raster: {
+                        ...this.state.raster,
+                        datasetSlug: ''
+                    }
+                });
+            };
+            //Update the URL search params with the selected organisation
+            const url = newURL(
+                this.props.currentDataType,
+                this.state.searchTerm,
+                this.state.raster.organisationName,
+                this.state.raster.observationType,
+                (!dataset.checked ? dataset.slug : '')
+            );
+            this.updateURL(url);
+        } else { // dataType === "WMS"
+            if (!dataset.checked) {
+                this.setState({
+                    wms: {
+                        ...this.state.wms,
+                        datasetSlug: dataset.slug
+                    }
+                });
+            } else {
+                this.setState({
+                    wms: {
+                        ...this.state.wms,
+                        datasetSlug: ''
+                    }
+                });
+            };
+            //Update the URL search params with the selected organisation
+            const url = newURL(
+                this.props.currentDataType,
+                this.state.searchTerm,
+                this.state.wms.organisationName,
+                '',
+                (!dataset.checked ? dataset.slug : '')
+            );
+            this.updateURL(url);
         };
-        //Update the URL search params with the selected dataset
-        const url = newURL(
-            this.props.currentDataType,
-            this.state.searchTerm,
-            this.state.organisationName,
-            this.state.observationType,
-            (!dataset.checked ? dataset.slug : '')
-        );
-        this.updateURL(url);
     };
 
     //Submit the search in dataset filter bar will update the radio button and set the datasetSlug state of this component
     //then update the URL search params
-    onDatasetSearchSubmit = (datasetSlug: string) => {
+    onDatasetSearchSubmit = (datasetSlug: string, dataType: SwitchDataType['payload']) => {
         this.props.updateDatasetRadiobutton(datasetSlug);
-        this.setState({
-            datasetSlug: datasetSlug
-        });
-        //Update the URL search params with the selected dataset
-        const url = newURL(
-            this.props.currentDataType,
-            this.state.searchTerm,
-            this.state.organisationName,
-            this.state.observationType,
-            datasetSlug
-        );
-        this.updateURL(url);
+        if (dataType === 'Raster') {
+            this.setState({
+                raster: {
+                    ...this.state.raster,
+                    datasetSlug: datasetSlug
+                }
+            });
+            //Update the URL search params with the selected dataset
+            const url = newURL(
+                this.props.currentDataType,
+                this.state.searchTerm,
+                this.state.raster.organisationName,
+                this.state.raster.observationType,
+                datasetSlug
+            );
+            this.updateURL(url);
+        } else { // dataType === "WMS"
+            this.setState({
+                wms: {
+                    ...this.state.wms,
+                    datasetSlug: datasetSlug
+                }
+            });
+            //Update the URL search params with the selected dataset
+            const url = newURL(
+                this.props.currentDataType,
+                this.state.searchTerm,
+                this.state.wms.organisationName,
+                '',
+                datasetSlug
+            );
+            this.updateURL(url);
+        };
     };
 
     //When click on the sorting icon in the raster list, this function will update the ordering state in this component
@@ -275,40 +417,71 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     };
 
     //Select between Raster or WMS layer data
-    onDataSelection = (dataType: "Raster" | "WMS") => {
+    onDataSelection = (dataType: SwitchDataType['payload']) => {
         const {
-            organisationName,
-            observationType,
-            datasetSlug
+            raster,
+            wms
         } = this.state;
 
-        const organisationParam = organisationName === "" ? "" : `&organisation=${organisationName}`;
-        const observationTypeParam = observationType === "" ? "" : `&observation=${observationType}`;
-        const datasetParam = datasetSlug === "" ? "" : `&dataset=${datasetSlug}`;
-
-        if (dataType === "Raster") {
-            this.props.switchDataType("Raster");
+        if (dataType === 'Raster') {
+            this.props.switchDataType('Raster');
             this.props.fetchRasters(
                 1,
                 '',
-                organisationName,
-                observationType,
-                datasetSlug,
+                raster.organisationName,
+                raster.observationType,
+                raster.datasetSlug,
                 ''
             );
+            const url = newURL(
+                'Raster',
+                '',
+                raster.organisationName,
+                raster.observationType,
+                raster.datasetSlug,
+            );
             //Update the URL
-            this.props.history.push(`?data=Raster${organisationParam}${observationTypeParam}${datasetParam}`);
-        } else {
-            this.props.switchDataType("WMS");
+            this.updateURL(url);
+
+            //Update the radio buttons in the filter bar
+            if (wms.organisationName !== raster.organisationName) this.props.updateOrganisationRadiobutton(raster.organisationName);
+            if (wms.datasetSlug !== raster.datasetSlug) this.props.updateDatasetRadiobutton(raster.datasetSlug);
+
+            //Set the state back to its initial state
+            this.setState({
+                page: 1,
+                searchTerm: '',
+                ordering: ''
+            });
+        } else { // dataType === "WMS"
+            this.props.switchDataType('WMS');
             this.props.fetchWMSLayers(
                 1,
                 '',
-                organisationName,
-                datasetSlug,
+                wms.organisationName,
+                wms.datasetSlug,
                 ''
             );
+            const url = newURL(
+                'WMS',
+                '',
+                wms.organisationName,
+                '',
+                wms.datasetSlug
+            );
             //Update the URL
-            this.props.history.push(`?data=WMS${organisationParam}${datasetParam}`);
+            this.updateURL(url);
+
+            //Update the radio buttons in the filter bar
+            if (wms.organisationName !== raster.organisationName) this.props.updateOrganisationRadiobutton(wms.organisationName);
+            if (wms.datasetSlug !== raster.datasetSlug) this.props.updateDatasetRadiobutton(wms.datasetSlug);
+
+            //Set the state back to its initial state
+            this.setState({
+                page: 1,
+                searchTerm: '',
+                ordering: ''
+            });
         };
     };
 
@@ -319,16 +492,30 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         const organisation = getOrganisation(urlSearchParams);
         const observation = getObservationType(urlSearchParams);
         const dataset = getDataset(urlSearchParams);
-        this.setState({
-            searchTerm: search,
-            organisationName: organisation,
-            observationType: observation,
-            datasetSlug: dataset
-        });
 
         const dataType = getDataType(urlSearchParams);
         //Dispatch the switchDataType action to update the currentDataType state in Redux store with the data param
         this.props.switchDataType(dataType);
+
+        //Update the component's state with the search params in the URL
+        if (dataType === 'Raster') {
+            this.setState({
+                searchTerm: search,
+                raster: {
+                    organisationName: organisation,
+                    observationType: observation,
+                    datasetSlug: dataset
+                }
+            });
+        } else { // dataType === "WMS"
+            this.setState({
+                searchTerm: search,
+                wms: {
+                    organisationName: organisation,
+                    datasetSlug: dataset
+                }
+            });
+        };
 
         //Fetch Lizard Bootstrap
         this.props.fetchLizardBootstrap();
@@ -341,21 +528,29 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         );
     };
 
-    //Component will fetch the Rasters again each time the value of this.state.organisationName or observation type or dataset changes
+    //Component will fetch the Rasters or WMS again each time the state changes
     componentWillUpdate(nextProps: MainAppProps, nextState: MyState) {
-        if (nextProps && (nextState.organisationName !== this.state.organisationName || nextState.observationType !== this.state.observationType || nextState.datasetSlug !== this.state.datasetSlug || nextState.ordering !== this.state.ordering)) {
+        if (nextProps && (
+            nextState.raster.organisationName !== this.state.raster.organisationName ||
+            nextState.raster.observationType !== this.state.raster.observationType ||
+            nextState.raster.datasetSlug !== this.state.raster.datasetSlug ||
+            nextState.wms.organisationName !== this.state.wms.organisationName ||
+            nextState.wms.datasetSlug !== this.state.wms.datasetSlug ||
+            nextState.ordering !== this.state.ordering
+            )
+        ) {
             this.props.currentDataType === "Raster" ? this.props.fetchRasters(
                 this.state.initialPage,
                 this.state.searchTerm,
-                nextState.organisationName,
-                nextState.observationType,
-                nextState.datasetSlug,
+                nextState.raster.organisationName,
+                nextState.raster.observationType,
+                nextState.raster.datasetSlug,
                 nextState.ordering
             ) : this.props.fetchWMSLayers(
                 this.state.initialPage,
                 this.state.searchTerm,
-                nextState.organisationName,
-                nextState.datasetSlug,
+                nextState.wms.organisationName,
+                nextState.wms.datasetSlug,
                 nextState.ordering
             );
             this.setState({

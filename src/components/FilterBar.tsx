@@ -16,11 +16,11 @@ interface MyProps {
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string) => void,
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string) => void,
     onObservationTypeRadiobutton: (obsType: ObservationType) => void,
-    onOrganisationRadiobutton: (organisation: Organisation) => void,
-    onDatasetRadiobutton: (dataset: Dataset) => void,
-    onOrganisationSearchSubmit: (name: string) => void,
+    onOrganisationRadiobutton: (organisation: Organisation, dataType: SwitchDataType['payload']) => void,
+    onDatasetRadiobutton: (dataset: Dataset, dataType: SwitchDataType['payload']) => void,
+    onOrganisationSearchSubmit: (name: string, dataType: SwitchDataType['payload']) => void,
     onObservationTypeSearchSubmit: (obsTypeParameter: string) => void,
-    onDatasetSearchSubmit: (slug: string) => void,
+    onDatasetSearchSubmit: (slug: string, dataType: SwitchDataType['payload']) => void,
     onDataSelection: (dataType: SwitchDataType['payload']) => void,
 };
 
@@ -64,7 +64,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
 
     onOrgSubmit = (event) => {
         event.preventDefault();
-        this.props.onOrganisationSearchSubmit(this.state.searchOrg);
+        this.props.onOrganisationSearchSubmit(this.state.searchOrg, this.props.currentDataType);
     };
 
     //Handling on change and on submit for the Dataset search
@@ -76,7 +76,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
 
     onDatasetSubmit = (event) => {
         event.preventDefault();
-        this.props.onDatasetSearchSubmit(this.state.searchDataset);
+        this.props.onDatasetSearchSubmit(this.state.searchDataset, this.props.currentDataType);
     };
 
     //Switching between Raster and WMS
@@ -167,7 +167,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                     {checkedOrganisation ?
                         //Showing the checked item and the option the remove this checked item from the filter
                         <div className="filter__checked-item">
-                            <button onClick={() => onOrganisationRadiobutton(checkedOrganisation)}>x</button>
+                            <button onClick={() => onOrganisationRadiobutton(checkedOrganisation, currentDataType)}>x</button>
                             {checkedOrganisation.name}
                         </div>
                         :
@@ -176,7 +176,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                     <ul className="filter-list">
                         {filteredOrganisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
                             <li className="filter-item" key={organisation.uuid}>
-                                <input type="radio" className="filter-radiobutton" onChange={() => onOrganisationRadiobutton(organisation)} checked={organisation.checked} />
+                                <input type="radio" className="filter-radiobutton" onChange={() => onOrganisationRadiobutton(organisation, currentDataType)} checked={organisation.checked} />
                                 <span className="filter-item-name">{organisation.name}</span>
                             </li>
                         ))}
@@ -205,7 +205,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                     {checkedDataset ?
                         //Showing the checked item and the option the remove this checked item from the filter
                         <div className="filter__checked-item">
-                            <button onClick={() => onDatasetRadiobutton(checkedDataset)}>x</button>
+                            <button onClick={() => onDatasetRadiobutton(checkedDataset, currentDataType)}>x</button>
                             {checkedDataset.slug}
                         </div>
                         :
@@ -214,7 +214,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                     <ul className="filter-list">
                         {filteredDatasets.slice(0, this.state.datasetItems).map((dataset: Dataset) => (
                             <li className="filter-item" key={dataset.slug}>
-                                <input type="radio" className="filter-radiobutton" onChange={() => onDatasetRadiobutton(dataset)} checked={dataset.checked} />
+                                <input type="radio" className="filter-radiobutton" onChange={() => onDatasetRadiobutton(dataset, currentDataType)} checked={dataset.checked} />
                                 <span className="filter-item-name">{dataset.slug}</span>
                             </li>
                         ))}
