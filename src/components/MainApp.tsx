@@ -423,6 +423,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             wms
         } = this.state;
 
+        //Set the state back to its initial state
+        this.setState({
+            page: 1,
+            searchTerm: '',
+            ordering: ''
+        });
+
         if (dataType === 'Raster') {
             this.props.switchDataType('Raster');
             this.props.fetchRasters(
@@ -446,13 +453,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             //Update the radio buttons in the filter bar
             if (wms.organisationName !== raster.organisationName) this.props.updateOrganisationRadiobutton(raster.organisationName);
             if (wms.datasetSlug !== raster.datasetSlug) this.props.updateDatasetRadiobutton(raster.datasetSlug);
-
-            //Set the state back to its initial state
-            this.setState({
-                page: 1,
-                searchTerm: '',
-                ordering: ''
-            });
         } else { // dataType === "WMS"
             this.props.switchDataType('WMS');
             this.props.fetchWMSLayers(
@@ -475,13 +475,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             //Update the radio buttons in the filter bar
             if (wms.organisationName !== raster.organisationName) this.props.updateOrganisationRadiobutton(wms.organisationName);
             if (wms.datasetSlug !== raster.datasetSlug) this.props.updateDatasetRadiobutton(wms.datasetSlug);
-
-            //Set the state back to its initial state
-            this.setState({
-                page: 1,
-                searchTerm: '',
-                ordering: ''
-            });
         };
     };
 
