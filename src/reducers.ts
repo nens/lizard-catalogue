@@ -277,7 +277,11 @@ const basket = (
                 rasters: rasters.filter((item, i) => rasters.indexOf(item) === i)
             };
         case REMOVE_RASTER_FROM_BASKET:
-            return state;
+            const index = state.rasters.indexOf(action.uuid);
+            return {
+                ...state,
+                rasters: state.rasters.filter((raster, i) => raster && i !== index)
+            };
         case UPDATE_BASKET_WITH_WMS:
             const wmsLayers = [
                 ...state.wmsLayers,
@@ -289,7 +293,11 @@ const basket = (
                 wmsLayers: wmsLayers.filter((item, i) => wmsLayers.indexOf(item) === i)
             };
         case REMOVE_WMS_FROM_BASKET:
-            return state;
+            const index2 = state.wmsLayers.indexOf(action.uuid);
+            return {
+                ...state,
+                wmsLayers: state.wmsLayers.filter((wms, i) => wms && i !== index2)
+            };
         default:
             return state;
     };
