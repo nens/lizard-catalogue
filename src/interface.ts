@@ -1,7 +1,5 @@
 import {
     RASTERS_FETCHED,
-    BASKET_UPDATED,
-    ITEM_REMOVED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
     DATASETS_FETCHED,
@@ -16,6 +14,8 @@ import {
     UPDATE_OBSERVATION_RADIOBUTTON,
     UPDATE_DATASET_RADIOBUTTON,
     TOGGLE_ALERT,
+    UPDATE_BASKET_WITH_RASTER,
+    REMOVE_RASTER_FROM_BASKET,
 } from "./action";
 
 //ACTION INTERFACE
@@ -67,12 +67,12 @@ export interface ItemSelected {
 }
 
 export interface BasketAdded {
-    type: typeof BASKET_UPDATED,
+    type: typeof UPDATE_BASKET_WITH_RASTER,
     payload: string[]
 };
 
 export interface ItemRemoved {
-    type: typeof ITEM_REMOVED,
+    type: typeof REMOVE_RASTER_FROM_BASKET,
     payload: string
 };
 

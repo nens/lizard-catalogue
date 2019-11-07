@@ -24,7 +24,8 @@ import {
     UpdateOrganisationRadiobutton,
     UpdateObservationTypeRadiobutton,
     UpdateDatasetRadiobutton,
-    ToggleAlert
+    ToggleAlert,
+    WMS
 } from './interface';
 
 //MARK: Bootsrap
@@ -239,25 +240,37 @@ export const updateDatasetRadiobutton = (slug: Dataset['slug'], dispatch: Dispat
 };
 
 //MARK: Basket
-export const BASKET_UPDATED = 'BASKET_UPDATED';
-export const ITEM_REMOVED = 'ITEM_REMOVED'
+export const UPDATE_BASKET_WITH_RASTER = 'UPDATE_BASKET_WITH_RASTER';
+export const REMOVE_RASTER_FROM_BASKET = 'REMOVE_RASTER_FROM_BASKET';
+export const UPDATE_BASKET_WITH_WMS = 'UPDATE_BASKET_WITH_WMS';
+export const REMOVE_WMS_FROM_BASKET = 'REMOVE_WMS_FROM_BASKET';
 
-const basketUpdated = (basket: string[]): BasketAdded => ({
-    type: BASKET_UPDATED,
-    payload: basket
-});
-
-export const updateBasket = (basket: string[], dispatch: Dispatch<BasketAdded>): void => {
-    dispatch(basketUpdated(basket))
+export const updateBasketWithRaster = (rasters: string[], dispatch): void => {
+    dispatch({
+        type: UPDATE_BASKET_WITH_RASTER,
+        rasters
+    });
 };
 
-const itemRemoved = (raster: Raster): ItemRemoved => ({
-    type: ITEM_REMOVED,
-    payload: raster.uuid
-});
+export const removeRasterFromBasket = (uuid: string, dispatch): void => {
+    dispatch({
+        type: REMOVE_RASTER_FROM_BASKET,
+        uuid
+    });
+};
 
-export const removeItem = (raster: Raster, dispatch: Dispatch<ItemRemoved>): void => {
-    dispatch(itemRemoved(raster))
+export const updateBasketWithWMS = (wmsLayers: string[], dispatch): void => {
+    dispatch({
+        type: UPDATE_BASKET_WITH_WMS,
+        wmsLayers
+    });
+};
+
+export const removeWMSFromBasket = (uuid: string, dispatch): void => {
+    dispatch({
+        type: REMOVE_WMS_FROM_BASKET,
+        uuid
+    });
 };
 
 //MARK: Toggle the showAlert

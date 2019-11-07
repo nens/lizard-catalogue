@@ -1,11 +1,9 @@
 import { combineReducers } from 'redux';
 import {
     RASTERS_FETCHED,
-    BASKET_UPDATED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
     DATASETS_FETCHED,
-    ITEM_REMOVED,
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
     RECEIVE_LIZARD_BOOTSTRAP,
@@ -17,6 +15,10 @@ import {
     UPDATE_OBSERVATION_RADIOBUTTON,
     UPDATE_DATASET_RADIOBUTTON,
     TOGGLE_ALERT,
+    UPDATE_BASKET_WITH_RASTER,
+    REMOVE_RASTER_FROM_BASKET,
+    UPDATE_BASKET_WITH_WMS,
+    REMOVE_WMS_FROM_BASKET,
 } from "./action";
 import {
     RastersFetched,
@@ -69,7 +71,10 @@ export interface MyStore {
         [index: string]: WMS,
     } | {},
     selectedItem: string | null,
-    basket: string[]
+    basket: {
+        rasters: string[],
+        wmsLayers: string[]
+    }
 };
 
 const bootstrap = (
@@ -239,16 +244,46 @@ const selectedItem = (state: MyStore['selectedItem'] = null, action: ItemSelecte
     };
 };
 
-const basket = (state: MyStore['basket'] = [], action: Basket): MyStore['basket'] => {
+// const basket1 = (state: MyStore['basket'] = [], action: Basket): MyStore['basket'] => {
+//     switch (action.type) {
+//         case BASKET_UPDATED:
+//             const newState = [...state, ...action.payload];
+//             return newState.filter((item, pos) => newState.indexOf(item) === pos);
+//         case ITEM_REMOVED:
+//             const newState2 = [...state];
+//             const index = newState2.indexOf(action.payload);
+//             newState2.splice(index, 1);
+//             return newState2;
+//         default:
+//             return state;
+//     };
+// };
+
+const basket = (
+    state: MyStore['basket'],
+    action
+) => {
     switch (action.type) {
-        case BASKET_UPDATED:
-            const newState = [...state, ...action.payload];
-            return newState.filter((item, pos) => newState.indexOf(item) === pos);
-        case ITEM_REMOVED:
-            const newState2 = [...state];
-            const index = newState2.indexOf(action.payload);
-            newState2.splice(index, 1);
-            return newState2;
+        case UPDATE_BASKET_WITH_RASTER:
+            return {
+                ...state,
+                rasters: [
+                    ...state.rasters,
+                    ...action.rasters
+                ]
+            };
+        case REMOVE_RASTER_FROM_BASKET:
+            return state;
+        case UPDATE_BASKET_WITH_WMS:
+            return {
+                ...state,
+                wmsLayers: [
+                    ...state.wmsLayers,
+                    ...action.wmsLayers
+                ]
+            };
+        case REMOVE_WMS_FROM_BASKET:
+            return state;
         default:
             return state;
     };
