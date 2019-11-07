@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { MyStore, getRaster } from '../reducers';
-import { removeItem } from '../action';
+import { removeRasterFromBasket } from '../action';
 import { Raster, LatLng, Bootstrap } from '../interface';
 import './styles/Header.css';
 
@@ -19,7 +19,7 @@ interface PropsFromState {
 };
 
 interface PropsFromDispatch {
-    removeItem: (raster: Raster) => void
+    removeRasterFromBasket: (uuid: string) => void
 };
 
 type HeaderProps = MyProps & PropsFromState & PropsFromDispatch;
@@ -46,7 +46,7 @@ class Header extends React.Component<HeaderProps> {
     };
 
     render() {
-        const { basket, removeItem, user } = this.props;
+        const { basket, removeRasterFromBasket, user } = this.props;
 
         //Open All Data button will open all rasters in Lizard Client
         //with projection of the last selected raster
@@ -122,7 +122,7 @@ class Header extends React.Component<HeaderProps> {
                                     <div className="li li-org">{raster.organisation && raster.organisation.name}</div>
                                     <div className="li li-obs">{raster.observation_type && raster.observation_type.parameter}</div>
                                     <div className="li li-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
-                                    <div className="li li-basket li-basket__icon-box" onClick={() => removeItem(raster)}>
+                                    <div className="li li-basket li-basket__icon-box" onClick={() => removeRasterFromBasket(raster.uuid)}>
                                         <svg className="li-basket__icon">
                                             <use xlinkHref="image/symbols.svg#icon-remove_shopping_cart" />
                                         </svg>
@@ -173,14 +173,14 @@ const mapStateToProps = (state: MyStore): PropsFromState => {
         //Get all the rasters by their uuid from the basket and reverse the order
         //so the last selected raster will appear on top of the list
         //and the first selected raster will appear at the bottom of the list
-        basket: state.basket.map(uuid => getRaster(state, uuid)).reverse(),
+        basket: state.basket.rasters.map(uuid => getRaster(state, uuid)).reverse(),
         //Get user
         user: state.bootstrap.user
     };
 };
 
 const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
-    removeItem: (raster: Raster) => removeItem(raster, dispatch)
+    removeRasterFromBasket: (uuid: string) => removeRasterFromBasket(uuid, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

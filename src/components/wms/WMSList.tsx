@@ -17,7 +17,7 @@ interface MyProps {
     onSorting: (ordering: string) => void,
 
     selectItem: (uuid: string) => void,
-    updateBasket: (basket: MyStore['basket']) => void
+    updateBasketWithWMS: (wmsLayers: string[]) => void
 };
 
 interface PropsFromState {
@@ -58,7 +58,7 @@ class WMSList extends React.Component<WMSListProps, MyState> {
 
     render() {
         //Destructure all props of the WMS List component
-        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentWMSList, selectItem, updateBasket, wmsLayers } = this.props;
+        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentWMSList, selectItem, updateBasketWithWMS, wmsLayers } = this.props;
 
         //number of pages displayed in the pagination bar stored in an array with 5 pages
         const paginatedPages = [page - 2, page - 1, page, page + 1, page + 2];
@@ -81,7 +81,7 @@ class WMSList extends React.Component<WMSListProps, MyState> {
             //Click the button will open the notification popup
             window.location.href = '#notification';
 
-            updateBasket(this.state.checkedWMSLayers);
+            updateBasketWithWMS(this.state.checkedWMSLayers);
             this.setState({ checkedWMSLayers: [] });
         };
 

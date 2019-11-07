@@ -27,7 +27,6 @@ import {
     ObservationType,
     Organisation,
     Dataset,
-    Basket,
     OrganisationsFetched,
     ObservationTypesFetched,
     DatasetsFetched,
@@ -260,27 +259,34 @@ const selectedItem = (state: MyStore['selectedItem'] = null, action: ItemSelecte
 // };
 
 const basket = (
-    state: MyStore['basket'],
+    state: MyStore['basket'] = {
+        rasters: [],
+        wmsLayers: []
+    },
     action
 ) => {
     switch (action.type) {
         case UPDATE_BASKET_WITH_RASTER:
+            const rasters = [
+                ...state.rasters,
+                ...action.rasters
+            ];
             return {
                 ...state,
-                rasters: [
-                    ...state.rasters,
-                    ...action.rasters
-                ]
+                //Remove duplicates in the rasters array
+                rasters: rasters.filter((item, i) => rasters.indexOf(item) === i)
             };
         case REMOVE_RASTER_FROM_BASKET:
             return state;
         case UPDATE_BASKET_WITH_WMS:
+            const wmsLayers = [
+                ...state.wmsLayers,
+                ...action.wmsLayers
+            ];
             return {
                 ...state,
-                wmsLayers: [
-                    ...state.wmsLayers,
-                    ...action.wmsLayers
-                ]
+                //Remove duplicates in the WMS layers array
+                wmsLayers: wmsLayers.filter((item, i) => wmsLayers.indexOf(item) === i)
             };
         case REMOVE_WMS_FROM_BASKET:
             return state;

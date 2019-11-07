@@ -4,12 +4,9 @@ import { Dispatch } from 'redux';
 import {
     RastersFetched,
     RasterListObject,
-    BasketAdded,
     ObservationType,
     Organisation,
     Dataset,
-    Raster,
-    ItemRemoved,
     ObservationTypesFetched,
     OrganisationsFetched,
     DatasetsFetched,
@@ -25,7 +22,6 @@ import {
     UpdateObservationTypeRadiobutton,
     UpdateDatasetRadiobutton,
     ToggleAlert,
-    WMS
 } from './interface';
 
 //MARK: Bootsrap
