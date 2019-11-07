@@ -6,7 +6,7 @@ import { Raster, LatLng } from '../../interface';
 import '../styles/Details.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../../utils/latLngZoomCalculation';
-import { openRasterInAPI, openRastersInLizard } from '../../utils/url';
+import { openRasterInAPI, openRasterInLizard } from '../../utils/url';
 
 interface PropsFromState {
     raster: Raster | null
@@ -104,7 +104,7 @@ class RasterDetails extends React.Component<PropsFromState> {
                     <h4>View data in</h4>
                     <div>
                         <button className="details__button button-api" onClick={() => openRasterInAPI(raster)}>API</button>
-                        <button className="details__button button-lizard" onClick={() => openRastersInLizard([raster], centerPoint, zoom)}>PORTAL</button>
+                        <button className="details__button button-lizard" onClick={() => openRasterInLizard(raster, centerPoint, zoom)}>PORTAL</button>
                     </div>
                 </div>
             </div>
