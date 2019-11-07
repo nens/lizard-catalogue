@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
 import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationRadiobutton, updateObservationTypeRadiobutton, updateDatasetRadiobutton, toggleAlert, updateBasketWithRaster, updateBasketWithWMS } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList } from '../reducers';
-import { RasterActionType, ObservationType, Organisation, Dataset, Basket, FilterActionType, SwitchDataType, UpdateRadiobuttonActionType } from '../interface';
+import { RasterActionType, ObservationType, Organisation, Dataset, FilterActionType, SwitchDataType, UpdateRadiobuttonActionType } from '../interface';
 import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL } from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
@@ -430,7 +430,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     currentDataType: getCurrentDataType(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType | UpdateRadiobuttonActionType>): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | FilterActionType | UpdateRadiobuttonActionType>): PropsFromDispatch => ({
     fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
     fetchRasters: (
         page: number,

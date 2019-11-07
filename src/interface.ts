@@ -14,8 +14,6 @@ import {
     UPDATE_OBSERVATION_RADIOBUTTON,
     UPDATE_DATASET_RADIOBUTTON,
     TOGGLE_ALERT,
-    UPDATE_BASKET_WITH_RASTER,
-    REMOVE_RASTER_FROM_BASKET,
 } from "./action";
 
 //ACTION INTERFACE
@@ -64,19 +62,7 @@ export type WMSActionType = RequestWMS | ReceiveWMS | ToggleAlert;
 export interface ItemSelected {
     type: typeof ITEM_SELECTED,
     payload: string
-}
-
-export interface BasketAdded {
-    type: typeof UPDATE_BASKET_WITH_RASTER,
-    payload: string[]
 };
-
-export interface ItemRemoved {
-    type: typeof REMOVE_RASTER_FROM_BASKET,
-    payload: string
-};
-
-export type Basket = BasketAdded | ItemRemoved;
 
 export interface ObservationTypesFetched {
     type: typeof OBSERVATION_TYPES_FETCHED,

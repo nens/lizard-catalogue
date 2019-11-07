@@ -243,21 +243,6 @@ const selectedItem = (state: MyStore['selectedItem'] = null, action: ItemSelecte
     };
 };
 
-// const basket1 = (state: MyStore['basket'] = [], action: Basket): MyStore['basket'] => {
-//     switch (action.type) {
-//         case BASKET_UPDATED:
-//             const newState = [...state, ...action.payload];
-//             return newState.filter((item, pos) => newState.indexOf(item) === pos);
-//         case ITEM_REMOVED:
-//             const newState2 = [...state];
-//             const index = newState2.indexOf(action.payload);
-//             newState2.splice(index, 1);
-//             return newState2;
-//         default:
-//             return state;
-//     };
-// };
-
 const basket = (
     state: MyStore['basket'] = {
         rasters: [],
