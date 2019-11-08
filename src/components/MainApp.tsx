@@ -311,6 +311,12 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             datasetSlug,
         );
         this.updateURL(url);
+
+        //Reset the state
+        this.setState({
+            page: 1,
+            searchTerm: ''
+        });
     };
 
     async componentDidMount() {
