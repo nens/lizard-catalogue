@@ -73,6 +73,7 @@ class RasterDetails extends React.Component<PropsFromState> {
                     </div>
                 </div>
                 <div className="details__metadata">
+                    <h4>Details</h4><hr/>
                     <div className="row">
                         <p className="column column-1">Temporal</p><p className="column column-2">{raster.temporal ? 'Yes' : 'No'} </p>
                     </div>
@@ -104,12 +105,25 @@ class RasterDetails extends React.Component<PropsFromState> {
                         <p className="column column-1">End</p><p className="column column-2">{stop}</p>
                     </div>
                 </div>
-                <br />
+                <div className="details__get-capabilities">
+                    <h4>Lizard WMS GetCapabilities</h4>
+                    <hr/>
+                </div>
                 <div className="details__button-container">
-                    <h4>View data in</h4>
-                    <div>
-                        <button className="details__button button-api" onClick={() => openRasterInAPI(raster)}>API</button>
-                        <button className="details__button button-lizard" onClick={() => openRastersInLizard([raster], centerPoint, zoom)}>PORTAL</button>
+                    <h4>Actions</h4><hr/>
+                    <div className="details__buttons">
+                        <button className="details__button button-lizard" onClick={() => openRastersInLizard([raster], centerPoint, zoom)}>
+                            <i className="fa fa-external-link"/>
+                            &nbsp;&nbsp;OPEN IN PORTAL
+                        </button>
+                        <button className="details__button button-api" onClick={() => openRasterInAPI(raster)}>
+                            <i className="fa fa-external-link"/>
+                            &nbsp;&nbsp;OPEN IN API
+                        </button>
+                        <button className="details__button button-export">
+                            <i className="fa fa-download"/>
+                            &nbsp;&nbsp;EXPORT RASTER
+                        </button>
                     </div>
                 </div>
             </div>

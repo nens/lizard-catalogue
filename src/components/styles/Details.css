@@ -27,6 +27,13 @@
     font-size: 3rem;
     font-weight: 570;
     margin: 0 0 2rem 0;
+    color: #535353;
+}
+
+.details h4 {
+    font-size: 1.5rem;
+    margin: .5rem 0;
+    color: #535353;
 }
 
 .details__uuid {
@@ -39,8 +46,8 @@
 .details__main-box {
     display: flex;
     justify-content: space-between;
-
-    height: 45%;
+    height: 30%;
+    margin-bottom: 1rem;
 }
 
 .details__description-box {
@@ -51,7 +58,7 @@
 }
 
 .details__description-box h4 {
-    margin: .8rem 0 .5rem 0;
+    font-size: 1.3rem;
 }
 
 .description {
@@ -74,13 +81,12 @@
 }
 
 .details__metadata {
-    height: 40%;
-    margin-top: 2rem;
+    max-height: 45%;
+    margin-bottom: 1rem;
 }
 
 .row {
     display: flex;
-    
     min-height: 3rem;
     background-color: #fff;
 }
@@ -101,13 +107,14 @@
     font-weight: bold;
 }
 
-.details__button-container {
-    height: 15%;
+.details__get-capabilities {
+    max-height: 10%;
     margin-bottom: 1rem;
+}
 
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+.details__button-container {
+    max-height: 10%;
+    margin-bottom: 1rem;
 }
 
 .details__button {
@@ -115,11 +122,10 @@
     line-height: 1.6rem;
     background-color: #2FCBAB;
     color: #fff;
-    width: 7rem;
     border: none;
     border-radius: .2rem;
     border-bottom: 1px solid grey;
-    padding: .4rem;
+    padding: .6rem .8rem;
     cursor: pointer;
     box-shadow: .1rem .2rem .4rem rgba(12, 12, 12, 0.5);
 }
@@ -132,8 +138,9 @@
     transform: translateY(1px)
 }
 
-.button-api {
-    margin-right: 2rem;
+.details__buttons {
+    display: flex;
+    justify-content: space-between;
 }
 
 /*FOR WMS LAYER*/
