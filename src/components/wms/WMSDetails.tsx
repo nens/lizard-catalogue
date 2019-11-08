@@ -36,7 +36,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                         <span>{wms.dataset && wms.dataset[0]}</span>
                     </div>
                     <div className="details__map-box">
-                        <Map center={[0,0]} zoom={wms.min_zoom} >
+                        <Map center={[0,0]} zoom={wms.min_zoom} zoomControl={false}>
                             <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
                             {wms.wms_url ? <WMSTileLayer
                                 url={wms.wms_url}

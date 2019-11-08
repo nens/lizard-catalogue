@@ -66,7 +66,7 @@ class RasterDetails extends React.Component<PropsFromState> {
                         <span>{raster.dataset && raster.dataset[0]}</span>
                     </div>
                     <div className="details__map-box">
-                        <Map bounds={bounds} >
+                        <Map bounds={bounds} zoomControl={false}>
                             <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
                             <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
                         </Map>
