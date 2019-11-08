@@ -24,10 +24,9 @@
 }
 
 .details h3 {
-    font-size: 1.3rem;
-    font-weight: 550;
-    text-decoration: underline;
-    margin: 0 0 1rem 0;
+    font-size: 3rem;
+    font-weight: 570;
+    margin: 0 0 2rem 0;
 }
 
 .details__uuid {
@@ -56,12 +55,12 @@
 }
 
 .description {
-    overflow-y: scroll;
-    overflow-x: hidden; 
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .details__map-box {
-    flex: 1.2;
+    flex: 0.8;
     display: flex;
     justify-content: flex-end;
 

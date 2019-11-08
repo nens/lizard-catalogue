@@ -51,7 +51,6 @@ class RasterDetails extends React.Component<PropsFromState> {
         return (
             <div className="details">
                 <h3 title="Raster's name">{raster.name}</h3>
-                <span className="details__uuid" title="Raster's UUID">{raster.uuid}</span>
                 <div className="details__main-box">
                     <div className="details__description-box">
                         <h4>Description</h4>
@@ -59,6 +58,12 @@ class RasterDetails extends React.Component<PropsFromState> {
                         <br />
                         <h4>Organisation</h4>
                         <span>{raster.organisation && raster.organisation.name}</span>
+                        <br />
+                        <h4>UUID</h4>
+                        <span>{raster.uuid}</span>
+                        <br />
+                        <h4>Dataset</h4>
+                        <span>{raster.dataset && raster.dataset[0]}</span>
                     </div>
                     <div className="details__map-box">
                         <Map bounds={bounds} >
