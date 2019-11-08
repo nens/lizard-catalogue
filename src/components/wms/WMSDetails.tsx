@@ -21,7 +21,6 @@ class WMSDetails extends React.Component<PropsFromState> {
         return (
             <div className="details wms-details">
                 <h3 title="WMS layer's name">{wms.name}</h3>
-                <span className="details__uuid" title="WMS layer's UUID">{wms.uuid}</span>
                 <div className="details__main-box">
                     <div className="details__description-box">
                         <h4>Description</h4>
@@ -29,6 +28,12 @@ class WMSDetails extends React.Component<PropsFromState> {
                         <br />
                         <h4>Organisation</h4>
                         <span>{wms.organisation && wms.organisation.name}</span>
+                        <br />
+                        <h4>UUID</h4>
+                        <span>{wms.uuid}</span>
+                        <br />
+                        <h4>Dataset</h4>
+                        <span>{wms.dataset && wms.dataset[0]}</span>
                     </div>
                     <div className="details__map-box">
                         <Map center={[0,0]} zoom={wms.min_zoom} >
