@@ -2,24 +2,35 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getRaster } from '../../reducers';
-import { Raster, LatLng } from '../../interface';
+import { Raster, LatLng, Dataset } from '../../interface';
 import '../styles/Details.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../../utils/latLngZoomCalculation';
-import { openRasterInAPI, openRastersInLizard, openRasterGetCapabilities } from '../../utils/url';
-import { baseUrl } from '../../api';
+import { openRasterInAPI, openRastersInLizard, openRasterGetCapabilities, openDatasetGetCapabilities, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
 
 interface PropsFromState {
     raster: Raster | null
 };
 
-class RasterDetails extends React.Component<PropsFromState> {
+interface MyProps {
+    datasets: Dataset[]
+};
+
+class RasterDetails extends React.Component<PropsFromState & MyProps> {
+    showDataset = (datasets: Dataset[], raster: Raster) => {
+        const checkedDataset = datasets.filter(dataset => dataset.checked)[0];
+        const selectedDataset = checkedDataset && raster.datasets.find(dataset => dataset.slug === checkedDataset.slug);
+
+        return (checkedDataset && selectedDataset) || null;
+    };
+
     render() {
         //Destructure the props
-        const { raster } = this.props;
+        const { raster, datasets } = this.props;
 
         //If no raster is selected, display a text
         if (!raster) return <div className="details details__loading">Please select a raster</div>;
+        const dataset = this.showDataset(datasets, raster);
 
         //Set the Map with bounds coming from spatial_bounds of the Raster
         //If spatial_bounds is null then set the projection to the whole globe which is at [[85, 180], [-85, -180]]
@@ -64,7 +75,7 @@ class RasterDetails extends React.Component<PropsFromState> {
                         <span>{raster.uuid}</span>
                         <br />
                         <h4>Dataset</h4>
-                        <span>{raster.datasets && raster.datasets[0]}</span>
+                        <span>{dataset && dataset.slug}</span>
                     </div>
                     <div className="details__map-box">
                         <Map bounds={bounds} zoomControl={false}>
@@ -113,21 +124,23 @@ class RasterDetails extends React.Component<PropsFromState> {
                         For this raster:
                         <div
                             className="details__get-capabilities-url"
-                            title={`${baseUrl}/wms/${raster.uuid}/?request=GetCapabilities`}
+                            title={getRasterGetCapabilitesURL(raster)}
                             onClick={() => openRasterGetCapabilities(raster)}
                         >
-                            {baseUrl}/wms/{raster.uuid}/?request=GetCapabilities
+                            {getRasterGetCapabilitesURL(raster)}
                         </div>
                     </div>
                     <br/>
-                    <div>
+                    <div
+                        style={{display: dataset ? "block" : "none"}}
+                    >
                         For this complete dataset:
                         <div
                             className="details__get-capabilities-url"
-                            title={`${baseUrl}/wms/dataset_slug/?request=GetCapabilities`}
-                            onClick={() => null}
+                            title={getDatasetGetCapabilitesURL(dataset) || ""}
+                            onClick={() => dataset && openDatasetGetCapabilities(dataset)}
                         >
-                            {baseUrl}/wms/dataset_slug/?request=GetCapabilities
+                            {getDatasetGetCapabilitesURL(dataset)}
                         </div>
                     </div>
                 </div>

@@ -1,4 +1,5 @@
-import { Raster, WMS, LatLng } from "../interface";
+import { Raster, WMS, LatLng, Dataset } from "../interface";
+import { baseUrl } from "../api";
 
 export const openRasterInAPI = (raster: Raster) => {
     window.open(`/api/v4/rasters/${raster.uuid}`)
@@ -28,4 +29,16 @@ export const openWMSInLizard = (wms: WMS) => {
 
 export const openRasterGetCapabilities = (raster: Raster) => {
     window.open(`/wms/${raster.uuid}/?request=GetCapabilities`);
+};
+
+export const openDatasetGetCapabilities = (dataset: Dataset) => {
+    window.open(`/wms/${dataset.slug}/?request=GetCapabilities`);
+};
+
+export const getRasterGetCapabilitesURL = (raster: Raster) => {
+    return `${baseUrl}/wms/${raster.uuid}/?request=GetCapabilities`;
+};
+
+export const getDatasetGetCapabilitesURL = (dataset: Dataset | null) => {
+    return dataset && `${baseUrl}/wms/${dataset.slug}/?request=GetCapabilities`;
 };
