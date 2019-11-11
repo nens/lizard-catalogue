@@ -183,7 +183,14 @@ export interface WMS {
     wms_url: string,
     organisation: Organisation,
     dataset: Dataset,
-    access_modifier: string
+    access_modifier: string,
+    download_url: string | null,
+    spatial_bounds: {
+        west: number,
+        east: number,
+        north: number,
+        south: number
+    } | null,
 };
 
 //ORGANISATION
