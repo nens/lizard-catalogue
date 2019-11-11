@@ -25,3 +25,7 @@ export const openWMSInLizard = (wms: WMS) => {
 
     window.open(`/nl/map/topography,wmslayer$${wmsShortUUID}`);
 };
+
+export const openWMSDownloadURL = (wms: WMS) => {
+    return wms.download_url ? window.open(wms.download_url) : null;
+};

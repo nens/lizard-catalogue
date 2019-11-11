@@ -4,7 +4,7 @@ import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getWMS } from '../../reducers';
 import { WMS } from '../../interface';
 import '../styles/Details.css';
-import { openWMSInAPI, openWMSInLizard } from '../../utils/url';
+import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL } from '../../utils/url';
 
 interface PropsFromState {
     wms: WMS | null
@@ -48,10 +48,10 @@ class WMSDetails extends React.Component<PropsFromState> {
                     </div>
                 </div>
                 <div className="details__wms-info">
-                    <h4>Details</h4><hr/>
+                    <h4>Details</h4><hr/><br/>
                     <h4>WMS layer's URL</h4>
                     <span>{wms.wms_url}</span>
-                    <br />
+                    <br /><br />
                     <h4>Slug</h4>
                     <span>{wms.slug}</span>
                 </div>
@@ -67,7 +67,14 @@ class WMSDetails extends React.Component<PropsFromState> {
                             <i className="fa fa-external-link"/>
                             &nbsp;&nbsp;OPEN IN API
                         </button>
-                        <button className="details__button" title="Download">
+                        <button
+                            className="details__button"
+                            style={{
+                                visibility: wms.download_url ? "visible" : "hidden"
+                            }}
+                            onClick={() => openWMSDownloadURL(wms)}
+                            title="Download"
+                        >
                             <i className="fa fa-download"/>
                             &nbsp;&nbsp;DOWNLOAD
                         </button>
