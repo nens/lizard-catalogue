@@ -112,15 +112,15 @@ class RasterDetails extends React.Component<PropsFromState> {
                 <div className="details__button-container">
                     <h4>Actions</h4><hr/>
                     <div className="details__buttons">
-                        <button className="details__button" onClick={() => openRastersInLizard([raster], centerPoint, zoom)}>
+                        <button className="details__button" onClick={() => openRastersInLizard([raster], centerPoint, zoom)} title="Open in Portal">
                             <i className="fa fa-external-link"/>
                             &nbsp;&nbsp;OPEN IN PORTAL
                         </button>
-                        <button className="details__button" onClick={() => openRasterInAPI(raster)}>
+                        <button className="details__button" onClick={() => openRasterInAPI(raster)} title="Open in API">
                             <i className="fa fa-external-link"/>
                             &nbsp;&nbsp;OPEN IN API
                         </button>
-                        <button className="details__button">
+                        <button className="details__button" title="Export">
                             <i className="fa fa-download"/>
                             &nbsp;&nbsp;EXPORT RASTER
                         </button>

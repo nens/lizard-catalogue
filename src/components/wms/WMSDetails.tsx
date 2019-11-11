@@ -48,6 +48,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                     </div>
                 </div>
                 <div className="details__wms-info">
+                    <h4>Details</h4><hr/>
                     <h4>WMS layer's URL</h4>
                     <span>{wms.wms_url}</span>
                     <br />
@@ -58,15 +59,15 @@ class WMSDetails extends React.Component<PropsFromState> {
                 <div className="details__button-container">
                     <h4>Actions</h4><hr/>
                     <div className="details__buttons">
-                        <button className="details__button" onClick={() => openWMSInLizard(wms)}>
+                        <button className="details__button" onClick={() => openWMSInLizard(wms)} title="Open in Portal">
                             <i className="fa fa-external-link"/>
                             &nbsp;&nbsp;OPEN IN PORTAL
                         </button>
-                        <button className="details__button" onClick={() => openWMSInAPI(wms)}>
+                        <button className="details__button" onClick={() => openWMSInAPI(wms)} title="Open in API">
                             <i className="fa fa-external-link"/>
                             &nbsp;&nbsp;OPEN IN API
                         </button>
-                        <button className="details__button">
+                        <button className="details__button" title="Download">
                             <i className="fa fa-download"/>
                             &nbsp;&nbsp;DOWNLOAD
                         </button>
