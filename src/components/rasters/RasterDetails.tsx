@@ -64,7 +64,7 @@ class RasterDetails extends React.Component<PropsFromState> {
                         <span>{raster.uuid}</span>
                         <br />
                         <h4>Dataset</h4>
-                        <span>{raster.dataset && raster.dataset[0]}</span>
+                        <span>{raster.datasets && raster.datasets[0]}</span>
                     </div>
                     <div className="details__map-box">
                         <Map bounds={bounds} zoomControl={false}>
