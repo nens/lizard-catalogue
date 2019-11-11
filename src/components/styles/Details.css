@@ -126,8 +126,16 @@
     border-radius: .2rem;
     border-bottom: 1px solid grey;
     padding: .6rem .8rem;
+    margin-right: .2rem;
     cursor: pointer;
     box-shadow: .1rem .2rem .4rem rgba(12, 12, 12, 0.5);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.details__button:last-child {
+    margin-right: 0;
 }
 
 .details__button:focus {
@@ -144,17 +152,7 @@
 }
 
 /*FOR WMS LAYER*/
-.wms-details {
-    display: block;
-    position: relative;
-}
-
-.wms-details__info {
+.details__wms-info {
     overflow-wrap: break-word;
-}
-
-.wms-details__button-container {
-    position: absolute;
-    bottom: 3%;
-    justify-content: space-evenly;
+    height: 40%;
 }

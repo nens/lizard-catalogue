@@ -19,7 +19,7 @@ class WMSDetails extends React.Component<PropsFromState> {
         if (!wms) return <div className="details details__loading">Please select a WMS Layer</div>;
 
         return (
-            <div className="details wms-details">
+            <div className="details">
                 <h3 title="WMS layer's name">{wms.name}</h3>
                 <div className="details__main-box">
                     <div className="details__description-box">
@@ -47,7 +47,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                         </Map>
                     </div>
                 </div>
-                <div className="wms-details__info">
+                <div className="details__wms-info">
                     <h4>WMS layer's URL</h4>
                     <span>{wms.wms_url}</span>
                     <br />
@@ -55,11 +55,21 @@ class WMSDetails extends React.Component<PropsFromState> {
                     <span>{wms.slug}</span>
                 </div>
                 <br />
-                <div className="details__button-container wms-details__button-container">
-                    <h4>View data in</h4>
-                    <div>
-                        <button className="details__button button-api" onClick={() => openWMSInAPI(wms)}>API</button>
-                        <button className="details__button button-lizard" onClick={() => openWMSInLizard(wms)}>PORTAL</button>
+                <div className="details__button-container">
+                    <h4>Actions</h4><hr/>
+                    <div className="details__buttons">
+                        <button className="details__button" onClick={() => openWMSInLizard(wms)}>
+                            <i className="fa fa-external-link"/>
+                            &nbsp;&nbsp;OPEN IN PORTAL
+                        </button>
+                        <button className="details__button" onClick={() => openWMSInAPI(wms)}>
+                            <i className="fa fa-external-link"/>
+                            &nbsp;&nbsp;OPEN IN API
+                        </button>
+                        <button className="details__button">
+                            <i className="fa fa-download"/>
+                            &nbsp;&nbsp;DOWNLOAD
+                        </button>
                     </div>
                 </div>
             </div>
