@@ -25,3 +25,7 @@ export const openWMSInLizard = (wms: WMS) => {
 
     window.open(`/nl/map/topography,wmslayer$${wmsShortUUID}`);
 };
+
+export const openRasterGetCapabilities = (raster: Raster) => {
+    window.open(`/wms/${raster.uuid}/?request=GetCapabilities`);
+};

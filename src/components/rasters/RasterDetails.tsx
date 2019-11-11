@@ -6,7 +6,8 @@ import { Raster, LatLng } from '../../interface';
 import '../styles/Details.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../../utils/latLngZoomCalculation';
-import { openRasterInAPI, openRastersInLizard } from '../../utils/url';
+import { openRasterInAPI, openRastersInLizard, openRasterGetCapabilities } from '../../utils/url';
+import { baseUrl } from '../../api';
 
 interface PropsFromState {
     raster: Raster | null
@@ -108,6 +109,27 @@ class RasterDetails extends React.Component<PropsFromState> {
                 <div className="details__get-capabilities">
                     <h4>Lizard WMS GetCapabilities</h4>
                     <hr/>
+                    <div>
+                        For this raster:
+                        <div
+                            className="details__get-capabilities-url"
+                            title={`${baseUrl}/wms/${raster.uuid}/?request=GetCapabilities`}
+                            onClick={() => openRasterGetCapabilities(raster)}
+                        >
+                            {baseUrl}/wms/{raster.uuid}/?request=GetCapabilities
+                        </div>
+                    </div>
+                    <br/>
+                    <div>
+                        For this complete dataset:
+                        <div
+                            className="details__get-capabilities-url"
+                            title={`${baseUrl}/wms/dataset_slug/?request=GetCapabilities`}
+                            onClick={() => null}
+                        >
+                            {baseUrl}/wms/dataset_slug/?request=GetCapabilities
+                        </div>
+                    </div>
                 </div>
                 <div className="details__button-container">
                     <h4>Actions</h4><hr/>
