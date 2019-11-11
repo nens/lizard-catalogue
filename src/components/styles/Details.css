@@ -26,8 +26,12 @@
 .details h3 {
     font-size: 3rem;
     font-weight: 570;
+    line-height: 3.5rem;
     margin: 0 0 2rem 0;
     color: #535353;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .details h4 {
@@ -81,7 +85,7 @@
 }
 
 .details__metadata {
-    max-height: 45%;
+    height: 45%;
     margin-bottom: 1rem;
 }
 

@@ -20,7 +20,7 @@ class WMSDetails extends React.Component<PropsFromState> {
 
         return (
             <div className="details">
-                <h3 title="WMS layer's name">{wms.name}</h3>
+                <h3 title={wms.name}>{wms.name}</h3>
                 <div className="details__main-box">
                     <div className="details__description-box">
                         <h4>Description</h4>
