@@ -51,7 +51,6 @@ class RasterDetails extends React.Component<PropsFromState> {
         return (
             <div className="details">
                 <h3 title="Raster's name">{raster.name}</h3>
-                <span className="details__uuid" title="Raster's UUID">{raster.uuid}</span>
                 <div className="details__main-box">
                     <div className="details__description-box">
                         <h4>Description</h4>
@@ -59,15 +58,22 @@ class RasterDetails extends React.Component<PropsFromState> {
                         <br />
                         <h4>Organisation</h4>
                         <span>{raster.organisation && raster.organisation.name}</span>
+                        <br />
+                        <h4>UUID</h4>
+                        <span>{raster.uuid}</span>
+                        <br />
+                        <h4>Dataset</h4>
+                        <span>{raster.dataset && raster.dataset[0]}</span>
                     </div>
                     <div className="details__map-box">
-                        <Map bounds={bounds} >
+                        <Map bounds={bounds} zoomControl={false}>
                             <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
                             <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
                         </Map>
                     </div>
                 </div>
                 <div className="details__metadata">
+                    <h4>Details</h4><hr/>
                     <div className="row">
                         <p className="column column-1">Temporal</p><p className="column column-2">{raster.temporal ? 'Yes' : 'No'} </p>
                     </div>
@@ -99,12 +105,25 @@ class RasterDetails extends React.Component<PropsFromState> {
                         <p className="column column-1">End</p><p className="column column-2">{stop}</p>
                     </div>
                 </div>
-                <br />
+                <div className="details__get-capabilities">
+                    <h4>Lizard WMS GetCapabilities</h4>
+                    <hr/>
+                </div>
                 <div className="details__button-container">
-                    <h4>View data in</h4>
-                    <div>
-                        <button className="details__button button-api" onClick={() => openRasterInAPI(raster)}>API</button>
-                        <button className="details__button button-lizard" onClick={() => openRastersInLizard([raster], centerPoint, zoom)}>PORTAL</button>
+                    <h4>Actions</h4><hr/>
+                    <div className="details__buttons">
+                        <button className="details__button" onClick={() => openRastersInLizard([raster], centerPoint, zoom)} title="Open in Portal">
+                            <i className="fa fa-external-link"/>
+                            &nbsp;&nbsp;OPEN IN PORTAL
+                        </button>
+                        <button className="details__button" onClick={() => openRasterInAPI(raster)} title="Open in API">
+                            <i className="fa fa-external-link"/>
+                            &nbsp;&nbsp;OPEN IN API
+                        </button>
+                        <button className="details__button" title="Export">
+                            <i className="fa fa-download"/>
+                            &nbsp;&nbsp;EXPORT RASTER
+                        </button>
                     </div>
                 </div>
             </div>

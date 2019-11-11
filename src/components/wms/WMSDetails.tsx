@@ -19,9 +19,8 @@ class WMSDetails extends React.Component<PropsFromState> {
         if (!wms) return <div className="details details__loading">Please select a WMS Layer</div>;
 
         return (
-            <div className="details wms-details">
+            <div className="details">
                 <h3 title="WMS layer's name">{wms.name}</h3>
-                <span className="details__uuid" title="WMS layer's UUID">{wms.uuid}</span>
                 <div className="details__main-box">
                     <div className="details__description-box">
                         <h4>Description</h4>
@@ -29,9 +28,15 @@ class WMSDetails extends React.Component<PropsFromState> {
                         <br />
                         <h4>Organisation</h4>
                         <span>{wms.organisation && wms.organisation.name}</span>
+                        <br />
+                        <h4>UUID</h4>
+                        <span>{wms.uuid}</span>
+                        <br />
+                        <h4>Dataset</h4>
+                        <span>{wms.dataset && wms.dataset[0]}</span>
                     </div>
                     <div className="details__map-box">
-                        <Map center={[0,0]} zoom={wms.min_zoom} >
+                        <Map center={[0,0]} zoom={wms.min_zoom} zoomControl={false}>
                             <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
                             {wms.wms_url ? <WMSTileLayer
                                 url={wms.wms_url}
@@ -42,7 +47,8 @@ class WMSDetails extends React.Component<PropsFromState> {
                         </Map>
                     </div>
                 </div>
-                <div className="wms-details__info">
+                <div className="details__wms-info">
+                    <h4>Details</h4><hr/>
                     <h4>WMS layer's URL</h4>
                     <span>{wms.wms_url}</span>
                     <br />
@@ -50,11 +56,21 @@ class WMSDetails extends React.Component<PropsFromState> {
                     <span>{wms.slug}</span>
                 </div>
                 <br />
-                <div className="details__button-container wms-details__button-container">
-                    <h4>View data in</h4>
-                    <div>
-                        <button className="details__button button-api" onClick={() => openWMSInAPI(wms)}>API</button>
-                        <button className="details__button button-lizard" onClick={() => openWMSInLizard(wms)}>PORTAL</button>
+                <div className="details__button-container">
+                    <h4>Actions</h4><hr/>
+                    <div className="details__buttons">
+                        <button className="details__button" onClick={() => openWMSInLizard(wms)} title="Open in Portal">
+                            <i className="fa fa-external-link"/>
+                            &nbsp;&nbsp;OPEN IN PORTAL
+                        </button>
+                        <button className="details__button" onClick={() => openWMSInAPI(wms)} title="Open in API">
+                            <i className="fa fa-external-link"/>
+                            &nbsp;&nbsp;OPEN IN API
+                        </button>
+                        <button className="details__button" title="Download">
+                            <i className="fa fa-download"/>
+                            &nbsp;&nbsp;DOWNLOAD
+                        </button>
                     </div>
                 </div>
             </div>

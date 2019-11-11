@@ -24,10 +24,16 @@
 }
 
 .details h3 {
-    font-size: 1.3rem;
-    font-weight: 550;
-    text-decoration: underline;
-    margin: 0 0 1rem 0;
+    font-size: 3rem;
+    font-weight: 570;
+    margin: 0 0 2rem 0;
+    color: #535353;
+}
+
+.details h4 {
+    font-size: 1.5rem;
+    margin: .5rem 0;
+    color: #535353;
 }
 
 .details__uuid {
@@ -40,8 +46,8 @@
 .details__main-box {
     display: flex;
     justify-content: space-between;
-
-    height: 45%;
+    height: 30%;
+    margin-bottom: 1rem;
 }
 
 .details__description-box {
@@ -52,16 +58,16 @@
 }
 
 .details__description-box h4 {
-    margin: .8rem 0 .5rem 0;
+    font-size: 1.3rem;
 }
 
 .description {
-    overflow-y: scroll;
-    overflow-x: hidden; 
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .details__map-box {
-    flex: 1.2;
+    flex: 0.8;
     display: flex;
     justify-content: flex-end;
 
@@ -75,13 +81,12 @@
 }
 
 .details__metadata {
-    height: 40%;
-    margin-top: 2rem;
+    max-height: 45%;
+    margin-bottom: 1rem;
 }
 
 .row {
     display: flex;
-    
     min-height: 3rem;
     background-color: #fff;
 }
@@ -102,13 +107,14 @@
     font-weight: bold;
 }
 
-.details__button-container {
-    height: 15%;
+.details__get-capabilities {
+    max-height: 10%;
     margin-bottom: 1rem;
+}
 
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+.details__button-container {
+    max-height: 10%;
+    margin-bottom: 1rem;
 }
 
 .details__button {
@@ -116,13 +122,20 @@
     line-height: 1.6rem;
     background-color: #2FCBAB;
     color: #fff;
-    width: 7rem;
     border: none;
     border-radius: .2rem;
     border-bottom: 1px solid grey;
-    padding: .4rem;
+    padding: .6rem .8rem;
+    margin-right: .2rem;
     cursor: pointer;
     box-shadow: .1rem .2rem .4rem rgba(12, 12, 12, 0.5);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.details__button:last-child {
+    margin-right: 0;
 }
 
 .details__button:focus {
@@ -133,22 +146,13 @@
     transform: translateY(1px)
 }
 
-.button-api {
-    margin-right: 2rem;
+.details__buttons {
+    display: flex;
+    justify-content: space-between;
 }
 
 /*FOR WMS LAYER*/
-.wms-details {
-    display: block;
-    position: relative;
-}
-
-.wms-details__info {
+.details__wms-info {
     overflow-wrap: break-word;
-}
-
-.wms-details__button-container {
-    position: absolute;
-    bottom: 3%;
-    justify-content: space-evenly;
+    height: 40%;
 }

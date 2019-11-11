@@ -127,7 +127,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                         onClick={() => onDataTypeChange('Raster')}
                         disabled={currentDataType === "Raster" ? true : false}
                     >
-                        Raster
+                        <div>RASTER</div>
                     </button>
                     <button 
                         className="switcher-button switcher-button-wms"
@@ -135,7 +135,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                         onClick={() => onDataTypeChange('WMS')}
                         disabled={currentDataType === "WMS" ? true : false}
                     >
-                        WMS
+                        <div>FROM WEB</div>
                     </button>
                 </div>
                 <div 
