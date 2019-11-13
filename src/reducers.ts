@@ -1,11 +1,9 @@
 import { combineReducers } from 'redux';
 import {
     RASTERS_FETCHED,
-    BASKET_UPDATED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
     DATASETS_FETCHED,
-    ITEM_REMOVED,
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
     RECEIVE_LIZARD_BOOTSTRAP,
@@ -17,6 +15,10 @@ import {
     UPDATE_OBSERVATION_RADIOBUTTON,
     UPDATE_DATASET_RADIOBUTTON,
     TOGGLE_ALERT,
+    UPDATE_BASKET_WITH_RASTER,
+    REMOVE_RASTER_FROM_BASKET,
+    UPDATE_BASKET_WITH_WMS,
+    REMOVE_WMS_FROM_BASKET,
 } from "./action";
 import {
     RastersFetched,
@@ -25,7 +27,6 @@ import {
     ObservationType,
     Organisation,
     Dataset,
-    Basket,
     OrganisationsFetched,
     ObservationTypesFetched,
     DatasetsFetched,
@@ -69,7 +70,10 @@ export interface MyStore {
         [index: string]: WMS,
     } | {},
     selectedItem: string | null,
-    basket: string[]
+    basket: {
+        rasters: string[],
+        wmsLayers: string[]
+    }
 };
 
 const bootstrap = (
@@ -239,16 +243,46 @@ const selectedItem = (state: MyStore['selectedItem'] = null, action: ItemSelecte
     };
 };
 
-const basket = (state: MyStore['basket'] = [], action: Basket): MyStore['basket'] => {
+const basket = (
+    state: MyStore['basket'] = {
+        rasters: [],
+        wmsLayers: []
+    },
+    action
+) => {
     switch (action.type) {
-        case BASKET_UPDATED:
-            const newState = [...state, ...action.payload];
-            return newState.filter((item, pos) => newState.indexOf(item) === pos);
-        case ITEM_REMOVED:
-            const newState2 = [...state];
-            const index = newState2.indexOf(action.payload);
-            newState2.splice(index, 1);
-            return newState2;
+        case UPDATE_BASKET_WITH_RASTER:
+            const rasters = [
+                ...state.rasters,
+                ...action.rasters
+            ];
+            return {
+                ...state,
+                //Remove duplicates in the rasters array
+                rasters: rasters.filter((item, i) => rasters.indexOf(item) === i)
+            };
+        case REMOVE_RASTER_FROM_BASKET:
+            const index = state.rasters.indexOf(action.uuid);
+            return {
+                ...state,
+                rasters: state.rasters.filter((raster, i) => raster && i !== index)
+            };
+        case UPDATE_BASKET_WITH_WMS:
+            const wmsLayers = [
+                ...state.wmsLayers,
+                ...action.wmsLayers
+            ];
+            return {
+                ...state,
+                //Remove duplicates in the WMS layers array
+                wmsLayers: wmsLayers.filter((item, i) => wmsLayers.indexOf(item) === i)
+            };
+        case REMOVE_WMS_FROM_BASKET:
+            const index2 = state.wmsLayers.indexOf(action.uuid);
+            return {
+                ...state,
+                wmsLayers: state.wmsLayers.filter((wms, i) => wms && i !== index2)
+            };
         default:
             return state;
     };

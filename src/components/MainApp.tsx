@@ -2,9 +2,9 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
-import { fetchRasters, updateBasket, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationRadiobutton, updateObservationTypeRadiobutton, updateDatasetRadiobutton, toggleAlert } from '../action';
+import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationRadiobutton, updateObservationTypeRadiobutton, updateDatasetRadiobutton, toggleAlert, updateBasketWithRaster, updateBasketWithWMS } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList } from '../reducers';
-import { RasterActionType, ObservationType, Organisation, Dataset, Basket, FilterActionType, SwitchDataType, UpdateRadiobuttonActionType } from '../interface';
+import { RasterActionType, ObservationType, Organisation, Dataset, FilterActionType, SwitchDataType, UpdateRadiobuttonActionType } from '../interface';
 import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL } from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
@@ -27,7 +27,8 @@ interface PropsFromDispatch {
     fetchLizardBootstrap: () => void,
     selectItem: (uuid: string) => void,
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string) => void,
-    updateBasket: (basket: MyStore['basket']) => void,
+    updateBasketWithRaster: (rasters: string[]) => void,
+    updateBasketWithWMS: (wmsLayers: string[]) => void,
     fetchObservationTypes: (parameter: ObservationType['parameter']) => void,
     fetchOrganisations: (name: Organisation['name']) => void,
     fetchDatasets: (slug: Dataset['slug']) => void,
@@ -405,7 +406,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                             page={this.state.page}
                             currentRasterList={this.props.currentRasterList}
                             selectItem={this.props.selectItem}
-                            updateBasket={this.props.updateBasket}
+                            updateBasketWithRaster={this.props.updateBasketWithRaster}
                             onPageClick={this.onPageClick}
                             onSearchChange={this.onSearchChange}
                             onSearchSubmit={this.onSearchSubmit}
@@ -417,7 +418,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                             page={this.state.page}
                             currentWMSList={this.props.currentWMSList}
                             selectItem={this.props.selectItem}
-                            updateBasket={this.props.updateBasket}
+                            updateBasketWithWMS={this.props.updateBasketWithWMS}
                             onPageClick={this.onPageClick}
                             onSearchChange={this.onSearchChange}
                             onSearchSubmit={this.onSearchSubmit}
@@ -458,7 +459,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     currentDataType: getCurrentDataType(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | FilterActionType | UpdateRadiobuttonActionType>): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | FilterActionType | UpdateRadiobuttonActionType>): PropsFromDispatch => ({
     fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
     fetchRasters: (
         page: number,
@@ -468,7 +469,8 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | Basket | Filte
         datasetSlug: string,
         ordering: string
     ) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, datasetSlug, ordering, dispatch),
-    updateBasket: (basket: MyStore['basket']) => updateBasket(basket, dispatch),
+    updateBasketWithRaster: (rasters: string[]) => updateBasketWithRaster(rasters, dispatch),
+    updateBasketWithWMS: (wmsLayers: string[]) => updateBasketWithWMS(wmsLayers, dispatch),
     fetchObservationTypes: (parameter: ObservationType['parameter']) => fetchObservationTypes(parameter, dispatch),
     fetchOrganisations: (name: Organisation['name']) => fetchOrganisations(name, dispatch),
     fetchDatasets: (slug: Dataset['slug']) => fetchDatasets(slug, dispatch),

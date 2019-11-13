@@ -17,7 +17,7 @@ interface MyProps {
     onSorting: (ordering: string) => void,
 
     selectItem: (uuid: string) => void,
-    updateBasket: (basket: MyStore['basket']) => void
+    updateBasketWithRaster: (rasters: string[]) => void
 };
 
 interface PropsFromState {
@@ -58,7 +58,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
 
     render() {
         //Destructure all props of the Raster List component
-        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentRasterList, selectItem, updateBasket, rasters } = this.props;
+        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentRasterList, selectItem, updateBasketWithRaster, rasters } = this.props;
         const { checkedRasters } = this.state;
 
         //number of pages displayed in the pagination bar stored in an array with 5 pages
@@ -82,7 +82,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
             //Click the button will open the notification popup
             window.location.href = '#notification';
 
-            updateBasket(checkedRasters);
+            updateBasketWithRaster(checkedRasters);
             this.setState({ 
                 checkedRasters: [] 
             });

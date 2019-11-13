@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { MyStore, getRaster } from '../reducers';
-import { removeItem } from '../action';
-import { Raster, LatLng, Bootstrap } from '../interface';
+import { MyStore, getRaster, getWMS } from '../reducers';
+import { removeRasterFromBasket, removeWMSFromBasket } from '../action';
+import { Raster, LatLng, Bootstrap, WMS } from '../interface';
 import './styles/Header.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../utils/latLngZoomCalculation';
-import { openRastersInLizard } from '../utils/url';
+import { openAllInLizard } from '../utils/url';
 
 interface MyProps {
     showProfileDropdown: boolean,
@@ -14,17 +14,38 @@ interface MyProps {
 };
 
 interface PropsFromState {
-    basket: Raster[],
+    rasters: Raster[],
+    wmsLayers: WMS[],
     user: Bootstrap['user']
 };
 
 interface PropsFromDispatch {
-    removeItem: (raster: Raster) => void
+    removeRasterFromBasket: (uuid: string) => void,
+    removeWMSFromBasket: (uuid: string) => void
 };
 
 type HeaderProps = MyProps & PropsFromState & PropsFromDispatch;
 
 class Header extends React.Component<HeaderProps> {
+    //Open All Data button will open all rasters and WMS layers in Lizard Client
+    //with projection of the last selected raster
+    openInLizard = (rasters: Raster[], wmsLayers: WMS[]) => {
+        //Get the last selected raster in the basket which is the first item in the rasters array
+        const lastSelectedRaster = rasters.length !== 0 ? rasters[0] : null;
+
+        //Get the spatial bounds of the last selected raster, if spatial_bounds is null then set it to the global map
+        const { north, east, south, west } = (lastSelectedRaster && lastSelectedRaster.spatial_bounds) ?
+            lastSelectedRaster.spatial_bounds : { north: 85, east: 180, south: -85, west: -180 };
+
+        //Get the center point of the raster based on its spatial bounds
+        const centerPoint: LatLng = getCenterPoint(north, east, south, west);
+
+        //Calculate the zoom level of the last selected raster by using the zoomLevelCalculation function
+        const zoom = zoomLevelCalculation(north, east, south, west);
+
+        //Open all rasters and WMS layers in Lizard
+        openAllInLizard(rasters, centerPoint, zoom, wmsLayers);
+    };
 
     renderProfileDropdown() {
         return (
@@ -46,26 +67,8 @@ class Header extends React.Component<HeaderProps> {
     };
 
     render() {
-        const { basket, removeItem, user } = this.props;
-
-        //Open All Data button will open all rasters in Lizard Client
-        //with projection of the last selected raster
-        const openInLizard = (basket: PropsFromState['basket']) => {
-            //Get the last selected raster in the basket which is the first item in the basket array
-            const lastSelectedRaster = basket[0];
-
-            //Get the spatial bounds of the last selected raster, if spatial_bounds is null then set it to the global map
-            const { north, east, south, west } = lastSelectedRaster.spatial_bounds ?
-                lastSelectedRaster.spatial_bounds : { north: 85, east: 180, south: -85, west: -180 };
-
-            //Get the center point of the raster based on its spatial bounds
-            const centerPoint: LatLng = getCenterPoint(north, east, south, west);
-
-            //Calculate the zoom level of the last selected raster by using the zoomLevelCalculation function
-            const zoom = zoomLevelCalculation(north, east, south, west);
-
-            openRastersInLizard(basket, centerPoint, zoom);
-        };
+        const { rasters, wmsLayers , removeRasterFromBasket, removeWMSFromBasket, user } = this.props;
+        const basket = [...rasters, ...wmsLayers];
 
         return (
             <nav className="header">
@@ -74,7 +77,7 @@ class Header extends React.Component<HeaderProps> {
                     <h3 className="header-logo__text">Lizard Catalogue</h3>
                 </div>
                 <div className="header-nav">
-                    <a href="#basket" className="header-nav__icon-box" title={`${basket.length} items in the basket`}>
+                    <a href="#basket" className="header-nav__icon-box" title={`${basket.length } items in the basket`}>
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-shopping-basket" />
                         </svg>
@@ -112,7 +115,7 @@ class Header extends React.Component<HeaderProps> {
                             <span className="header-popup__content-layer-title">Upper layer</span>
                         </div>
                         <ul className="header-popup__content-ul">
-                            {basket.map(raster => (
+                            {rasters.map(raster => (
                                 <li className="header-popup__content-li" key={raster.uuid}>
                                     {raster.temporal ?
                                         <img className="li li-type" src="image/raster-temporal.svg" alt="raster" /> :
@@ -120,9 +123,23 @@ class Header extends React.Component<HeaderProps> {
                                     }
                                     <div className="li li-name">{raster.name}</div>
                                     <div className="li li-org">{raster.organisation && raster.organisation.name}</div>
-                                    <div className="li li-obs">{raster.observation_type && raster.observation_type.parameter}</div>
+                                    {/* <div className="li li-obs">{raster.observation_type && raster.observation_type.parameter}</div> */}
                                     <div className="li li-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
-                                    <div className="li li-basket li-basket__icon-box" onClick={() => removeItem(raster)}>
+                                    <div className="li li-basket li-basket__icon-box" onClick={() => removeRasterFromBasket(raster.uuid)}>
+                                        <svg className="li-basket__icon">
+                                            <use xlinkHref="image/symbols.svg#icon-remove_shopping_cart" />
+                                        </svg>
+                                    </div>
+                                </li>
+                            ))}
+                            {wmsLayers.map(wms => (
+                                <li className="header-popup__content-li" key={wms.uuid}>
+                                    <div className="li li-type" />
+                                    <div className="li li-name">{wms.name}</div>
+                                    <div className="li li-org">{wms.organisation && wms.organisation.name}</div>
+                                    {/* <div className="li li-obs">{wms.slug}</div> */}
+                                    <div className="li li-time" />
+                                    <div className="li li-basket li-basket__icon-box" onClick={() => removeWMSFromBasket(wms.uuid)}>
                                         <svg className="li-basket__icon">
                                             <use xlinkHref="image/symbols.svg#icon-remove_shopping_cart" />
                                         </svg>
@@ -134,7 +151,7 @@ class Header extends React.Component<HeaderProps> {
                         <button
                             className="header-popup__content-button"
                             disabled={basket.length === 0 ? true : false}
-                            onClick={() => openInLizard(basket)}
+                            onClick={() => this.openInLizard(rasters, wmsLayers)}
                         >
                             Open all data in Lizard
                         </button>
@@ -173,14 +190,16 @@ const mapStateToProps = (state: MyStore): PropsFromState => {
         //Get all the rasters by their uuid from the basket and reverse the order
         //so the last selected raster will appear on top of the list
         //and the first selected raster will appear at the bottom of the list
-        basket: state.basket.map(uuid => getRaster(state, uuid)).reverse(),
+        rasters: state.basket.rasters.map(uuid => getRaster(state, uuid)).reverse(),
+        wmsLayers: state.basket.wmsLayers.map(uuid => getWMS(state, uuid)).reverse(),
         //Get user
         user: state.bootstrap.user
     };
 };
 
 const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
-    removeItem: (raster: Raster) => removeItem(raster, dispatch)
+    removeRasterFromBasket: (uuid: string) => removeRasterFromBasket(uuid, dispatch),
+    removeWMSFromBasket: (uuid: string) => removeWMSFromBasket(uuid, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
