@@ -26,49 +26,6 @@ li {
     height: 8%;
 }
 
-.list__searchbar {
-    display: flex;
-    align-items: center;
-}
-
-.list__searchbar-input {
-    font-family: inherit;
-    font-size: 1.1rem;
-    font-weight: 300;
-    border: none;
-    border-radius: .8rem;
-    padding: .4rem 2rem;
-    margin-right: -3.25rem;
-    height: 3rem;
-
-    width: 98%;
-}
-
-.list__searchbar-input:focus {
-    outline-color: #41a086;
-}
-
-.list__searchbar-button {
-    border: none;
-    background-color: inherit;
-    width: 2rem;
-    cursor: pointer;
-}
-
-.list__searchbar-button:focus {
-    outline: none;
-}
-
-.list__searchbar-button:active {
-    transform: translateY(2px);
-}
-
-.list__searchbar-icon {
-    height: 1.5rem;
-    width: 1.5rem;
-    fill: grey;
-}
-
 .list__length {
     color: #686868;
     margin: 1rem 0 0 1rem;

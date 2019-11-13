@@ -3,6 +3,7 @@ import MDSpinner from "react-md-spinner";
 import { connect } from 'react-redux';
 import { WMS } from '../../interface';
 import { MyStore, getWMS } from '../../reducers';
+import SearchBar from '../SearchBar';
 import '../styles/List.css';
 
 interface MyProps {
@@ -88,17 +89,16 @@ class WMSList extends React.Component<WMSListProps, MyState> {
         return (
             <div className="list">
                 <div className="list__top">
-                    <form onSubmit={onSearchSubmit} className="list__searchbar" title="Type WMS layer's name or UUID">
-                        <input type="text" className="list__searchbar-input" placeholder="Search in Lizard or type a UUID" onChange={onSearchChange} value={searchTerm} />
-                        <button className="list__searchbar-button" type="submit">
-                            <svg className="list__searchbar-icon">
-                                <use xlinkHref="image/symbols.svg#icon-search" />
-                            </svg>
-                        </button>
-                    </form>
+                    <SearchBar
+                        name="searchBar"
+                        searchTerm={searchTerm}
+                        title="Type name or UUID of raster/wms layer"
+                        placeholder="Search in Lizard or type a UUID"
+                        onSearchSubmit={onSearchSubmit}
+                        onSearchChange={onSearchChange}
+                    />
                     <div className="list__length">{count} Items</div>
                 </div>
-
                 <div className="list__content">
                     <ul className="list__list">
                         <li className="list__row-title">
