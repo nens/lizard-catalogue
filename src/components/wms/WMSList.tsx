@@ -3,6 +3,7 @@ import MDSpinner from "react-md-spinner";
 import { connect } from 'react-redux';
 import { WMS } from '../../interface';
 import { MyStore, getWMS } from '../../reducers';
+import BasketNotification from '../BasketNotification';
 import '../styles/List.css';
 
 interface MyProps {
@@ -192,12 +193,8 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                     </button>
                 </div>
                 {/*Notification popup when click on the Add to Basket button*/}
-                <div className="list__popup" id="notification">
-                    <div className="list__popup-content">
-                        <p>Items successfully added to the Basket. Go to your basket to see which items have been added.</p>
-                        {/* eslint-disable-next-line */}
-                        <a href="#" className="list__popup-close">OK</a>
-                    </div>
+                <div className="list__notification" id="notification">
+                    <BasketNotification />
                 </div>
             </div>
         );
