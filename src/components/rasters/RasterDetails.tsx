@@ -17,7 +17,7 @@ interface MyProps {
 };
 
 class RasterDetails extends React.Component<PropsFromState & MyProps> {
-    showDataset = (datasets: Dataset[], raster: Raster) => {
+    selectedDataset = (datasets: Dataset[], raster: Raster) => {
         const checkedDataset = datasets.filter(dataset => dataset.checked)[0];
         const selectedDataset = checkedDataset && raster.datasets.find(dataset => dataset.slug === checkedDataset.slug);
 
@@ -30,7 +30,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
 
         //If no raster is selected, display a text
         if (!raster) return <div className="details details__loading">Please select a raster</div>;
-        const dataset = this.showDataset(datasets, raster);
+        const dataset = this.selectedDataset(datasets, raster);
 
         //Set the Map with bounds coming from spatial_bounds of the Raster
         //If spatial_bounds is null then set the projection to the whole globe which is at [[85, 180], [-85, -180]]
