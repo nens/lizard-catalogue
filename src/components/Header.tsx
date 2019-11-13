@@ -134,7 +134,7 @@ class Header extends React.Component<HeaderProps> {
                             ))}
                             {wmsLayers.map(wms => (
                                 <li className="header-popup__content-li" key={wms.uuid}>
-                                    <div className="li li-type" />
+                                    <img className="li li-type" src="image/wms.svg" alt="wms" />
                                     <div className="li li-name">{wms.name}</div>
                                     <div className="li li-org">{wms.organisation && wms.organisation.name}</div>
                                     {/* <div className="li li-obs">{wms.slug}</div> */}
