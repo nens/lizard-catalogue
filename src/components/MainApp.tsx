@@ -276,14 +276,47 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     };
 
     //When switch the view from Rasters to WMS layers and vice versa, set the state of this main container back to initial state
-    onDataTypeChange = () => {
+    onDataTypeChange = (dataType: SwitchDataType['payload']) => {
+        const {
+            organisationName,
+            observationType,
+            datasetSlug,
+            ordering
+        } = this.state;
+
+        //Switching the data type
+        this.props.switchDataType(dataType);
+
+        //Fetch rasters or WMS layers based on selected data type and update the URL
+        dataType === 'Raster' ? this.props.fetchRasters(
+            1,
+            '',
+            organisationName,
+            observationType,
+            datasetSlug,
+            ordering
+        ) : this.props.fetchWMSLayers(
+            1,
+            '',
+            organisationName,
+            datasetSlug,
+            ordering
+        );
+        //Update the URL
+        const url = newURL(
+            dataType,
+            '',
+            organisationName,
+            //Update the URL with selected observation type or not
+            dataType === 'Raster' ? observationType : '',
+            datasetSlug,
+        );
+        this.updateURL(url);
+
+        //Reset the state
         this.setState({
             page: 1,
-            searchTerm: '',
-            organisationName: '',
-            observationType: '',
-            datasetSlug: '',
-            ordering: '',
+            searchTerm: ''
         });
     };
 
@@ -359,16 +392,12 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         onObservationTypeRadiobutton={this.onObservationTypeRadiobutton}
                         onOrganisationRadiobutton={this.onOrganisationRadiobutton}
                         onDatasetRadiobutton={this.onDatasetRadiobutton}
-                        updateObservationTypeRadiobutton={this.props.updateObservationTypeRadiobutton}
-                        updateOrganisationRadiobutton={this.props.updateOrganisationRadiobutton}
-                        updateDatasetRadiobutton={this.props.updateDatasetRadiobutton}
                         onOrganisationSearchSubmit={this.onOrganisationSearchSubmit}
                         onObservationTypeSearchSubmit={this.onObservationTypeSearchSubmit}
                         onDatasetSearchSubmit={this.onDatasetSearchSubmit}
                         onDataTypeChange={this.onDataTypeChange}
                         fetchRasters={this.props.fetchRasters}
                         fetchWMSLayers={this.props.fetchWMSLayers}
-                        switchDataType={this.props.switchDataType}
                         currentDataType={this.props.currentDataType}
                     />
                     {this.props.currentDataType === "Raster" ?

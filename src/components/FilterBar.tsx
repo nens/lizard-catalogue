@@ -18,11 +18,7 @@ interface MyProps {
     onObservationTypeRadiobutton: (obsType: ObservationType) => void,
     onOrganisationRadiobutton: (organisation: Organisation) => void,
     onDatasetRadiobutton: (dataset: Dataset) => void,
-    updateObservationTypeRadiobutton: (parameter: ObservationType['parameter']) => void,
-    updateOrganisationRadiobutton: (name: Organisation['name']) => void,
-    updateDatasetRadiobutton: (slug: Dataset['slug']) => void,
-    onDataTypeChange: () => void
-    switchDataType: (dataType: SwitchDataType['payload']) => void,
+    onDataTypeChange: (dataType: SwitchDataType['payload']) => void,
     onOrganisationSearchSubmit: (name: string) => void,
     onObservationTypeSearchSubmit: (obsTypeParameter: string) => void,
     onDatasetSearchSubmit: (slug: string) => void,
@@ -108,11 +104,7 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
             onObservationTypeRadiobutton,
             onOrganisationRadiobutton,
             onDatasetRadiobutton,
-            updateObservationTypeRadiobutton,
-            updateOrganisationRadiobutton,
-            updateDatasetRadiobutton,
             currentDataType,
-            switchDataType,
             onDataTypeChange
         } = this.props;
 
@@ -132,56 +124,18 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                     <button 
                         className="switcher-button switcher-button-raster"
                         title="Raster"
-                        onClick={() => {
-                            //Switching between Rasters and WMS layers will fetch rasters/wms again with initial values
-                            //then it will set the local state of this component to initial state
-                            //and also set the state of its parent component (the main container) to its initial state
-                            //finally remove all the checked organisation, observation type and dataset
-                            switchDataType("Raster");
-                            this.props.fetchRasters(1, '', '', '', '', '');
-                            onDataTypeChange();
-                            this.setState({
-                                searchObs: '',
-                                searchOrg: '',
-                                searchDataset: '',
-                                obsItems: 4,
-                                orgItems: 4,
-                                datasetItems: 4
-                            });
-                            if (checkedObservationType) updateObservationTypeRadiobutton(checkedObservationType.parameter);
-                            if (checkedOrganisation) updateOrganisationRadiobutton(checkedOrganisation.name);
-                            if (checkedDataset) updateDatasetRadiobutton(checkedDataset.slug);
-                            //Update the URL and remove all the search parameters
-                            this.props.history.push('?data=Raster');
-                        }}
+                        onClick={() => onDataTypeChange('Raster')}
                         disabled={currentDataType === "Raster" ? true : false}
                     >
-                        Raster
+                        <div>RASTER</div>
                     </button>
                     <button 
                         className="switcher-button switcher-button-wms"
                         title="WMS layer"
-                        onClick={() => {
-                            switchDataType("WMS");
-                            this.props.fetchWMSLayers(1, '', '', '', '');
-                            onDataTypeChange();
-                            this.setState({
-                                searchObs: '',
-                                searchOrg: '',
-                                searchDataset: '',
-                                obsItems: 4,
-                                orgItems: 4,
-                                datasetItems: 4
-                            });
-                            if (checkedObservationType) updateObservationTypeRadiobutton(checkedObservationType.parameter);
-                            if (checkedOrganisation) updateOrganisationRadiobutton(checkedOrganisation.name);
-                            if (checkedDataset) updateDatasetRadiobutton(checkedDataset.slug);
-                            //Update the URL and remove all the search parameters
-                            this.props.history.push('?data=WMS');
-                        }}
+                        onClick={() => onDataTypeChange('WMS')}
                         disabled={currentDataType === "WMS" ? true : false}
                     >
-                        WMS
+                        <div>FROM WEB</div>
                     </button>
                 </div>
                 <div 

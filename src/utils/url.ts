@@ -34,3 +34,7 @@ export const openAllInLizard = (rasters: Raster[], centerPoint: LatLng, zoom: nu
 
     window.open(`/nl/map/topography${urlPathForRaster}${urlPathForWMSLayer}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };
+
+export const openWMSDownloadURL = (wms: WMS) => {
+    return wms.download_url ? window.open(wms.download_url) : null;
+};
