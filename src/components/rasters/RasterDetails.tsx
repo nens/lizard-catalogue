@@ -120,7 +120,7 @@ class RasterDetails extends React.Component<PropsFromState> {
                             <i className="fa fa-external-link"/>
                             &nbsp;&nbsp;OPEN IN API
                         </button>
-                        <button className="details__button" title="Export">
+                        <button className="details__button" title="Export" style={{visibility: "hidden"}}>
                             <i className="fa fa-download"/>
                             &nbsp;&nbsp;EXPORT RASTER
                         </button>
