@@ -82,7 +82,7 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
     dispatch(rastersRequested());
     const organisationParam = organisationName === '' ? '' : `&organisation__name__icontains=${organisationName}`;
     const observationTypeParam = observationTypeParameter === '' ? '' : `&observation_type__parameter__icontains=${observationTypeParameter}`;
-    const datasetParam = datasetSlug === '' ? '' : `&datasets__slug__icontains=${datasetSlug}`;
+    const datasetParam = datasetSlug === '' ? '' : `&datasets__slug=${datasetSlug}`;
     request
         .get(`${baseUrl}/rasters/?name__icontains=${searchTerm}&page=${page}${organisationParam}${observationTypeParam}${datasetParam}&ordering=${ordering}&scenario__isnull=true`)
         .then(response => {
@@ -127,7 +127,7 @@ const wmsReceived = (wmsObject: WMSObject): ReceiveWMS => ({
 export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string, dispatch): void => {
     dispatch(wmsRequested());
     const organisationParam = organisationName === '' ? '' : `&organisation__name__icontains=${organisationName}`;
-    const datasetParam = datasetSlug === '' ? '' : `&datasets__slug__icontains=${datasetSlug}`;
+    const datasetParam = datasetSlug === '' ? '' : `&datasets__slug=${datasetSlug}`;
     request
         .get(`${baseUrl}/wmslayers/?name__icontains=${searchTerm}&page=${page}${organisationParam}${datasetParam}&ordering=${ordering}`)
         .then(response => {
