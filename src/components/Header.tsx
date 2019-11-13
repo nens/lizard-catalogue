@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { MyStore, getRaster, getWMS } from '../reducers';
 import { Raster, Bootstrap, WMS } from '../interface';
 import Basket from './Basket';
+import Information from './Information';
 import './styles/Header.css';
 
 interface MyProps {
@@ -86,24 +87,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
                 </div>
                 {/*This is the PopUp window for the Information box*/}
                 <div className="header-information-box" id="information">
-                    <div className="header-information-box__main">
-                        <div className="header-information-box__main__top">
-                            <h4>Information</h4>
-                            <div className="header-information-box__main__content">
-                                <p>Welcome to the Lizard Catalogue!</p>
-                                <p>
-                                    This catalogue provides you a detailed overview of all the raster datasets in Lizard.
-                                    You can search for datasets, filter them per organisation, view detailed metadata and open datasets in the Lizard Portal and the Lizard API.
-                                </p>
-                            </div>
-                        </div>
-                        <div className="header-information-box__footer">
-                            <a href="/static_media/documents/privacy.pdf" target="_blank">Privacy Statement</a>
-                            <button onClick={() => window.location.href = '#'}>Close</button>
-                        </div>
-                        {/* eslint-disable-next-line */}
-                        <a href="#" className="header-information-box__close">&times;</a>
-                    </div>
+                    <Information />
                 </div>
             </nav >
         );

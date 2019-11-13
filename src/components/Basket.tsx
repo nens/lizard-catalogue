@@ -43,55 +43,55 @@ class Basket extends React.Component<PropsFromDispatch & MyProps> {
 
         return (
             <div className="basket">
-                        <h3>My selection</h3>
-                        <div className="basket_upper-layer">
-                            <span className="basket_number-of-items">{basket.length} items</span>
-                            <span className="basket_layer-title">Upper layer</span>
-                        </div>
-                        <ul className="basket_items">
-                            {rasters.map(raster => (
-                                <li className="basket_item" key={raster.uuid}>
-                                    {raster.temporal ?
-                                        <img className="li li-type" src="image/raster-temporal.svg" alt="raster" /> :
-                                        <img className="li li-type" src="image/raster-non-temporal.svg" alt="raster" />
-                                    }
-                                    <div className="li li-name">{raster.name}</div>
-                                    <div className="li li-org">{raster.organisation && raster.organisation.name}</div>
-                                    {/* <div className="li li-obs">{raster.observation_type && raster.observation_type.parameter}</div> */}
-                                    <div className="li li-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
-                                    <div className="li li-basket li-basket__icon-box" onClick={() => removeRasterFromBasket(raster.uuid)}>
-                                        <svg className="li-basket__icon">
-                                            <use xlinkHref="image/symbols.svg#icon-remove_shopping_cart" />
-                                        </svg>
-                                    </div>
-                                </li>
-                            ))}
-                            {wmsLayers.map(wms => (
-                                <li className="basket_item" key={wms.uuid}>
-                                    <img className="li li-type" src="image/wms.svg" alt="wms" />
-                                    <div className="li li-name">{wms.name}</div>
-                                    <div className="li li-org">{wms.organisation && wms.organisation.name}</div>
-                                    {/* <div className="li li-obs">{wms.slug}</div> */}
-                                    <div className="li li-time" />
-                                    <div className="li li-basket li-basket__icon-box" onClick={() => removeWMSFromBasket(wms.uuid)}>
-                                        <svg className="li-basket__icon">
-                                            <use xlinkHref="image/symbols.svg#icon-remove_shopping_cart" />
-                                        </svg>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                        <p className="basket_lower-layer">Lower layer</p>
-                        <button
-                            className="basket_button"
-                            disabled={basket.length === 0 ? true : false}
-                            onClick={() => this.openInLizard(rasters, wmsLayers)}
-                        >
-                            Open all data in Lizard
-                        </button>
-                        {/* eslint-disable-next-line */}
-                        <a href="#" className="basket_close">&times;</a>
-                    </div>
+                <h3>My selection</h3>
+                <div className="basket_upper-layer">
+                    <span className="basket_number-of-items">{basket.length} items</span>
+                    <span className="basket_layer-title">Upper layer</span>
+                </div>
+                <ul className="basket_items">
+                    {rasters.map(raster => (
+                        <li className="basket_item" key={raster.uuid}>
+                            {raster.temporal ?
+                                <img className="li li-type" src="image/raster-temporal.svg" alt="raster" /> :
+                                <img className="li li-type" src="image/raster-non-temporal.svg" alt="raster" />
+                            }
+                            <div className="li li-name">{raster.name}</div>
+                            <div className="li li-org">{raster.organisation && raster.organisation.name}</div>
+                            {/* <div className="li li-obs">{raster.observation_type && raster.observation_type.parameter}</div> */}
+                            <div className="li li-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
+                            <div className="li li-basket li-basket__icon-box" onClick={() => removeRasterFromBasket(raster.uuid)}>
+                                <svg className="li-basket__icon">
+                                    <use xlinkHref="image/symbols.svg#icon-remove_shopping_cart" />
+                                </svg>
+                            </div>
+                        </li>
+                    ))}
+                    {wmsLayers.map(wms => (
+                        <li className="basket_item" key={wms.uuid}>
+                            <img className="li li-type" src="image/wms.svg" alt="wms" />
+                            <div className="li li-name">{wms.name}</div>
+                            <div className="li li-org">{wms.organisation && wms.organisation.name}</div>
+                            {/* <div className="li li-obs">{wms.slug}</div> */}
+                            <div className="li li-time" />
+                            <div className="li li-basket li-basket__icon-box" onClick={() => removeWMSFromBasket(wms.uuid)}>
+                                <svg className="li-basket__icon">
+                                    <use xlinkHref="image/symbols.svg#icon-remove_shopping_cart" />
+                                </svg>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+                <p className="basket_lower-layer">Lower layer</p>
+                <button
+                    className="basket_button"
+                    disabled={basket.length === 0 ? true : false}
+                    onClick={() => this.openInLizard(rasters, wmsLayers)}
+                >
+                    Open all data in Lizard
+                </button>
+                {/* eslint-disable-next-line */}
+                <a href="#" className="basket_close">&times;</a>
+            </div>
         );
     };
 };
@@ -101,4 +101,4 @@ const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
     removeWMSFromBasket: (uuid: string) => removeWMSFromBasket(uuid, dispatch)
 });
 
-export default connect (null, mapDispatchToProps)(Basket);
+export default connect(null, mapDispatchToProps)(Basket);
