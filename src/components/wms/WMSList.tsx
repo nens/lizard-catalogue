@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { WMS } from '../../interface';
 import { MyStore, getWMS } from '../../reducers';
 import SearchBar from '../SearchBar';
+import Pagination from '../Pagination';
 import '../styles/List.css';
 
 interface MyProps {
@@ -145,44 +146,13 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                     </ul>
                 </div>
                 <div className="list__footer">
-                    <div
-                        className="list__pagination"
-                        style={{
-                            visibility: count === 0 ? "hidden" : "visible"
-                        }}
-                    >
-                        <button
-                            onClick={() => onPageClick(page - 1)}
-                            disabled={page > 1 ? false : true}
-                        >
-                            &lsaquo;
-                        </button>
-                        <div className="list__pagination-pages">
-                            {paginatedPages.map(pageNumber => {
-                                if (pageNumber > 0 && pageNumber <= totalPages) {
-                                    return (
-                                        <span
-                                            key={pageNumber}
-                                            onClick={() => pageNumber !== page ? onPageClick(pageNumber) : null}
-                                            className={pageNumber === page
-                                                ? "list__pagination-current-page"
-                                                : "list__pagination-page"
-                                            }
-                                        >
-                                            {pageNumber}
-                                        </span>
-                                    )
-                                }
-                                return null;
-                            })}
-                        </div>
-                        <button
-                            onClick={() => onPageClick(page + 1)}
-                            disabled={page < totalPages ? false : true}
-                        >
-                            &rsaquo;
-                        </button>
-                    </div>
+                    <Pagination
+                        count={count}
+                        page={page}
+                        paginatedPages={paginatedPages}
+                        totalPages={totalPages}
+                        onPageClick={onPageClick}
+                    />
                     <button
                         className="list__button-basket"
                         disabled={this.state.checkedWMSLayers.length === 0 ? true : false}

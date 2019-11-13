@@ -167,53 +167,6 @@ li {
     width: 100%;
 }
 
-.list__pagination {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.list__pagination button {
-    border: none;
-    background-color: transparent;
-    font-size: 2rem;
-    cursor: pointer;
-}
-
-.list__pagination button:disabled {
-    cursor: not-allowed;
-}
-
-.list__pagination button:focus {
-    outline: none;
-}
-
-.list__pagination button:active {
-    transform: translateY(2px);
-}
-
-.list__pagination-pages {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 2rem;
-}
-
-.list__pagination-page {
-    margin: 0 .3rem;
-    padding: .2rem;
-    text-align: center;
-    cursor: pointer;
-}
-
-.list__pagination-current-page {
-    padding: .2rem .6rem;
-    background: #009F86;
-    color: #fff;
-    border-radius: .3rem;
-    cursor: unset;
-}
-
 .list__button-basket {
     font-size: 1.4rem;
     text-transform: uppercase;
