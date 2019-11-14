@@ -15,11 +15,11 @@ export const openRasterInLizard = (raster: Raster, centerPoint: LatLng, zoom: nu
     window.open(`/nl/map/topography,raster$${rasterShortUUID}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };
 
-export const openWMSInLizard = (wms: WMS) => {
+export const openWMSInLizard = (wms: WMS, centerPoint: LatLng, zoom: number) => {
     //create short UUID of the WMS layer
     const wmsShortUUID = wms.uuid.substr(0, 7);
 
-    window.open(`/nl/map/topography,wmslayer$${wmsShortUUID}`);
+    window.open(`/nl/map/topography,wmslayer$${wmsShortUUID}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };
 
 export const openAllInLizard = (rasters: Raster[], centerPoint: LatLng, zoom: number, wmsLayers: WMS[]) => {
