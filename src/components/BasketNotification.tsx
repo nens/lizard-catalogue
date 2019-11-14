@@ -5,7 +5,7 @@ export default class BasketNotification extends React.Component {
     render() {
         return (
             <div className="notification">
-                <p>Basket updated. Please go to your basket to see which items have been added.</p>
+                <p>Your selection has been updated successfully! Please go to the basket to see your selected item(s).</p>
                 {/* eslint-disable-next-line */}
                 <a href="#" className="notification-close">OK</a>
             </div>
