@@ -9,15 +9,11 @@ export const openWMSInAPI = (wms: WMS) => {
     window.open(`/api/v4/wmslayers/${wms.uuid}`)
 };
 
-export const openRastersInLizard = (basket: Raster[], centerPoint: LatLng, zoom: number) => {
-    //create an array of short ID of all the rasters in the basket
-    const idArray = basket.map(raster => raster.uuid.substr(0, 7));
-
-    //create the url path to display all the rasters in the basket on the map
-    //the format of the url is something like: ',raster$rasterID1,raster$rasterID2,...,raster$rasterIDn'
-    const urlPath = idArray.map(id => `,raster$${id}`).join('');
+export const openRasterInLizard = (raster: Raster, centerPoint: LatLng, zoom: number) => {
+    //create short UUID of the raster
+    const rasterShortUUID = raster.uuid.substr(0, 7);
     
-    window.open(`/nl/map/topography${urlPath}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
+    window.open(`/nl/map/topography,raster$${rasterShortUUID}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };
 
 export const openWMSInLizard = (wms: WMS) => {
@@ -25,6 +21,23 @@ export const openWMSInLizard = (wms: WMS) => {
     const wmsShortUUID = wms.uuid.substr(0, 7);
 
     window.open(`/nl/map/topography,wmslayer$${wmsShortUUID}`);
+};
+
+export const openAllInLizard = (rasters: Raster[], centerPoint: LatLng, zoom: number, wmsLayers: WMS[]) => {
+    //create arrays of short ID of all the rasters and WMS layers in the basket
+    const rasterIddArray = rasters.map(raster => raster.uuid.substr(0, 7));
+    const wmsIdArray = wmsLayers.map(wms => wms.uuid.substr(0, 7));
+
+    //create the url path to display all the rasters and WMS layers in the basket on the map
+    //the format of the url is something like: ',raster$rasterID1,raster$rasterID2,...,wmslayer$wmsLayerID1,...'
+    const urlPathForRaster = rasterIddArray.map(id => `,raster$${id}`).join('');
+    const urlPathForWMSLayer = wmsIdArray.map(id => `,wmslayer$${id}`).join('');
+
+    window.open(`/nl/map/topography${urlPathForRaster}${urlPathForWMSLayer}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
+};
+
+export const openWMSDownloadURL = (wms: WMS) => {
+    return wms.download_url ? window.open(wms.download_url) : null;
 };
 
 export const openRasterGetCapabilities = (raster: Raster) => {

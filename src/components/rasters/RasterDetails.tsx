@@ -6,7 +6,7 @@ import { Raster, LatLng, Dataset } from '../../interface';
 import '../styles/Details.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../../utils/latLngZoomCalculation';
-import { openRasterInAPI, openRastersInLizard, openRasterGetCapabilities, openDatasetGetCapabilities, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
+import { openRasterInAPI, openRasterInLizard, openRasterGetCapabilities, openDatasetGetCapabilities, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
 
 interface PropsFromState {
     raster: Raster | null
@@ -62,7 +62,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
 
         return (
             <div className="details">
-                <h3 title="Raster's name">{raster.name}</h3>
+                <h3 title={raster.name}>{raster.name}</h3>
                 <div className="details__main-box">
                     <div className="details__description-box">
                         <h4>Description</h4>
@@ -147,7 +147,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
                 <div className="details__button-container">
                     <h4>Actions</h4><hr/>
                     <div className="details__buttons">
-                        <button className="details__button" onClick={() => openRastersInLizard([raster], centerPoint, zoom)} title="Open in Portal">
+                        <button className="details__button" onClick={() => openRasterInLizard(raster, centerPoint, zoom)} title="Open in Portal">
                             <i className="fa fa-external-link"/>
                             &nbsp;&nbsp;OPEN IN PORTAL
                         </button>
@@ -155,7 +155,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
                             <i className="fa fa-external-link"/>
                             &nbsp;&nbsp;OPEN IN API
                         </button>
-                        <button className="details__button" title="Export">
+                        <button className="details__button" title="Export" style={{visibility: "hidden"}}>
                             <i className="fa fa-download"/>
                             &nbsp;&nbsp;EXPORT RASTER
                         </button>

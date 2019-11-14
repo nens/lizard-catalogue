@@ -1,7 +1,5 @@
 import {
     RASTERS_FETCHED,
-    BASKET_UPDATED,
-    ITEM_REMOVED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
     DATASETS_FETCHED,
@@ -64,19 +62,7 @@ export type WMSActionType = RequestWMS | ReceiveWMS | ToggleAlert;
 export interface ItemSelected {
     type: typeof ITEM_SELECTED,
     payload: string
-}
-
-export interface BasketAdded {
-    type: typeof BASKET_UPDATED,
-    payload: string[]
 };
-
-export interface ItemRemoved {
-    type: typeof ITEM_REMOVED,
-    payload: string
-};
-
-export type Basket = BasketAdded | ItemRemoved;
 
 export interface ObservationTypesFetched {
     type: typeof OBSERVATION_TYPES_FETCHED,
@@ -183,7 +169,14 @@ export interface WMS {
     wms_url: string,
     organisation: Organisation,
     datasets: Dataset[],
-    access_modifier: string
+    access_modifier: string,
+    download_url: string | null,
+    spatial_bounds: {
+        west: number,
+        east: number,
+        north: number,
+        south: number
+    } | null,
 };
 
 //ORGANISATION

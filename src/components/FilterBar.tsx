@@ -2,8 +2,9 @@ import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { ObservationType, Organisation, Dataset, SwitchDataType } from '../interface';
 import { MyStore } from '../reducers';
-import './styles/FilterBar.css';
 import { getUrlParams, getOrganisation, getObservationType, getDataset } from '../utils/getUrlParams';
+import SearchBar from './SearchBar';
+import './styles/FilterBar.css';
 
 interface MyProps {
     observationTypes: ObservationType[],
@@ -146,14 +147,14 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                     }}
                 >
                     <h4 title="Filter by Organisation">Organisation</h4>
-                    <form onSubmit={this.onOrgSubmit} className="list__searchbar" title="Type organisation name">
-                        <input type="text" className="filter-box___searchbar-input list__searchbar-input" placeholder="search" onChange={this.onOrgChange} value={searchOrg} />
-                        <button className="list__searchbar-button" type="submit">
-                            <svg className="list__searchbar-icon">
-                                <use xlinkHref="image/symbols.svg#icon-search" />
-                            </svg>
-                        </button>
-                    </form>
+                    <SearchBar
+                        name="filterSearchBar"
+                        searchTerm={searchOrg}
+                        title="Type organisation name"
+                        placeholder="search"
+                        onSearchSubmit={this.onOrgSubmit}
+                        onSearchChange={this.onOrgChange}
+                    />
                     {checkedOrganisation ?
                         //Showing the checked item and the option the remove this checked item from the filter
                         <div className="filter__checked-item">
@@ -184,14 +185,14 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                     }}
                 >
                     <h4 title="Filter by Dataset">Dataset</h4>
-                    <form onSubmit={this.onDatasetSubmit} className="list__searchbar" title="Type dataset name">
-                        <input type="text" className="filter-box___searchbar-input list__searchbar-input" placeholder="search" onChange={this.onDatasetChange} value={searchDataset} />
-                        <button className="list__searchbar-button" type="submit">
-                            <svg className="list__searchbar-icon">
-                                <use xlinkHref="image/symbols.svg#icon-search" />
-                            </svg>
-                        </button>
-                    </form>
+                    <SearchBar
+                        name="filterSearchBar"
+                        searchTerm={searchDataset}
+                        title="Type dataset name"
+                        placeholder="search"
+                        onSearchSubmit={this.onDatasetSubmit}
+                        onSearchChange={this.onDatasetChange}
+                    />
                     {checkedDataset ?
                         //Showing the checked item and the option the remove this checked item from the filter
                         <div className="filter__checked-item">
@@ -223,14 +224,14 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                     }}
                 >
                     <h4 title="Filter by Observation Type">Observation Type</h4>
-                    <form onSubmit={this.onObsSubmit} className="list__searchbar" title="Type observation type's parameter name">
-                        <input type="text" className="filter-box___searchbar-input list__searchbar-input" placeholder="search" onChange={this.onObsChange} value={searchObs} />
-                        <button className="list__searchbar-button" type="submit">
-                            <svg className="list__searchbar-icon">
-                                <use xlinkHref="image/symbols.svg#icon-search" />
-                            </svg>
-                        </button>
-                    </form>
+                    <SearchBar
+                        name="filterSearchBar"
+                        searchTerm={searchObs}
+                        title="Type observation type's parameter name"
+                        placeholder="search"
+                        onSearchSubmit={this.onObsSubmit}
+                        onSearchChange={this.onObsChange}
+                    />
                     {checkedObservationType ?
                         //Showing the checked item and the option the remove this checked item from the filter
                         <div className="filter__checked-item">
