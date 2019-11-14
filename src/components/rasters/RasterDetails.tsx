@@ -2,23 +2,35 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getRaster } from '../../reducers';
-import { Raster, LatLng } from '../../interface';
+import { Raster, LatLng, Dataset } from '../../interface';
 import '../styles/Details.css';
 
 import { zoomLevelCalculation, getCenterPoint } from '../../utils/latLngZoomCalculation';
-import { openRasterInAPI, openRasterInLizard } from '../../utils/url';
+import { openRasterInAPI, openRasterInLizard, openRasterGetCapabilities, openDatasetGetCapabilities, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
 
 interface PropsFromState {
     raster: Raster | null
 };
 
-class RasterDetails extends React.Component<PropsFromState> {
+interface MyProps {
+    datasets: Dataset[]
+};
+
+class RasterDetails extends React.Component<PropsFromState & MyProps> {
+    selectedDataset = (datasets: Dataset[], raster: Raster) => {
+        const checkedDataset = datasets.filter(dataset => dataset.checked)[0];
+        const selectedDataset = checkedDataset && raster.datasets.find(dataset => dataset.slug === checkedDataset.slug);
+
+        return (checkedDataset && selectedDataset) || null;
+    };
+
     render() {
         //Destructure the props
-        const { raster } = this.props;
+        const { raster, datasets } = this.props;
 
         //If no raster is selected, display a text
         if (!raster) return <div className="details details__loading">Please select a raster</div>;
+        const dataset = this.selectedDataset(datasets, raster);
 
         //Set the Map with bounds coming from spatial_bounds of the Raster
         //If spatial_bounds is null then set the projection to the whole globe which is at [[85, 180], [-85, -180]]
@@ -63,7 +75,7 @@ class RasterDetails extends React.Component<PropsFromState> {
                         <span>{raster.uuid}</span>
                         <br />
                         <h4>Dataset</h4>
-                        <span>{raster.dataset && raster.dataset[0]}</span>
+                        <span>{dataset && dataset.slug}</span>
                     </div>
                     <div className="details__map-box">
                         <Map bounds={bounds} zoomControl={false}>
@@ -108,6 +120,29 @@ class RasterDetails extends React.Component<PropsFromState> {
                 <div className="details__get-capabilities">
                     <h4>Lizard WMS GetCapabilities</h4>
                     <hr/>
+                    <div>
+                        For this raster:
+                        <div
+                            className="details__get-capabilities-url"
+                            title={getRasterGetCapabilitesURL(raster)}
+                            onClick={() => openRasterGetCapabilities(raster)}
+                        >
+                            {getRasterGetCapabilitesURL(raster)}
+                        </div>
+                    </div>
+                    <br/>
+                    <div
+                        style={{display: dataset ? "block" : "none"}}
+                    >
+                        For this complete dataset:
+                        <div
+                            className="details__get-capabilities-url"
+                            title={getDatasetGetCapabilitesURL(dataset) || ""}
+                            onClick={() => dataset && openDatasetGetCapabilities(dataset)}
+                        >
+                            {getDatasetGetCapabilitesURL(dataset)}
+                        </div>
+                    </div>
                 </div>
                 <div className="details__button-container">
                     <h4>Actions</h4><hr/>
@@ -120,7 +155,7 @@ class RasterDetails extends React.Component<PropsFromState> {
                             <i className="fa fa-external-link"/>
                             &nbsp;&nbsp;OPEN IN API
                         </button>
-                        <button className="details__button" title="Export">
+                        <button className="details__button" title="Export" style={{visibility: "hidden"}}>
                             <i className="fa fa-download"/>
                             &nbsp;&nbsp;EXPORT RASTER
                         </button>
