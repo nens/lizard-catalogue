@@ -1,0 +1,30 @@
+.notification {
+    width: 24%;
+    min-height: 12rem;
+    border: 1px solid #BEBEBE;
+    background-color: #F1F1F1;
+    box-shadow: 0 2rem 2rem rgba(12, 12, 12, 0.4);
+    transform: translate(-50%, -50%);
+    /* transition: all .4s .2s; */
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.notification-close {
+    background-color: #2FCBAB;
+    text-decoration: none;
+    color: #fff;
+    height: 2rem;
+    width: 5rem;
+    border-radius: .2rem;
+    box-shadow: .1rem .2rem .4rem rgba(12, 12, 12, 0.5);
+}
