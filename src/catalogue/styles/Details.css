@@ -148,6 +148,7 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    text-transform: uppercase;
 }
 
 .details__button:last-child {
