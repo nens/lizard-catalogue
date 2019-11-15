@@ -33,7 +33,7 @@
 
  .export_main {
     width: 100%;
-    margin: 0 4rem;
+    margin: 1rem 2rem;
     display: flex;
     justify-content: space-between;
 }
@@ -44,17 +44,21 @@
     padding: 1rem;
 }
 
- .export_content {
+.export_map-box {
+    border: 1px solid #BEBEBE;
+    display: flex;
+    justify-content: center;
+    height: 95%;
+    width: 95%;
+}
+
+.export_content {
     flex: 1;
     padding: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
-
- /* RASTER */
-
- /* EXPORT SETTINGS */
 
  /* MODAL CLOSE */
 .export_close {

@@ -17,6 +17,7 @@ export default class Export extends React.Component<MyProps> {
                 <div className="export_main">
                     <div className="export_map-selection">
                         <h4>Export Selection</h4>
+                        <div className="export_map-box" />
                     </div>
                     <div className="export_content">
                         <div className="export_raster">
