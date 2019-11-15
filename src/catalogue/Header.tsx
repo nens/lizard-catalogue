@@ -4,6 +4,7 @@ import { MyStore, getRaster, getWMS } from '../reducers';
 import { Raster, Bootstrap, WMS } from '../interface';
 import Basket from './components/Basket';
 import Information from './components/Information';
+import Export from './components/Export';
 import './styles/Header.css';
 
 interface MyProps {
@@ -95,6 +96,10 @@ class Header extends React.Component<MyProps & PropsFromState> {
                 {/*This is the PopUp window for the Information box*/}
                 <div className="header-information-box" id="information">
                     <Information />
+                </div>
+                {/*This is the PopUp window for the export screen*/}
+                <div className="header-export" id="export">
+                    <Export />
                 </div>
             </nav >
         );

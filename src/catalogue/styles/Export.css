@@ -1,0 +1,56 @@
+.export {
+    width: 80%;
+    min-height: 80%;
+    color: #333;
+    border: 1px solid #BEBEBE;
+    border-radius: 1rem;
+    background-color: #fff;
+    box-shadow: 0 2rem 2rem rgba(12, 12, 12, 0.4);
+    opacity: 0;
+    transform: translate(0%, 0%);
+    transition: all .4s .2s;
+
+     position: absolute;
+    top: 10%;
+    left: 10%;
+
+     display: flex;
+    justify-content: space-between;
+}
+
+ .export_main {
+    width: 100%;
+    margin: 0 4rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+ /* MAP SELECTION */
+.export_map-selection {
+    flex: 3;
+    padding: 1rem;
+}
+
+ .export_content {
+    flex: 1;
+    padding: 1rem;
+}
+
+ /* RASTER */
+
+ /* EXPORT SETTINGS */
+
+ /* MODAL CLOSE */
+.export_close {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: black;
+    position: absolute;
+    right: 1rem;
+    text-decoration: none;
+    transition: all .2s;
+}
+
+ .export_close:hover {
+    color: #41a086;
+}
