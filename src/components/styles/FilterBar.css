@@ -20,12 +20,6 @@
     border-bottom: .75px solid grey; 
 }
 
-.filter-box___searchbar-input {
-    font-size: 1rem;
-    padding: 1rem;
-    height: 2.5rem;
-}
-
 .filter-observation-type {
     height: 27%;
     margin-bottom: 2rem;

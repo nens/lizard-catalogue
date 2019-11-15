@@ -80,7 +80,6 @@
 }
 
 .leaflet-container {
-    height: 90%;
     width: 95%;
 }
 
@@ -112,8 +111,21 @@
 }
 
 .details__get-capabilities {
-    max-height: 10%;
     margin-bottom: 1rem;
+}
+
+.details__get-capabilities-url {
+    cursor: pointer;
+    padding: .4rem;
+    margin: .4rem 0;
+    border-radius: .2rem;
+    border: 1px solid #707070;
+    color: #707070;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .details__button-container {

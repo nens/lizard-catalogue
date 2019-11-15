@@ -45,7 +45,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                         <span>{wms.uuid}</span>
                         <br />
                         <h4>Dataset</h4>
-                        <span>{wms.dataset && wms.dataset[0]}</span>
+                        <span>{wms.datasets && wms.datasets[0] && wms.datasets[0].slug}</span>
                     </div>
                     <div className="details__map-box">
                         <Map bounds={bounds} zoom={wms.min_zoom} zoomControl={false}>

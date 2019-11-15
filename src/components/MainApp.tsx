@@ -426,7 +426,9 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         />
                     }
                     {this.props.currentDataType === "Raster" ?
-                        <RasterDetails />
+                        <RasterDetails
+                            datasets={this.props.datasets}
+                        />
                         :
                         <WMSDetails />
                     }

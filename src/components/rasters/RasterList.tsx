@@ -3,6 +3,9 @@ import MDSpinner from "react-md-spinner";
 import { connect } from 'react-redux';
 import { Raster } from '../../interface';
 import { MyStore, getRaster } from '../../reducers';
+import BasketNotification from '../BasketNotification';
+import SearchBar from '../SearchBar';
+import Pagination from '../Pagination';
 import '../styles/List.css';
 
 interface MyProps {
@@ -91,17 +94,16 @@ class RasterList extends React.Component<RasterListProps, MyState> {
         return (
             <div className="list">
                 <div className="list__top">
-                    <form onSubmit={onSearchSubmit} className="list__searchbar" title="Type raster name or raster's UUID">
-                        <input type="text" className="list__searchbar-input" placeholder="Search in Lizard or type a UUID" onChange={onSearchChange} value={searchTerm} />
-                        <button className="list__searchbar-button" type="submit">
-                            <svg className="list__searchbar-icon">
-                                <use xlinkHref="image/symbols.svg#icon-search" />
-                            </svg>
-                        </button>
-                    </form>
+                    <SearchBar
+                        name="searchBar"
+                        searchTerm={searchTerm}
+                        title="Type name or UUID of raster/wms layer"
+                        placeholder="Search in Lizard or type a UUID"
+                        onSearchSubmit={onSearchSubmit}
+                        onSearchChange={onSearchChange}
+                    />
                     <div className="list__length">{count} Items</div>
                 </div>
-
                 <div className="list__content">
                     <ul className="list__list">
                         <li className="list__row-title">
@@ -161,44 +163,13 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                     </ul>
                 </div>
                 <div className="list__footer">
-                    <div 
-                        className="list__pagination"
-                        style={{
-                            visibility: count === 0 ? "hidden" : "visible"
-                        }}
-                    >
-                        <button
-                            onClick={() => onPageClick(page - 1)}
-                            disabled={page > 1 ? false : true}
-                        >
-                            &lsaquo;
-                        </button>
-                        <div className="list__pagination-pages">
-                            {paginatedPages.map(pageNumber => {
-                                if (pageNumber > 0 && pageNumber <= totalPages) {
-                                    return (
-                                        <span
-                                            key={pageNumber}
-                                            onClick={() => pageNumber !== page ? onPageClick(pageNumber) : null}
-                                            className={pageNumber === page
-                                                ? "list__pagination-current-page"
-                                                : "list__pagination-page"
-                                            }
-                                        >
-                                            {pageNumber}
-                                        </span>
-                                    )
-                                }
-                                return null;
-                            })}
-                        </div>
-                        <button
-                            onClick={() => onPageClick(page + 1)}
-                            disabled={page < totalPages ? false : true}
-                        >
-                            &rsaquo;
-                        </button>
-                    </div>
+                    <Pagination
+                        count={count}
+                        page={page}
+                        paginatedPages={paginatedPages}
+                        totalPages={totalPages}
+                        onPageClick={onPageClick}
+                    />
                     <button
                         className="list__button-basket"
                         disabled={checkedRasters.length === 0 ? true : false}
@@ -208,12 +179,8 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                     </button>
                 </div>
                 {/*Notification popup when click on the Add to Basket button*/}
-                <div className="list__popup" id="notification">
-                    <div className="list__popup-content">
-                        <p>Items successfully added to the Basket. Go to your basket to see which items have been added.</p>
-                        {/* eslint-disable-next-line */}
-                        <a href="#" className="list__popup-close">OK</a>
-                    </div>
+                <div className="list__notification" id="notification">
+                    <BasketNotification />
                 </div>
             </div>
         );

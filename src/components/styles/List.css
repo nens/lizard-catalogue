@@ -26,49 +26,6 @@ li {
     height: 8%;
 }
 
-.list__searchbar {
-    display: flex;
-    align-items: center;
-}
-
-.list__searchbar-input {
-    font-family: inherit;
-    font-size: 1.1rem;
-    font-weight: 300;
-    border: none;
-    border-radius: .8rem;
-    padding: .4rem 2rem;
-    margin-right: -3.25rem;
-    height: 3rem;
-
-    width: 98%;
-}
-
-.list__searchbar-input:focus {
-    outline-color: #41a086;
-}
-
-.list__searchbar-button {
-    border: none;
-    background-color: inherit;
-    width: 2rem;
-    cursor: pointer;
-}
-
-.list__searchbar-button:focus {
-    outline: none;
-}
-
-.list__searchbar-button:active {
-    transform: translateY(2px);
-}
-
-.list__searchbar-icon {
-    height: 1.5rem;
-    width: 1.5rem;
-    fill: grey;
-}
-
 .list__length {
     color: #686868;
     margin: 1rem 0 0 1rem;
@@ -210,53 +167,6 @@ li {
     width: 100%;
 }
 
-.list__pagination {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.list__pagination button {
-    border: none;
-    background-color: transparent;
-    font-size: 2rem;
-    cursor: pointer;
-}
-
-.list__pagination button:disabled {
-    cursor: not-allowed;
-}
-
-.list__pagination button:focus {
-    outline: none;
-}
-
-.list__pagination button:active {
-    transform: translateY(2px);
-}
-
-.list__pagination-pages {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 2rem;
-}
-
-.list__pagination-page {
-    margin: 0 .3rem;
-    padding: .2rem;
-    text-align: center;
-    cursor: pointer;
-}
-
-.list__pagination-current-page {
-    padding: .2rem .6rem;
-    background: #009F86;
-    color: #fff;
-    border-radius: .3rem;
-    cursor: unset;
-}
-
 .list__button-basket {
     font-size: 1.4rem;
     text-transform: uppercase;
@@ -288,7 +198,7 @@ li {
 }
 
 /*POPUP WINDOW WHEN CLICK ON THE ADD TO BASKET BUTTON*/
-.list__popup {
+.list__notification {
     height: 100vh;
     width: 100%;
     position: fixed;
@@ -301,38 +211,7 @@ li {
     transition: all .3s;
 }
 
-.list__popup:target {
+.list__notification:target {
     opacity: 1;
     visibility: visible;
-}
-
-.list__popup-content {
-    width: 24%;
-    min-height: 12rem;
-    border: 1px solid #BEBEBE;
-    background-color: #F1F1F1;
-    box-shadow: 0 2rem 2rem rgba(12, 12, 12, 0.4);
-    transform: translate(-50%, -50%);
-    /* transition: all .4s .2s; */
-
-    position: absolute;
-    top: 50%;
-    left: 50%;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    text-align: center;
-    padding: 2rem;
-}
-
-.list__popup-close {
-    background-color: #2FCBAB;
-    text-decoration: none;
-    color: #fff;
-    height: 2rem;
-    width: 5rem;
-    border-radius: .2rem;
-    box-shadow: .1rem .2rem .4rem rgba(12, 12, 12, 0.5);
 }

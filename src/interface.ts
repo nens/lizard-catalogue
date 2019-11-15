@@ -121,7 +121,7 @@ export interface Raster {
     name: string,
     organisation: Organisation,
     observation_type: ObservationType,
-    dataset: Dataset,
+    datasets: Dataset[],
     description: string,
     temporal: boolean,
     interval: string,
@@ -168,7 +168,7 @@ export interface WMS {
     url: string,
     wms_url: string,
     organisation: Organisation,
-    dataset: Dataset,
+    datasets: Dataset[],
     access_modifier: string,
     download_url: string | null,
     spatial_bounds: {
