@@ -2,8 +2,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { MyStore, getRaster, getWMS } from '../reducers';
 import { Raster, Bootstrap, WMS } from '../interface';
-import Basket from './Basket';
-import Information from './Information';
+import Basket from './components/Basket';
+import Information from './components/Information';
 import './styles/Header.css';
 
 interface MyProps {

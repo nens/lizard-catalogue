@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 import store from './store';
-import MainContainer from './components/MainApp';
+import MainContainer from './catalogue/MainApp';
 
 function App() {
   return (

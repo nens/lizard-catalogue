@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './styles/BasketNotification.css';
+import '../styles/BasketNotification.css';
 
 export default class BasketNotification extends React.Component {
     render() {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './styles/Information.css';
+import '../styles/Information.css';
 
 export default class Information extends React.Component {
     render() {

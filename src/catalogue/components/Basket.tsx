@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Raster, WMS, LatLng } from '../interface';
-import { getCenterPoint, zoomLevelCalculation, getBounds } from '../utils/latLngZoomCalculation';
-import { openAllInLizard } from '../utils/url';
-import { removeRasterFromBasket, removeWMSFromBasket } from '../action';
-import './styles/Basket.css';
+import { Raster, WMS, LatLng } from '../../interface';
+import { getCenterPoint, zoomLevelCalculation, getBounds } from '../../utils/latLngZoomCalculation';
+import { openAllInLizard } from '../../utils/url';
+import { removeRasterFromBasket, removeWMSFromBasket } from '../../action';
+import '../styles/Basket.css';
 
 interface PropsFromDispatch {
     removeRasterFromBasket: (uuid: string) => void,

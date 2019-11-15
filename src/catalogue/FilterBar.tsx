@@ -3,7 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { ObservationType, Organisation, Dataset, SwitchDataType } from '../interface';
 import { MyStore } from '../reducers';
 import { getUrlParams, getOrganisation, getObservationType, getDataset } from '../utils/getUrlParams';
-import SearchBar from './SearchBar';
+import SearchBar from './components/SearchBar';
 import './styles/FilterBar.css';
 
 interface MyProps {
