@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Raster } from '../../interface';
 import '../styles/Export.css';
+import Download from './Download';
 
 interface MyProps {
     raster: Raster,
@@ -8,13 +9,28 @@ interface MyProps {
 };
 
 export default class Export extends React.Component<MyProps> {
+    state = {
+        showDownloadModal: false
+    };
+
+    toggleDownloadModal = () => {
+        this.setState({
+            showDownloadModal: !this.state.showDownloadModal
+        });
+    };
+
     render() {
         const { raster, toggleExportModal } = this.props;
-        console.log(raster);
+        const { showDownloadModal } = this.state;
 
         return (
             <div className="export">
-                <div className="export_main">
+                <div
+                    className="export_main"
+                    style={{
+                        display: showDownloadModal ? "none" : "flex"
+                    }}
+                >
                     <div className="export_map-selection">
                         <h3>Export Selection</h3>
                         <div className="export_map-box" />
@@ -70,15 +86,32 @@ export default class Export extends React.Component<MyProps> {
                             <button className="details__button">
                                 Cancel
                             </button>
-                            <button className="details__button">
+                            <button className="details__button" onClick={() => {this.toggleDownloadModal();}}>
                                 <i className="fa fa-download"/>
                                 &nbsp;&nbsp;Make a selection
                             </button>
                         </div>
                     </div>
                 </div>
+                {/*This is the PopUp window for the download modal*/}
+                <div
+                    className="export_download"
+                    style={{
+                        display: showDownloadModal ? "flex" : "none"
+                    }}
+                >
+                    <Download />
+                </div>
                 {/* eslint-disable-next-line */}
-                <a className="export_close" onClick={toggleExportModal}>&times;</a>
+                <a
+                    className="export_close"
+                    onClick={() => {
+                        toggleExportModal();
+                        this.toggleDownloadModal()
+                    }}
+                >
+                    &times;
+                </a>
             </div>
         );
     };
