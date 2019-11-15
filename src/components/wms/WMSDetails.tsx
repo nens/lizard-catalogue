@@ -2,9 +2,11 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getWMS } from '../../reducers';
-import { WMS } from '../../interface';
+import { WMS, LatLng } from '../../interface';
 import '../styles/Details.css';
+
 import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL } from '../../utils/url';
+import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 
 interface PropsFromState {
     wms: WMS | null
@@ -17,6 +19,16 @@ class WMSDetails extends React.Component<PropsFromState> {
 
         //If no WMS layer is selected, display a text
         if (!wms) return <div className="details details__loading">Please select a WMS Layer</div>;
+
+        //Get spatial bounds of the WMS layer
+        const wmsBounds = getBounds(wms);
+        const bounds = boundsToDisplay(wmsBounds);
+
+        //Get the center point of the raster based on its spatial bounds
+        const centerPoint: LatLng = getCenterPoint(wmsBounds);
+
+        //Calculate the zoom level of the raster by using the zoomLevelCalculation function
+        const zoom = zoomLevelCalculation(wmsBounds);
 
         return (
             <div className="details">
@@ -36,7 +48,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                         <span>{wms.datasets && wms.datasets[0] && wms.datasets[0].slug}</span>
                     </div>
                     <div className="details__map-box">
-                        <Map center={[0,0]} zoom={wms.min_zoom} zoomControl={false}>
+                        <Map bounds={bounds} zoom={wms.min_zoom} zoomControl={false}>
                             <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
                             {wms.wms_url ? <WMSTileLayer
                                 url={wms.wms_url}
@@ -59,7 +71,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                 <div className="details__button-container">
                     <h4>Actions</h4><hr/>
                     <div className="details__buttons">
-                        <button className="details__button" onClick={() => openWMSInLizard(wms)} title="Open in Portal">
+                        <button className="details__button" onClick={() => openWMSInLizard(wms, centerPoint, zoom)} title="Open in Portal">
                             <i className="fa fa-external-link"/>
                             &nbsp;&nbsp;OPEN IN PORTAL
                         </button>

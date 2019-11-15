@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Raster, WMS, LatLng } from '../interface';
-import { getCenterPoint, zoomLevelCalculation } from '../utils/latLngZoomCalculation';
+import { getCenterPoint, zoomLevelCalculation, getBounds } from '../utils/latLngZoomCalculation';
 import { openAllInLizard } from '../utils/url';
 import { removeRasterFromBasket, removeWMSFromBasket } from '../action';
 import './styles/Basket.css';
@@ -19,20 +19,29 @@ interface MyProps {
 
 class Basket extends React.Component<PropsFromDispatch & MyProps> {
     //Open All Data button will open all rasters and WMS layers in Lizard Client
-    //with projection of the last selected raster
+    //with projection of the last selected raster or WMS layer
     openInLizard = (rasters: Raster[], wmsLayers: WMS[]) => {
-        //Get the last selected raster in the basket which is the first item in the rasters array
-        const lastSelectedRaster = rasters.length !== 0 ? rasters[0] : null;
+        //Get the last selected raster in the basket or last selected WMS layer if there is no raster
+        let lastSelectedObject: Raster | WMS | null = null;
 
-        //Get the spatial bounds of the last selected raster, if spatial_bounds is null then set it to the global map
-        const { north, east, south, west } = (lastSelectedRaster && lastSelectedRaster.spatial_bounds) ?
-            lastSelectedRaster.spatial_bounds : { north: 85, east: 180, south: -85, west: -180 };
+        //The first item in the rasters/WMS layers array is the last selected object
+        if (rasters.length > 0) {
+            lastSelectedObject = rasters[0];
+        } else if (wmsLayers.length > 0) {
+            lastSelectedObject = wmsLayers[0];
+        };
 
-        //Get the center point of the raster based on its spatial bounds
-        const centerPoint: LatLng = getCenterPoint(north, east, south, west);
+        //Get the spatial bounds of the last selected object,
+        //if lastSelectedObject is null then set it to the global map
+        const bounds = lastSelectedObject ? getBounds(lastSelectedObject) : {
+            north: 85, east: 180, south: -85, west: -180
+        };
 
-        //Calculate the zoom level of the last selected raster by using the zoomLevelCalculation function
-        const zoom = zoomLevelCalculation(north, east, south, west);
+        //Get the center point based on its spatial bounds
+        const centerPoint: LatLng = getCenterPoint(bounds);
+
+        //Calculate the zoom level by using the zoomLevelCalculation function
+        const zoom = zoomLevelCalculation(bounds);
 
         //Open all rasters and WMS layers in Lizard
         openAllInLizard(rasters, centerPoint, zoom, wmsLayers);

@@ -5,7 +5,7 @@ import { MyStore, getRaster } from '../../reducers';
 import { Raster, LatLng, Dataset } from '../../interface';
 import '../styles/Details.css';
 
-import { zoomLevelCalculation, getCenterPoint } from '../../utils/latLngZoomCalculation';
+import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import { openRasterInAPI, openRasterInLizard, openRasterGetCapabilities, openDatasetGetCapabilities, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
 
 interface PropsFromState {
@@ -33,17 +33,14 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
         const dataset = this.selectedDataset(datasets, raster);
 
         //Set the Map with bounds coming from spatial_bounds of the Raster
-        //If spatial_bounds is null then set the projection to the whole globe which is at [[85, 180], [-85, -180]]
-        const { north, east, south, west } = raster.spatial_bounds ?
-            raster.spatial_bounds : { north: 85, east: 180, south: -85, west: -180 };
-
-        const bounds = [[north, east], [south, west]];
+        const rasterBounds = getBounds(raster);
+        const bounds = boundsToDisplay(rasterBounds);
 
         //Get the center point of the raster based on its spatial bounds
-        const centerPoint: LatLng = getCenterPoint(north, east, south, west);
+        const centerPoint: LatLng = getCenterPoint(rasterBounds);
 
         //Calculate the zoom level of the raster by using the zoomLevelCalculation function
-        const zoom = zoomLevelCalculation(north, east, south, west);
+        const zoom = zoomLevelCalculation(rasterBounds);
 
         //Get the Date from the timestamp string
         const lastestUpdateDate = new Date(raster.last_modified);
