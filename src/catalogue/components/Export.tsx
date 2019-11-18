@@ -13,12 +13,6 @@ export default class Export extends React.Component<MyProps> {
         showDownloadModal: false
     };
 
-    toggleDownloadModal = () => {
-        this.setState({
-            showDownloadModal: !this.state.showDownloadModal
-        });
-    };
-
     render() {
         const { raster, toggleExportModal } = this.props;
         const { showDownloadModal } = this.state;
@@ -86,7 +80,7 @@ export default class Export extends React.Component<MyProps> {
                             <button className="details__button">
                                 Cancel
                             </button>
-                            <button className="details__button" onClick={() => {this.toggleDownloadModal();}}>
+                            <button className="details__button" onClick={() => this.setState({showDownloadModal: true})}>
                                 <i className="fa fa-download"/>
                                 &nbsp;&nbsp;Make a selection
                             </button>
@@ -107,7 +101,7 @@ export default class Export extends React.Component<MyProps> {
                     className="export_close"
                     onClick={() => {
                         toggleExportModal();
-                        this.toggleDownloadModal()
+                        this.setState({showDownloadModal: false})
                     }}
                 >
                     &times;
