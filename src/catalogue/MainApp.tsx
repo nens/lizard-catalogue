@@ -44,6 +44,7 @@ type MainAppProps = PropsFromState & PropsFromDispatch & RouteComponentProps;
 
 interface MyState {
     showProfileDropdown: boolean,
+    showExportDropdown: boolean,
     page: number,
     initialPage: number,
     searchTerm: string,
@@ -56,6 +57,7 @@ interface MyState {
 class MainApp extends React.Component<MainAppProps, MyState> {
     state: MyState = {
         showProfileDropdown: false,
+        showExportDropdown: false,
         page: 1,
         initialPage: 1,
         searchTerm: '',
@@ -65,12 +67,25 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         ordering: '',
     };
 
-    toggleProfileDropdownAndAlertMessage = (event) => {
+    toggleDropdownsAndAlertMessage = (event) => {
         if (this.props.currentRasterList && this.props.currentRasterList.showAlert === true) this.props.toggleAlert();
         if (this.props.currentWMSList && this.props.currentWMSList.showAlert === true) this.props.toggleAlert();
-        return event.target.id === "user-profile" ?
-            this.setState({ showProfileDropdown: !this.state.showProfileDropdown }) :
-            this.setState({ showProfileDropdown: false });
+        if (event.target.id === "user-profile") {
+            this.setState({
+                showProfileDropdown: !this.state.showProfileDropdown,
+                showExportDropdown: false
+            })
+        } else if (event.target.id === "export-dropdown") {
+            this.setState({
+                showProfileDropdown: false,
+                showExportDropdown: !this.state.showExportDropdown
+            })
+        } else {
+            this.setState({
+                showProfileDropdown: false,
+                showExportDropdown: false
+            });
+        }
     };
 
     onPageClick = (page: number) => {
@@ -374,11 +389,12 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 
     render() {
         return (
-            <div className="main-container" onClick={this.toggleProfileDropdownAndAlertMessage}>
+            <div className="main-container" onClick={this.toggleDropdownsAndAlertMessage}>
                 <div className="main-header">
                     <Header
                         showProfileDropdown={this.state.showProfileDropdown}
-                        toggleProfileDropdown={this.toggleProfileDropdownAndAlertMessage}
+                        showExportDropdown={this.state.showExportDropdown}
+                        toggleDropdowns={this.toggleDropdownsAndAlertMessage}
                     />
                 </div>
                 <div className="main-body">

@@ -5,10 +5,12 @@ import { Raster, Bootstrap, WMS } from '../interface';
 import Basket from './components/Basket';
 import Information from './components/Information';
 import './styles/Header.css';
+import ExportDropdown from './components/ExportDropdown';
 
 interface MyProps {
     showProfileDropdown: boolean,
-    toggleProfileDropdown: (event) => void
+    showExportDropdown: boolean,
+    toggleDropdowns: (event) => void
 };
 
 interface PropsFromState {
@@ -20,7 +22,7 @@ interface PropsFromState {
 class Header extends React.Component<MyProps & PropsFromState> {
     renderProfileDropdown() {
         return (
-            <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
+            <div className="user-profile_dropdown" onMouseLeave={this.props.toggleDropdowns}>
                 <a
                     href="https://sso.lizard.net/accounts/profile/"
                     target="_blank"
@@ -48,13 +50,14 @@ class Header extends React.Component<MyProps & PropsFromState> {
                     <h3 className="header-logo__text">Lizard Catalogue</h3>
                 </div>
                 <div className="header-nav">
-                    <a href="#export" className="header-nav__icon-box" style={{marginRight: "5rem"}}>
-                        <svg className="header-nav__icon">
-                            <use xlinkHref="image/symbols.svg#icon-download" />
+                    <div className="header-nav__icon-box export-dropdown" id="export-dropdown" style={{marginRight: "5rem"}}>
+                        <svg className="header-nav__icon" id="export-dropdown">
+                            <use xlinkHref="image/symbols.svg#icon-download" id="export-dropdown" />
                         </svg>
-                        <span className="header-nav__notification">!</span>
-                        <span className="header-nav__text">Export</span>
-                    </a>
+                        <span className="header-nav__export-notification header-nav__notification">!</span>
+                        <span className="header-nav__export-text" id="export-dropdown" style={{marginLeft: "1rem"}}>Export</span>
+                        {this.props.showExportDropdown && <ExportDropdown toggleDropdowns={this.props.toggleDropdowns}/>}
+                    </div>
                     <a href="#basket" className="header-nav__icon-box" title={`${basket.length } items in the basket`}>
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-shopping-basket" />

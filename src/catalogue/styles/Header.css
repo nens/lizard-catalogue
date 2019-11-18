@@ -59,6 +59,19 @@
     overflow: hidden;
 }
 
+.export-dropdown {
+    position: relative;
+}
+
+.export-dropdown .header-nav__text {
+    width: 70%;
+    overflow: hidden;
+}
+
+.header-nav__export-text {
+    margin-left: 1.5rem;
+}
+
 .header-nav__icon {
     height: 2.5rem;
     width: 3rem;

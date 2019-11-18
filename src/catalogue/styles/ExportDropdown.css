@@ -1,0 +1,53 @@
+.export_dropdown {
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+}
+
+.export_dropdown-file {
+    font-size: 1.4rem;
+    color: #434343;
+    background-color: #fafafa;
+    width: 100%;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.export_dropdown-filename {
+    width: 80%;
+    overflow: hidden;
+}
+
+.export_dropdown-filename:hover {
+    background-color: #e5e5e5;
+}
+
+.export_dropdown-file:hover {
+    background-color: #e5e5e5;
+}
+
+.export_dropdown-file i:hover {
+    background-color: #e5e5e5;
+}
+
+.export_dropdown-info {
+    font-size: 1.4rem;
+    color: #3B3B3B;
+    text-align: center;
+    background-color: #fafafa;
+    width: 100%;
+    padding: 0 1rem;
+    cursor: default;
+    padding: 1rem;
+}
+
+.export_dropdown-info:hover {
+    background-color: #fafafa;
+}
