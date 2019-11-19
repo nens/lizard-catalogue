@@ -80,6 +80,11 @@ export default class Export extends React.Component<MyProps> {
                                     <h4>Resolution</h4>
                                     <input type="text"/>
                                 </div>
+                                <br/>
+                                <div>
+                                    <h4>Pixels</h4>
+                                    <input type="text"/>
+                                </div>
                             </div>
                         </div>
                         <div className="export_text">
