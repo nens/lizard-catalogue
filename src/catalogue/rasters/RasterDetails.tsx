@@ -175,17 +175,15 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                     </div>
                 </div>
                 {/*This is the PopUp window for the export screen*/}
-                <div
-                    className="raster-export"
-                    style={{
-                        display: this.state.showExport ? "block" : "none"
-                    }}
-                >
-                    <Export
-                        raster={raster}
-                        toggleExportModal={this.toggleExportModal}
-                    />
-                </div>
+                {this.state.showExport && (
+                    <div className="raster-export">
+                        <Export
+                            raster={raster}
+                            bounds={bounds}
+                            toggleExportModal={this.toggleExportModal}
+                        />
+                    </div>
+                )}
             </div>
         );
     };

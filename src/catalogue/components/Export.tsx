@@ -1,10 +1,12 @@
 import * as React from 'react';
+import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { Raster } from '../../interface';
 import '../styles/Export.css';
 import Download from './Download';
 
 interface MyProps {
     raster: Raster,
+    bounds: number[][],
     toggleExportModal: () => void
 };
 
@@ -14,7 +16,7 @@ export default class Export extends React.Component<MyProps> {
     };
 
     render() {
-        const { raster, toggleExportModal } = this.props;
+        const { raster, bounds, toggleExportModal } = this.props;
         const { showDownloadModal } = this.state;
 
         return (
@@ -27,7 +29,12 @@ export default class Export extends React.Component<MyProps> {
                 >
                     <div className="export_map-selection">
                         <h3>Export Selection</h3>
-                        <div className="export_map-box" />
+                        <div className="export_map-box">
+                            <Map bounds={bounds} zoomControl={false} style={{width: "100%"}}>
+                                <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
+                                <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
+                            </Map>
+                        </div>
                     </div>
                     <div className="export_content">
                         <div className="export_raster">
@@ -88,24 +95,13 @@ export default class Export extends React.Component<MyProps> {
                     </div>
                 </div>
                 {/*This is the PopUp window for the download modal*/}
-                <div
-                    className="export_download"
-                    style={{
-                        display: showDownloadModal ? "flex" : "none"
-                    }}
-                >
-                    <Download />
-                </div>
+                {showDownloadModal && (
+                    <div className="export_download">
+                        <Download />
+                    </div>
+                )}
                 {/* eslint-disable-next-line */}
-                <a
-                    className="export_close"
-                    onClick={() => {
-                        toggleExportModal();
-                        this.setState({showDownloadModal: false})
-                    }}
-                >
-                    &times;
-                </a>
+                <a className="export_close" onClick={toggleExportModal}>&times;</a>
             </div>
         );
     };

@@ -56,9 +56,9 @@
 }
 
 .export_map-box {
-    border: 1px solid #BEBEBE;
-    height: 95%;
-    width: 95%;
+    outline: auto;
+    height: 93%;
+    display: flex;
 }
 
 /* CONTENT */
@@ -123,7 +123,7 @@
     cursor: pointer;
     font-size: 2.5rem;
     font-weight: bold;
-    color: black;
+    color: #3B3B3B;
     position: absolute;
     top: 1rem;
     right: 1rem;
