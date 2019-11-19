@@ -63,10 +63,13 @@ export default class Export extends React.Component<MyProps> {
                             <h3>Export Settings</h3>
                             <hr />
                             <div>
-                                <div>
-                                    <h4>Date / Time (temporal only)</h4>
-                                    <input type="datetime-local"/>
-                                </div>
+                                {/* Datetime picker for temporal raster */}
+                                {raster.temporal && (
+                                    <div>
+                                        <h4>Date / Time</h4>
+                                        <input type="datetime-local"/>
+                                    </div>
+                                )}
                                 <br/>
                                 <div>
                                     <h4>Projection</h4>
