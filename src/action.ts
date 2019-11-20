@@ -145,6 +145,7 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
 
 //MARK: Select Item to view (Raster or WMS layer)
 export const ITEM_SELECTED = 'ITEM_SELECTED';
+export const ITEM_REMOVED = 'ITEM_REMOVED';
 
 const itemSelected = (uuid: string): ItemSelected => ({
     type: ITEM_SELECTED,
@@ -153,6 +154,12 @@ const itemSelected = (uuid: string): ItemSelected => ({
 
 export const selectItem = (uuid: string, dispatch): void => {
     dispatch(itemSelected(uuid));
+};
+
+export const removeItem = (dispatch): void => {
+    dispatch({
+        type: ITEM_REMOVED
+    });
 };
 
 //MARK: Observation types and Organisation
