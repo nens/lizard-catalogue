@@ -2,10 +2,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
-import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationRadiobutton, updateObservationTypeRadiobutton, updateDatasetRadiobutton, toggleAlert, updateBasketWithRaster, updateBasketWithWMS } from '../action';
+import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationRadiobutton, updateObservationTypeRadiobutton, updateDatasetRadiobutton, toggleAlert, updateBasketWithRaster, updateBasketWithWMS, removeItem } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Dataset, FilterActionType, SwitchDataType, UpdateRadiobuttonActionType } from '../interface';
-import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL } from '../utils/getUrlParams';
+import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL, getUUID } from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
@@ -21,11 +21,13 @@ interface PropsFromState {
     organisations: Organisation[],
     datasets: Dataset[],
     currentDataType: MyStore['currentDataType'],
+    selectedItem: string | null,
 };
 
 interface PropsFromDispatch {
     fetchLizardBootstrap: () => void,
     selectItem: (uuid: string) => void,
+    removeItem: () => void,
     fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string) => void,
     updateBasketWithRaster: (rasters: string[]) => void,
     updateBasketWithWMS: (wmsLayers: string[]) => void,
@@ -126,7 +128,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.state.searchTerm,
             this.state.organisationName,
             this.state.observationType,
-            this.state.datasetSlug
+            this.state.datasetSlug,
+            this.props.selectedItem
         );
         this.updateURL(url);
     };
@@ -154,7 +157,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.state.searchTerm,
             this.state.organisationName,
             (!obsType.checked ? obsType.parameter : ''),
-            this.state.datasetSlug
+            this.state.datasetSlug,
+            this.props.selectedItem
         );
         this.updateURL(url);
     };
@@ -172,7 +176,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.state.searchTerm,
             this.state.organisationName,
             obsTypeParameter,
-            this.state.datasetSlug
+            this.state.datasetSlug,
+            this.props.selectedItem
         );
         this.updateURL(url);
     };
@@ -196,7 +201,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.state.searchTerm,
             (!organisation.checked ? organisation.name : ''),
             this.state.observationType,
-            this.state.datasetSlug
+            this.state.datasetSlug,
+            this.props.selectedItem
         );
         this.updateURL(url);
     };
@@ -214,7 +220,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.state.searchTerm,
             organisationName,
             this.state.observationType,
-            this.state.datasetSlug
+            this.state.datasetSlug,
+            this.props.selectedItem
         );
         this.updateURL(url);
     };
@@ -238,7 +245,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.state.searchTerm,
             this.state.organisationName,
             this.state.observationType,
-            (!dataset.checked ? dataset.slug : '')
+            (!dataset.checked ? dataset.slug : ''),
+            this.props.selectedItem
         );
         this.updateURL(url);
     };
@@ -256,7 +264,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             this.state.searchTerm,
             this.state.organisationName,
             this.state.observationType,
-            datasetSlug
+            datasetSlug,
+            this.props.selectedItem
         );
         this.updateURL(url);
     };
@@ -286,6 +295,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 
         //Switching the data type
         this.props.switchDataType(dataType);
+        //Remove the selected item from the Redux store
+        this.props.removeItem();
 
         //Fetch rasters or WMS layers based on selected data type and update the URL
         dataType === 'Raster' ? this.props.fetchRasters(
@@ -310,6 +321,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             //Update the URL with selected observation type or not
             dataType === 'Raster' ? observationType : '',
             datasetSlug,
+            null
         );
         this.updateURL(url);
 
@@ -320,6 +332,20 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         });
     };
 
+    //Select an item will update URL with the selected item
+    onItemSelection = (uuid: string) => {
+        this.props.selectItem(uuid);
+        const url = newURL(
+            this.props.currentDataType,
+            this.state.searchTerm,
+            this.state.organisationName,
+            this.state.observationType,
+            this.state.datasetSlug,
+            uuid
+        );
+        this.updateURL(url);
+    };
+
     async componentDidMount() {
         //When component first mount, capture the search params in the URL and update the component's state
         const urlSearchParams = getUrlParams(this.props.location.search);
@@ -327,12 +353,15 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         const organisation = getOrganisation(urlSearchParams);
         const observation = getObservationType(urlSearchParams);
         const dataset = getDataset(urlSearchParams);
+        const uuid = getUUID(urlSearchParams);
         this.setState({
             searchTerm: search,
             organisationName: organisation,
             observationType: observation,
             datasetSlug: dataset
         });
+        //Also update the selected item in the Redux store
+        this.props.selectItem(uuid);
 
         const dataType = getDataType(urlSearchParams);
         //Dispatch the switchDataType action to update the currentDataType state in Redux store with the data param
@@ -405,7 +434,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                             searchTerm={this.state.searchTerm}
                             page={this.state.page}
                             currentRasterList={this.props.currentRasterList}
-                            selectItem={this.props.selectItem}
+                            selectItem={this.onItemSelection}
                             updateBasketWithRaster={this.props.updateBasketWithRaster}
                             onPageClick={this.onPageClick}
                             onSearchChange={this.onSearchChange}
@@ -417,7 +446,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                             searchTerm={this.state.searchTerm}
                             page={this.state.page}
                             currentWMSList={this.props.currentWMSList}
-                            selectItem={this.props.selectItem}
+                            selectItem={this.onItemSelection}
                             updateBasketWithWMS={this.props.updateBasketWithWMS}
                             onPageClick={this.onPageClick}
                             onSearchChange={this.onSearchChange}
@@ -459,6 +488,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     organisations: getOrganisations(state),
     datasets: getDatasets(state),
     currentDataType: getCurrentDataType(state),
+    selectedItem: state.selectedItem,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | FilterActionType | UpdateRadiobuttonActionType>): PropsFromDispatch => ({
@@ -481,6 +511,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | FilterActionTy
     updateDatasetRadiobutton: (slug: Dataset['slug']) => updateDatasetRadiobutton(slug, dispatch),
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string) => fetchWMSLayers(page, searchTerm, organisationName, datasetSlug, ordering, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
+    removeItem: () => removeItem(dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
     toggleAlert: () => toggleAlert(dispatch),
 });
