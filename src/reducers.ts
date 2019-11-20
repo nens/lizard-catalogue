@@ -19,6 +19,7 @@ import {
     REMOVE_RASTER_FROM_BASKET,
     UPDATE_BASKET_WITH_WMS,
     REMOVE_WMS_FROM_BASKET,
+    ITEM_REMOVED,
 } from "./action";
 import {
     RastersFetched,
@@ -34,7 +35,6 @@ import {
     BootstrapActionType,
     WMS,
     SwitchDataType,
-    ItemSelected,
     UpdateOrganisationRadiobutton,
     UpdateObservationTypeRadiobutton,
     UpdateDatasetRadiobutton,
@@ -234,10 +234,12 @@ const allWMS = (state: MyStore['allWMS'] = {}, action: WMSActionType): MyStore['
     };
 };
 
-const selectedItem = (state: MyStore['selectedItem'] = null, action: ItemSelected): MyStore['selectedItem'] => {
+const selectedItem = (state: MyStore['selectedItem'] = null, action): MyStore['selectedItem'] => {
     switch (action.type) {
         case ITEM_SELECTED:
             return action.payload;
+        case ITEM_REMOVED:
+            return null;
         default:
             return state;
     };
