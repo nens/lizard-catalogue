@@ -26,14 +26,19 @@ export const getDataType = (urlSearchParams) => {
     //data type can only be WMS or Raster
     return urlSearchParams.get('data') === 'WMS' ? 'WMS' : 'Raster';
 };
+//Capture the UUID of the Raster/WMS layer
+export const getUUID = (urlSearchParams) => {
+    return urlSearchParams.get('uuid') || '';
+};
 
 //Generate new URLs with different search params for sharing searches
-export const newURL = (dataType: string, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string) => {
+export const newURL = (dataType: string, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, uuid: string | null) => {
     const dataTypeParam = `data=${dataType}`;
     const searchParam = searchTerm === '' ? '' : `&search=${encodeURIComponent(searchTerm)}`;
     const organisationParam = organisationName === '' ? '' : `&organisation=${encodeURIComponent(organisationName)}`;
     const observationParam = observationTypeParameter === '' ? '' : `&observation=${encodeURIComponent(observationTypeParameter)}`;
     const datasetParam = datasetSlug === '' ? '' : `&dataset=${encodeURIComponent(datasetSlug)}`;
+    const uuidParam = !uuid ? '' : `&uuid=${encodeURIComponent(uuid)}`;
 
-    return `?${dataTypeParam}${searchParam}${organisationParam}${observationParam}${datasetParam}`;
+    return `?${dataTypeParam}${uuidParam}${searchParam}${organisationParam}${observationParam}${datasetParam}`;
 };
