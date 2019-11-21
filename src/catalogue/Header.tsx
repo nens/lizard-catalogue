@@ -5,10 +5,15 @@ import { Raster, Bootstrap, WMS } from '../interface';
 import Basket from './components/Basket';
 import Information from './components/Information';
 import './styles/Header.css';
+import Inbox from './components/Inbox';
 
 interface MyProps {
     showProfileDropdown: boolean,
-    toggleProfileDropdown: (event) => void
+    showInboxDropdown: boolean,
+    toggleAlertMessage: () => void,
+    openProfileDropdown: () => void,
+    openInboxDropdown: () => void,
+    closeAllDropdowns: () => void,
 };
 
 interface PropsFromState {
@@ -20,7 +25,7 @@ interface PropsFromState {
 class Header extends React.Component<MyProps & PropsFromState> {
     renderProfileDropdown() {
         return (
-            <div className="user-profile_dropdown" onMouseLeave={this.props.toggleProfileDropdown}>
+            <div className="user-profile_dropdown" onMouseLeave={this.props.closeAllDropdowns}>
                 <a
                     href="https://sso.lizard.net/accounts/profile/"
                     target="_blank"
@@ -38,7 +43,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
     };
 
     render() {
-        const { rasters, wmsLayers, user } = this.props;
+        const { rasters, wmsLayers, user, openInboxDropdown, openProfileDropdown, closeAllDropdowns } = this.props;
         const basket = [...rasters, ...wmsLayers];
 
         return (
@@ -48,6 +53,14 @@ class Header extends React.Component<MyProps & PropsFromState> {
                     <h3 className="header-logo__text">Lizard Catalogue</h3>
                 </div>
                 <div className="header-nav">
+                    <div className="header-nav__icon-box inbox-dropdown" style={{marginRight: "5rem"}} onClick={openInboxDropdown}>
+                        <svg className="header-nav__icon">
+                            <use xlinkHref="image/symbols.svg#icon-download" />
+                        </svg>
+                        <span className="header-nav__notification">!</span>
+                        <span className="header-nav__inbox-text" style={{marginLeft: "1rem"}}>Export</span>
+                        {this.props.showInboxDropdown && <Inbox closeAllDropdowns={closeAllDropdowns}/>}
+                    </div>
                     <a href="#basket" className="header-nav__icon-box" title={`${basket.length } items in the basket`}>
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-shopping-basket" />
@@ -56,17 +69,17 @@ class Header extends React.Component<MyProps & PropsFromState> {
                         <span className="header-nav__text">Basket</span>
                     </a>
                     {user.authenticated ?
-                        <div className="header-nav__icon-box user-profile" id="user-profile">
-                            <svg className="header-nav__icon" id="user-profile">
-                                <use xlinkHref="image/symbols.svg#icon-user" id="user-profile" />
+                        <div className="header-nav__icon-box user-profile" onClick={openProfileDropdown}>
+                            <svg className="header-nav__icon">
+                                <use xlinkHref="image/symbols.svg#icon-user" />
                             </svg>
-                            <span className="header-nav__text" id="user-profile">{user.first_name}</span>
+                            <span className="header-nav__text">{user.first_name}</span>
                             {this.props.showProfileDropdown && this.renderProfileDropdown()}
                         </div>
                         :
                         <a href="/accounts/login/?next=/catalogue/" className="header-nav__icon-box user-profile">
-                            <svg className="header-nav__icon" id="user-profile">
-                                <use xlinkHref="image/symbols.svg#icon-user" id="user-profile" />
+                            <svg className="header-nav__icon">
+                                <use xlinkHref="image/symbols.svg#icon-user" />
                             </svg>
                             <span className="header-nav__text">Login</span>
                         </a>
@@ -78,7 +91,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
                     </a>
                 </div>
                 {/*This is the PopUp window when the basket is clicked*/}
-                <div className="header-basket" id="basket">
+                <div className="modal" id="basket">
                     <Basket
                         rasters={rasters}
                         wmsLayers={wmsLayers}
@@ -86,7 +99,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
                     />
                 </div>
                 {/*This is the PopUp window for the Information box*/}
-                <div className="header-information-box" id="information">
+                <div className="modal" id="information">
                     <Information />
                 </div>
             </nav >
