@@ -67,25 +67,39 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         ordering: '',
     };
 
-    toggleDropdownsAndAlertMessage = (event) => {
+    toggleAlertMessage = () => {
         if (this.props.currentRasterList && this.props.currentRasterList.showAlert === true) this.props.toggleAlert();
         if (this.props.currentWMSList && this.props.currentWMSList.showAlert === true) this.props.toggleAlert();
-        if (event.target.id === "user-profile") {
-            this.setState({
-                showProfileDropdown: !this.state.showProfileDropdown,
-                showInboxDropdown: false
-            })
-        } else if (event.target.id === "inbox-dropdown") {
-            this.setState({
-                showProfileDropdown: false,
-                showInboxDropdown: !this.state.showInboxDropdown
-            })
-        } else {
-            this.setState({
-                showProfileDropdown: false,
-                showInboxDropdown: false
-            });
-        }
+    };
+
+    closeDropdowns = () => {
+        this.state.showProfileDropdown && this.setState({
+            showProfileDropdown: false,
+        });
+        this.state.showInboxDropdown && this.setState({
+            showInboxDropdown: false,
+        });
+    };
+
+    openProfileDropdown = () => {
+        this.setState({
+            showProfileDropdown: true,
+            showInboxDropdown: false
+        });
+    };
+
+    openInboxDropdown = () => {
+        this.setState({
+            showProfileDropdown: false,
+            showInboxDropdown: true
+        });
+    };
+
+    closeAllDropdowns = () => {
+        this.setState({
+            showProfileDropdown: false,
+            showInboxDropdown: false
+        });
     };
 
     onPageClick = (page: number) => {
@@ -389,12 +403,21 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 
     render() {
         return (
-            <div className="main-container" onClick={this.toggleDropdownsAndAlertMessage}>
+            <div
+                className="main-container"
+                onClick={() => {
+                    this.toggleAlertMessage();
+                    this.closeDropdowns();
+                }}
+            >
                 <div className="main-header">
                     <Header
                         showProfileDropdown={this.state.showProfileDropdown}
                         showInboxDropdown={this.state.showInboxDropdown}
-                        toggleDropdowns={this.toggleDropdownsAndAlertMessage}
+                        toggleAlertMessage={this.toggleAlertMessage}
+                        openProfileDropdown={this.openProfileDropdown}
+                        openInboxDropdown={this.openInboxDropdown}
+                        closeAllDropdowns={this.closeAllDropdowns}
                     />
                 </div>
                 <div className="main-body">

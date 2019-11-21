@@ -10,7 +10,10 @@ import Inbox from './components/Inbox';
 interface MyProps {
     showProfileDropdown: boolean,
     showInboxDropdown: boolean,
-    toggleDropdowns: (event) => void
+    toggleAlertMessage: () => void,
+    openProfileDropdown: () => void,
+    openInboxDropdown: () => void,
+    closeAllDropdowns: () => void,
 };
 
 interface PropsFromState {
@@ -22,7 +25,7 @@ interface PropsFromState {
 class Header extends React.Component<MyProps & PropsFromState> {
     renderProfileDropdown() {
         return (
-            <div className="user-profile_dropdown" onMouseLeave={this.props.toggleDropdowns}>
+            <div className="user-profile_dropdown" onMouseLeave={this.props.closeAllDropdowns}>
                 <a
                     href="https://sso.lizard.net/accounts/profile/"
                     target="_blank"
@@ -40,7 +43,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
     };
 
     render() {
-        const { rasters, wmsLayers, user } = this.props;
+        const { rasters, wmsLayers, user, openInboxDropdown, openProfileDropdown, closeAllDropdowns } = this.props;
         const basket = [...rasters, ...wmsLayers];
 
         return (
@@ -50,13 +53,13 @@ class Header extends React.Component<MyProps & PropsFromState> {
                     <h3 className="header-logo__text">Lizard Catalogue</h3>
                 </div>
                 <div className="header-nav">
-                    <div className="header-nav__icon-box inbox-dropdown" id="inbox-dropdown" style={{marginRight: "5rem"}}>
-                        <svg className="header-nav__icon" id="inbox-dropdown">
-                            <use xlinkHref="image/symbols.svg#icon-download" id="inbox-dropdown" />
+                    <div className="header-nav__icon-box inbox-dropdown" style={{marginRight: "5rem"}} onClick={openInboxDropdown}>
+                        <svg className="header-nav__icon">
+                            <use xlinkHref="image/symbols.svg#icon-download" />
                         </svg>
                         <span className="header-nav__notification">!</span>
-                        <span className="header-nav__inbox-text" id="inbox-dropdown" style={{marginLeft: "1rem"}}>Export</span>
-                        {this.props.showInboxDropdown && <Inbox toggleDropdowns={this.props.toggleDropdowns}/>}
+                        <span className="header-nav__inbox-text" style={{marginLeft: "1rem"}}>Export</span>
+                        {this.props.showInboxDropdown && <Inbox closeAllDropdowns={closeAllDropdowns}/>}
                     </div>
                     <a href="#basket" className="header-nav__icon-box" title={`${basket.length } items in the basket`}>
                         <svg className="header-nav__icon">
@@ -66,17 +69,17 @@ class Header extends React.Component<MyProps & PropsFromState> {
                         <span className="header-nav__text">Basket</span>
                     </a>
                     {user.authenticated ?
-                        <div className="header-nav__icon-box user-profile" id="user-profile">
-                            <svg className="header-nav__icon" id="user-profile">
-                                <use xlinkHref="image/symbols.svg#icon-user" id="user-profile" />
+                        <div className="header-nav__icon-box user-profile" onClick={openProfileDropdown}>
+                            <svg className="header-nav__icon">
+                                <use xlinkHref="image/symbols.svg#icon-user" />
                             </svg>
-                            <span className="header-nav__text" id="user-profile">{user.first_name}</span>
+                            <span className="header-nav__text">{user.first_name}</span>
                             {this.props.showProfileDropdown && this.renderProfileDropdown()}
                         </div>
                         :
                         <a href="/accounts/login/?next=/catalogue/" className="header-nav__icon-box user-profile">
-                            <svg className="header-nav__icon" id="user-profile">
-                                <use xlinkHref="image/symbols.svg#icon-user" id="user-profile" />
+                            <svg className="header-nav__icon">
+                                <use xlinkHref="image/symbols.svg#icon-user" />
                             </svg>
                             <span className="header-nav__text">Login</span>
                         </a>

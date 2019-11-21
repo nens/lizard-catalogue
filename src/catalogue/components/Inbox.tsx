@@ -2,13 +2,13 @@ import * as React from 'react';
 import '../styles/Inbox.css';
 
 interface MyProps {
-    toggleDropdowns: (event) => void
+    closeAllDropdowns: () => void,
 };
 
 export default class Inbox extends React.Component<MyProps> {
     render() {
         return (
-            <div className="inbox" onMouseLeave={this.props.toggleDropdowns}>
+            <div className="inbox" onMouseLeave={this.props.closeAllDropdowns}>
                 <div className="inbox-file">
                     <div
                         className="inbox-filename"
