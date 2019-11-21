@@ -213,3 +213,11 @@ export interface LatLng {
     lat: number,
     lng: number
 };
+
+//INBOX MESSAGE
+export interface Message {
+    id: string,
+    message: string,
+    url: string,
+    downloaded: boolean,
+};
