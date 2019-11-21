@@ -23,10 +23,17 @@
 .export_dropdown-filename {
     width: 80%;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
 }
 
 .export_dropdown-filename:hover {
     background-color: #e5e5e5;
+}
+
+.fa-download {
+    color: #009F86;
 }
 
 .export_dropdown-file:hover {
@@ -50,4 +57,9 @@
 
 .export_dropdown-info:hover {
     background-color: #fafafa;
+}
+
+.export_dropdown-close:hover {
+    background-color: #e5e5e5;
+    color: #009F86;
 }
