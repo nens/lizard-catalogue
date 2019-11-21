@@ -1,7 +1,7 @@
 import * as React from 'react';
 import '../styles/Download.css';
 
-export default class Download extends React.Component {
+export default class DownloadModal extends React.Component {
     render() {
         return (
             <div className="download">
