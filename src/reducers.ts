@@ -19,6 +19,9 @@ import {
     REMOVE_RASTER_FROM_BASKET,
     UPDATE_BASKET_WITH_WMS,
     REMOVE_WMS_FROM_BASKET,
+    REQUEST_INBOX,
+    REMOVE_MESSAGE,
+    DOWNLOAD_MESSAGE,
 } from "./action";
 import {
     RastersFetched,
@@ -39,6 +42,7 @@ import {
     UpdateObservationTypeRadiobutton,
     UpdateDatasetRadiobutton,
     WMSActionType,
+    Message,
 } from './interface';
 
 export interface MyStore {
@@ -73,7 +77,10 @@ export interface MyStore {
     basket: {
         rasters: string[],
         wmsLayers: string[]
-    }
+    },
+    inbox: {
+        [index: string]: Message,
+    } | {},
 };
 
 const bootstrap = (
@@ -386,8 +393,40 @@ const datasets = (state: MyStore['datasets'] = [], action: DatasetsFetched & Upd
     };
 };
 
-export const getLizardBootstrap = (state: MyStore) => {
-    return state.bootstrap;
+const inbox = (state: MyStore['inbox'] = {}, action): MyStore['inbox'] => {
+    const messages: Message[] = action.messages;
+    switch (action.type) {
+        case REQUEST_INBOX:
+            const newState = { ...state };
+            messages.forEach(message => {
+                const currentMessage = state[`${message.id}`];
+                newState[message.id] = {
+                    id: message.id,
+                    message: message.message,
+                    url: message.url,
+                    downloaded: currentMessage ? currentMessage.downloaded : false,
+                };
+            });
+            return newState;
+        case REMOVE_MESSAGE:
+            const messageId: Message['id'] = action.id;
+            delete state[`${messageId}`];
+            return state;
+        case DOWNLOAD_MESSAGE:
+            const id = action.id;
+            state[`${id}`].downloaded = true;
+            return state;
+        default:
+            return state;
+    };
+};
+
+export const getMessage = (state: MyStore, id: string) => {
+    return state.inbox[id];
+};
+
+export const getUser = (state: MyStore) => {
+    return state.bootstrap.user;
 };
 
 export const getCurrentDataType = (state: MyStore) => {
@@ -452,4 +491,5 @@ export default combineReducers({
     observationTypes,
     organisations,
     datasets,
+    inbox,
 });
