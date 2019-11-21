@@ -5,6 +5,7 @@ import { MyStore, getRaster } from '../../reducers';
 import { Raster, LatLng, Dataset } from '../../interface';
 import '../styles/Details.css';
 import '../styles/Export.css';
+import '../styles/Modal.css';
 
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import { openRasterInAPI, openRasterInLizard, openRasterGetCapabilities, openDatasetGetCapabilities, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
@@ -176,7 +177,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                 </div>
                 {/*This is the PopUp window for the export screen*/}
                 {this.state.showExport && (
-                    <div className="raster-export">
+                    <div className="modal-background">
                         <Export
                             raster={raster}
                             bounds={bounds}

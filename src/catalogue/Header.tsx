@@ -4,8 +4,9 @@ import { MyStore, getRaster, getWMS } from '../reducers';
 import { Raster, Bootstrap, WMS } from '../interface';
 import Basket from './components/Basket';
 import Information from './components/Information';
-import './styles/Header.css';
 import Inbox from './components/Inbox';
+import './styles/Header.css';
+import './styles/Modal.css';
 
 interface MyProps {
     showProfileDropdown: boolean,
@@ -88,7 +89,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
                     </a>
                 </div>
                 {/*This is the PopUp window when the basket is clicked*/}
-                <div className="header-basket" id="basket">
+                <div className="modal-background-target" id="basket">
                     <Basket
                         rasters={rasters}
                         wmsLayers={wmsLayers}
@@ -96,7 +97,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
                     />
                 </div>
                 {/*This is the PopUp window for the Information box*/}
-                <div className="header-information-box" id="information">
+                <div className="modal-background-target" id="information">
                     <Information />
                 </div>
             </nav >

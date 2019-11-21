@@ -102,54 +102,6 @@
     color: white;
 }
 
-/*POPUP WINDOW FOR THE BASKET*/
-.header-basket {
-    height: 100vh;
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: rgba(105, 99, 99, 0.8);
-    z-index: 9999;
-    opacity: 0;
-    visibility: hidden;
-    transition: all .3s;
-}
-
-.header-basket:target {
-    opacity: 1;
-    visibility: visible;
-}
-
-.header-basket:target .basket {
-    opacity: 1;
-    transform: scale(1);
-}
-
-/*POPUP WINDOW FOR THE INFORMATION BOX*/
-.header-information-box {
-    height: 100vh;
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: rgba(105, 99, 99, 0.8);
-    z-index: 9999;
-    opacity: 0;
-    visibility: hidden;
-    transition: all .3s;
-}
-
-.header-information-box:target {
-    opacity: 1;
-    visibility: visible;
-}
-
-.header-information-box:target .information {
-    opacity: 1;
-    transform: scale(1);
-}
-
 /*DROPDOWN USER-PROFILE*/
 .user-profile_dropdown {
     display: flex;

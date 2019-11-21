@@ -7,6 +7,7 @@ import BasketNotification from '../components/BasketNotification';
 import SearchBar from '../components/SearchBar';
 import Pagination from '../components/Pagination';
 import '../styles/List.css';
+import '../styles/Modal.css';
 
 interface MyProps {
     page: number,
@@ -179,7 +180,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                     </button>
                 </div>
                 {/*Notification popup when click on the Add to Basket button*/}
-                <div className="list__notification" id="notification">
+                <div className="modal-background-target" id="notification">
                     <BasketNotification />
                 </div>
             </div>

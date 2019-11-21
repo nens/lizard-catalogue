@@ -24,7 +24,7 @@ export default class Inbox extends React.Component<MyProps> {
                         className="inbox-filename"
                         title={"NRR6min.zip (500mb)"}
                     >
-                        NRR6min.zip (500mb)
+                        NRR66666666666666666666666666666min.zip (500mb)
                     </div>
                     <i className="fa fa-download" title="download" />
                     &times;
