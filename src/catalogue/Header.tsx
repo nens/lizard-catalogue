@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { MyStore, getRaster, getWMS } from '../reducers';
-import { Raster, Bootstrap, WMS } from '../interface';
+import { MyStore, getRaster, getWMS, getUser } from '../reducers';
+import { Raster, Bootstrap, WMS, Message } from '../interface';
 import Basket from './components/Basket';
 import Information from './components/Information';
 import './styles/Header.css';
@@ -16,7 +16,8 @@ interface MyProps {
 interface PropsFromState {
     rasters: Raster[],
     wmsLayers: WMS[],
-    user: Bootstrap['user']
+    user: Bootstrap['user'],
+    messages: Message[],
 };
 
 class Header extends React.Component<MyProps & PropsFromState> {
@@ -40,7 +41,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
     };
 
     render() {
-        const { rasters, wmsLayers, user } = this.props;
+        const { rasters, wmsLayers, user, messages } = this.props;
         const basket = [...rasters, ...wmsLayers];
 
         return (
@@ -54,9 +55,14 @@ class Header extends React.Component<MyProps & PropsFromState> {
                         <svg className="header-nav__icon" id="export-dropdown">
                             <use xlinkHref="image/symbols.svg#icon-download" id="export-dropdown" />
                         </svg>
-                        <span className="header-nav__export-notification header-nav__notification">!</span>
+                        {messages.length === 0 ? <span /> : <span className="header-nav__export-notification header-nav__notification">{messages.length}</span>}
                         <span className="header-nav__export-text" id="export-dropdown" style={{marginLeft: "1rem"}}>Export</span>
-                        {this.props.showExportDropdown && <ExportDropdown toggleDropdowns={this.props.toggleDropdowns}/>}
+                        {this.props.showExportDropdown && (
+                            <ExportDropdown
+                                toggleDropdowns={this.props.toggleDropdowns}
+                                messages={messages}
+                            />
+                        )}
                     </div>
                     <a href="#basket" className="header-nav__icon-box" title={`${basket.length } items in the basket`}>
                         <svg className="header-nav__icon">
@@ -112,7 +118,9 @@ const mapStateToProps = (state: MyStore): PropsFromState => {
         rasters: state.basket.rasters.map(uuid => getRaster(state, uuid)).reverse(),
         wmsLayers: state.basket.wmsLayers.map(uuid => getWMS(state, uuid)).reverse(),
         //Get user
-        user: state.bootstrap.user
+        user: getUser(state),
+        //Get inbox messages
+        messages: Object.values(state.inbox),
     };
 };
 
