@@ -88,7 +88,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
                     </a>
                 </div>
                 {/*This is the PopUp window when the basket is clicked*/}
-                <div className="header-basket" id="basket">
+                <div className="modal" id="basket">
                     <Basket
                         rasters={rasters}
                         wmsLayers={wmsLayers}
@@ -96,7 +96,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
                     />
                 </div>
                 {/*This is the PopUp window for the Information box*/}
-                <div className="header-information-box" id="information">
+                <div className="modal" id="information">
                     <Information />
                 </div>
             </nav >

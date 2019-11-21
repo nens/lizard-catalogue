@@ -179,7 +179,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                     </button>
                 </div>
                 {/*Notification popup when click on the Add to Basket button*/}
-                <div className="list__notification" id="notification">
+                <div className="modal" id="notification">
                     <BasketNotification />
                 </div>
             </div>
