@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
-import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationRadiobutton, updateObservationTypeRadiobutton, updateDatasetRadiobutton, toggleAlert, updateBasketWithRaster, updateBasketWithWMS } from '../action';
+import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationRadiobutton, updateObservationTypeRadiobutton, updateDatasetRadiobutton, toggleAlert, updateBasketWithRaster, updateBasketWithWMS, fetchInboxMessages } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Dataset, FilterActionType, SwitchDataType, UpdateRadiobuttonActionType } from '../interface';
 import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL } from '../utils/getUrlParams';
@@ -38,6 +38,7 @@ interface PropsFromDispatch {
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void,
     toggleAlert: () => void,
+    fetchInboxMessages: () => void,
 };
 
 type MainAppProps = PropsFromState & PropsFromDispatch & RouteComponentProps;
@@ -335,7 +336,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         });
     };
 
-    async componentDidMount() {
+    componentDidMount() {
         //When component first mount, capture the search params in the URL and update the component's state
         const urlSearchParams = getUrlParams(this.props.location.search);
         const search = getSearch(urlSearchParams);
@@ -355,6 +356,12 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 
         //Fetch Lizard Bootstrap
         this.props.fetchLizardBootstrap();
+
+        //If user is authenticated then request the inbox messages every second
+        setInterval(
+            () => this.props.fetchInboxMessages(),
+            5000
+        );
 
         //Fetch Rasters or WMS layers depends on the selected data type
         dataType === 'Raster' ? this.props.fetchRasters(
@@ -499,6 +506,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | FilterActionTy
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
     toggleAlert: () => toggleAlert(dispatch),
+    fetchInboxMessages: () => fetchInboxMessages(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainApp);
