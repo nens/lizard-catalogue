@@ -5,11 +5,11 @@ import { Raster, Bootstrap, WMS } from '../interface';
 import Basket from './components/Basket';
 import Information from './components/Information';
 import './styles/Header.css';
-import ExportDropdown from './components/ExportDropdown';
+import Inbox from './components/Inbox';
 
 interface MyProps {
     showProfileDropdown: boolean,
-    showExportDropdown: boolean,
+    showInboxDropdown: boolean,
     toggleDropdowns: (event) => void
 };
 
@@ -50,13 +50,13 @@ class Header extends React.Component<MyProps & PropsFromState> {
                     <h3 className="header-logo__text">Lizard Catalogue</h3>
                 </div>
                 <div className="header-nav">
-                    <div className="header-nav__icon-box export-dropdown" id="export-dropdown" style={{marginRight: "5rem"}}>
-                        <svg className="header-nav__icon" id="export-dropdown">
-                            <use xlinkHref="image/symbols.svg#icon-download" id="export-dropdown" />
+                    <div className="header-nav__icon-box inbox-dropdown" id="inbox-dropdown" style={{marginRight: "5rem"}}>
+                        <svg className="header-nav__icon" id="inbox-dropdown">
+                            <use xlinkHref="image/symbols.svg#icon-download" id="inbox-dropdown" />
                         </svg>
-                        <span className="header-nav__export-notification header-nav__notification">!</span>
-                        <span className="header-nav__export-text" id="export-dropdown" style={{marginLeft: "1rem"}}>Export</span>
-                        {this.props.showExportDropdown && <ExportDropdown toggleDropdowns={this.props.toggleDropdowns}/>}
+                        <span className="header-nav__notification">!</span>
+                        <span className="header-nav__inbox-text" id="inbox-dropdown" style={{marginLeft: "1rem"}}>Export</span>
+                        {this.props.showInboxDropdown && <Inbox toggleDropdowns={this.props.toggleDropdowns}/>}
                     </div>
                     <a href="#basket" className="header-nav__icon-box" title={`${basket.length } items in the basket`}>
                         <svg className="header-nav__icon">

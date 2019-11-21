@@ -44,7 +44,7 @@ type MainAppProps = PropsFromState & PropsFromDispatch & RouteComponentProps;
 
 interface MyState {
     showProfileDropdown: boolean,
-    showExportDropdown: boolean,
+    showInboxDropdown: boolean,
     page: number,
     initialPage: number,
     searchTerm: string,
@@ -57,7 +57,7 @@ interface MyState {
 class MainApp extends React.Component<MainAppProps, MyState> {
     state: MyState = {
         showProfileDropdown: false,
-        showExportDropdown: false,
+        showInboxDropdown: false,
         page: 1,
         initialPage: 1,
         searchTerm: '',
@@ -73,17 +73,17 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         if (event.target.id === "user-profile") {
             this.setState({
                 showProfileDropdown: !this.state.showProfileDropdown,
-                showExportDropdown: false
+                showInboxDropdown: false
             })
-        } else if (event.target.id === "export-dropdown") {
+        } else if (event.target.id === "inbox-dropdown") {
             this.setState({
                 showProfileDropdown: false,
-                showExportDropdown: !this.state.showExportDropdown
+                showInboxDropdown: !this.state.showInboxDropdown
             })
         } else {
             this.setState({
                 showProfileDropdown: false,
-                showExportDropdown: false
+                showInboxDropdown: false
             });
         }
     };
@@ -393,7 +393,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 <div className="main-header">
                     <Header
                         showProfileDropdown={this.state.showProfileDropdown}
-                        showExportDropdown={this.state.showExportDropdown}
+                        showInboxDropdown={this.state.showInboxDropdown}
                         toggleDropdowns={this.toggleDropdownsAndAlertMessage}
                     />
                 </div>

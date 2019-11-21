@@ -59,16 +59,11 @@
     overflow: hidden;
 }
 
-.export-dropdown {
+.inbox-dropdown {
     position: relative;
 }
 
-.export-dropdown .header-nav__text {
-    width: 70%;
-    overflow: hidden;
-}
-
-.header-nav__export-text {
+.header-nav__inbox-text {
     margin-left: 1.5rem;
 }
 
