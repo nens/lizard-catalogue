@@ -279,3 +279,34 @@ const alertToggled = (): ToggleAlert => ({
 export const toggleAlert = (dispatch: Dispatch<ToggleAlert>) => {
     dispatch(alertToggled());
 };
+
+//MARK: Fetch inbox messages
+export const REQUEST_INBOX = 'REQUEST_INBOX';
+export const REMOVE_MESSAGE = 'REMOVE_MESSAGE';
+export const DOWNLOAD_MESSAGE = 'DOWNLOAD_MESSAGE';
+
+export const fetchInboxMessages = (dispatch) => {
+    request
+        .get(`/api/v3/inbox/`)
+        .then(response => {
+            dispatch({
+                type: REQUEST_INBOX,
+                messages: response.body.results
+            });
+        })
+        .catch(console.error)
+};
+
+export const removeMessage = (dispatch, id: string) => {
+    dispatch({
+        type: REMOVE_MESSAGE,
+        id
+    });
+};
+
+export const downloadMessage = (dispatch, id: string) => {
+    dispatch({
+        type: DOWNLOAD_MESSAGE,
+        id
+    });
+};
