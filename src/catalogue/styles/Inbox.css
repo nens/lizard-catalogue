@@ -1,4 +1,5 @@
 .inbox {
+    cursor: default;
     display: flex;
     flex-direction: column;
     z-index: 1;
@@ -11,6 +12,7 @@
 }
 
 .inbox-file {
+    cursor: inherit;
     font-size: 1.4rem;
     color: #434343;
     background-color: #fafafa;
@@ -21,6 +23,7 @@
 }
 
 .inbox-filename {
+    cursor: inherit;
     width: 80%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -41,16 +44,40 @@
 }
 
 .inbox-info {
+    cursor: default;
     font-size: 1.4rem;
     color: #3B3B3B;
     text-align: center;
     background-color: #fafafa;
     width: 100%;
     padding: 0 1rem;
-    cursor: default;
     padding: 1rem;
 }
 
 .inbox-info:hover {
     background-color: #fafafa;
+}
+
+.inbox-download {
+    color: #009F86;
+}
+
+.inbox-download:hover {
+    cursor: pointer;
+}
+
+.inbox-read:hover {
+    cursor: pointer;
+    color: #009F86;
+    background-color: #e5e5e5;
+}
+
+.inbox-pending-exports {
+    color: #AAAAAA;
+    background-color: #e5e5e5;
+    font-style: italic;
+}
+
+.inbox-progress:hover {
+    cursor: wait;
 }
