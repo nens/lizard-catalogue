@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
-import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationRadiobutton, updateObservationTypeRadiobutton, updateDatasetRadiobutton, toggleAlert, updateBasketWithRaster, updateBasketWithWMS } from '../action';
+import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, updateOrganisationRadiobutton, updateObservationTypeRadiobutton, updateDatasetRadiobutton, toggleAlert, updateBasketWithRaster, updateBasketWithWMS, requestInbox } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Dataset, FilterActionType, SwitchDataType, UpdateRadiobuttonActionType } from '../interface';
 import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL } from '../utils/getUrlParams';
@@ -38,6 +38,7 @@ interface PropsFromDispatch {
     fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void,
     toggleAlert: () => void,
+    requestInbox: () => void,
 };
 
 type MainAppProps = PropsFromState & PropsFromDispatch & RouteComponentProps;
@@ -376,6 +377,9 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         ) : this.props.fetchWMSLayers(
             this.state.page, search, organisation, dataset, this.state.ordering
         );
+
+        //Poll the inbox regularly with timer set inside the action creator
+        this.props.requestInbox();
     };
 
     //Component will fetch the Rasters again each time the value of this.state.organisationName or observation type or dataset changes
@@ -522,6 +526,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | FilterActionTy
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
     toggleAlert: () => toggleAlert(dispatch),
+    requestInbox: () => requestInbox(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainApp);
