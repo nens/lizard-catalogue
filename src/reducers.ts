@@ -19,6 +19,9 @@ import {
     REMOVE_RASTER_FROM_BASKET,
     UPDATE_BASKET_WITH_WMS,
     REMOVE_WMS_FROM_BASKET,
+    REQUEST_INBOX,
+    REMOVE_MESSAGE,
+    DOWNLOAD_FILE,
 } from "./action";
 import {
     RastersFetched,
@@ -39,6 +42,7 @@ import {
     UpdateObservationTypeRadiobutton,
     UpdateDatasetRadiobutton,
     WMSActionType,
+    Message,
 } from './interface';
 
 export interface MyStore {
@@ -73,7 +77,9 @@ export interface MyStore {
     basket: {
         rasters: string[],
         wmsLayers: string[]
-    }
+    },
+    pendingExportTasks: number,
+    inbox: Message[],
 };
 
 const bootstrap = (
@@ -386,6 +392,50 @@ const datasets = (state: MyStore['datasets'] = [], action: DatasetsFetched & Upd
     };
 };
 
+const pendingExportTasks = (state: MyStore['pendingExportTasks'] = 20, { type }): MyStore['pendingExportTasks'] => {
+    switch (type) {
+        default:
+            return state;
+    };
+};
+
+const inbox = (state: MyStore['inbox'] = [], { type, messages, id }) => {
+    switch (type) {
+        case REQUEST_INBOX:
+            return messages.map(message => {
+                const currentMessage = state.find(mess => mess.id === message.id);
+                if (currentMessage) {
+                    return {
+                        ...currentMessage,
+                        downloaded: currentMessage.downloaded
+                    };
+                } else {
+                    return {
+                        id: message.id,
+                        message: message.message,
+                        url: message.url,
+                        downloaded: false,
+                    };
+                };
+            });
+        case DOWNLOAD_FILE:
+            const newState = state.map(message => {
+                if (message.id === id) {
+                    return {
+                        ...message,
+                        downloaded: true
+                    };
+                };
+                return message;
+            });
+            return newState;
+        case REMOVE_MESSAGE:
+            return state.filter(message => message.id !== id);
+        default:
+            return state;
+    };
+};
+
 export const getLizardBootstrap = (state: MyStore) => {
     return state.bootstrap;
 };
@@ -452,4 +502,6 @@ export default combineReducers({
     observationTypes,
     organisations,
     datasets,
+    pendingExportTasks,
+    inbox,
 });
