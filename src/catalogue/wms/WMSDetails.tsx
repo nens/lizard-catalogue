@@ -32,7 +32,16 @@ class WMSDetails extends React.Component<PropsFromState> {
 
         return (
             <div className="details">
-                <h3 title={wms.name}>{wms.name}</h3>
+                <h3 title={wms.name}>
+                    {wms.name}
+                    <a href={`/management/#/data_management/wms_layers/${wms.uuid}`}>
+                        <img
+                            className="details__icon"
+                            src="image/manageButton.svg"
+                            alt="View in manage client"
+                        />
+                    </a>
+                </h3>
                 <div className="details__main-box">
                     <div className="details__description-box">
                         <h4>Description</h4>
