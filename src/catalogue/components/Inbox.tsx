@@ -1,9 +1,10 @@
 import * as React from 'react';
-import '../styles/Inbox.css';
 import { Message } from '../../interface';
 import { connect } from 'react-redux';
 import { removeMessage, downloadFile } from '../../action';
 import { MyStore } from '../../reducers';
+import MDSpinner from 'react-md-spinner';
+import '../styles/Inbox.css';
 
 interface MyProps {
     inbox: Message[],
@@ -74,7 +75,7 @@ class Inbox extends React.Component<InboxProps> {
                         <div className="inbox-filename">
                             {this.props.pendingExportTasks} export(s) in progress
                         </div>
-                        <i className="fa fa-spinner inbox-progress" />
+                        <MDSpinner style={{backgroundColor: 'inherit'}} />
                     </div>
                 ): null}
                 {(this.props.inbox.length === 0 && this.props.pendingExportTasks === 0) ? (
