@@ -9,7 +9,6 @@ import {
     RECEIVE_WMS,
     REQUEST_WMS,
     SWITCH_DATA_TYPE,
-    ITEM_SELECTED,
     TOGGLE_ALERT,
 } from "./action";
 
@@ -55,11 +54,6 @@ export interface ReceiveWMS {
 };
 
 export type WMSActionType = RequestWMS | ReceiveWMS | ToggleAlert;
-
-export interface ItemSelected {
-    type: typeof ITEM_SELECTED,
-    payload: string
-};
 
 export interface ObservationTypesFetched {
     type: typeof OBSERVATION_TYPES_FETCHED,

@@ -17,7 +17,6 @@ import {
     RequestWMS,
     ReceiveWMS,
     SwitchDataType,
-    ItemSelected,
     ToggleAlert,
 } from './interface';
 
@@ -147,12 +146,12 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
 //MARK: Select Item to view (Raster or WMS layer)
 export const ITEM_SELECTED = 'ITEM_SELECTED';
 
-const itemSelected = (uuid: string): ItemSelected => ({
+const itemSelected = (uuid: string | null) => ({
     type: ITEM_SELECTED,
     payload: uuid
 });
 
-export const selectItem = (uuid: string, dispatch): void => {
+export const selectItem = (uuid: string | null, dispatch): void => {
     dispatch(itemSelected(uuid));
 };
 

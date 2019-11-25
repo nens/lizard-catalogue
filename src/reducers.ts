@@ -41,7 +41,6 @@ import {
     BootstrapActionType,
     WMS,
     SwitchDataType,
-    ItemSelected,
     WMSActionType,
 } from './interface';
 
@@ -246,7 +245,7 @@ const allWMS = (state: MyStore['allWMS'] = {}, action: WMSActionType): MyStore['
     };
 };
 
-const selectedItem = (state: MyStore['selectedItem'] = null, action: ItemSelected): MyStore['selectedItem'] => {
+const selectedItem = (state: MyStore['selectedItem'] = null, action): MyStore['selectedItem'] => {
     switch (action.type) {
         case ITEM_SELECTED:
             return action.payload;
