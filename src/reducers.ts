@@ -11,14 +11,21 @@ import {
     RECEIVE_WMS,
     SWITCH_DATA_TYPE,
     ITEM_SELECTED,
-    UPDATE_ORGANISATION_RADIOBUTTON,
-    UPDATE_OBSERVATION_RADIOBUTTON,
-    UPDATE_DATASET_RADIOBUTTON,
     TOGGLE_ALERT,
     UPDATE_BASKET_WITH_RASTER,
     REMOVE_RASTER_FROM_BASKET,
     UPDATE_BASKET_WITH_WMS,
     REMOVE_WMS_FROM_BASKET,
+    SELECT_ORGANISATION,
+    SELECT_DATASET,
+    SELECT_OBSERVATIONTYPE,
+    UPDATE_SEARCH,
+    REMOVE_ORGANISATION,
+    REMOVE_DATASET,
+    REMOVE_OBSERVATIONTYPE,
+    REMOVE_SEARCH,
+    UPDATE_ORDER,
+    UPDATE_PAGE,
 } from "./action";
 import {
     RastersFetched,
@@ -35,9 +42,6 @@ import {
     WMS,
     SwitchDataType,
     ItemSelected,
-    UpdateOrganisationRadiobutton,
-    UpdateObservationTypeRadiobutton,
-    UpdateDatasetRadiobutton,
     WMSActionType,
 } from './interface';
 
@@ -73,7 +77,15 @@ export interface MyStore {
     basket: {
         rasters: string[],
         wmsLayers: string[]
-    }
+    },
+    filters: {
+        organisation: Organisation['name'],
+        dataset: Dataset['slug'],
+        observationType: ObservationType['parameter'],
+        searchTerm: string,
+        ordering: string,
+        page: number,
+    },
 };
 
 const bootstrap = (
@@ -288,7 +300,7 @@ const basket = (
     };
 };
 
-const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched & UpdateObservationTypeRadiobutton): MyStore['observationTypes'] => {
+const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched): MyStore['observationTypes'] => {
     switch (action.type) {
         case OBSERVATION_TYPES_FETCHED:
             return action.payload.map(observation => {
@@ -299,31 +311,14 @@ const observationTypes = (state: MyStore['observationTypes'] = [], action: Obser
                     unit: observation.unit,
                     scale: observation.scale,
                     description: observation.description,
-                    checked: false
                 };
             });
-        case UPDATE_OBSERVATION_RADIOBUTTON:
-            const observationTypes = [...state];
-            const checkedObservationTypeParameter = action.payload;
-            return observationTypes.map(obsType => {
-                if (obsType.parameter === checkedObservationTypeParameter) {
-                    return {
-                        ...obsType,
-                        checked: !obsType.checked
-                    };
-                } else {
-                    return {
-                        ...obsType,
-                        checked: false
-                    };
-                };
-            })
         default:
             return state;
     };
 };
 
-const organisations = (state: MyStore['organisations'] = [], action: OrganisationsFetched & UpdateOrganisationRadiobutton): MyStore['organisations'] => {
+const organisations = (state: MyStore['organisations'] = [], action: OrganisationsFetched): MyStore['organisations'] => {
     switch (action.type) {
         case ORGANISATIONS_FETCHED:
             return action.payload.map(organisation => {
@@ -331,23 +326,6 @@ const organisations = (state: MyStore['organisations'] = [], action: Organisatio
                     url: organisation.url,
                     name: organisation.name,
                     uuid: organisation.uuid,
-                    checked: false
-                };
-            });
-        case UPDATE_ORGANISATION_RADIOBUTTON:
-            const organisations = [...state];
-            const checkedOrganisationName = action.payload
-            return organisations.map(organisation => {
-                if (organisation.name === checkedOrganisationName) {
-                    return {
-                        ...organisation,
-                        checked: !organisation.checked
-                    };
-                } else {
-                    return {
-                        ...organisation,
-                        checked: false
-                    };
                 };
             });
         default:
@@ -355,32 +333,83 @@ const organisations = (state: MyStore['organisations'] = [], action: Organisatio
     };
 };
 
-const datasets = (state: MyStore['datasets'] = [], action: DatasetsFetched & UpdateDatasetRadiobutton): MyStore['datasets'] => {
+const datasets = (state: MyStore['datasets'] = [], action: DatasetsFetched): MyStore['datasets'] => {
     switch (action.type) {
         case DATASETS_FETCHED:
             return action.payload.map(dataset => {
                 return {
                     slug: dataset.slug,
                     organisation: dataset.organisation,
-                    checked: false
                 };
             });
-        case UPDATE_DATASET_RADIOBUTTON:
-            const datasets = [...state];
-            const checkedDatasetSlug = action.payload
-            return datasets.map(dataset => {
-                if (dataset.slug === checkedDatasetSlug) {
-                    return {
-                        ...dataset,
-                        checked: !dataset.checked
-                    };
-                } else {
-                    return {
-                        ...dataset,
-                        checked: false
-                    };
-                };
-            });
+        default:
+            return state;
+    };
+};
+
+//Filters
+const filters =(
+    state: MyStore['filters'] = {
+        organisation: '',
+        dataset: '',
+        observationType: '',
+        searchTerm: '',
+        ordering: '',
+        page: 1,
+    },
+    { type, organisation, dataset, observationType, searchTerm, ordering, page }
+): MyStore['filters'] => {
+    switch (type) {
+        case UPDATE_PAGE:
+            return {
+                ...state,
+                page
+            };
+        case SELECT_ORGANISATION:
+            return {
+                ...state,
+                organisation
+            };
+        case SELECT_DATASET:
+            return {
+                ...state,
+                dataset
+            };
+        case SELECT_OBSERVATIONTYPE:
+            return {
+                ...state,
+                observationType
+            };
+        case UPDATE_SEARCH:
+            return {
+                ...state,
+                searchTerm
+            };
+        case UPDATE_ORDER:
+            return {
+                ...state,
+                ordering: state.ordering === ordering ? `-${ordering}` : ordering
+            };
+        case REMOVE_ORGANISATION:
+            return {
+                ...state,
+                organisation: ''
+            };
+        case REMOVE_DATASET:
+            return {
+                ...state,
+                dataset: ''
+            };
+        case REMOVE_OBSERVATIONTYPE:
+            return {
+                ...state,
+                observationType: ''
+            };
+        case REMOVE_SEARCH:
+            return {
+                ...state,
+                searchTerm: ''
+            };
         default:
             return state;
     };
@@ -432,8 +461,19 @@ export const getObservationTypes = (state: MyStore) => {
 
 export const getOrganisations = (state: MyStore) => {
     //Remove organisations with empty name
-    return state.organisations.filter(organisation => organisation.name !== "");
-}
+    const organisations = state.organisations.filter(organisation => organisation.name !== "");
+
+    //Remove duplications in organisation name using reduce() method
+    const names = organisations.map(organisation => organisation.name);
+    const namesWithoutDuplicates = names.reduce((a: string[], b) => {
+        if (a.indexOf(b) < 0) a.push(b);
+        return a;
+    }, []);
+
+    return namesWithoutDuplicates.map(name => {
+        return organisations.filter(organisation => organisation.name === name)[0];
+    });
+};
 
 export const getDatasets = (state: MyStore) => {
     //Remove datasets with empty name
@@ -447,6 +487,7 @@ export default combineReducers({
     allRasters,
     currentWMSList,
     allWMS,
+    filters,
     selectedItem,
     basket,
     observationTypes,
