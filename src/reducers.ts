@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import {
     RASTERS_FETCHED,
+    RASTER_FETCHED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
     DATASETS_FETCHED,
@@ -9,6 +10,7 @@ import {
     RECEIVE_LIZARD_BOOTSTRAP,
     REQUEST_WMS,
     RECEIVE_WMS,
+    RECEIVE_WMS_LAYER,
     SWITCH_DATA_TYPE,
     ITEM_SELECTED,
     TOGGLE_ALERT,
@@ -28,8 +30,6 @@ import {
     UPDATE_PAGE,
 } from "./action";
 import {
-    RastersFetched,
-    RasterActionType,
     Raster,
     ObservationType,
     Organisation,
@@ -41,7 +41,6 @@ import {
     BootstrapActionType,
     WMS,
     SwitchDataType,
-    WMSActionType,
 } from './interface';
 
 export interface MyStore {
@@ -126,7 +125,7 @@ const currentDataType = (state: MyStore['currentDataType'] = "Raster", action: S
     };
 };
 
-const currentRasterList = (state: MyStore['currentRasterList'] = null, action: RasterActionType): MyStore['currentRasterList'] => {
+const currentRasterList = (state: MyStore['currentRasterList'] = null, action): MyStore['currentRasterList'] => {
     switch (action.type) {
         case RASTERS_REQUESTED:
             return {
@@ -161,7 +160,7 @@ const currentRasterList = (state: MyStore['currentRasterList'] = null, action: R
     };
 };
 
-const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched): MyStore['allRasters'] => {
+const allRasters = (state: MyStore['allRasters'] = {}, action): MyStore['allRasters'] => {
     switch (action.type) {
         case RASTERS_FETCHED:
             const newState = { ...state };
@@ -192,12 +191,32 @@ const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched): 
                 };
             });
             return newState;
+        case RASTER_FETCHED:
+            const { raster } = action;
+            let layerStyle = raster.options.styles ? raster.options.styles : "";
+            let layerName = raster.wms_info.layer;
+            //In case of Regen raster
+            if (raster.uuid === "3e5f56a7-b16e-4deb-8449-cc2c88805159" || raster.uuid === "730d6675-35dd-4a35-aa9b-bfb8155f9ca7") {
+                layerName = "radar:hour";
+                layerStyle = "radar-hour";
+            };
+            state[raster.uuid] = {
+                ...raster,
+                options: {
+                    styles: layerStyle
+                },
+                wms_info: {
+                    ...raster.wms_info,
+                    layer: layerName
+                }
+            };
+            return state;
         default:
             return state;
     };
 };
 
-const currentWMSList = (state: MyStore['currentWMSList'] = null, action: WMSActionType): MyStore['currentWMSList'] => {
+const currentWMSList = (state: MyStore['currentWMSList'] = null, action): MyStore['currentWMSList'] => {
     switch (action.type) {
         case REQUEST_WMS:
             return {
@@ -232,7 +251,7 @@ const currentWMSList = (state: MyStore['currentWMSList'] = null, action: WMSActi
     };
 };
 
-const allWMS = (state: MyStore['allWMS'] = {}, action: WMSActionType): MyStore['allWMS'] => {
+const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
     switch (action.type) {
         case RECEIVE_WMS:
             const newState = { ...state };
@@ -240,6 +259,12 @@ const allWMS = (state: MyStore['allWMS'] = {}, action: WMSActionType): MyStore['
                 newState[wms.uuid] = wms;
             });
             return newState;
+        case RECEIVE_WMS_LAYER:
+            const { wms } = action;
+            state[wms.uuid] = {
+                ...wms
+            };
+            return state;
         default:
             return state;
     };

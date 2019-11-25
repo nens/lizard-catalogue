@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
-import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, toggleAlert, updateBasketWithRaster, updateBasketWithWMS, updateSearch, updateOrder, updatePage } from '../action';
+import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, toggleAlert, updateBasketWithRaster, updateBasketWithWMS, updateSearch, updateOrder, updatePage, fetchRasterByUUID, fetchWMSByUUID } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Dataset, FilterActionType, SwitchDataType } from '../interface';
 import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL, getUUID } from '../utils/getUrlParams';
@@ -29,12 +29,14 @@ interface PropsFromDispatch {
     fetchLizardBootstrap: () => void,
     selectItem: (uuid: string | null) => void,
     fetchRasters: (page: number, searchTerm: string | null, organisationName: string | null, observationTypeParameter: string | null, datasetSlug: string | null, ordering: string) => void,
+    fetchRasterByUUID: (uuid: string) => void,
     updateBasketWithRaster: (rasters: string[]) => void,
     updateBasketWithWMS: (wmsLayers: string[]) => void,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
     fetchDatasets: () => void,
     fetchWMSLayers: (page: number, searchTerm: string | null, organisationName: string | null, datasetSlug: string | null, ordering: string) => void,
+    fetchWMSByUUID: (uuid: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void,
     toggleAlert: () => void,
     updateSearch: (searchTerm: string) => void,
@@ -115,6 +117,14 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         const dataType = getDataType(urlSearchParams);
         //Dispatch the switchDataType action to update the currentDataType state in Redux store with the data param
         this.props.switchDataType(dataType);
+
+        //If UUID search param is entered in the URL then fetch
+        //the Raster or WMS layer by UUID and update the Redux store
+        if (uuid && dataType === 'Raster') {
+            this.props.fetchRasterByUUID(uuid);
+        } else if (uuid && dataType === 'WMS') {
+            this.props.fetchWMSByUUID(uuid);
+        };
 
         //Fetch Lizard Bootstrap
         this.props.fetchLizardBootstrap();
@@ -284,6 +294,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | FilterActionTy
         datasetSlug: string,
         ordering: string
     ) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, datasetSlug, ordering, dispatch),
+    fetchRasterByUUID: (uuid: string) => fetchRasterByUUID(uuid, dispatch),
     updateBasketWithRaster: (rasters: string[]) => updateBasketWithRaster(rasters, dispatch),
     updateBasketWithWMS: (wmsLayers: string[]) => updateBasketWithWMS(wmsLayers, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
@@ -296,6 +307,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | FilterActionTy
         datasetSlug: string,
         ordering: string
     ) => fetchWMSLayers(page, searchTerm, organisationName, datasetSlug, ordering, dispatch),
+    fetchWMSByUUID: (uuid: string) => fetchWMSByUUID(uuid, dispatch),
     selectItem: (uuid: string | null) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
     toggleAlert: () => toggleAlert(dispatch),

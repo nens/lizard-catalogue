@@ -61,6 +61,7 @@ export const switchDataType = (dataType: SwitchDataType['payload'], dispatch): v
 //MARK: Raster
 export const RASTERS_REQUESTED = 'RASTERS_REQUESTED';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
+export const RASTER_FETCHED = 'RASTER_FETCHED';
 
 const rastersRequested = (): RastersRequested => ({
     type: RASTERS_REQUESTED
@@ -96,6 +97,17 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
         .catch(console.error)
 };
 
+export const fetchRasterByUUID = (uuid: string, dispatch) => {
+    request
+        .get(`${baseUrl}/rasters/${uuid}`)
+        .then(response => {
+            dispatch({
+                type: RASTER_FETCHED,
+                raster: response.body
+            });
+        });
+};
+
 //Decide whether gonna use this fetch function
 export const fetchRastersOnUuid = (searchUuid: string, dispatch: Dispatch<RastersFetched>): void => {
     request
@@ -108,7 +120,8 @@ export const fetchRastersOnUuid = (searchUuid: string, dispatch: Dispatch<Raster
 
 //MARK: WMS
 export const REQUEST_WMS = 'REQUEST_WMS';
-export const RECEIVE_WMS = 'RECEIVE_WMS';
+export const RECEIVE_WMS = 'RECEIVE_WMS_LAYERS';
+export const RECEIVE_WMS_LAYER = 'RECEIVE_WMS_LAYER';
 
 const wmsRequested = (): RequestWMS => ({
     type: REQUEST_WMS
@@ -141,6 +154,17 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
             }
         })
         .catch(console.error)
+};
+
+export const fetchWMSByUUID = (uuid: string, dispatch) => {
+    request
+        .get(`${baseUrl}/wmslayers/${uuid}`)
+        .then(response => {
+            dispatch({
+                type: RECEIVE_WMS_LAYER,
+                wms: response.body
+            });
+        });
 };
 
 //MARK: Select Item to view (Raster or WMS layer)
