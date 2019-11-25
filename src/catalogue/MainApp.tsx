@@ -138,7 +138,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 nextProps.currentDataType,
                 nextFilters.searchTerm,
                 nextFilters.organisation,
-                nextProps.currentDataType === "Raster" ? nextFilters.observationType : null,
+                nextProps.currentDataType === "Raster" ? nextFilters.observationType : '',
                 nextFilters.dataset
             );
             this.updateURL(url);
