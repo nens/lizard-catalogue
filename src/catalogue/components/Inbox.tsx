@@ -31,14 +31,13 @@ class Inbox extends React.Component<InboxProps> {
         this.props.removeMessage(message.id);
     };
 
-    downloadFile = (message: Message) => {
-        window.open(message.url);
-        this.props.downloadFile(message.id);
-    };
-
     render() {
         return (
-            <div className="inbox" onMouseLeave={this.props.closeAllDropdowns}>
+            <div
+                className="inbox"
+                onMouseLeave={this.props.closeAllDropdowns}
+                onClick={(e) => e.stopPropagation()}
+            >
                 {this.props.inbox.map(message => (
                     <div className="inbox-file" key={message.id}>
                         <div
@@ -48,23 +47,26 @@ class Inbox extends React.Component<InboxProps> {
                             {message.message}
                         </div>
                         {message.url ? (
-                            <i
-                                className="fa fa-download inbox-download"
+                            <a
                                 title="download file"
-                                onClick={() => this.downloadFile(message)}
-                            />
+                                href={message.url}
+                                onClick={() => this.props.downloadFile(message.id)}
+                            >
+                                <i className="fa fa-download inbox-download" />
+                            </a>
                         ) : null}
                         {/* User can only remove the message if either the file
                         has been downloaded or the export task failed */}
-                        {(message.downloaded || !message.url) ? (
-                            <div
-                                className="inbox-read"
-                                title="remove file"
-                                onClick={() => this.removeMessage(message)}
-                            >
-                                &times;
-                            </div>
-                        ) : null}
+                        <div
+                            className="inbox-read"
+                            title="remove file"
+                            onClick={() => this.removeMessage(message)}
+                            style={{
+                                visibility: (message.downloaded || !message.url) ? 'visible' : 'hidden'
+                            }}
+                        >
+                            &times;
+                        </div>
                     </div>
                 ))}
                 {this.props.pendingExportTasks ? (
