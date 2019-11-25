@@ -28,12 +28,12 @@ export const getDataType = (urlSearchParams) => {
 };
 
 //Generate new URLs with different search params for sharing searches
-export const newURL = (dataType: string, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string) => {
+export const newURL = (dataType: string | null, searchTerm: string | null, organisationName: string | null, observationTypeParameter: string | null, datasetSlug: string | null) => {
     const dataTypeParam = `data=${dataType}`;
-    const searchParam = searchTerm === '' ? '' : `&search=${encodeURIComponent(searchTerm)}`;
-    const organisationParam = organisationName === '' ? '' : `&organisation=${encodeURIComponent(organisationName)}`;
-    const observationParam = observationTypeParameter === '' ? '' : `&observation=${encodeURIComponent(observationTypeParameter)}`;
-    const datasetParam = datasetSlug === '' ? '' : `&dataset=${encodeURIComponent(datasetSlug)}`;
+    const searchParam = !searchTerm ? '' : `&search=${encodeURIComponent(searchTerm)}`;
+    const organisationParam = !organisationName ? '' : `&organisation=${encodeURIComponent(organisationName)}`;
+    const observationParam = !observationTypeParameter ? '' : `&observation=${encodeURIComponent(observationTypeParameter)}`;
+    const datasetParam = !datasetSlug ? '' : `&dataset=${encodeURIComponent(datasetSlug)}`;
 
     return `?${dataTypeParam}${searchParam}${organisationParam}${observationParam}${datasetParam}`;
 };
