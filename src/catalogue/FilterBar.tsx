@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { ObservationType, Organisation, Dataset, SwitchDataType } from '../interface';
 import { MyStore } from '../reducers';
-import { getUrlParams, getOrganisation, getObservationType, getDataset } from '../utils/getUrlParams';
 import SearchBar from './components/SearchBar';
 import { selectOrganisation, removeOrganisation, selectDataset, selectObservationType, removeObservationType, removeDataset } from '../action';
 import './styles/FilterBar.css';
@@ -13,11 +12,6 @@ interface MyProps {
     organisations: Organisation[],
     datasets: Dataset[],
     currentDataType: MyStore['currentDataType'],
-    fetchObservationTypes: (parameter: ObservationType['parameter']) => void,
-    fetchOrganisations: (name: Organisation['name']) => void,
-    fetchDatasets: (slug: Dataset['slug']) => void,
-    fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string) => void,
-    fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string) => void,
     onDataTypeChange: (dataType: SwitchDataType['payload']) => void,
 };
 
@@ -72,31 +66,6 @@ class FilterBar extends React.Component<FilterBarProps, MyState> {
 
     onFilterSubmit = (event) => {
         event.preventDefault();
-    };
-
-    componentDidMount() {
-        //Get parameters from the URL
-        const urlSearchParams = getUrlParams(this.props.location.search);
-        const organisation = getOrganisation(urlSearchParams);
-        const observation = getObservationType(urlSearchParams);
-        const dataset = getDataset(urlSearchParams);
-
-        //Set FilterBar state with URL parameters
-        this.setState({
-            searchOrg: organisation,
-            searchObs: observation,
-            searchDataset: dataset
-        });
-
-        //Update Redux filters with URL parameters
-        this.props.selectOrganisation(organisation);
-        this.props.selectDataset(dataset);
-        this.props.selectObservationType(observation);
-
-        //Fetch data with selected filters
-        this.props.fetchObservationTypes(observation);
-        this.props.fetchOrganisations(organisation);
-        this.props.fetchDatasets(dataset);
     };
 
     render() {

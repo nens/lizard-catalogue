@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
-import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, toggleAlert, updateBasketWithRaster, updateBasketWithWMS, updateSearch, updateOrder, updatePage } from '../action';
+import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, toggleAlert, updateBasketWithRaster, updateBasketWithWMS, updateSearch, updateOrder, updatePage, selectOrganisation, selectDataset, selectObservationType } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { RasterActionType, ObservationType, Organisation, Dataset, FilterActionType, SwitchDataType } from '../interface';
 import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL } from '../utils/getUrlParams';
@@ -39,6 +39,9 @@ interface PropsFromDispatch {
     updateSearch: (searchTerm: string) => void,
     updateOrder: (ordering: string) => void,
     updatePage: (page: number) => void,
+    selectOrganisation: (organisationName: string) => void,
+    selectDataset: (datasetSlug: string) => void,
+    selectObservationType: (observationTypeParameter: string) => void,
 };
 
 type MainAppProps = PropsFromState & PropsFromDispatch & RouteComponentProps;
@@ -95,25 +98,33 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     };
 
     async componentDidMount() {
+        //Fetch Lizard Bootstrap
+        this.props.fetchLizardBootstrap();
+
+        //Fetch all organisations, datasets and observation types
+        this.props.fetchObservationTypes();
+        this.props.fetchOrganisations();
+        this.props.fetchDatasets();
+
         //When component first mount, capture the search params in the URL
         const urlSearchParams = getUrlParams(this.props.location.search);
+        const dataType = getDataType(urlSearchParams);
         const search = getSearch(urlSearchParams);
         const organisation = getOrganisation(urlSearchParams);
         const observation = getObservationType(urlSearchParams);
         const dataset = getDataset(urlSearchParams);
 
-        //Update the search term in Redux store and in MainApp's state
+        //Update Redux filters with URL parameters
         this.props.updateSearch(search);
+        this.props.selectOrganisation(organisation);
+        this.props.selectDataset(dataset);
+        this.props.selectObservationType(observation);
+        this.props.switchDataType(dataType);
+
+        //Update the search term in MainApp's state to show the search input
         this.setState({
             searchTerm: search
         });
-
-        const dataType = getDataType(urlSearchParams);
-        //Dispatch the switchDataType action to update the currentDataType state in Redux store with the data param
-        this.props.switchDataType(dataType);
-
-        //Fetch Lizard Bootstrap
-        this.props.fetchLizardBootstrap();
 
         //Fetch Rasters or WMS layers depends on the selected data type
         dataType === 'Raster' ? this.props.fetchRasters(
@@ -187,15 +198,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 </div>
                 <div className="main-body">
                     <FilterBar
-                        fetchObservationTypes={this.props.fetchObservationTypes}
                         observationTypes={this.props.observationTypes}
-                        fetchOrganisations={this.props.fetchOrganisations}
                         organisations={this.props.organisations}
-                        fetchDatasets={this.props.fetchDatasets}
                         datasets={this.props.datasets}
                         onDataTypeChange={this.onDataTypeChange}
-                        fetchRasters={this.props.fetchRasters}
-                        fetchWMSLayers={this.props.fetchWMSLayers}
                         currentDataType={this.props.currentDataType}
                     />
                     {this.props.currentDataType === "Raster" ?
@@ -286,6 +292,9 @@ const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | FilterActionTy
     updateSearch: (searchTerm: string) => updateSearch(dispatch, searchTerm),
     updateOrder: (ordering: string) => updateOrder(dispatch, ordering),
     updatePage: (page: number) => updatePage(dispatch, page),
+    selectOrganisation: (organisationName: string) => selectOrganisation(dispatch, organisationName),
+    selectDataset: (datasetSlug: string) => selectDataset(dispatch, datasetSlug),
+    selectObservationType: (observationTypeParameter: string) => selectObservationType(dispatch, observationTypeParameter),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainApp);
