@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
-import { Dispatch } from 'redux';
 import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, toggleAlert, updateBasketWithRaster, updateBasketWithWMS, updateSearch, updateOrder, updatePage, selectOrganisation, selectDataset, selectObservationType } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList } from '../reducers';
-import { RasterActionType, ObservationType, Organisation, Dataset, FilterActionType, SwitchDataType } from '../interface';
+import { ObservationType, Organisation, Dataset, SwitchDataType } from '../interface';
 import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL } from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
@@ -153,7 +152,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 nextFilters.dataset
             );
             this.updateURL(url);
-            this.props.updatePage(1);
+            if (nextFilters.page !== 1) this.props.updatePage(1);
             nextProps.currentDataType === "Raster" ? this.props.fetchRasters(
                 1,
                 nextFilters.searchTerm,
@@ -264,7 +263,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     filters: state.filters,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<RasterActionType | FilterActionType>): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
     fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
     fetchRasters: (
         page: number,

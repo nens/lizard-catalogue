@@ -1,82 +1,12 @@
 import {
-    RASTERS_FETCHED,
-    OBSERVATION_TYPES_FETCHED,
-    ORGANISATIONS_FETCHED,
-    DATASETS_FETCHED,
-    RASTERS_REQUESTED,
-    REQUEST_LIZARD_BOOTSTRAP,
-    RECEIVE_LIZARD_BOOTSTRAP,
-    RECEIVE_WMS,
-    REQUEST_WMS,
     SWITCH_DATA_TYPE,
-    ITEM_SELECTED,
-    TOGGLE_ALERT,
 } from "./action";
 
-//ACTION INTERFACE
-export interface RequestLizardBootstrap {
-    type: typeof REQUEST_LIZARD_BOOTSTRAP
-};
-
-export interface ReceiveLizardBootstrap {
-    type: typeof RECEIVE_LIZARD_BOOTSTRAP,
-    payload: Bootstrap
-};
-
-export type BootstrapActionType = RequestLizardBootstrap | ReceiveLizardBootstrap;
-
+//ACTION
 export interface SwitchDataType {
     type: typeof SWITCH_DATA_TYPE,
     payload: "Raster" | "WMS"
 };
-
-export interface ToggleAlert {
-    type: typeof TOGGLE_ALERT
-};
-
-export interface RastersRequested {
-    type: typeof RASTERS_REQUESTED
-};
-
-export interface RastersFetched {
-    type: typeof RASTERS_FETCHED,
-    payload: RasterListObject
-};
-
-export type RasterActionType = RastersRequested | RastersFetched | ToggleAlert;
-
-export interface RequestWMS {
-    type: typeof REQUEST_WMS
-};
-
-export interface ReceiveWMS {
-    type: typeof RECEIVE_WMS,
-    payload: WMSObject
-};
-
-export type WMSActionType = RequestWMS | ReceiveWMS | ToggleAlert;
-
-export interface ItemSelected {
-    type: typeof ITEM_SELECTED,
-    payload: string
-};
-
-export interface ObservationTypesFetched {
-    type: typeof OBSERVATION_TYPES_FETCHED,
-    payload: ObservationType[]
-};
-
-export interface OrganisationsFetched {
-    type: typeof ORGANISATIONS_FETCHED,
-    payload: Organisation[]
-};
-
-export interface DatasetsFetched {
-    type: typeof DATASETS_FETCHED,
-    payload: Dataset[]
-};
-
-export type FilterActionType = ObservationTypesFetched | OrganisationsFetched | DatasetsFetched;
 
 //LIZARD BOOTSTRAP
 export interface Bootstrap {

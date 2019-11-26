@@ -1,35 +1,23 @@
 import request from 'superagent';
 import { baseUrl } from './api';
-import { Dispatch } from 'redux';
 import {
-    RastersFetched,
     RasterListObject,
     ObservationType,
     Organisation,
     Dataset,
-    ObservationTypesFetched,
-    OrganisationsFetched,
-    DatasetsFetched,
-    RastersRequested,
-    RequestLizardBootstrap,
-    ReceiveLizardBootstrap,
     WMSObject,
-    RequestWMS,
-    ReceiveWMS,
     SwitchDataType,
-    ItemSelected,
-    ToggleAlert,
 } from './interface';
 
 //MARK: Bootsrap
 export const REQUEST_LIZARD_BOOTSTRAP = "REQUEST_LIZARD_BOOTSTRAP";
 export const RECEIVE_LIZARD_BOOTSTRAP = "RECEIVE_LIZARD_BOOTSTRAP";
 
-const requestLizardBootsrap = (): RequestLizardBootstrap => ({
+const requestLizardBootsrap = () => ({
     type: REQUEST_LIZARD_BOOTSTRAP
 });
 
-const receiveLizardBootstrap = (data): ReceiveLizardBootstrap => ({
+const receiveLizardBootstrap = (data) => ({
     type: RECEIVE_LIZARD_BOOTSTRAP,
     payload: data
 });
@@ -63,11 +51,11 @@ export const switchDataType = (dataType: SwitchDataType['payload'], dispatch): v
 export const RASTERS_REQUESTED = 'RASTERS_REQUESTED';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
 
-const rastersRequested = (): RastersRequested => ({
+const rastersRequested = () => ({
     type: RASTERS_REQUESTED
 });
 
-const rastersFetched = (rasterListObject: RasterListObject): RastersFetched => ({
+const rastersFetched = (rasterListObject: RasterListObject) => ({
     type: RASTERS_FETCHED,
     payload: rasterListObject
 });
@@ -106,7 +94,7 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
 };
 
 //Decide whether gonna use this fetch function
-export const fetchRastersOnUuid = (searchUuid: string, dispatch: Dispatch<RastersFetched>): void => {
+export const fetchRastersOnUuid = (searchUuid: string, dispatch): void => {
     request
         .get(`${baseUrl}/rasters/?uuid=${searchUuid}`)
         .then(response => {
@@ -119,11 +107,11 @@ export const fetchRastersOnUuid = (searchUuid: string, dispatch: Dispatch<Raster
 export const REQUEST_WMS = 'REQUEST_WMS';
 export const RECEIVE_WMS = 'RECEIVE_WMS';
 
-const wmsRequested = (): RequestWMS => ({
+const wmsRequested = () => ({
     type: REQUEST_WMS
 });
 
-const wmsReceived = (wmsObject: WMSObject): ReceiveWMS => ({
+const wmsReceived = (wmsObject: WMSObject) => ({
     type: RECEIVE_WMS,
     payload: wmsObject
 });
@@ -163,7 +151,7 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
 //MARK: Select Item to view (Raster or WMS layer)
 export const ITEM_SELECTED = 'ITEM_SELECTED';
 
-const itemSelected = (uuid: string): ItemSelected => ({
+const itemSelected = (uuid: string) => ({
     type: ITEM_SELECTED,
     payload: uuid
 });
@@ -177,7 +165,7 @@ export const OBSERVATION_TYPES_FETCHED = 'OBSERVATION_TYPES_FETCHED';
 export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
 export const DATASETS_FETCHED = 'DATASETS_FETCHED';
 
-const observationTypesFetched = (observationTypes: ObservationType[]): ObservationTypesFetched => ({
+const observationTypesFetched = (observationTypes: ObservationType[]) => ({
     type: OBSERVATION_TYPES_FETCHED,
     payload: observationTypes
 });
@@ -191,7 +179,7 @@ export const fetchObservationTypes = (dispatch): void => {
         .catch(console.error)
 };
 
-const organisationsFetched = (organisations: Organisation[]): OrganisationsFetched => ({
+const organisationsFetched = (organisations: Organisation[]) => ({
     type: ORGANISATIONS_FETCHED,
     payload: organisations
 });
@@ -205,7 +193,7 @@ export const fetchOrganisations = (dispatch): void => {
         .catch(console.error)
 };
 
-const datasetsFetched = (datasets: Dataset[]): DatasetsFetched => ({
+const datasetsFetched = (datasets: Dataset[]) => ({
     type: DATASETS_FETCHED,
     payload: datasets
 });
@@ -335,10 +323,10 @@ export const removeWMSFromBasket = (uuid: string, dispatch): void => {
 //MARK: Toggle the showAlert
 export const TOGGLE_ALERT = 'TOGGLE_ALERT';
 
-const alertToggled = (): ToggleAlert => ({
+const alertToggled = () => ({
     type: TOGGLE_ALERT
 });
 
-export const toggleAlert = (dispatch: Dispatch<ToggleAlert>) => {
+export const toggleAlert = (dispatch) => {
     dispatch(alertToggled());
 };

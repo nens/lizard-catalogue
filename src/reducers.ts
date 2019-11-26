@@ -28,21 +28,13 @@ import {
     UPDATE_PAGE,
 } from "./action";
 import {
-    RastersFetched,
-    RasterActionType,
     Raster,
     ObservationType,
     Organisation,
     Dataset,
-    OrganisationsFetched,
-    ObservationTypesFetched,
-    DatasetsFetched,
     Bootstrap,
-    BootstrapActionType,
     WMS,
     SwitchDataType,
-    ItemSelected,
-    WMSActionType,
 } from './interface';
 
 export interface MyStore {
@@ -97,7 +89,7 @@ const bootstrap = (
         },
         isFetching: false
     },
-    action: BootstrapActionType
+    action
 ): MyStore['bootstrap'] => {
     switch (action.type) {
         case REQUEST_LIZARD_BOOTSTRAP:
@@ -127,7 +119,7 @@ const currentDataType = (state: MyStore['currentDataType'] = "Raster", action: S
     };
 };
 
-const currentRasterList = (state: MyStore['currentRasterList'] = null, action: RasterActionType): MyStore['currentRasterList'] => {
+const currentRasterList = (state: MyStore['currentRasterList'] = null, action): MyStore['currentRasterList'] => {
     switch (action.type) {
         case RASTERS_REQUESTED:
             return {
@@ -162,7 +154,7 @@ const currentRasterList = (state: MyStore['currentRasterList'] = null, action: R
     };
 };
 
-const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched): MyStore['allRasters'] => {
+const allRasters = (state: MyStore['allRasters'] = {}, action): MyStore['allRasters'] => {
     switch (action.type) {
         case RASTERS_FETCHED:
             const newState = { ...state };
@@ -198,7 +190,7 @@ const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched): 
     };
 };
 
-const currentWMSList = (state: MyStore['currentWMSList'] = null, action: WMSActionType): MyStore['currentWMSList'] => {
+const currentWMSList = (state: MyStore['currentWMSList'] = null, action): MyStore['currentWMSList'] => {
     switch (action.type) {
         case REQUEST_WMS:
             return {
@@ -233,7 +225,7 @@ const currentWMSList = (state: MyStore['currentWMSList'] = null, action: WMSActi
     };
 };
 
-const allWMS = (state: MyStore['allWMS'] = {}, action: WMSActionType): MyStore['allWMS'] => {
+const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
     switch (action.type) {
         case RECEIVE_WMS:
             const newState = { ...state };
@@ -246,7 +238,7 @@ const allWMS = (state: MyStore['allWMS'] = {}, action: WMSActionType): MyStore['
     };
 };
 
-const selectedItem = (state: MyStore['selectedItem'] = null, action: ItemSelected): MyStore['selectedItem'] => {
+const selectedItem = (state: MyStore['selectedItem'] = null, action): MyStore['selectedItem'] => {
     switch (action.type) {
         case ITEM_SELECTED:
             return action.payload;
@@ -300,7 +292,7 @@ const basket = (
     };
 };
 
-const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched): MyStore['observationTypes'] => {
+const observationTypes = (state: MyStore['observationTypes'] = [], action): MyStore['observationTypes'] => {
     switch (action.type) {
         case OBSERVATION_TYPES_FETCHED:
             return action.payload.map(observation => {
@@ -318,7 +310,7 @@ const observationTypes = (state: MyStore['observationTypes'] = [], action: Obser
     };
 };
 
-const organisations = (state: MyStore['organisations'] = [], action: OrganisationsFetched): MyStore['organisations'] => {
+const organisations = (state: MyStore['organisations'] = [], action): MyStore['organisations'] => {
     switch (action.type) {
         case ORGANISATIONS_FETCHED:
             return action.payload.map(organisation => {
@@ -333,7 +325,7 @@ const organisations = (state: MyStore['organisations'] = [], action: Organisatio
     };
 };
 
-const datasets = (state: MyStore['datasets'] = [], action: DatasetsFetched): MyStore['datasets'] => {
+const datasets = (state: MyStore['datasets'] = [], action): MyStore['datasets'] => {
     switch (action.type) {
         case DATASETS_FETCHED:
             return action.payload.map(dataset => {
