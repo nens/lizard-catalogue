@@ -81,7 +81,7 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
     if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
     if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
     if (datasetSlug) params.push(`datasets__slug=${encodeURIComponent(datasetSlug)}`);
-    if (observationTypeParameter) params.push(`&observation_type__parameter__icontains=${encodeURIComponent(observationTypeParameter)}`);
+    if (observationTypeParameter) params.push(`observation_type__parameter__icontains=${encodeURIComponent(observationTypeParameter)}`);
     if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
 
     const queries = params.join('&');

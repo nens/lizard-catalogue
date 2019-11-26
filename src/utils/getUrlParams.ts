@@ -32,10 +32,10 @@ export const newURL = (dataType: string, searchTerm: string, organisationName: s
     const params: string[] = [];
 
     if (dataType) params.push(`data=${dataType}`);
-    if (searchTerm) params.push(`&search=${encodeURIComponent(searchTerm)}`);
-    if (organisationName) params.push(`&organisation=${encodeURIComponent(organisationName)}`);
-    if (datasetSlug) params.push(`&dataset=${encodeURIComponent(datasetSlug)}`);
-    if (observationTypeParameter) params.push(`&observation=${encodeURIComponent(observationTypeParameter)}`);
+    if (searchTerm) params.push(`search=${encodeURIComponent(searchTerm)}`);
+    if (organisationName) params.push(`organisation=${encodeURIComponent(organisationName)}`);
+    if (datasetSlug) params.push(`dataset=${encodeURIComponent(datasetSlug)}`);
+    if (observationTypeParameter) params.push(`observation=${encodeURIComponent(observationTypeParameter)}`);
 
     const queries = params.join('&');
 
