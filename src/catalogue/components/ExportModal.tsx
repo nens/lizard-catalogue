@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
+import { Map, TileLayer, WMSTileLayer, Rectangle } from 'react-leaflet';
 import { Raster } from '../../interface';
 import '../styles/Export.css';
 
@@ -12,6 +12,34 @@ interface MyProps {
 export default class ExportModal extends React.Component<MyProps> {
     render() {
         const { raster, bounds, openDownloadModal } = this.props;
+        // const exportGridCells = [[[52.339322, 4.767822], [53.339322, 4.997822]], [[52.339322, 4.997822], [53.339322, 5.997822]]]
+        const exportGridCells = [
+            {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Polygon",
+                  "coordinates": [[52.339322, 4.767822], [53.339322, 4.997822]],
+                },
+                "properties": {
+                  "projection": "EPSG:28992",
+                  "bounds": [130000, 510000, 140000, 520000],
+                  "id": [130, 510]
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Polygon",
+                  "coordinates": [[52.339322, 4.997822], [53.339322, 5.997822]],
+                },
+                "properties": {
+                  "projection": "EPSG:28992",
+                  "bounds": [130000, 510000, 140000, 520000],
+                  "id": [131, 510]
+                }
+              }
+        ];
+        const selectedGridIds = [[130, 510],]
 
         return (
             <div className="export_main">
@@ -21,6 +49,23 @@ export default class ExportModal extends React.Component<MyProps> {
                         <Map bounds={bounds} zoomControl={false} style={{ width: "100%" }}>
                             <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
                             <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
+                            {
+                                exportGridCells.map((gridcell) =>{
+                                    const isSelected = selectedGridIds.find(item=>{
+                                        return item[0] === gridcell.properties.id[0] &&  item[1] === gridcell.properties.id[1];
+                                    })
+                                    return (
+                                        <Rectangle
+                                            bounds={gridcell.geometry.coordinates}
+                                            className={`export_grid_cell ${isSelected? 'selected': 'not_selected' }`}
+                                            onClick={()=>{console.log('gridcell.properties.id', gridcell.properties.id)}}
+                                            // onHoover={()=>console.log("hoover")}
+                                            // onMouseMove={()=>console.log("hoover")}
+                                            // color={"#A10000"}
+                                        />
+                                    );
+                                })
+                            }
                         </Map>
                     </div>
                 </div>

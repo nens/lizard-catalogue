@@ -221,3 +221,16 @@ export interface Message {
     url: string,
     downloaded: boolean,
 };
+
+export interface ExportGridCell {
+    "type": string,
+    "geometry": {
+        "type": string,
+        "coordinates": [[number,number][]],
+    },
+    "properties": {
+        "projection": "string",
+        "bounds": [number],
+        "id": [number, number]
+    }
+};
