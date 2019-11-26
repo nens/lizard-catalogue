@@ -74,18 +74,26 @@ const rastersFetched = (rasterListObject: RasterListObject): RastersFetched => (
 
 export const fetchRasters = (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string, dispatch): void => {
     dispatch(rastersRequested());
-    const searchParam = !searchTerm ? '' : `name__icontains=${searchTerm}`;
-    const organisationParam = !organisationName ? '' : `&organisation__name__icontains=${organisationName}`;
-    const observationTypeParam = !observationTypeParameter ? '' : `&observation_type__parameter__icontains=${observationTypeParameter}`;
-    const datasetParam = !datasetSlug ? '' : `&datasets__slug=${datasetSlug}`;
-    const orderingParam = !ordering ? '' : `&ordering=${ordering}`;
+
+    const params: string[] = [];
+
+    if (page) params.push(`page=${page}`);
+    if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
+    if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
+    if (datasetSlug) params.push(`datasets__slug=${encodeURIComponent(datasetSlug)}`);
+    if (observationTypeParameter) params.push(`&observation_type__parameter__icontains=${encodeURIComponent(observationTypeParameter)}`);
+    if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
+
+    const queries = params.join('&');
+
     request
-        .get(`${baseUrl}/rasters/?${searchParam}&page=${page}${organisationParam}${observationTypeParam}${datasetParam}${orderingParam}&scenario__isnull=true`)
+        .get(`${baseUrl}/rasters/?${queries}&scenario__isnull=true`)
         .then(response => {
             if(response.body.count === 0 && searchTerm) {
                 //If could not find any raster with the search term by raster's name then look for raster's uuid
+                const newQueries = queries.replace('name__icontains', 'uuid');
                 request
-                    .get(`${baseUrl}/rasters/?uuid=${searchTerm ? searchTerm : ''}&page=${page}${organisationParam}${observationTypeParam}${datasetParam}&scenario__isnull=true`)
+                    .get(`${baseUrl}/rasters/?${newQueries}&scenario__isnull=true`)
                     .then(response => {
                         dispatch(rastersFetched(response.body))
                     })
@@ -122,17 +130,25 @@ const wmsReceived = (wmsObject: WMSObject): ReceiveWMS => ({
 
 export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string, dispatch): void => {
     dispatch(wmsRequested());
-    const searchParam = !searchTerm ? '' : `name__icontains=${searchTerm}`;
-    const organisationParam = !organisationName ? '' : `&organisation__name__icontains=${organisationName}`;
-    const datasetParam = !datasetSlug ? '' : `&datasets__slug=${datasetSlug}`;
-    const orderingParam = !ordering ? '' : `&ordering=${ordering}`;
+
+    const params: string[] = [];
+
+    if (page) params.push(`page=${page}`);
+    if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
+    if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
+    if (datasetSlug) params.push(`datasets__slug=${encodeURIComponent(datasetSlug)}`);
+    if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
+
+    const queries = params.join('&');
+
     request
-        .get(`${baseUrl}/wmslayers/?${searchParam}&page=${page}${organisationParam}${datasetParam}${orderingParam}`)
+        .get(`${baseUrl}/wmslayers/?${queries}`)
         .then(response => {
             if(response.body.count === 0 && searchTerm) {
                 //If could not find any WMS layer with the search term by WMS's name then look for WMS's uuid
+                const newQueries = queries.replace('name__icontains', 'uuid');
                 request
-                    .get(`${baseUrl}/wmslayers/?uuid=${searchTerm ? searchTerm : ''}&page=${page}${organisationParam}${datasetParam}`)
+                    .get(`${baseUrl}/wmslayers/?${newQueries}`)
                     .then(response => {
                         dispatch(wmsReceived(response.body))
                     })

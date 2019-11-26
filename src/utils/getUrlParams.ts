@@ -29,11 +29,15 @@ export const getDataType = (urlSearchParams) => {
 
 //Generate new URLs with different search params for sharing searches
 export const newURL = (dataType: string, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string) => {
-    const dataTypeParam = `data=${dataType}`;
-    const searchParam = !searchTerm ? '' : `&search=${encodeURIComponent(searchTerm)}`;
-    const organisationParam = !organisationName ? '' : `&organisation=${encodeURIComponent(organisationName)}`;
-    const observationParam = !observationTypeParameter ? '' : `&observation=${encodeURIComponent(observationTypeParameter)}`;
-    const datasetParam = !datasetSlug ? '' : `&dataset=${encodeURIComponent(datasetSlug)}`;
+    const params: string[] = [];
 
-    return `?${dataTypeParam}${searchParam}${organisationParam}${observationParam}${datasetParam}`;
+    if (dataType) params.push(`data=${dataType}`);
+    if (searchTerm) params.push(`&search=${encodeURIComponent(searchTerm)}`);
+    if (organisationName) params.push(`&organisation=${encodeURIComponent(organisationName)}`);
+    if (datasetSlug) params.push(`&dataset=${encodeURIComponent(datasetSlug)}`);
+    if (observationTypeParameter) params.push(`&observation=${encodeURIComponent(observationTypeParameter)}`);
+
+    const queries = params.join('&');
+
+    return `?${queries}`;
 };
