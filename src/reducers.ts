@@ -122,7 +122,11 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
         case ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS:
             return {
                 ...state,
-                selectedGridCellIds: action.gridCellIds
+                selectedGridCellIds: state.selectedGridCellIds.filter(id => {
+                    return action.gridCellIds.filter(actionId=> {
+                        return id[0] === actionId[0] && id[1] === actionId[1]
+                    }).length === 0;
+                }).concat(action.gridCellIds),
             }
         case REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS:
             return {

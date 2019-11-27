@@ -141,7 +141,7 @@
 }
 .export_grid_cell:hover {
     fill: #E2D300;
-    fill-opacity: 0.33;
+    fill-opacity: 0.15;
 }
 .export_grid_cell.selected {
     fill: #E2D300;
