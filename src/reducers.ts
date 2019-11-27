@@ -81,10 +81,10 @@ export interface MyStore {
     },
     pendingExportTasks: number,
     inbox: Message[],
-    RasterExportState: RasterExportState,
+    rasterExportState: RasterExportState,
 };
 
-const rasterExportState = (state: MyStore["RasterExportState"]=
+const rasterExportState = (state: MyStore["rasterExportState"]=
     {
     selectedGridCellIds: [[130, 510]],
     availableGridCells: [{
@@ -114,7 +114,7 @@ const rasterExportState = (state: MyStore["RasterExportState"]=
     ],
     },
     action: BootstrapActionType
-): MyStore['RasterExportState'] => {
+): MyStore['rasterExportState'] => {
     switch (action.type) {
         default:
             return state;
@@ -474,6 +474,10 @@ const inbox = (state: MyStore['inbox'] = [], { type, messages, id }) => {
             return state;
     };
 };
+
+export const getExportAvailableGridCells = (state: MyStore) => {
+    return state.rasterExportState.availableGridCells;
+}
 
 export const getLizardBootstrap = (state: MyStore) => {
     return state.bootstrap;
