@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer, Rectangle } from 'react-leaflet';
 import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds} from '../../reducers';
 import {addToSelectedExportGridCellIds, removeFromSelectedExportGridCellIds, removeAllSelectedExportGridCellIds } from '../../action';
-import {areGridCelIdsEqual} from '../../interface';
+import {areGridCelIdsEqual, AddToSelectedExportGridCellIds, ExportGridCelId, RemoveFromSelectedExportGridCellIds,RemoveAllSelectedExportGridCellIds} from '../../interface';
 
 import { Raster } from '../../interface';
 import '../styles/Export.css';
@@ -15,9 +15,9 @@ interface MyProps {
     openDownloadModal: () => void,
     availableGridCells: MyStore['rasterExportState']['availableGridCells'],
     selectedGridCellIds: MyStore['rasterExportState']['selectedGridCellIds'],
-    addToSelectedExportGridCellIds: any,
-    removeFromSelectedExportGridCellIds: any,
-    removeAllSelectedExportGridCellIds: any,
+    addToSelectedExportGridCellIds: (gridCellIds: ExportGridCelId[]) => AddToSelectedExportGridCellIds,
+    removeFromSelectedExportGridCellIds: (gridCellIds: ExportGridCelId[]) => RemoveFromSelectedExportGridCellIds,
+    removeAllSelectedExportGridCellIds: () => RemoveAllSelectedExportGridCellIds,
 };
 
 class ExportModal extends React.Component<MyProps> {
@@ -158,8 +158,8 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
 });
 
 interface PropsFromDispatch {
-    addToSelectedExportGridCellIds: (ids: any) => void,
-    removeFromSelectedExportGridCellIds: (ids: any) => void,
+    addToSelectedExportGridCellIds: (ids: ExportGridCelId[]) => void,
+    removeFromSelectedExportGridCellIds: (ids: ExportGridCelId[]) => void,
     removeAllSelectedExportGridCellIds: () => void,
 };
 
