@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { Map, TileLayer, WMSTileLayer, Rectangle } from 'react-leaflet';
-import {MyStore, getExportAvailableGridCells} from '../../reducers';
+import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds} from '../../reducers';
 import { Raster } from '../../interface';
 import '../styles/Export.css';
 
@@ -11,40 +11,14 @@ interface MyProps {
     bounds: number[][],
     openDownloadModal: () => void,
     availableGridCells: MyStore['rasterExportState']['availableGridCells'],
+    selectedGridCellIds: MyStore['rasterExportState']['selectedGridCellIds'],
 };
 
 class ExportModal extends React.Component<MyProps> {
     render() {
         const { raster, bounds, openDownloadModal } = this.props;
-        // const exportGridCells = [[[52.339322, 4.767822], [53.339322, 4.997822]], [[52.339322, 4.997822], [53.339322, 5.997822]]]
         const exportGridCells = this.props.availableGridCells;
-        // [
-        //     {
-        //         "type": "Feature",
-        //         "geometry": {
-        //           "type": "Polygon",
-        //           "coordinates": [[52.339322, 4.767822], [53.339322, 4.997822]],
-        //         },
-        //         "properties": {
-        //           "projection": "EPSG:28992",
-        //           "bounds": [130000, 510000, 140000, 520000],
-        //           "id": [130, 510]
-        //         }
-        //       },
-        //       {
-        //         "type": "Feature",
-        //         "geometry": {
-        //           "type": "Polygon",
-        //           "coordinates": [[52.339322, 4.997822], [53.339322, 5.997822]],
-        //         },
-        //         "properties": {
-        //           "projection": "EPSG:28992",
-        //           "bounds": [130000, 510000, 140000, 520000],
-        //           "id": [131, 510]
-        //         }
-        //       }
-        // ];
-        const selectedGridIds = [[130, 510],]
+        const selectedGridIds = this.props.selectedGridCellIds; 
 
         return (
             <div className="export_main">
@@ -146,10 +120,12 @@ class ExportModal extends React.Component<MyProps> {
 
 interface PropsFromState {
     availableGridCells: MyStore['rasterExportState']['availableGridCells'],
+    selectedGridCellIds: MyStore['rasterExportState']['selectedGridCellIds'],
 };
 
 const mapStateToProps = (state: MyStore): PropsFromState => ({
     availableGridCells: getExportAvailableGridCells(state),
+    selectedGridCellIds: getExportSelectedGridCellIds(state),
 });
 
 export default connect(mapStateToProps, {})(ExportModal);

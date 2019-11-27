@@ -478,6 +478,9 @@ const inbox = (state: MyStore['inbox'] = [], { type, messages, id }) => {
 export const getExportAvailableGridCells = (state: MyStore) => {
     return state.rasterExportState.availableGridCells;
 }
+export const getExportSelectedGridCellIds = (state: MyStore) => {
+    return state.rasterExportState.selectedGridCellIds;
+}
 
 export const getLizardBootstrap = (state: MyStore) => {
     return state.bootstrap;
