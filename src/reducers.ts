@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import {
     RASTERS_FETCHED,
+    RASTER_FETCHED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
     DATASETS_FETCHED,
@@ -8,7 +9,8 @@ import {
     REQUEST_LIZARD_BOOTSTRAP,
     RECEIVE_LIZARD_BOOTSTRAP,
     REQUEST_WMS,
-    RECEIVE_WMS,
+    RECEIVE_WMS_LAYERS,
+    RECEIVE_WMS_LAYER,
     SWITCH_DATA_TYPE,
     ITEM_SELECTED,
     TOGGLE_ALERT,
@@ -65,7 +67,7 @@ export interface MyStore {
     allWMS: {
         [index: string]: WMS,
     } | {},
-    selectedItem: string | null,
+    selectedItem: string,
     basket: {
         rasters: string[],
         wmsLayers: string[]
@@ -185,6 +187,26 @@ const allRasters = (state: MyStore['allRasters'] = {}, action): MyStore['allRast
                 };
             });
             return newState;
+        case RASTER_FETCHED:
+            const { raster } = action;
+            let layerStyle = raster.options.styles ? raster.options.styles : "";
+            let layerName = raster.wms_info.layer;
+            //In case of Regen raster
+            if (raster.uuid === "3e5f56a7-b16e-4deb-8449-cc2c88805159" || raster.uuid === "730d6675-35dd-4a35-aa9b-bfb8155f9ca7") {
+                layerName = "radar:hour";
+                layerStyle = "radar-hour";
+            };
+            state[raster.uuid] = {
+                ...raster,
+                options: {
+                    styles: layerStyle
+                },
+                wms_info: {
+                    ...raster.wms_info,
+                    layer: layerName
+                }
+            };
+            return state;
         default:
             return state;
     };
@@ -201,7 +223,7 @@ const currentWMSList = (state: MyStore['currentWMSList'] = null, action): MyStor
                 isFetching: true,
                 showAlert: false
             }
-        case RECEIVE_WMS:
+        case RECEIVE_WMS_LAYERS:
             const { count, previous, next } = action.payload;
             return {
                 count: count,
@@ -227,18 +249,22 @@ const currentWMSList = (state: MyStore['currentWMSList'] = null, action): MyStor
 
 const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
     switch (action.type) {
-        case RECEIVE_WMS:
+        case RECEIVE_WMS_LAYERS:
             const newState = { ...state };
             action.payload.results.forEach(wms => {
                 newState[wms.uuid] = wms;
             });
             return newState;
+        case RECEIVE_WMS_LAYER:
+            const wms: WMS = action.wms;
+            state[wms.uuid] = wms;
+            return state;
         default:
             return state;
     };
 };
 
-const selectedItem = (state: MyStore['selectedItem'] = null, action): MyStore['selectedItem'] => {
+const selectedItem = (state: MyStore['selectedItem'] = '', action): MyStore['selectedItem'] => {
     switch (action.type) {
         case ITEM_SELECTED:
             return action.payload;
