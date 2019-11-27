@@ -24,6 +24,13 @@
 }
 
 .download-progress {
-    border: 21px dashed #2FCBAB;
+    font-size: 1.6rem;
     margin: 4rem 0;
+    text-align: center;
+    width: 25%;
+    height: 25%;
+}
+
+.download-progress-circle {
+    margin-bottom: 1rem;
 }
