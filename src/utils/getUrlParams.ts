@@ -26,9 +26,13 @@ export const getDataType = (urlSearchParams) => {
     //data type can only be WMS or Raster
     return urlSearchParams.get('data') === 'WMS' ? 'WMS' : 'Raster';
 };
+//Capture the selected item's UUID
+export const getUUID = (URLSearchParams) => {
+    return URLSearchParams.get('uuid') || '';
+};
 
 //Generate new URLs with different search params for sharing searches
-export const newURL = (dataType: string, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string) => {
+export const newURL = (dataType: string, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, uuid: string) => {
     const params: string[] = [];
 
     if (dataType) params.push(`data=${dataType}`);
@@ -36,6 +40,7 @@ export const newURL = (dataType: string, searchTerm: string, organisationName: s
     if (organisationName) params.push(`organisation=${encodeURIComponent(organisationName)}`);
     if (datasetSlug) params.push(`dataset=${encodeURIComponent(datasetSlug)}`);
     if (observationTypeParameter) params.push(`observation=${encodeURIComponent(observationTypeParameter)}`);
+    if (uuid) params.push(`uuid=${uuid}`);
 
     const queries = params.join('&');
 
