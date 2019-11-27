@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer, Rectangle } from 'react-leaflet';
 import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds} from '../../reducers';
 import {addToSelectedExportGridCellIds, removeFromSelectedExportGridCellIds, removeAllSelectedExportGridCellIds } from '../../action';
+import {areGridCelIdsEqual} from '../../interface';
 
 import { Raster } from '../../interface';
 import '../styles/Export.css';
@@ -38,7 +39,7 @@ class ExportModal extends React.Component<MyProps> {
                             {
                                 exportGridCells.map((gridcell) =>{
                                     const isSelected = selectedGridIds.find(item=>{
-                                        return item[0] === gridcell.properties.id[0] &&  item[1] === gridcell.properties.id[1];
+                                        return areGridCelIdsEqual(gridcell.properties.id, item);
                                     })
                                     console.log('refraw rectangles', isSelected, gridcell.properties.id[0]);
                                     return (
