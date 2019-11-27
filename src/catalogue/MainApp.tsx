@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
-import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, toggleAlert, updateBasketWithRaster, updateBasketWithWMS, updateSearch, updateOrder, updatePage, selectOrganisation, selectDataset, selectObservationType } from '../action';
+import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, toggleAlert, updateBasketWithRaster, updateBasketWithWMS, updateSearch, updateOrder, updatePage, selectOrganisation, selectDataset, selectObservationType, fetchRasterByUUID, fetchWMSByUUID } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { ObservationType, Organisation, Dataset, SwitchDataType } from '../interface';
-import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL } from '../utils/getUrlParams';
+import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL, getUUID } from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
@@ -21,18 +21,21 @@ interface PropsFromState {
     datasets: Dataset[],
     currentDataType: MyStore['currentDataType'],
     filters: MyStore['filters'],
+    selectedItem: string,
 };
 
 interface PropsFromDispatch {
     fetchLizardBootstrap: () => void,
     selectItem: (uuid: string) => void,
     fetchRasters: (page: number, searchTerm: string | null, organisationName: string | null, observationTypeParameter: string | null, datasetSlug: string | null, ordering: string) => void,
+    fetchRasterByUUID: (uuid: string) => void,
     updateBasketWithRaster: (rasters: string[]) => void,
     updateBasketWithWMS: (wmsLayers: string[]) => void,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
     fetchDatasets: () => void,
     fetchWMSLayers: (page: number, searchTerm: string | null, organisationName: string | null, datasetSlug: string | null, ordering: string) => void,
+    fetchWMSByUUID: (uuid: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void,
     toggleAlert: () => void,
     updateSearch: (searchTerm: string) => void,
@@ -88,9 +91,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     onDataTypeChange = (dataType: SwitchDataType['payload']) => {
         this.props.switchDataType(dataType);
 
-        //Reset the search and page in state and Redux store
-        this.props.updateSearch('');
-        this.props.updatePage(1);
+        //Update Redux store and the component's state
+        this.props.selectItem(''); // Remove the previous selected item
+        this.props.updateSearch(''); // Remove the search input
+        this.props.updatePage(1); // Go back to page 1 in the result list
         this.setState({
             searchTerm: ''
         });
@@ -112,6 +116,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         const organisation = getOrganisation(urlSearchParams);
         const observation = getObservationType(urlSearchParams);
         const dataset = getDataset(urlSearchParams);
+        const uuid = getUUID(urlSearchParams);
 
         //Update Redux filters with URL parameters
         this.props.updateSearch(search);
@@ -119,6 +124,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.props.selectDataset(dataset);
         this.props.selectObservationType(observation);
         this.props.switchDataType(dataType);
+        this.props.selectItem(uuid);
 
         //Update the search term in MainApp's state to show the search input
         this.setState({
@@ -126,11 +132,27 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         });
 
         //Fetch Rasters or WMS layers depends on the selected data type
-        dataType === 'Raster' ? this.props.fetchRasters(
-            this.props.filters.page, search, organisation, observation, dataset, this.props.filters.ordering
-        ) : this.props.fetchWMSLayers(
-            this.props.filters.page, search, organisation, dataset, this.props.filters.ordering
-        );
+        if (dataType === 'Raster') {
+            this.props.fetchRasters(
+                this.props.filters.page,
+                search, organisation,
+                observation,
+                dataset,
+                this.props.filters.ordering
+            );
+            //Fetch the raster by UUID from the url
+            if (uuid) this.props.fetchRasterByUUID(uuid);
+        } else { // dataType === 'WMS'
+            this.props.fetchWMSLayers(
+                this.props.filters.page,
+                search,
+                organisation,
+                dataset,
+                this.props.filters.ordering
+            );
+            //Fetch the WMS layer by UUID from the url
+            if (uuid) this.props.fetchWMSByUUID(uuid);
+        };
     };
 
     componentWillUpdate(nextProps: MainAppProps) {
@@ -149,7 +171,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 nextFilters.searchTerm,
                 nextFilters.organisation,
                 nextProps.currentDataType === "Raster" ? nextFilters.observationType : '',
-                nextFilters.dataset
+                nextFilters.dataset,
+                nextProps.selectedItem
             );
             this.updateURL(url);
             if (nextFilters.page !== 1) this.props.updatePage(1);
@@ -167,8 +190,19 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 nextFilters.dataset,
                 nextFilters.ordering
             );
+        } else if (nextProps.selectedItem !== this.props.selectedItem) {
+            //If selected item is changed then update the URL only
+            const url = newURL(
+                nextProps.currentDataType,
+                nextFilters.searchTerm,
+                nextFilters.organisation,
+                nextProps.currentDataType === "Raster" ? nextFilters.observationType : '',
+                nextFilters.dataset,
+                nextProps.selectedItem
+            );
+            this.updateURL(url);
         } else if (nextFilters.page !== filters.page) {
-            //Fetch rasters/wms layers if page number changed
+            //Fetch rasters/wms layers if page number changed without updating the URL
             nextProps.currentDataType === "Raster" ? this.props.fetchRasters(
                 nextFilters.page,
                 nextFilters.searchTerm,
@@ -261,6 +295,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     datasets: getDatasets(state),
     currentDataType: getCurrentDataType(state),
     filters: state.filters,
+    selectedItem: state.selectedItem,
 });
 
 const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
@@ -273,6 +308,7 @@ const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
         datasetSlug: string,
         ordering: string
     ) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, datasetSlug, ordering, dispatch),
+    fetchRasterByUUID: (uuid: string) => fetchRasterByUUID(uuid, dispatch),
     updateBasketWithRaster: (rasters: string[]) => updateBasketWithRaster(rasters, dispatch),
     updateBasketWithWMS: (wmsLayers: string[]) => updateBasketWithWMS(wmsLayers, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
@@ -285,6 +321,7 @@ const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
         datasetSlug: string,
         ordering: string
     ) => fetchWMSLayers(page, searchTerm, organisationName, datasetSlug, ordering, dispatch),
+    fetchWMSByUUID: (uuid: string) => fetchWMSByUUID(uuid, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
     toggleAlert: () => toggleAlert(dispatch),
