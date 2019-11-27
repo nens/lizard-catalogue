@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { Map, TileLayer, WMSTileLayer, Rectangle } from 'react-leaflet';
 import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds} from '../../reducers';
-import {addToSelectedExportGridCellIds } from '../../action';
+import {addToSelectedExportGridCellIds, removeFromSelectedExportGridCellIds } from '../../action';
 
 import { Raster } from '../../interface';
 import '../styles/Export.css';
@@ -14,7 +14,8 @@ interface MyProps {
     openDownloadModal: () => void,
     availableGridCells: MyStore['rasterExportState']['availableGridCells'],
     selectedGridCellIds: MyStore['rasterExportState']['selectedGridCellIds'],
-    addToSelectedExportGridCellIds: any
+    addToSelectedExportGridCellIds: any,
+    removeFromSelectedExportGridCellIds: any,
 };
 
 class ExportModal extends React.Component<MyProps> {
@@ -49,7 +50,12 @@ class ExportModal extends React.Component<MyProps> {
                                             // key={gridcell.properties.id + ''}
                                             key={Math.random()}
                                             onClick={()=>{
-                                                this.props.addToSelectedExportGridCellIds([gridcell.properties.id]);
+                                                if (isSelected) {
+                                                    this.props.removeFromSelectedExportGridCellIds([gridcell.properties.id])
+                                                } else {
+                                                    this.props.addToSelectedExportGridCellIds([gridcell.properties.id]);
+                                                }
+                                                
                                             }}
                                             
                                             // onHoover={()=>console.log("hoover")}
@@ -146,10 +152,12 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
 
 interface PropsFromDispatch {
     addToSelectedExportGridCellIds: (ids: any) => void,
+    removeFromSelectedExportGridCellIds: (ids: any) => void,
 };
 
 const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
     addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
+    removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExportModal);

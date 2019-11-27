@@ -23,6 +23,7 @@ import {
     REMOVE_MESSAGE,
     DOWNLOAD_FILE,
     ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
+    REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
 } from "./action";
 import {
     RastersFetched,
@@ -122,7 +123,15 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 ...state,
                 selectedGridCellIds: action.gridCellIds
             }
-            // return state;
+        case REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS:
+            return {
+                ...state,
+                selectedGridCellIds: state.selectedGridCellIds.filter(id => {
+                    return action.gridCellIds.filter(actionId=> {
+                        return id[0] === actionId[0] && id[1] === actionId[1]
+                    }).length === 0;
+                })
+            }
         default:
             return state;
     }
