@@ -59,11 +59,8 @@
 }
 
 .inbox-download {
-    color: #009F86;
-}
-
-.inbox-download:hover {
     cursor: pointer;
+    color: #009F86;
 }
 
 .inbox-read:hover {
@@ -73,11 +70,13 @@
 }
 
 .inbox-pending-exports {
+    cursor: wait;
     color: #AAAAAA;
     background-color: #e5e5e5;
     font-style: italic;
 }
 
-.inbox-progress:hover {
+.inbox-pending-downloads {
     cursor: wait;
+    color: #AAAAAA;
 }
