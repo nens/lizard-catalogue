@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { Map, TileLayer, WMSTileLayer, Rectangle } from 'react-leaflet';
 import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds} from '../../reducers';
-import {addToSelectedExportGridCellIds, removeFromSelectedExportGridCellIds } from '../../action';
+import {addToSelectedExportGridCellIds, removeFromSelectedExportGridCellIds, removeAllSelectedExportGridCellIds } from '../../action';
 
 import { Raster } from '../../interface';
 import '../styles/Export.css';
@@ -16,6 +16,7 @@ interface MyProps {
     selectedGridCellIds: MyStore['rasterExportState']['selectedGridCellIds'],
     addToSelectedExportGridCellIds: any,
     removeFromSelectedExportGridCellIds: any,
+    removeAllSelectedExportGridCellIds: any,
 };
 
 class ExportModal extends React.Component<MyProps> {
@@ -133,6 +134,11 @@ class ExportModal extends React.Component<MyProps> {
                             <i className="fa fa-download" />
                             &nbsp;&nbsp;Make a selection
                         </button>
+                        <button
+                            onClick={this.props.removeAllSelectedExportGridCellIds}
+                        >
+                            Remove Selection
+                        </button>
                     </div>
                 </div>
             </div>
@@ -153,11 +159,13 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
 interface PropsFromDispatch {
     addToSelectedExportGridCellIds: (ids: any) => void,
     removeFromSelectedExportGridCellIds: (ids: any) => void,
+    removeAllSelectedExportGridCellIds: () => void,
 };
 
 const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
     addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
+    removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExportModal);

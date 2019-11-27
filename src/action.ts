@@ -328,6 +328,9 @@ export const addToSelectedExportGridCellIds = (gridCellIds: ExportGridCelId): an
     type: ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
     gridCellIds,
 });
+export const removeAllSelectedExportGridCellIds = (): any => ({
+    type: REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
+})
 
 /*
 const wmsReceived = (wmsObject: WMSObject): ReceiveWMS => ({

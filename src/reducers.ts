@@ -24,6 +24,7 @@ import {
     DOWNLOAD_FILE,
     ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
     REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
+    REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
 } from "./action";
 import {
     RastersFetched,
@@ -132,6 +133,11 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                     }).length === 0;
                 })
             }
+        case REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS:
+        return {
+            ...state,
+            selectedGridCellIds: [],
+        }
         default:
             return state;
     }
