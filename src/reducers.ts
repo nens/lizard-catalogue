@@ -22,6 +22,7 @@ import {
     REQUEST_INBOX,
     REMOVE_MESSAGE,
     DOWNLOAD_FILE,
+    ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
 } from "./action";
 import {
     RastersFetched,
@@ -113,9 +114,15 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
       }
     ],
     },
-    action: BootstrapActionType
+    action: any
 ): MyStore['rasterExportState'] => {
     switch (action.type) {
+        case ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS:
+            return {
+                ...state,
+                selectedGridCellIds: action.gridCellIds
+            }
+            // return state;
         default:
             return state;
     }

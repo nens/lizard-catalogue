@@ -241,3 +241,14 @@ export interface RasterExportState {
     selectedGridCellIds: ExportGridCelId[],
     availableGridCells: ExportGridCell[],
 }
+
+// export interface RasterExport {
+//     type: typeof REQUEST_WMS
+// };
+
+// export interface ReceiveWMS {
+//     type: typeof RECEIVE_WMS,
+//     payload: WMSObject
+// };
+
+// export type WMSActionType = RequestWMS | ReceiveWMS | ToggleAlert;

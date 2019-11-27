@@ -22,6 +22,7 @@ import {
     UpdateObservationTypeRadiobutton,
     UpdateDatasetRadiobutton,
     ToggleAlert,
+    ExportGridCelId,
 } from './interface';
 
 //MARK: Bootsrap
@@ -312,3 +313,43 @@ export const downloadFile = (dispatch, id: string) => {
         id
     });
 };
+
+
+//MARK: WMS
+export const ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS = 'ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS';
+export const REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS = 'REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS';
+export const REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS = 'REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS';
+
+export const addToSelectedExportGridCellIds = (gridCellIds: ExportGridCelId): any => ({
+    type: ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
+    gridCellIds,
+});
+
+/*
+const wmsReceived = (wmsObject: WMSObject): ReceiveWMS => ({
+    type: RECEIVE_WMS,
+    payload: wmsObject
+});
+
+export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string, dispatch): void => {
+    dispatch(wmsRequested());
+    const organisationParam = organisationName === '' ? '' : `&organisation__name__icontains=${organisationName}`;
+    const datasetParam = datasetSlug === '' ? '' : `&datasets__slug=${datasetSlug}`;
+    request
+        .get(`${baseUrl}/wmslayers/?name__icontains=${searchTerm}&page=${page}${organisationParam}${datasetParam}&ordering=${ordering}`)
+        .then(response => {
+            if(response.body.count === 0) {
+                //If could not find any raster with the search term by raster's name then look for raster's uuid
+                request
+                    .get(`${baseUrl}/wmslayers/?uuid=${searchTerm}&page=${page}${organisationParam}${datasetParam}&ordering=${ordering}`)
+                    .then(response => {
+                        dispatch(wmsReceived(response.body))
+                    })
+                    .catch(console.error)
+            } else {
+                dispatch(wmsReceived(response.body))
+            }
+        })
+        .catch(console.error)
+};
+//*/

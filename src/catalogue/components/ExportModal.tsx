@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 
 import { Map, TileLayer, WMSTileLayer, Rectangle } from 'react-leaflet';
 import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds} from '../../reducers';
+import {addToSelectedExportGridCellIds } from '../../action';
+
 import { Raster } from '../../interface';
 import '../styles/Export.css';
 
@@ -12,6 +14,7 @@ interface MyProps {
     openDownloadModal: () => void,
     availableGridCells: MyStore['rasterExportState']['availableGridCells'],
     selectedGridCellIds: MyStore['rasterExportState']['selectedGridCellIds'],
+    addToSelectedExportGridCellIds: any
 };
 
 class ExportModal extends React.Component<MyProps> {
@@ -19,6 +22,8 @@ class ExportModal extends React.Component<MyProps> {
         const { raster, bounds, openDownloadModal } = this.props;
         const exportGridCells = this.props.availableGridCells;
         const selectedGridIds = this.props.selectedGridCellIds; 
+
+        console.log('selectedGridIds render', selectedGridIds);
 
         return (
             <div className="export_main">
@@ -33,14 +38,25 @@ class ExportModal extends React.Component<MyProps> {
                                     const isSelected = selectedGridIds.find(item=>{
                                         return item[0] === gridcell.properties.id[0] &&  item[1] === gridcell.properties.id[1];
                                     })
+                                    console.log('refraw rectangles', isSelected, gridcell.properties.id[0]);
                                     return (
                                         <Rectangle
                                             bounds={gridcell.geometry.coordinates}
+                                            // unfortuenedly react leaflet doesnot seem to update the class
+                                            // therefore we set a random key so the elements get rerendered every time
+                                            // another option would be to set the color attribute, but this creates difficulties with transparency etc
                                             className={`export_grid_cell ${isSelected? 'selected': 'not_selected' }`}
-                                            onClick={()=>{console.log('gridcell.properties.id', gridcell.properties.id)}}
+                                            // key={gridcell.properties.id + ''}
+                                            key={Math.random()}
+                                            onClick={()=>{
+                                                this.props.addToSelectedExportGridCellIds([gridcell.properties.id]);
+                                            }}
+                                            
                                             // onHoover={()=>console.log("hoover")}
                                             // onMouseMove={()=>console.log("hoover")}
-                                            // color={"#A10000"}
+                                            // color={`${isSelected? '#E2D300': 'A10000'}`}
+                                            // selected items borders should not be colored, but they are. therefore hide them underneath their neightbours
+                                            // zIndex={`${isSelected? 10: 20}`}
                                         />
                                     );
                                 })
@@ -128,4 +144,12 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     selectedGridCellIds: getExportSelectedGridCellIds(state),
 });
 
-export default connect(mapStateToProps, {})(ExportModal);
+interface PropsFromDispatch {
+    addToSelectedExportGridCellIds: (ids: any) => void,
+};
+
+const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
+    addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ExportModal);
