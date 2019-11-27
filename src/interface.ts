@@ -222,15 +222,22 @@ export interface Message {
     downloaded: boolean,
 };
 
+export type ExportGridCelId = [number, number];
+
 export interface ExportGridCell {
     "type": string,
     "geometry": {
         "type": string,
-        "coordinates": [[number,number][]],
+        "coordinates": [number,number][],
     },
     "properties": {
-        "projection": "string",
-        "bounds": [number],
-        "id": [number, number]
+        "projection": string,
+        "bounds": number[],
+        "id": ExportGridCelId
     }
 };
+
+export interface RasterExportState {
+    selectedGridCellIds: ExportGridCelId[],
+    availableGridCells: ExportGridCell[],
+}

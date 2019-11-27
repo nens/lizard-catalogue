@@ -43,7 +43,7 @@ import {
     UpdateDatasetRadiobutton,
     WMSActionType,
     Message,
-    // ExportGridCell,
+    RasterExportState,
 } from './interface';
 
 export interface MyStore {
@@ -81,7 +81,45 @@ export interface MyStore {
     },
     pendingExportTasks: number,
     inbox: Message[],
+    RasterExportState: RasterExportState,
 };
+
+const rasterExportState = (state: MyStore["RasterExportState"]=
+    {
+    selectedGridCellIds: [[130, 510]],
+    availableGridCells: [{
+        "type": "Feature",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [[52.339322, 4.767822], [53.339322, 4.997822]],
+        },
+        "properties": {
+          "projection": "EPSG:28992",
+          "bounds": [130000, 510000, 140000, 520000],
+          "id": [130, 510]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [[52.339322, 4.997822], [53.339322, 5.997822]],
+        },
+        "properties": {
+          "projection": "EPSG:28992",
+          "bounds": [130000, 510000, 140000, 520000],
+          "id": [131, 510]
+        }
+      }
+    ],
+    },
+    action: BootstrapActionType
+): MyStore['RasterExportState'] => {
+    switch (action.type) {
+        default:
+            return state;
+    }
+}
 
 const bootstrap = (
     state: MyStore['bootstrap'] = {
@@ -492,6 +530,7 @@ export const getDatasets = (state: MyStore) => {
 }
 
 export default combineReducers({
+    rasterExportState,
     bootstrap,
     currentDataType,
     currentRasterList,
