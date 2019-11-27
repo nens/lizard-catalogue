@@ -23,6 +23,9 @@ import {
     UpdateDatasetRadiobutton,
     ToggleAlert,
     ExportGridCelId,
+    RemoveFromSelectedExportGridCellIds,
+    AddToSelectedExportGridCellIds,
+    RemoveAllSelectedExportGridCellIds,
 } from './interface';
 
 //MARK: Bootsrap
@@ -320,15 +323,15 @@ export const ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS = 'ADD_TO_SELECTED_EXPORT_GRID
 export const REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS = 'REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS';
 export const REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS = 'REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS';
 
-export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCelId): any => ({
+export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): RemoveFromSelectedExportGridCellIds => ({
     type: REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
     gridCellIds,
 });
-export const addToSelectedExportGridCellIds = (gridCellIds: ExportGridCelId): any => ({
+export const addToSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): AddToSelectedExportGridCellIds => ({
     type: ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
     gridCellIds,
 });
-export const removeAllSelectedExportGridCellIds = (): any => ({
+export const removeAllSelectedExportGridCellIds = (): RemoveAllSelectedExportGridCellIds => ({
     type: REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
 })
 

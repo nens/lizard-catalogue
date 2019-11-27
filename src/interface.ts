@@ -14,6 +14,9 @@ import {
     UPDATE_OBSERVATION_RADIOBUTTON,
     UPDATE_DATASET_RADIOBUTTON,
     TOGGLE_ALERT,
+    REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
+    ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
+    REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
 } from "./action";
 
 //ACTION INTERFACE
@@ -243,6 +246,19 @@ export interface RasterExportState {
     selectedGridCellIds: ExportGridCelId[],
     availableGridCells: ExportGridCell[],
 }
+
+export interface RemoveFromSelectedExportGridCellIds {
+    type: typeof REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
+    gridCellIds: ExportGridCelId[],
+};
+export interface AddToSelectedExportGridCellIds { 
+    type: typeof ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
+    gridCellIds: ExportGridCelId[],
+};
+export interface RemoveAllSelectedExportGridCellIds {
+    type: typeof REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
+};
+export type RasterExportStateActionType = RemoveFromSelectedExportGridCellIds | AddToSelectedExportGridCellIds | RemoveAllSelectedExportGridCellIds;
 
 // export interface RasterExport {
 //     type: typeof REQUEST_WMS

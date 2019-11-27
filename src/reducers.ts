@@ -47,7 +47,9 @@ import {
     WMSActionType,
     Message,
     RasterExportState,
-    areGridCelIdsEqual
+    areGridCelIdsEqual,
+    ExportGridCelId,
+    RasterExportStateActionType,
 } from './interface';
 
 export interface MyStore {
@@ -117,14 +119,14 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
       }
     ],
     },
-    action: any
+    action: RasterExportStateActionType
 ): MyStore['rasterExportState'] => {
     switch (action.type) {
         case ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS:
             return {
                 ...state,
                 selectedGridCellIds: state.selectedGridCellIds.filter(id => {
-                    return action.gridCellIds.filter(actionId=> {
+                    return action.gridCellIds.filter((actionId:ExportGridCelId)=> {
                         return areGridCelIdsEqual(id, actionId);
                     }).length === 0;
                 }).concat(action.gridCellIds),
@@ -133,7 +135,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
             return {
                 ...state,
                 selectedGridCellIds: state.selectedGridCellIds.filter(id => {
-                    return action.gridCellIds.filter(actionId=> {
+                    return action.gridCellIds.filter((actionId: ExportGridCelId)=> {
                         return areGridCelIdsEqual(id, actionId);
                     }).length === 0;
                 })
