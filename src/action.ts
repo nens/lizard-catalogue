@@ -29,6 +29,7 @@ import {
     RequestedGridCells,
     ExportGridCell,
     RetrievedRasterExportGridcells,
+    FailedRetrievingRasterExportGridcells,
 } from './interface';
 
 //MARK: Bootsrap
@@ -327,6 +328,7 @@ export const REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS = 'REMOVE_FROM_SELECTED_E
 export const REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS = 'REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS';
 export const REQUESTED_RASTER_EXPORT_GRIDCELLS = 'REQUESTED_RASTER_EXPORT_GRIDCELLS';
 export const RETRIEVED_RASTER_EXPORT_GRIDCELLS = 'RETRIEVED_RASTER_EXPORT_GRIDCELLS';
+export const FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS = 'FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS';
 
 export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): RemoveFromSelectedExportGridCellIds => ({
     type: REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
@@ -347,6 +349,10 @@ export const retrievedGridCells = (gridCells: ExportGridCell[]): RetrievedRaster
     type: RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     gridCells: gridCells,
 });
+export const failedRetrievingRasterExportGridcells = (msg: string): FailedRetrievingRasterExportGridcells=> ({
+    type: FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
+    failedMsg: msg,
+})
 
 export const fetchExportGridCells = (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][], dispatch): void => {
     dispatch(requestedGridCells());
@@ -384,6 +390,7 @@ export const fetchExportGridCells = (rasterUuid: string, projection: string, res
         })
         .catch(error=>{
             console.error(error);
+            dispatch(failedRetrievingRasterExportGridcells(error+''));
         })
 };
 

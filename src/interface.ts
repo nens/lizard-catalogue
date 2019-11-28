@@ -19,6 +19,7 @@ import {
     REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
     REQUESTED_RASTER_EXPORT_GRIDCELLS,
     RETRIEVED_RASTER_EXPORT_GRIDCELLS,
+    FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
 } from "./action";
 
 //ACTION INTERFACE
@@ -255,6 +256,7 @@ export interface RasterExportState {
     selectedGridCellIds: ExportGridCelId[],
     availableGridCells: ExportGridCell[],
     fetchingStateGrid: FetchingState,
+    fetchingStateGridMsg: string,
     fetchingStateTasks: FetchingState,
 }
 
@@ -277,7 +279,12 @@ export interface RetrievedRasterExportGridcells {
     gridCells: ExportGridCell[]
 
 }
-export type RasterExportStateActionType = RemoveFromSelectedExportGridCellIds | AddToSelectedExportGridCellIds | RemoveAllSelectedExportGridCellIds | RequestedGridCells| RetrievedRasterExportGridcells;
+
+export interface  FailedRetrievingRasterExportGridcells {
+    type: typeof FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
+    failedMsg: string,
+}
+export type RasterExportStateActionType = RemoveFromSelectedExportGridCellIds | AddToSelectedExportGridCellIds | RemoveAllSelectedExportGridCellIds | RequestedGridCells| RetrievedRasterExportGridcells | FailedRetrievingRasterExportGridcells;
 
 // export interface RasterExport {
 //     type: typeof REQUEST_WMS

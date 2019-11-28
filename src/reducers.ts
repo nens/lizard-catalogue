@@ -29,6 +29,7 @@ import {
     REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
     REQUESTED_RASTER_EXPORT_GRIDCELLS,
     RETRIEVED_RASTER_EXPORT_GRIDCELLS,
+    FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
 } from "./action";
 import {
     RastersFetched,
@@ -98,6 +99,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
     {
     selectedGridCellIds: [],
     fetchingStateGrid: "NOT_SEND",
+    fetchingStateGridMsg: "",
     fetchingStateTasks: "NOT_SEND",
     availableGridCells: [],
     },
@@ -129,6 +131,12 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 ...state,
                 fetchingStateGrid: "RECEIVED",
                 availableGridCells: uniqWith( state.availableGridCells.concat(action.gridCells),  haveGridCellsSameId),
+            } 
+        case FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS: 
+            return {
+                ...state,
+                fetchingStateGrid: "FAILED",
+                fetchingStateGridMsg: action.failedMsg,
             } 
         default:
             return state;
