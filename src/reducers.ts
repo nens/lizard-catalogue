@@ -1,4 +1,6 @@
 import { combineReducers } from 'redux';
+import {uniqWith, differenceWith} from 'lodash';
+
 import {
     RASTERS_FETCHED,
     OBSERVATION_TYPES_FETCHED,
@@ -48,7 +50,6 @@ import {
     Message,
     RasterExportState,
     areGridCelIdsEqual,
-    ExportGridCelId,
     RasterExportStateActionType,
 } from './interface';
 
@@ -125,20 +126,12 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
         case ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS:
             return {
                 ...state,
-                selectedGridCellIds: state.selectedGridCellIds.filter(id => {
-                    return action.gridCellIds.filter((actionId:ExportGridCelId)=> {
-                        return areGridCelIdsEqual(id, actionId);
-                    }).length === 0;
-                }).concat(action.gridCellIds),
+                selectedGridCellIds: uniqWith( state.selectedGridCellIds.concat(action.gridCellIds),  areGridCelIdsEqual)
             }
         case REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS:
             return {
                 ...state,
-                selectedGridCellIds: state.selectedGridCellIds.filter(id => {
-                    return action.gridCellIds.filter((actionId: ExportGridCelId)=> {
-                        return areGridCelIdsEqual(id, actionId);
-                    }).length === 0;
-                })
+                selectedGridCellIds: differenceWith(state.selectedGridCellIds, action.gridCellIds, areGridCelIdsEqual)
             }
         case REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS:
         return {
