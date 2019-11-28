@@ -17,6 +17,8 @@ import {
     REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
     ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
     REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
+    REQUESTED_RASTER_EXPORT_GRIDCELLS,
+    RETRIEVED_RASTER_EXPORT_GRIDCELLS,
 } from "./action";
 
 //ACTION INTERFACE
@@ -225,15 +227,20 @@ export interface Message {
     downloaded: boolean,
 };
 
-export type ExportGridCelId = [number, number];
+export type ExportGridCelId = number[];
 
 export const areGridCelIdsEqual = (id1:ExportGridCelId, id2:ExportGridCelId): boolean => id1[0] === id2[0] && id1[1] === id2[1]
+export const haveGridCellsSameId = (cell1:ExportGridCell, cell2:ExportGridCell): boolean => { 
+    const id1 = cell1.properties.id;
+    const id2 = cell2.properties.id;
+    return areGridCelIdsEqual(id1, id2);
+}
 
 export interface ExportGridCell {
     "type": string,
     "geometry": {
         "type": string,
-        "coordinates": [number,number][],
+        "coordinates": number[][],
     },
     "properties": {
         "projection": string,
@@ -242,9 +249,13 @@ export interface ExportGridCell {
     }
 };
 
+export type FetchingState = "NOT_SEND" | "SEND" | "RECEIVED" | "FAILED";
+
 export interface RasterExportState {
     selectedGridCellIds: ExportGridCelId[],
     availableGridCells: ExportGridCell[],
+    fetchingStateGrid: FetchingState,
+    fetchingStateTasks: FetchingState,
 }
 
 export interface RemoveFromSelectedExportGridCellIds {
@@ -258,7 +269,15 @@ export interface AddToSelectedExportGridCellIds {
 export interface RemoveAllSelectedExportGridCellIds {
     type: typeof REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
 };
-export type RasterExportStateActionType = RemoveFromSelectedExportGridCellIds | AddToSelectedExportGridCellIds | RemoveAllSelectedExportGridCellIds;
+export interface RequestedGridCells {
+    type: typeof REQUESTED_RASTER_EXPORT_GRIDCELLS,
+};
+export interface RetrievedRasterExportGridcells {
+    type: typeof RETRIEVED_RASTER_EXPORT_GRIDCELLS,
+    gridCells: ExportGridCell[]
+
+}
+export type RasterExportStateActionType = RemoveFromSelectedExportGridCellIds | AddToSelectedExportGridCellIds | RemoveAllSelectedExportGridCellIds | RequestedGridCells| RetrievedRasterExportGridcells;
 
 // export interface RasterExport {
 //     type: typeof REQUEST_WMS

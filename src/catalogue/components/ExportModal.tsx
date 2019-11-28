@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { Map, TileLayer, WMSTileLayer, Rectangle } from 'react-leaflet';
 import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds} from '../../reducers';
-import {addToSelectedExportGridCellIds, removeFromSelectedExportGridCellIds, removeAllSelectedExportGridCellIds } from '../../action';
+import {addToSelectedExportGridCellIds, removeFromSelectedExportGridCellIds, removeAllSelectedExportGridCellIds, fetchExportGridCells } from '../../action';
 import {areGridCelIdsEqual, AddToSelectedExportGridCellIds, ExportGridCelId, RemoveFromSelectedExportGridCellIds,RemoveAllSelectedExportGridCellIds} from '../../interface';
 
 import { Raster } from '../../interface';
@@ -18,6 +18,7 @@ interface MyProps {
     addToSelectedExportGridCellIds: (gridCellIds: ExportGridCelId[]) => AddToSelectedExportGridCellIds,
     removeFromSelectedExportGridCellIds: (gridCellIds: ExportGridCelId[]) => RemoveFromSelectedExportGridCellIds,
     removeAllSelectedExportGridCellIds: () => RemoveAllSelectedExportGridCellIds,
+    fetchExportGridCells: (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][]) => void,
 };
 
 class ExportModal extends React.Component<MyProps> {
@@ -26,7 +27,7 @@ class ExportModal extends React.Component<MyProps> {
         const exportGridCells = this.props.availableGridCells;
         const selectedGridIds = this.props.selectedGridCellIds; 
 
-        console.log('selectedGridIds render', selectedGridIds);
+        console.log('bounds render', bounds);
 
         return (
             <div className="export_main">
@@ -117,10 +118,10 @@ class ExportModal extends React.Component<MyProps> {
                                 <input type="text" />
                             </div>
                             <br />
-                            <div>
+                            {/* <div>
                                 <h4>Pixels</h4>
                                 <input type="text" />
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <div className="export_text">
@@ -131,7 +132,13 @@ class ExportModal extends React.Component<MyProps> {
                         <button className="details__button">
                             Cancel
                         </button>
-                        <button className="details__button" onClick={openDownloadModal}>
+                        <button 
+                            className="details__button" 
+                            onClick={()=>{
+                                true || openDownloadModal();
+                                this.props.fetchExportGridCells("uuid", "proj", 5, 100, 100, bounds);
+                            }}
+                        >
                             <i className="fa fa-download" />
                             &nbsp;&nbsp;Make a selection
                         </button>
@@ -161,12 +168,16 @@ interface PropsFromDispatch {
     addToSelectedExportGridCellIds: (ids: ExportGridCelId[]) => void,
     removeFromSelectedExportGridCellIds: (ids: ExportGridCelId[]) => void,
     removeAllSelectedExportGridCellIds: () => void,
+    fetchExportGridCells: (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][]) => void,
 };
 
 const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
     addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
+    fetchExportGridCells: 
+        (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][])=>
+            fetchExportGridCells(rasterUuid, projection, resolution, width, height, bbox, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExportModal);

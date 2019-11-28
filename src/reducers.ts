@@ -27,6 +27,8 @@ import {
     ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
     REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
     REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
+    REQUESTED_RASTER_EXPORT_GRIDCELLS,
+    RETRIEVED_RASTER_EXPORT_GRIDCELLS,
 } from "./action";
 import {
     RastersFetched,
@@ -50,6 +52,7 @@ import {
     Message,
     RasterExportState,
     areGridCelIdsEqual,
+    haveGridCellsSameId,
     RasterExportStateActionType,
 } from './interface';
 
@@ -93,32 +96,10 @@ export interface MyStore {
 
 const rasterExportState = (state: MyStore["rasterExportState"]=
     {
-    selectedGridCellIds: [[130, 510]],
-    availableGridCells: [{
-        "type": "Feature",
-        "geometry": {
-          "type": "Polygon",
-          "coordinates": [[52.339322, 4.767822], [53.339322, 4.997822]],
-        },
-        "properties": {
-          "projection": "EPSG:28992",
-          "bounds": [130000, 510000, 140000, 520000],
-          "id": [130, 510]
-        }
-      },
-      {
-        "type": "Feature",
-        "geometry": {
-          "type": "Polygon",
-          "coordinates": [[52.339322, 4.997822], [53.339322, 5.997822]],
-        },
-        "properties": {
-          "projection": "EPSG:28992",
-          "bounds": [130000, 510000, 140000, 520000],
-          "id": [131, 510]
-        }
-      }
-    ],
+    selectedGridCellIds: [],
+    fetchingStateGrid: "NOT_SEND",
+    fetchingStateTasks: "NOT_SEND",
+    availableGridCells: [],
     },
     action: RasterExportStateActionType
 ): MyStore['rasterExportState'] => {
@@ -134,10 +115,21 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 selectedGridCellIds: differenceWith(state.selectedGridCellIds, action.gridCellIds, areGridCelIdsEqual)
             }
         case REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS:
-        return {
-            ...state,
-            selectedGridCellIds: [],
-        }
+            return {
+                ...state,
+                selectedGridCellIds: [],
+            }
+        case REQUESTED_RASTER_EXPORT_GRIDCELLS:
+            return {
+                ...state,
+                fetchingStateGrid: "SEND"
+            }
+        case RETRIEVED_RASTER_EXPORT_GRIDCELLS:
+            return {
+                ...state,
+                fetchingStateGrid: "RECEIVED",
+                availableGridCells: uniqWith( state.availableGridCells.concat(action.gridCells),  haveGridCellsSameId),
+            } 
         default:
             return state;
     }
@@ -502,6 +494,9 @@ export const getExportAvailableGridCells = (state: MyStore) => {
 }
 export const getExportSelectedGridCellIds = (state: MyStore) => {
     return state.rasterExportState.selectedGridCellIds;
+}
+export const getFetchingStateGrid = (state: MyStore) => {
+    return state.rasterExportState.fetchingStateGrid;
 }
 
 export const getLizardBootstrap = (state: MyStore) => {

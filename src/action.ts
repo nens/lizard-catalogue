@@ -26,6 +26,9 @@ import {
     RemoveFromSelectedExportGridCellIds,
     AddToSelectedExportGridCellIds,
     RemoveAllSelectedExportGridCellIds,
+    RequestedGridCells,
+    ExportGridCell,
+    RetrievedRasterExportGridcells,
 } from './interface';
 
 //MARK: Bootsrap
@@ -322,6 +325,8 @@ export const downloadFile = (dispatch, id: string) => {
 export const ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS = 'ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS';
 export const REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS = 'REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS';
 export const REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS = 'REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS';
+export const REQUESTED_RASTER_EXPORT_GRIDCELLS = 'REQUESTED_RASTER_EXPORT_GRIDCELLS';
+export const RETRIEVED_RASTER_EXPORT_GRIDCELLS = 'RETRIEVED_RASTER_EXPORT_GRIDCELLS';
 
 export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): RemoveFromSelectedExportGridCellIds => ({
     type: REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
@@ -333,7 +338,54 @@ export const addToSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): 
 });
 export const removeAllSelectedExportGridCellIds = (): RemoveAllSelectedExportGridCellIds => ({
     type: REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
-})
+});
+
+export const requestedGridCells = (): RequestedGridCells => ({
+    type: REQUESTED_RASTER_EXPORT_GRIDCELLS
+});
+export const retrievedGridCells = (gridCells: ExportGridCell[]): RetrievedRasterExportGridcells => ({
+    type: RETRIEVED_RASTER_EXPORT_GRIDCELLS,
+    gridCells: gridCells,
+});
+
+export const fetchExportGridCells = (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][], dispatch): void => {
+    dispatch(requestedGridCells());
+    
+    request
+        .get(`${baseUrl}/rasters/`)
+        .then(response => {
+            console.log(response.body, rasterUuid, projection, resolution, width, height, bbox);
+            const dummieGridCells = [{
+                "type": "Feature",
+                "geometry": {
+                  "type": "Polygon",
+                  "coordinates": [[52.339322, 4.767822], [53.339322, 4.997822]],
+                },
+                "properties": {
+                  "projection": "EPSG:28992",
+                  "bounds": [130000, 510000, 140000, 520000],
+                  "id": [130, 510]
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Polygon",
+                  "coordinates": [[52.339322, 4.997822], [53.339322, 5.997822]],
+                },
+                "properties": {
+                  "projection": "EPSG:28992",
+                  "bounds": [130000, 510000, 140000, 520000],
+                  "id": [131, 510]
+                }
+              }
+            ];
+            dispatch(retrievedGridCells(dummieGridCells));
+        })
+        .catch(error=>{
+            console.error(error);
+        })
+};
 
 /*
 const wmsReceived = (wmsObject: WMSObject): ReceiveWMS => ({
