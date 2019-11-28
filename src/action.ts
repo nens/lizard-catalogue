@@ -30,7 +30,9 @@ import {
     ExportGridCell,
     RetrievedRasterExportGridcells,
     FailedRetrievingRasterExportGridcells,
+    SetRasterExportResolution,
 } from './interface';
+import { MyStore } from './reducers';
 
 //MARK: Bootsrap
 export const REQUEST_LIZARD_BOOTSTRAP = "REQUEST_LIZARD_BOOTSTRAP";
@@ -322,13 +324,13 @@ export const downloadFile = (dispatch, id: string) => {
 };
 
 
-//MARK: WMS
 export const ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS = 'ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS';
 export const REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS = 'REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS';
 export const REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS = 'REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS';
 export const REQUESTED_RASTER_EXPORT_GRIDCELLS = 'REQUESTED_RASTER_EXPORT_GRIDCELLS';
 export const RETRIEVED_RASTER_EXPORT_GRIDCELLS = 'RETRIEVED_RASTER_EXPORT_GRIDCELLS';
 export const FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS = 'FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS';
+export const SET_RASTER_EXPORT_RESOLUTION = 'SET_RASTER_EXPORT_RESOLUTION';
 
 export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): RemoveFromSelectedExportGridCellIds => ({
     type: REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
@@ -352,7 +354,12 @@ export const retrievedGridCells = (gridCells: ExportGridCell[]): RetrievedRaster
 export const failedRetrievingRasterExportGridcells = (msg: string): FailedRetrievingRasterExportGridcells=> ({
     type: FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
     failedMsg: msg,
-})
+});
+
+export const setRasterExportResolution = (resolution: MyStore['rasterExportState']['resolution']): SetRasterExportResolution => ({
+    type: SET_RASTER_EXPORT_RESOLUTION,
+    resolution: resolution,
+});
 
 export const fetchExportGridCells = (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][], dispatch): void => {
     dispatch(requestedGridCells());

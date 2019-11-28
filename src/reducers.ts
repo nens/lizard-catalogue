@@ -30,6 +30,7 @@ import {
     REQUESTED_RASTER_EXPORT_GRIDCELLS,
     RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
+    SET_RASTER_EXPORT_RESOLUTION,
 } from "./action";
 import {
     RastersFetched,
@@ -102,6 +103,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
     fetchingStateGridMsg: "",
     fetchingStateTasks: "NOT_SEND",
     availableGridCells: [],
+    resolution: 1,
     },
     action: RasterExportStateActionType
 ): MyStore['rasterExportState'] => {
@@ -137,6 +139,11 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 ...state,
                 fetchingStateGrid: "FAILED",
                 fetchingStateGridMsg: action.failedMsg,
+            } 
+        case SET_RASTER_EXPORT_RESOLUTION:
+            return {
+                ...state,
+                resolution: action.resolution,
             } 
         default:
             return state;
@@ -505,6 +512,9 @@ export const getExportSelectedGridCellIds = (state: MyStore) => {
 }
 export const getFetchingStateGrid = (state: MyStore) => {
     return state.rasterExportState.fetchingStateGrid;
+}
+export const getExportGridCellResolution = (state: MyStore) => {
+    return state.rasterExportState.resolution;
 }
 
 export const getLizardBootstrap = (state: MyStore) => {

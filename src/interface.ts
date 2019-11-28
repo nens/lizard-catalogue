@@ -20,7 +20,10 @@ import {
     REQUESTED_RASTER_EXPORT_GRIDCELLS,
     RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
+    SET_RASTER_EXPORT_RESOLUTION,
 } from "./action";
+import { MyStore } from './reducers';
+
 
 //ACTION INTERFACE
 export interface RequestLizardBootstrap {
@@ -258,6 +261,7 @@ export interface RasterExportState {
     fetchingStateGrid: FetchingState,
     fetchingStateGridMsg: string,
     fetchingStateTasks: FetchingState,
+    resolution: number | "",
 }
 
 export interface RemoveFromSelectedExportGridCellIds {
@@ -284,7 +288,11 @@ export interface  FailedRetrievingRasterExportGridcells {
     type: typeof FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
     failedMsg: string,
 }
-export type RasterExportStateActionType = RemoveFromSelectedExportGridCellIds | AddToSelectedExportGridCellIds | RemoveAllSelectedExportGridCellIds | RequestedGridCells| RetrievedRasterExportGridcells | FailedRetrievingRasterExportGridcells;
+export interface SetRasterExportResolution {
+    type: typeof SET_RASTER_EXPORT_RESOLUTION,
+    resolution: MyStore['rasterExportState']['resolution'],
+}
+export type RasterExportStateActionType = RemoveFromSelectedExportGridCellIds | AddToSelectedExportGridCellIds | RemoveAllSelectedExportGridCellIds | RequestedGridCells| RetrievedRasterExportGridcells | FailedRetrievingRasterExportGridcells | SetRasterExportResolution;
 
 // export interface RasterExport {
 //     type: typeof REQUEST_WMS
