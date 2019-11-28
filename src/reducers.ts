@@ -516,6 +516,9 @@ export const getFetchingStateGrid = (state: MyStore) => {
 export const getExportGridCellResolution = (state: MyStore) => {
     return state.rasterExportState.resolution;
 }
+export const getIsFormValidForRequestingGridCells = (state: MyStore) => {
+    return state.rasterExportState.resolution !== "";
+}
 
 export const getLizardBootstrap = (state: MyStore) => {
     return state.bootstrap;
