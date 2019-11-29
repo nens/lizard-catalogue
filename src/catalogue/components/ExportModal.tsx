@@ -2,8 +2,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { Map, TileLayer, WMSTileLayer, Rectangle } from 'react-leaflet';
-import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds, getExportGridCellResolution} from '../../reducers';
-import {addToSelectedExportGridCellIds, removeFromSelectedExportGridCellIds, removeAllSelectedExportGridCellIds, fetchExportGridCells, setRasterExportResolution } from '../../action';
+import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds, getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight} from '../../reducers';
+import {addToSelectedExportGridCellIds, removeFromSelectedExportGridCellIds, removeAllSelectedExportGridCellIds, updateExportFormAndFetchExportGridCells, setRasterExportResolution } from '../../action';
 import {areGridCelIdsEqual, AddToSelectedExportGridCellIds, ExportGridCelId, RemoveFromSelectedExportGridCellIds,RemoveAllSelectedExportGridCellIds} from '../../interface';
 
 import { Raster } from '../../interface';
@@ -19,15 +19,18 @@ interface MyProps {
     removeFromSelectedExportGridCellIds: (gridCellIds: ExportGridCelId[]) => RemoveFromSelectedExportGridCellIds,
     removeAllSelectedExportGridCellIds: () => RemoveAllSelectedExportGridCellIds,
     // fetchExportGridCells: (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][]) => void,
-    fetchExportGridCells: (fieldValuePairs: any[]) => void,
+    updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[]) => void,
     resolution: MyStore['rasterExportState']['resolution'],
+    projection: MyStore['rasterExportState']['projection'],
     setRasterExportResolution: (resolution: MyStore['rasterExportState']['resolution']) => void,
+    tileWidth: MyStore['rasterExportState']['tileWidth'],
+    tileHeight: MyStore['rasterExportState']['tileHeight'],
 };
 
 class ExportModal extends React.Component<MyProps> {
 
     componentWillMount() {
-        this.props.fetchExportGridCells([]);
+        this.props.updateExportFormAndFetchExportGridCells([{field: "projection", value: this.props.raster.projection}]);
     }
 
     render() {
@@ -109,16 +112,23 @@ class ExportModal extends React.Component<MyProps> {
                         <hr />
                         <div>
                             {/* Datetime picker for temporal raster */}
-                            {raster.temporal && (
+                            {/* {raster.temporal && (
                                 <div>
                                     <h4>Date / Time</h4>
                                     <input type="datetime-local" />
                                 </div>
                             )}
-                            <br />
+                            <br /> */}
                             <div>
                                 <h4>Projection</h4>
-                                <input type="text" defaultValue={raster.projection} />
+                                <input 
+                                    type="text" 
+                                    value={this.props.projection}
+                                    onChange={(event)=> {
+                                        this.props.updateExportFormAndFetchExportGridCells([{field:'projection', value: event.target.value+''}]);
+                                        
+                                    }} 
+                                />
                             </div>
                             <br />
                             <div>
@@ -129,14 +139,50 @@ class ExportModal extends React.Component<MyProps> {
                                     onChange={(event)=> {
                                         if (parseInt(event.target.value)) {
                                             // this.props.setRasterExportResolution(parseInt(event.target.value));
-                                            this.props.fetchExportGridCells([{field:'resolution', value: event.target.value}]);
+                                            this.props.updateExportFormAndFetchExportGridCells([{field:'resolution', value: event.target.value}]);
                                         } else if (event.target.value==="") {
                                             // this.props.setRasterExportResolution("");
-                                            this.props.fetchExportGridCells([{field:'resolution', value: ""}]);
+                                            this.props.updateExportFormAndFetchExportGridCells([{field:'resolution', value: ""}]);
                                         }
                                     }}
                                 />
                                 {this.props.resolution === ""? <span>* Choose a number</span>:null}
+                            </div>
+                            <br />
+                            <div>
+                                <h4>Tile Width in Pixels</h4>
+                                <input 
+                                    type="text"
+                                    value={this.props.tileWidth}
+                                    onChange={(event)=> {
+                                        if (parseInt(event.target.value)) {
+                                            // this.props.setRasterExportResolution(parseInt(event.target.value));
+                                            this.props.updateExportFormAndFetchExportGridCells([{field:'tileWidth', value: event.target.value}]);
+                                        } else if (event.target.value==="") {
+                                            // this.props.setRasterExportResolution("");
+                                            this.props.updateExportFormAndFetchExportGridCells([{field:'tileWidth', value: ""}]);
+                                        }
+                                    }}
+                                />
+                                {this.props.tileWidth === ""? <span><br/>* Choose a number</span>:null}
+                            </div>
+                            <br />
+                            <div>
+                                <h4>Tile Height in Pixels</h4>
+                                <input 
+                                    type="text"
+                                    value={this.props.tileHeight}
+                                    onChange={(event)=> {
+                                        if (parseInt(event.target.value)) {
+                                            // this.props.setRasterExportResolution(parseInt(event.target.value));
+                                            this.props.updateExportFormAndFetchExportGridCells([{field:'tileHeight', value: event.target.value}]);
+                                        } else if (event.target.value==="") {
+                                            // this.props.setRasterExportResolution("");
+                                            this.props.updateExportFormAndFetchExportGridCells([{field:'tileHeight', value: ""}]);
+                                        }
+                                    }}
+                                />
+                                {this.props.tileHeight === ""? <span>* Choose a number</span>:null}
                             </div>
                             <br />
                             {/* <div>
@@ -190,12 +236,19 @@ interface PropsFromState {
     availableGridCells: MyStore['rasterExportState']['availableGridCells'],
     selectedGridCellIds: MyStore['rasterExportState']['selectedGridCellIds'],
     resolution: MyStore['rasterExportState']['resolution'],
+    projection: MyStore['rasterExportState']['projection'],
+    tileWidth: MyStore['rasterExportState']['tileWidth'],
+    tileHeight: MyStore['rasterExportState']['tileHeight'],
+
 };
 
 const mapStateToProps = (state: MyStore): PropsFromState => ({
     availableGridCells: getExportAvailableGridCells(state),
     selectedGridCellIds: getExportSelectedGridCellIds(state),
     resolution: getExportGridCellResolution(state),
+    projection: getExportGridCellProjection(state),
+    tileWidth: getExportGridCellTileWidth(state),
+    tileHeight: getExportGridCellTileHeight(state),
 });
 
 interface PropsFromDispatch {
@@ -203,7 +256,7 @@ interface PropsFromDispatch {
     removeFromSelectedExportGridCellIds: (ids: ExportGridCelId[]) => void,
     removeAllSelectedExportGridCellIds: () => void,
     // fetchExportGridCells: (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][]) => void,
-    fetchExportGridCells: (fieldValuePairs: any[]) => void,
+    updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[]) => void,
     setRasterExportResolution: (resolution: MyStore['rasterExportState']['resolution']) => void,
 };
 
@@ -211,7 +264,7 @@ const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
     addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
-    fetchExportGridCells: (fieldValuePairs: any[])=> fetchExportGridCells(fieldValuePairs, dispatch),
+    updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[])=> updateExportFormAndFetchExportGridCells(fieldValuePairs, dispatch),
     setRasterExportResolution: (resolution: MyStore['rasterExportState']['resolution']) => dispatch(setRasterExportResolution(resolution)),
 });
 

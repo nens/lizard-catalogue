@@ -1,6 +1,7 @@
 import request from 'superagent';
 import { baseUrl } from './api';
-import { Dispatch } from 'redux';
+import { Dispatch,} from 'redux';
+import store  from './store';
 import {
     RastersFetched,
     RasterListObject,
@@ -34,7 +35,7 @@ import {
     SetRasterExportFormField,
     FieldValuePair,
 } from './interface';
-import { MyStore } from './reducers';
+import { MyStore, getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight } from './reducers';
 
 //MARK: Bootsrap
 export const REQUEST_LIZARD_BOOTSTRAP = "REQUEST_LIZARD_BOOTSTRAP";
@@ -372,7 +373,7 @@ export const updateExportRasterFormField = (fieldValuePair:FieldValuePair): SetR
     fieldValuePair,
 })
 
-export const fetchExportGridCells = (
+export const updateExportFormAndFetchExportGridCells = (
     // rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][],
     fieldValuePairesToUpdate: FieldValuePair[], 
     dispatch
@@ -381,6 +382,16 @@ export const fetchExportGridCells = (
         dispatch(updateExportRasterFormField(fieldValuePair));
     });
     dispatch(requestedGridCells());
+
+    const state = store.getState();
+    const resolution = getExportGridCellResolution(state);
+    const projection = getExportGridCellProjection(state);
+    const tileWidth = getExportGridCellTileWidth(state);
+    const tileHeight = getExportGridCellTileHeight(state);
+    const rasterUuid = state.selectedItem;
+
+
+    console.log('resolution', resolution, projection, tileWidth, tileHeight, rasterUuid);
     
     request
         .get(`${baseUrl}/rasters/`)

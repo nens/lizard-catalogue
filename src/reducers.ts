@@ -106,6 +106,8 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
     availableGridCells: [],
     resolution: 1,
     projection: "EPSG:28992",
+    tileWidth: 1000,
+    tileHeight: 1000,
     },
     action: RasterExportStateActionType
 ): MyStore['rasterExportState'] => {
@@ -524,8 +526,21 @@ export const getFetchingStateGrid = (state: MyStore) => {
 export const getExportGridCellResolution = (state: MyStore) => {
     return state.rasterExportState.resolution;
 }
+export const getExportGridCellProjection = (state: MyStore) => {
+    return state.rasterExportState.projection;
+}
+export const getExportGridCellTileWidth = (state: MyStore) => {
+    return state.rasterExportState.tileWidth;
+}
+export const getExportGridCellTileHeight = (state: MyStore) => {
+    return state.rasterExportState.tileHeight;
+}
+
 export const getIsFormValidForRequestingGridCells = (state: MyStore) => {
-    return state.rasterExportState.resolution !== "";
+    return getExportGridCellResolution(state) !== "" && 
+    getExportGridCellProjection(state) !== "" && 
+    getExportGridCellTileWidth(state) !== "" &&
+    getExportGridCellTileHeight(state) !== "";
 }
 
 export const getLizardBootstrap = (state: MyStore) => {

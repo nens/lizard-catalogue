@@ -263,7 +263,9 @@ export interface RasterExportState {
     fetchingStateGridMsg: string,
     fetchingStateTasks: FetchingState,
     resolution: number | "",
-    projection: string
+    projection: string,
+    tileWidth: number | "",
+    tileHeight: number | "",
 }
 
 export interface RemoveFromSelectedExportGridCellIds {
@@ -299,7 +301,13 @@ export interface SetRasterExportFormField {
     fieldValuePair: FieldValuePair,
 }
 
-export type RasterExportFormFieldType = string | MyStore['rasterExportState']['resolution']
+export type RasterExportFormFieldType = 
+    MyStore['rasterExportState']['resolution'] | 
+    MyStore['rasterExportState']['projection'] |
+    MyStore['rasterExportState']['tileWidth'] |
+    MyStore['rasterExportState']['tileHeight']
+
+
 export interface FieldValuePair{field: string, value: RasterExportFormFieldType}
 
 export type RasterExportStateActionType = 
