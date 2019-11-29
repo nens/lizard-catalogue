@@ -31,6 +31,7 @@ import {
     RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
     SET_RASTER_EXPORT_RESOLUTION,
+    SET_RASTER_EXPORT_FORM_FIELD,
 } from "./action";
 import {
     RastersFetched,
@@ -104,6 +105,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
     fetchingStateTasks: "NOT_SEND",
     availableGridCells: [],
     resolution: 1,
+    projection: "EPSG:28992",
     },
     action: RasterExportStateActionType
 ): MyStore['rasterExportState'] => {
@@ -144,6 +146,12 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
             return {
                 ...state,
                 resolution: action.resolution,
+            } 
+        case SET_RASTER_EXPORT_FORM_FIELD:
+            return {
+                ...state,
+                [action.fieldValuePair.field]: action.fieldValuePair.value,
+                selectedGridCellIds: [],
             } 
         default:
             return state;

@@ -31,6 +31,8 @@ import {
     RetrievedRasterExportGridcells,
     FailedRetrievingRasterExportGridcells,
     SetRasterExportResolution,
+    SetRasterExportFormField,
+    FieldValuePair,
 } from './interface';
 import { MyStore } from './reducers';
 
@@ -331,6 +333,7 @@ export const REQUESTED_RASTER_EXPORT_GRIDCELLS = 'REQUESTED_RASTER_EXPORT_GRIDCE
 export const RETRIEVED_RASTER_EXPORT_GRIDCELLS = 'RETRIEVED_RASTER_EXPORT_GRIDCELLS';
 export const FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS = 'FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS';
 export const SET_RASTER_EXPORT_RESOLUTION = 'SET_RASTER_EXPORT_RESOLUTION';
+export const SET_RASTER_EXPORT_FORM_FIELD = 'SET_RASTER_EXPORT_FORM_FIELD';
 
 export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): RemoveFromSelectedExportGridCellIds => ({
     type: REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
@@ -361,13 +364,29 @@ export const setRasterExportResolution = (resolution: MyStore['rasterExportState
     resolution: resolution,
 });
 
-export const fetchExportGridCells = (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][], dispatch): void => {
+// export type RasterExportFormFieldType = string | MyStore['rasterExportState']['resolution']
+// export interface FieldValuePair{field: string, value: RasterExportFormFieldType}
+
+export const updateExportRasterFormField = (fieldValuePair:FieldValuePair): SetRasterExportFormField => ({
+    type: SET_RASTER_EXPORT_FORM_FIELD,
+    fieldValuePair,
+})
+
+export const fetchExportGridCells = (
+    // rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][],
+    fieldValuePairesToUpdate: FieldValuePair[], 
+    dispatch
+): void => {
+    fieldValuePairesToUpdate.forEach((fieldValuePair)=>{
+        dispatch(updateExportRasterFormField(fieldValuePair));
+    });
     dispatch(requestedGridCells());
     
     request
         .get(`${baseUrl}/rasters/`)
         .then(response => {
-            console.log(response.body, rasterUuid, projection, resolution, width, height, bbox);
+            console.log('response grid cells', response);
+            // console.log(response.body, rasterUuid, projection, resolution, width, height, bbox);
             const dummieGridCells = [{
                 "type": "Feature",
                 "geometry": {
@@ -400,6 +419,46 @@ export const fetchExportGridCells = (rasterUuid: string, projection: string, res
             dispatch(failedRetrievingRasterExportGridcells(error+''));
         })
 };
+
+// export const fetchExportGridCells = (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][], dispatch): void => {
+//     dispatch(requestedGridCells());
+    
+//     request
+//         .get(`${baseUrl}/rasters/`)
+//         .then(response => {
+//             console.log(response.body, rasterUuid, projection, resolution, width, height, bbox);
+//             const dummieGridCells = [{
+//                 "type": "Feature",
+//                 "geometry": {
+//                   "type": "Polygon",
+//                   "coordinates": [[52.339322, 4.767822], [53.339322, 4.997822]],
+//                 },
+//                 "properties": {
+//                   "projection": "EPSG:28992",
+//                   "bounds": [130000, 510000, 140000, 520000],
+//                   "id": [130, 510]
+//                 }
+//               },
+//               {
+//                 "type": "Feature",
+//                 "geometry": {
+//                   "type": "Polygon",
+//                   "coordinates": [[52.339322, 4.997822], [53.339322, 5.997822]],
+//                 },
+//                 "properties": {
+//                   "projection": "EPSG:28992",
+//                   "bounds": [130000, 510000, 140000, 520000],
+//                   "id": [131, 510]
+//                 }
+//               }
+//             ];
+//             dispatch(retrievedGridCells(dummieGridCells));
+//         })
+//         .catch(error=>{
+//             console.error(error);
+//             dispatch(failedRetrievingRasterExportGridcells(error+''));
+//         })
+// };
 
 /*
 const wmsReceived = (wmsObject: WMSObject): ReceiveWMS => ({

@@ -18,12 +18,18 @@ interface MyProps {
     addToSelectedExportGridCellIds: (gridCellIds: ExportGridCelId[]) => AddToSelectedExportGridCellIds,
     removeFromSelectedExportGridCellIds: (gridCellIds: ExportGridCelId[]) => RemoveFromSelectedExportGridCellIds,
     removeAllSelectedExportGridCellIds: () => RemoveAllSelectedExportGridCellIds,
-    fetchExportGridCells: (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][]) => void,
+    // fetchExportGridCells: (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][]) => void,
+    fetchExportGridCells: (fieldValuePairs: any[]) => void,
     resolution: MyStore['rasterExportState']['resolution'],
     setRasterExportResolution: (resolution: MyStore['rasterExportState']['resolution']) => void,
 };
 
 class ExportModal extends React.Component<MyProps> {
+
+    componentWillMount() {
+        this.props.fetchExportGridCells([]);
+    }
+
     render() {
         const { raster, bounds, openDownloadModal } = this.props;
         const exportGridCells = this.props.availableGridCells;
@@ -122,9 +128,11 @@ class ExportModal extends React.Component<MyProps> {
                                     value={this.props.resolution}
                                     onChange={(event)=> {
                                         if (parseInt(event.target.value)) {
-                                            this.props.setRasterExportResolution(parseInt(event.target.value));
+                                            // this.props.setRasterExportResolution(parseInt(event.target.value));
+                                            this.props.fetchExportGridCells([{field:'resolution', value: event.target.value}]);
                                         } else if (event.target.value==="") {
-                                            this.props.setRasterExportResolution("");
+                                            // this.props.setRasterExportResolution("");
+                                            this.props.fetchExportGridCells([{field:'resolution', value: ""}]);
                                         }
                                     }}
                                 />
@@ -145,17 +153,26 @@ class ExportModal extends React.Component<MyProps> {
                         <button className="details__button">
                             Cancel
                         </button>
-                        <button 
+                        {/* <button 
                             className="details__button" 
                             onClick={()=>{
                                 true || openDownloadModal();
                                 if (this.props.resolution !== "") {
-                                    this.props.fetchExportGridCells(raster.uuid, raster.projection, this.props.resolution, 100, 100, bounds);
+                                    this.props.fetchExportGridCells([{field:'resolution', value:"2"}]);
                                 } 
                             }}
                         >
                             <i className="fa fa-download" />
                             &nbsp;&nbsp;Make a selection
+                        </button> */}
+                        <button 
+                            className="details__button" 
+                            onClick={()=>{
+                                openDownloadModal();
+                            }}
+                        >
+                            <i className="fa fa-download" />
+                            &nbsp;&nbsp;Download selection
                         </button>
                         <button
                             onClick={this.props.removeAllSelectedExportGridCellIds}
@@ -185,7 +202,8 @@ interface PropsFromDispatch {
     addToSelectedExportGridCellIds: (ids: ExportGridCelId[]) => void,
     removeFromSelectedExportGridCellIds: (ids: ExportGridCelId[]) => void,
     removeAllSelectedExportGridCellIds: () => void,
-    fetchExportGridCells: (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][]) => void,
+    // fetchExportGridCells: (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][]) => void,
+    fetchExportGridCells: (fieldValuePairs: any[]) => void,
     setRasterExportResolution: (resolution: MyStore['rasterExportState']['resolution']) => void,
 };
 
@@ -193,9 +211,7 @@ const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
     addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
-    fetchExportGridCells: 
-        (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][])=>
-            fetchExportGridCells(rasterUuid, projection, resolution, width, height, bbox, dispatch),
+    fetchExportGridCells: (fieldValuePairs: any[])=> fetchExportGridCells(fieldValuePairs, dispatch),
     setRasterExportResolution: (resolution: MyStore['rasterExportState']['resolution']) => dispatch(setRasterExportResolution(resolution)),
 });
 
