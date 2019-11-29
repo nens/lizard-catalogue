@@ -21,8 +21,12 @@ import {
     RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
     SET_RASTER_EXPORT_FORM_FIELD,
+    // SET_RASTER_EXPORT_BOUNDING_BOX,
+    REMOVE_ALL_EXPORT_GRID_CELLS,
 } from "./action";
 import { MyStore } from './reducers';
+// import { number } from "prop-types";
+
 
 
 //ACTION INTERFACE
@@ -255,6 +259,13 @@ export interface ExportGridCell {
 
 export type FetchingState = "NOT_SEND" | "SEND" | "RECEIVED" | "FAILED";
 
+export interface Bounds {
+    north: number;
+    east: number;
+    south: number;
+    west: number;
+}
+
 export interface RasterExportState {
     selectedGridCellIds: ExportGridCelId[],
     availableGridCells: ExportGridCell[],
@@ -265,7 +276,7 @@ export interface RasterExportState {
     projection: string,
     tileWidth: number | "",
     tileHeight: number | "",
-    bounds: number [][],
+    bounds: Bounds,
 }
 
 export interface RemoveFromSelectedExportGridCellIds {
@@ -279,6 +290,9 @@ export interface AddToSelectedExportGridCellIds {
 export interface RemoveAllSelectedExportGridCellIds {
     type: typeof REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
 };
+export interface RemoveAllExportGridCells{
+    type: typeof REMOVE_ALL_EXPORT_GRID_CELLS,
+}
 export interface RequestedGridCells {
     type: typeof REQUESTED_RASTER_EXPORT_GRIDCELLS,
 };
@@ -300,12 +314,17 @@ export interface SetRasterExportFormField {
     type: typeof SET_RASTER_EXPORT_FORM_FIELD,
     fieldValuePair: FieldValuePair,
 }
+// export interface SetRasterExportBoundingBox {
+//     type: typeof SET_RASTER_EXPORT_BOUNDING_BOX,
+//     boundingBox: MyStore['rasterExportState']['bounds'],
+// }
 
 export type RasterExportFormFieldType = 
     MyStore['rasterExportState']['resolution'] | 
     MyStore['rasterExportState']['projection'] |
     MyStore['rasterExportState']['tileWidth'] |
-    MyStore['rasterExportState']['tileHeight']
+    MyStore['rasterExportState']['tileHeight'] |
+    MyStore['rasterExportState']['bounds']
 
 
 export interface FieldValuePair{field: string, value: RasterExportFormFieldType}
@@ -318,7 +337,9 @@ export type RasterExportStateActionType =
     RetrievedRasterExportGridcells | 
     FailedRetrievingRasterExportGridcells | 
     // SetRasterExportResolution |
-    SetRasterExportFormField;
+    SetRasterExportFormField |
+    RemoveAllExportGridCells ; //| 
+    // SetRasterExportBoundingBox;
 
 // export interface RasterExport {
 //     type: typeof REQUEST_WMS

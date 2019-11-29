@@ -34,8 +34,12 @@ import {
     // SetRasterExportResolution,
     SetRasterExportFormField,
     FieldValuePair,
+    // SetRasterExportBoundingBox,
+    RemoveAllExportGridCells,
 } from './interface';
 import { getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight, getExportGridCellBounds } from './reducers';
+// import { MyStore } from './reducers';
+
 
 //MARK: Bootsrap
 export const REQUEST_LIZARD_BOOTSTRAP = "REQUEST_LIZARD_BOOTSTRAP";
@@ -335,6 +339,8 @@ export const RETRIEVED_RASTER_EXPORT_GRIDCELLS = 'RETRIEVED_RASTER_EXPORT_GRIDCE
 export const FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS = 'FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS';
 export const SET_RASTER_EXPORT_RESOLUTION = 'SET_RASTER_EXPORT_RESOLUTION';
 export const SET_RASTER_EXPORT_FORM_FIELD = 'SET_RASTER_EXPORT_FORM_FIELD';
+// export const SET_RASTER_EXPORT_BOUNDING_BOX = 'SET_RASTER_EXPORT_BOUNDING_BOX';
+export const REMOVE_ALL_EXPORT_GRID_CELLS = 'REMOVE_ALL_EXPORT_GRID_CELLS';
 
 export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): RemoveFromSelectedExportGridCellIds => ({
     type: REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
@@ -347,6 +353,10 @@ export const addToSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): 
 export const removeAllSelectedExportGridCellIds = (): RemoveAllSelectedExportGridCellIds => ({
     type: REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
 });
+export const removeAllExportGridCells = (): RemoveAllExportGridCells => ({
+    type: REMOVE_ALL_EXPORT_GRID_CELLS,
+});
+
 
 export const requestedGridCells = (): RequestedGridCells => ({
     type: REQUESTED_RASTER_EXPORT_GRIDCELLS
@@ -359,6 +369,11 @@ export const failedRetrievingRasterExportGridcells = (msg: string): FailedRetrie
     type: FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
     failedMsg: msg,
 });
+
+// export const setRasterExportBoundingBox = (boundingBox:  MyStore['rasterExportState']['bounds']): SetRasterExportBoundingBox => ({
+//     type: SET_RASTER_EXPORT_BOUNDING_BOX,
+//     boundingBox 
+// })
 
 // export const setRasterExportResolution = (resolution: MyStore['rasterExportState']['resolution']): SetRasterExportResolution => ({
 //     type: SET_RASTER_EXPORT_RESOLUTION,
@@ -379,6 +394,15 @@ export const updateExportFormAndFetchExportGridCells = (
     dispatch
 ): void => {
     fieldValuePairesToUpdate.forEach((fieldValuePair)=>{
+        if (
+            fieldValuePair.field === 'projection' ||
+            fieldValuePair.field === 'resolution' ||
+            fieldValuePair.field === 'tileWidth' ||
+            fieldValuePair.field === 'tileHeight' 
+        ) {
+            dispatch(removeAllSelectedExportGridCellIds());
+            dispatch(removeAllExportGridCells());
+        }
         dispatch(updateExportRasterFormField(fieldValuePair));
     });
     dispatch(requestedGridCells());
