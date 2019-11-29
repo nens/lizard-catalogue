@@ -33,6 +33,7 @@ import {
     SET_RASTER_EXPORT_FORM_FIELD,
     // SET_RASTER_EXPORT_BOUNDING_BOX,
     REMOVE_ALL_EXPORT_GRID_CELLS,
+    // REQUESTED_RASTER_EXPORTS,
 } from "./action";
 import {
     RastersFetched,
@@ -115,6 +116,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
         south: 1,
         west: 1,
     },
+    rasterExportRequests: [],
     },
     action: RasterExportStateActionType
 ): MyStore['rasterExportState'] => {
@@ -144,6 +146,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 ...state,
                 fetchingStateGrid: "SEND"
             }
+        
         case RETRIEVED_RASTER_EXPORT_GRIDCELLS:
             return {
                 ...state,
@@ -155,7 +158,12 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 ...state,
                 fetchingStateGrid: "FAILED",
                 fetchingStateGridMsg: action.failedMsg,
-            } 
+            }
+        // case REQUESTED_RASTER_EXPORTS:
+        //     return {
+        //         ...state,
+        //         fetchingStateTasks: "SEND"
+        //     }
         case SET_RASTER_EXPORT_FORM_FIELD:
             return {
                 ...state,

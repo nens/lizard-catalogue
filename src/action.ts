@@ -36,6 +36,7 @@ import {
     FieldValuePair,
     // SetRasterExportBoundingBox,
     RemoveAllExportGridCells,
+    // RequestedRasterExports,
 } from './interface';
 import { getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight, getExportGridCellBounds } from './reducers';
 // import { MyStore } from './reducers';
@@ -341,6 +342,9 @@ export const SET_RASTER_EXPORT_RESOLUTION = 'SET_RASTER_EXPORT_RESOLUTION';
 export const SET_RASTER_EXPORT_FORM_FIELD = 'SET_RASTER_EXPORT_FORM_FIELD';
 // export const SET_RASTER_EXPORT_BOUNDING_BOX = 'SET_RASTER_EXPORT_BOUNDING_BOX';
 export const REMOVE_ALL_EXPORT_GRID_CELLS = 'REMOVE_ALL_EXPORT_GRID_CELLS';
+// export const REQUESTED_RASTER_EXPORTS = "REQUESTED_RASTER_EXPORTS";
+// export const RECEIVED_TASKS_RASTER_EXPORTS = "RECEIVED_TASKS_RASTER_EXPORTS";
+// export const RECEIVED_TASKS_RASTER_EXPORTS = "RECEIVED_TASKS_RASTER_EXPORTS";
 
 export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): RemoveFromSelectedExportGridCellIds => ({
     type: REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
@@ -361,6 +365,9 @@ export const removeAllExportGridCells = (): RemoveAllExportGridCells => ({
 export const requestedGridCells = (): RequestedGridCells => ({
     type: REQUESTED_RASTER_EXPORT_GRIDCELLS
 });
+// export const requestedRasterExports = (): RequestedRasterExports => ({
+//     type: REQUESTED_RASTER_EXPORTS
+// });
 export const retrievedGridCells = (gridCells: ExportGridCell[]): RetrievedRasterExportGridcells => ({
     type: RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     gridCells: gridCells,
@@ -393,17 +400,23 @@ export const updateExportFormAndFetchExportGridCells = (
     fieldValuePairesToUpdate: FieldValuePair[], 
     dispatch
 ): void => {
+
+    let emptiedGridCellsAndSelection = false;
     fieldValuePairesToUpdate.forEach((fieldValuePair)=>{
+        dispatch(updateExportRasterFormField(fieldValuePair));
         if (
-            fieldValuePair.field === 'projection' ||
-            fieldValuePair.field === 'resolution' ||
-            fieldValuePair.field === 'tileWidth' ||
-            fieldValuePair.field === 'tileHeight' 
+            (
+                fieldValuePair.field === 'projection' ||
+                fieldValuePair.field === 'resolution' ||
+                fieldValuePair.field === 'tileWidth' ||
+                fieldValuePair.field === 'tileHeight'
+            ) && emptiedGridCellsAndSelection === false 
         ) {
             dispatch(removeAllSelectedExportGridCellIds());
             dispatch(removeAllExportGridCells());
+            emptiedGridCellsAndSelection = true;
         }
-        dispatch(updateExportRasterFormField(fieldValuePair));
+        
     });
     dispatch(requestedGridCells());
 

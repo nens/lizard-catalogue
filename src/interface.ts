@@ -23,6 +23,8 @@ import {
     SET_RASTER_EXPORT_FORM_FIELD,
     // SET_RASTER_EXPORT_BOUNDING_BOX,
     REMOVE_ALL_EXPORT_GRID_CELLS,
+    // REQUESTED_RASTER_EXPORTS,
+    // RECEIVED_TASKS_RASTER_EXPORTS,
 } from "./action";
 import { MyStore } from './reducers';
 // import { number } from "prop-types";
@@ -277,6 +279,7 @@ export interface RasterExportState {
     tileWidth: number | "",
     tileHeight: number | "",
     bounds: Bounds,
+    rasterExportRequests: RasterExportRequest[],
 }
 
 export interface RemoveFromSelectedExportGridCellIds {
@@ -319,6 +322,10 @@ export interface SetRasterExportFormField {
 //     boundingBox: MyStore['rasterExportState']['bounds'],
 // }
 
+// export interface RequestedRasterExports {
+//     type: typeof REQUESTED_RASTER_EXPORTS
+// }
+
 export type RasterExportFormFieldType = 
     MyStore['rasterExportState']['resolution'] | 
     MyStore['rasterExportState']['projection'] |
@@ -338,7 +345,8 @@ export type RasterExportStateActionType =
     FailedRetrievingRasterExportGridcells | 
     // SetRasterExportResolution |
     SetRasterExportFormField |
-    RemoveAllExportGridCells ; //| 
+    RemoveAllExportGridCells;// |
+    // RequestedRasterExports; //| 
     // SetRasterExportBoundingBox;
 
 // export interface RasterExport {
@@ -351,3 +359,13 @@ export type RasterExportStateActionType =
 // };
 
 // export type WMSActionType = RequestWMS | ReceiveWMS | ToggleAlert;
+
+export interface RasterExportRequest {
+    fetchingState: FetchingState;
+    id: number [];
+    projection: string;
+    bounds: Bounds;
+    resolution: number;
+    tileWidth: number;
+    tileHeight: number;
+}
