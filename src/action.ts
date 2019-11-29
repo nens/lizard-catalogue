@@ -2,9 +2,6 @@ import request from 'superagent';
 import { baseUrl } from './api';
 import {
     RasterListObject,
-    ObservationType,
-    Organisation,
-    Dataset,
     WMSObject,
     SwitchDataType,
 } from './interface';
@@ -13,24 +10,20 @@ import {
 export const REQUEST_LIZARD_BOOTSTRAP = "REQUEST_LIZARD_BOOTSTRAP";
 export const RECEIVE_LIZARD_BOOTSTRAP = "RECEIVE_LIZARD_BOOTSTRAP";
 
-const requestLizardBootsrap = () => ({
-    type: REQUEST_LIZARD_BOOTSTRAP
-});
-
-const receiveLizardBootstrap = (data) => ({
-    type: RECEIVE_LIZARD_BOOTSTRAP,
-    payload: data
-});
-
 export const fetchLizardBootstrap = (dispatch) => {
-    dispatch(requestLizardBootsrap());
+    dispatch({
+        type: REQUEST_LIZARD_BOOTSTRAP
+    });
     fetch("/bootstrap/lizard/", {
         credentials: "same-origin"
     })
     .then(response => response.json())
     .then(data => {
         if (data && data.user && data.user.authenticated === true) {
-            dispatch(receiveLizardBootstrap(data));
+            dispatch({
+                type: RECEIVE_LIZARD_BOOTSTRAP,
+                payload: data
+            });
         } 
     });
 };
@@ -38,13 +31,11 @@ export const fetchLizardBootstrap = (dispatch) => {
 //MARK: Switch between rasters and wms layers
 export const SWITCH_DATA_TYPE = 'SWITCH_DATA_TYPE';
 
-const dataTypeSwitched = (dataType: SwitchDataType['payload']): SwitchDataType => ({
-    type: SWITCH_DATA_TYPE,
-    payload: dataType
-});
-
 export const switchDataType = (dataType: SwitchDataType['payload'], dispatch): void => {
-    dispatch(dataTypeSwitched(dataType));
+    dispatch({
+        type: SWITCH_DATA_TYPE,
+        payload: dataType
+    });
 };
 
 //MARK: Raster
@@ -151,13 +142,11 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
 //MARK: Select Item to view (Raster or WMS layer)
 export const ITEM_SELECTED = 'ITEM_SELECTED';
 
-const itemSelected = (uuid: string) => ({
-    type: ITEM_SELECTED,
-    payload: uuid
-});
-
 export const selectItem = (uuid: string, dispatch): void => {
-    dispatch(itemSelected(uuid));
+    dispatch({
+        type: ITEM_SELECTED,
+        uuid
+    });
 };
 
 //MARK: Observation types and Organisation
@@ -165,44 +154,38 @@ export const OBSERVATION_TYPES_FETCHED = 'OBSERVATION_TYPES_FETCHED';
 export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
 export const DATASETS_FETCHED = 'DATASETS_FETCHED';
 
-const observationTypesFetched = (observationTypes: ObservationType[]) => ({
-    type: OBSERVATION_TYPES_FETCHED,
-    payload: observationTypes
-});
-
 export const fetchObservationTypes = (dispatch): void => {
     request
         .get(`${baseUrl}/observationtypes/?page_size=0`)
         .then(response => {
-            dispatch(observationTypesFetched(response.body));
+            dispatch({
+                type: OBSERVATION_TYPES_FETCHED,
+                observationTypes: response.body
+            });
         })
         .catch(console.error)
 };
-
-const organisationsFetched = (organisations: Organisation[]) => ({
-    type: ORGANISATIONS_FETCHED,
-    payload: organisations
-});
 
 export const fetchOrganisations = (dispatch): void => {
     request
         .get(`${baseUrl}/organisations/?page_size=0`)
         .then(response => {
-            dispatch(organisationsFetched(response.body));
+            dispatch({
+                type: ORGANISATIONS_FETCHED,
+                organisations: response.body
+            });
         })
         .catch(console.error)
 };
-
-const datasetsFetched = (datasets: Dataset[]) => ({
-    type: DATASETS_FETCHED,
-    payload: datasets
-});
 
 export const fetchDatasets = (dispatch): void => {
     request
         .get(`${baseUrl}/datasets/?page_size=0`)
         .then(response => {
-            dispatch(datasetsFetched(response.body));
+            dispatch({
+                type: DATASETS_FETCHED,
+                datasets: response.body
+            });
         })
         .catch(console.error)
 };
@@ -323,10 +306,8 @@ export const removeWMSFromBasket = (uuid: string, dispatch): void => {
 //MARK: Toggle the showAlert
 export const TOGGLE_ALERT = 'TOGGLE_ALERT';
 
-const alertToggled = () => ({
-    type: TOGGLE_ALERT
-});
-
 export const toggleAlert = (dispatch) => {
-    dispatch(alertToggled());
+    dispatch({
+        type: TOGGLE_ALERT
+    });
 };

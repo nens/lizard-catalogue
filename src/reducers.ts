@@ -238,10 +238,10 @@ const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
     };
 };
 
-const selectedItem = (state: MyStore['selectedItem'] = null, action): MyStore['selectedItem'] => {
-    switch (action.type) {
+const selectedItem = (state: MyStore['selectedItem'] = null, { type, uuid }): MyStore['selectedItem'] => {
+    switch (type) {
         case ITEM_SELECTED:
-            return action.payload;
+            return uuid;
         default:
             return state;
     };
@@ -292,10 +292,24 @@ const basket = (
     };
 };
 
-const observationTypes = (state: MyStore['observationTypes'] = [], action): MyStore['observationTypes'] => {
-    switch (action.type) {
+const observationTypes = (state: MyStore['observationTypes'] = [], { type, observationTypes }): MyStore['observationTypes'] => {
+    switch (type) {
         case OBSERVATION_TYPES_FETCHED:
-            return action.payload.map(observation => {
+            //Remove observation types with empty parameter
+            const observationTypesWithoutEmptyNames = observationTypes.filter(observationType => observationType.parameter !== '');
+
+            //Remove duplicates in parameters using reduce() method
+            const parameters = observationTypesWithoutEmptyNames.map(observationType => observationType.parameter);
+            const parametersWithoutDuplicates = parameters.reduce((a: string[], b) => {
+                if (a.indexOf(b) < 0) a.push(b);
+                return a;
+            }, []);
+            const filteredObservationTypes = parametersWithoutDuplicates.map(parameter => {
+                return observationTypesWithoutEmptyNames.find(observationType => observationType.parameter === parameter);
+            });
+
+            //Update Redux state
+            return filteredObservationTypes.map(observation => {
                 return {
                     url: observation.url,
                     code: observation.code,
@@ -310,10 +324,24 @@ const observationTypes = (state: MyStore['observationTypes'] = [], action): MySt
     };
 };
 
-const organisations = (state: MyStore['organisations'] = [], action): MyStore['organisations'] => {
-    switch (action.type) {
+const organisations = (state: MyStore['organisations'] = [], { type, organisations }): MyStore['organisations'] => {
+    switch (type) {
         case ORGANISATIONS_FETCHED:
-            return action.payload.map(organisation => {
+            //Remove organisations with empty name
+            const organisationsWithoutEmptyNames = organisations.filter(organisation => organisation.name !== '');
+
+            //Remove duplications in organisation name using reduce() method
+            const names = organisationsWithoutEmptyNames.map(organisation => organisation.name);
+            const namesWithoutDuplicates = names.reduce((a: string[], b) => {
+                if (a.indexOf(b) < 0) a.push(b);
+                return a;
+            }, []);
+            const filteredOrganisations = namesWithoutDuplicates.map(name => {
+                return organisationsWithoutEmptyNames.find(organisation => organisation.name === name);
+            });
+
+            //Update Redux state
+            return filteredOrganisations.map(organisation => {
                 return {
                     url: organisation.url,
                     name: organisation.name,
@@ -325,15 +353,18 @@ const organisations = (state: MyStore['organisations'] = [], action): MyStore['o
     };
 };
 
-const datasets = (state: MyStore['datasets'] = [], action): MyStore['datasets'] => {
-    switch (action.type) {
+const datasets = (state: MyStore['datasets'] = [], { type, datasets }): MyStore['datasets'] => {
+    switch (type) {
         case DATASETS_FETCHED:
-            return action.payload.map(dataset => {
-                return {
-                    slug: dataset.slug,
-                    organisation: dataset.organisation,
-                };
-            });
+            return datasets
+                //Remove datasets with empty slug name
+                .filter(dataset => dataset.slug !== '')
+                .map(dataset => {
+                    return {
+                        slug: dataset.slug,
+                        organisation: dataset.organisation,
+                    };
+                });
         default:
             return state;
     };
@@ -432,45 +463,16 @@ export const getWMS = (state: MyStore, uuid: string) => {
 };
 
 export const getObservationTypes = (state: MyStore) => {
-    //Remove observation types with empty parameter
-    const observationTypes = state.observationTypes.filter(observationType => observationType.parameter !== "");
-
-    //Remove duplicates in parameters using reduce() method
-    const parameters = observationTypes.map(observationType => observationType.parameter);
-    const parametersWithoutDuplicates = parameters.reduce((a: string[], b) => {
-        if (a.indexOf(b) < 0) a.push(b);
-        return a;
-    }, []);
-
-    //Return all observation types based on their parameters
-    //For observation types with same parameters (i.e. waterhoogte), only select one of them as we are interested in getting one single result only
-    //So in this case, we select the first one from the array
-    return parametersWithoutDuplicates.map(parameter => {
-        //Get all the observation types with this parameter and select the first one
-        return observationTypes.filter(observationType => observationType.parameter === parameter)[0];
-    });
+    return state.observationTypes;
 };
 
 export const getOrganisations = (state: MyStore) => {
-    //Remove organisations with empty name
-    const organisations = state.organisations.filter(organisation => organisation.name !== "");
-
-    //Remove duplications in organisation name using reduce() method
-    const names = organisations.map(organisation => organisation.name);
-    const namesWithoutDuplicates = names.reduce((a: string[], b) => {
-        if (a.indexOf(b) < 0) a.push(b);
-        return a;
-    }, []);
-
-    return namesWithoutDuplicates.map(name => {
-        return organisations.filter(organisation => organisation.name === name)[0];
-    });
+    return state.organisations;
 };
 
 export const getDatasets = (state: MyStore) => {
-    //Remove datasets with empty name
-    return state.datasets.filter(dataset => dataset.slug !== "");
-}
+    return state.datasets;
+};
 
 export default combineReducers({
     bootstrap,
