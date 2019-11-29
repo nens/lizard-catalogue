@@ -31,11 +31,11 @@ import {
     ExportGridCell,
     RetrievedRasterExportGridcells,
     FailedRetrievingRasterExportGridcells,
-    SetRasterExportResolution,
+    // SetRasterExportResolution,
     SetRasterExportFormField,
     FieldValuePair,
 } from './interface';
-import { MyStore, getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight } from './reducers';
+import { getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight, getExportGridCellBounds } from './reducers';
 
 //MARK: Bootsrap
 export const REQUEST_LIZARD_BOOTSTRAP = "REQUEST_LIZARD_BOOTSTRAP";
@@ -360,10 +360,10 @@ export const failedRetrievingRasterExportGridcells = (msg: string): FailedRetrie
     failedMsg: msg,
 });
 
-export const setRasterExportResolution = (resolution: MyStore['rasterExportState']['resolution']): SetRasterExportResolution => ({
-    type: SET_RASTER_EXPORT_RESOLUTION,
-    resolution: resolution,
-});
+// export const setRasterExportResolution = (resolution: MyStore['rasterExportState']['resolution']): SetRasterExportResolution => ({
+//     type: SET_RASTER_EXPORT_RESOLUTION,
+//     resolution: resolution,
+// });
 
 // export type RasterExportFormFieldType = string | MyStore['rasterExportState']['resolution']
 // export interface FieldValuePair{field: string, value: RasterExportFormFieldType}
@@ -388,10 +388,11 @@ export const updateExportFormAndFetchExportGridCells = (
     const projection = getExportGridCellProjection(state);
     const tileWidth = getExportGridCellTileWidth(state);
     const tileHeight = getExportGridCellTileHeight(state);
+    const bounds = getExportGridCellBounds(state);
     const rasterUuid = state.selectedItem;
 
 
-    console.log('resolution', resolution, projection, tileWidth, tileHeight, rasterUuid);
+    console.log('resolution', resolution, projection, tileWidth, tileHeight, rasterUuid, bounds);
     
     request
         .get(`${baseUrl}/rasters/`)

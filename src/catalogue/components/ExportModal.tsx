@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { Map, TileLayer, WMSTileLayer, Rectangle } from 'react-leaflet';
 import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds, getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight} from '../../reducers';
-import {addToSelectedExportGridCellIds, removeFromSelectedExportGridCellIds, removeAllSelectedExportGridCellIds, updateExportFormAndFetchExportGridCells, setRasterExportResolution } from '../../action';
+import {addToSelectedExportGridCellIds, removeFromSelectedExportGridCellIds, removeAllSelectedExportGridCellIds, updateExportFormAndFetchExportGridCells } from '../../action';
 import {areGridCelIdsEqual, AddToSelectedExportGridCellIds, ExportGridCelId, RemoveFromSelectedExportGridCellIds,RemoveAllSelectedExportGridCellIds} from '../../interface';
 
 import { Raster } from '../../interface';
@@ -22,7 +22,6 @@ interface MyProps {
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[]) => void,
     resolution: MyStore['rasterExportState']['resolution'],
     projection: MyStore['rasterExportState']['projection'],
-    setRasterExportResolution: (resolution: MyStore['rasterExportState']['resolution']) => void,
     tileWidth: MyStore['rasterExportState']['tileWidth'],
     tileHeight: MyStore['rasterExportState']['tileHeight'],
 };
@@ -257,7 +256,6 @@ interface PropsFromDispatch {
     removeAllSelectedExportGridCellIds: () => void,
     // fetchExportGridCells: (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][]) => void,
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[]) => void,
-    setRasterExportResolution: (resolution: MyStore['rasterExportState']['resolution']) => void,
 };
 
 const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
@@ -265,7 +263,6 @@ const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[])=> updateExportFormAndFetchExportGridCells(fieldValuePairs, dispatch),
-    setRasterExportResolution: (resolution: MyStore['rasterExportState']['resolution']) => dispatch(setRasterExportResolution(resolution)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExportModal);

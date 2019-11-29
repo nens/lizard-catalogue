@@ -30,7 +30,6 @@ import {
     REQUESTED_RASTER_EXPORT_GRIDCELLS,
     RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
-    SET_RASTER_EXPORT_RESOLUTION,
     SET_RASTER_EXPORT_FORM_FIELD,
 } from "./action";
 import {
@@ -108,6 +107,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
     projection: "EPSG:28992",
     tileWidth: 1000,
     tileHeight: 1000,
+    bounds: [[]],
     },
     action: RasterExportStateActionType
 ): MyStore['rasterExportState'] => {
@@ -143,11 +143,6 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 ...state,
                 fetchingStateGrid: "FAILED",
                 fetchingStateGridMsg: action.failedMsg,
-            } 
-        case SET_RASTER_EXPORT_RESOLUTION:
-            return {
-                ...state,
-                resolution: action.resolution,
             } 
         case SET_RASTER_EXPORT_FORM_FIELD:
             return {
@@ -534,6 +529,9 @@ export const getExportGridCellTileWidth = (state: MyStore) => {
 }
 export const getExportGridCellTileHeight = (state: MyStore) => {
     return state.rasterExportState.tileHeight;
+}
+export const getExportGridCellBounds = (state: MyStore) => {
+    return state.rasterExportState.bounds;
 }
 
 export const getIsFormValidForRequestingGridCells = (state: MyStore) => {

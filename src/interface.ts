@@ -20,7 +20,6 @@ import {
     REQUESTED_RASTER_EXPORT_GRIDCELLS,
     RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
-    SET_RASTER_EXPORT_RESOLUTION,
     SET_RASTER_EXPORT_FORM_FIELD,
 } from "./action";
 import { MyStore } from './reducers';
@@ -266,6 +265,7 @@ export interface RasterExportState {
     projection: string,
     tileWidth: number | "",
     tileHeight: number | "",
+    bounds: number [][],
 }
 
 export interface RemoveFromSelectedExportGridCellIds {
@@ -292,10 +292,10 @@ export interface  FailedRetrievingRasterExportGridcells {
     type: typeof FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
     failedMsg: string,
 }
-export interface SetRasterExportResolution {
-    type: typeof SET_RASTER_EXPORT_RESOLUTION,
-    resolution: MyStore['rasterExportState']['resolution'],
-}
+// export interface SetRasterExportResolution {
+//     type: typeof SET_RASTER_EXPORT_RESOLUTION,
+//     resolution: MyStore['rasterExportState']['resolution'],
+// }
 export interface SetRasterExportFormField {
     type: typeof SET_RASTER_EXPORT_FORM_FIELD,
     fieldValuePair: FieldValuePair,
@@ -317,7 +317,7 @@ export type RasterExportStateActionType =
     RequestedGridCells| 
     RetrievedRasterExportGridcells | 
     FailedRetrievingRasterExportGridcells | 
-    SetRasterExportResolution |
+    // SetRasterExportResolution |
     SetRasterExportFormField;
 
 // export interface RasterExport {
