@@ -34,6 +34,8 @@ import {
     // SET_RASTER_EXPORT_BOUNDING_BOX,
     REMOVE_ALL_EXPORT_GRID_CELLS,
     // REQUESTED_RASTER_EXPORTS,
+    REQUEST_RASTER_EXPORTS,
+    RECEIVED_TASK_RASTER_EXPORT,
 } from "./action";
 import {
     RastersFetched,
@@ -169,7 +171,38 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 ...state,
                 [action.fieldValuePair.field]: action.fieldValuePair.value,
                 // selectedGridCellIds: [],
-            } 
+            }
+        case REQUEST_RASTER_EXPORTS:
+            return {
+                ...state,
+                rasterExportRequests: state.selectedGridCellIds.map(selectedId=>{
+                    return {
+                        fetchingState: "SEND",
+                        id: selectedId,
+                        projection: state.projection,
+                        bounds: state.bounds,
+                        resolution: state.resolution,
+                        tileWidth: state.tileWidth,
+                        tileHeight: state.tileHeight,
+                    }
+                }),
+            }
+        case RECEIVED_TASK_RASTER_EXPORT:
+            return {
+                ...state,
+                rasterExportRequests: state.rasterExportRequests.map(exportItem=>{
+                    if (areGridCelIdsEqual(exportItem.id, action.id)) {
+                        return {
+                            ...exportItem,
+                            fetchingState: "RECEIVED",
+                        }
+                    }
+                    else {
+                        return exportItem;
+                    }
+                }),
+            }
+
         // case SET_RASTER_EXPORT_BOUNDING_BOX:
         //     return {
         //         ...state,

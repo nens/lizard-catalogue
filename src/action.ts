@@ -37,8 +37,11 @@ import {
     // SetRasterExportBoundingBox,
     RemoveAllExportGridCells,
     // RequestedRasterExports,
+    RequestRasterExports,
+    ReceivedTaskRasterExport,
+    FailedTaskRasterExport,
 } from './interface';
-import { getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight, getExportGridCellBounds } from './reducers';
+import { getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight, getExportGridCellBounds, getExportSelectedGridCellIds } from './reducers';
 // import { MyStore } from './reducers';
 
 
@@ -342,9 +345,10 @@ export const SET_RASTER_EXPORT_RESOLUTION = 'SET_RASTER_EXPORT_RESOLUTION';
 export const SET_RASTER_EXPORT_FORM_FIELD = 'SET_RASTER_EXPORT_FORM_FIELD';
 // export const SET_RASTER_EXPORT_BOUNDING_BOX = 'SET_RASTER_EXPORT_BOUNDING_BOX';
 export const REMOVE_ALL_EXPORT_GRID_CELLS = 'REMOVE_ALL_EXPORT_GRID_CELLS';
-// export const REQUESTED_RASTER_EXPORTS = "REQUESTED_RASTER_EXPORTS";
+export const REQUEST_RASTER_EXPORTS = "REQUEST_RASTER_EXPORTS";
 // export const RECEIVED_TASKS_RASTER_EXPORTS = "RECEIVED_TASKS_RASTER_EXPORTS";
-// export const RECEIVED_TASKS_RASTER_EXPORTS = "RECEIVED_TASKS_RASTER_EXPORTS";
+export const RECEIVED_TASK_RASTER_EXPORT = "RECEIVED_TASKS_RASTER_EXPORTS";
+export const FAILED_TASK_RASTER_EXPORT = "FAILED_TASK_RASTER_EXPORT";
 
 export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): RemoveFromSelectedExportGridCellIds => ({
     type: REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
@@ -393,6 +397,20 @@ export const failedRetrievingRasterExportGridcells = (msg: string): FailedRetrie
 export const updateExportRasterFormField = (fieldValuePair:FieldValuePair): SetRasterExportFormField => ({
     type: SET_RASTER_EXPORT_FORM_FIELD,
     fieldValuePair,
+});
+
+export const setCurrentRasterExportsToStore = (): RequestRasterExports => ({
+    type: REQUEST_RASTER_EXPORTS,
+})
+
+export const receivedTaskRasterExport = (id: ExportGridCelId): ReceivedTaskRasterExport => ({
+    type: RECEIVED_TASK_RASTER_EXPORT,
+    id: id,
+})
+
+export const failedTaskRasterExport = (id: ExportGridCelId): FailedTaskRasterExport => ({
+    type: FAILED_TASK_RASTER_EXPORT,
+    id: id,
 })
 
 export const updateExportFormAndFetchExportGridCells = (
@@ -468,6 +486,41 @@ export const updateExportFormAndFetchExportGridCells = (
             dispatch(failedRetrievingRasterExportGridcells(error+''));
         })
 };
+
+
+export const requestRasterExports = (
+    dispatch
+): void => {
+
+    dispatch(setCurrentRasterExportsToStore());
+
+    const state = store.getState();
+    const selectedGridCellIds = getExportSelectedGridCellIds(state);
+    const resolution = getExportGridCellResolution(state);
+    const projection = getExportGridCellProjection(state);
+    const tileWidth = getExportGridCellTileWidth(state);
+    const tileHeight = getExportGridCellTileHeight(state);
+    const bounds = getExportGridCellBounds(state);
+    const rasterUuid = state.selectedItem;
+
+    console.log(selectedGridCellIds, resolution, projection, tileWidth, tileHeight, bounds, rasterUuid);
+
+    selectedGridCellIds.forEach((id)=>{
+        request
+        .get(`${baseUrl}/rasters/`)
+        .then(response => {
+            console.log('response', response, id);
+            dispatch(receivedTaskRasterExport(id));
+        })
+        .catch(error=>{
+            console.error(error);
+            dispatch(failedTaskRasterExport(id));
+        })
+
+    });
+    
+};
+
 
 // export const fetchExportGridCells = (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][], dispatch): void => {
 //     dispatch(requestedGridCells());

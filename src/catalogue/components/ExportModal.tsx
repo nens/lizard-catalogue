@@ -5,6 +5,7 @@ import { Map, TileLayer, WMSTileLayer, Rectangle } from 'react-leaflet';
 import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds, getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight} from '../../reducers';
 import {addToSelectedExportGridCellIds, removeFromSelectedExportGridCellIds, removeAllSelectedExportGridCellIds, updateExportFormAndFetchExportGridCells, 
     // setRasterExportBoundingBox 
+    requestRasterExports,
 } from '../../action';
 import {areGridCelIdsEqual, AddToSelectedExportGridCellIds, ExportGridCelId, RemoveFromSelectedExportGridCellIds,RemoveAllSelectedExportGridCellIds} from '../../interface';
 
@@ -27,6 +28,7 @@ interface MyProps {
     tileWidth: MyStore['rasterExportState']['tileWidth'],
     tileHeight: MyStore['rasterExportState']['tileHeight'],
     // setRasterExportBoundingBox: any,
+    requestRasterExports: ()=> void,
 };
 
 class ExportModal extends React.Component<MyProps> {
@@ -243,17 +245,18 @@ class ExportModal extends React.Component<MyProps> {
                         <button 
                             className="details__button" 
                             onClick={()=>{
+                                this.props.requestRasterExports();
                                 openDownloadModal();
                             }}
                         >
                             <i className="fa fa-download" />
                             &nbsp;&nbsp;Download selection
                         </button>
-                        <button
+                        {/* <button
                             onClick={this.props.removeAllSelectedExportGridCellIds}
                         >
                             Remove Selection
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </div>
@@ -287,6 +290,7 @@ interface PropsFromDispatch {
     // fetchExportGridCells: (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][]) => void,
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[]) => void,
     // setRasterExportBoundingBox: (bounds: any) => void
+    requestRasterExports: ()=> void,
 };
 
 const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
@@ -295,6 +299,7 @@ const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[])=> updateExportFormAndFetchExportGridCells(fieldValuePairs, dispatch),
     // setRasterExportBoundingBox: (bounds: any) => dispatch(setRasterExportBoundingBox(bounds)),
+    requestRasterExports: ()=> requestRasterExports(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExportModal);

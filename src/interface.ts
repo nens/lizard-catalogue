@@ -25,6 +25,9 @@ import {
     REMOVE_ALL_EXPORT_GRID_CELLS,
     // REQUESTED_RASTER_EXPORTS,
     // RECEIVED_TASKS_RASTER_EXPORTS,
+    REQUEST_RASTER_EXPORTS,
+    RECEIVED_TASK_RASTER_EXPORT,
+    FAILED_TASK_RASTER_EXPORT,
 } from "./action";
 import { MyStore } from './reducers';
 // import { number } from "prop-types";
@@ -326,6 +329,25 @@ export interface SetRasterExportFormField {
 //     type: typeof REQUESTED_RASTER_EXPORTS
 // }
 
+export interface RequestRasterExports {
+    type: typeof REQUEST_RASTER_EXPORTS,
+    // ids: ExportGridCelId[],
+    // resolution: number | "",
+    // projection: string,
+    // tileWidth: number | "",
+    // tileHeight: number | "",
+    // bounds: Bounds,
+}
+export interface ReceivedTaskRasterExport {
+    type: typeof RECEIVED_TASK_RASTER_EXPORT,
+    id: ExportGridCelId,
+}
+
+export interface FailedTaskRasterExport {
+    type: typeof FAILED_TASK_RASTER_EXPORT,
+    id: ExportGridCelId,
+}
+
 export type RasterExportFormFieldType = 
     MyStore['rasterExportState']['resolution'] | 
     MyStore['rasterExportState']['projection'] |
@@ -345,7 +367,10 @@ export type RasterExportStateActionType =
     FailedRetrievingRasterExportGridcells | 
     // SetRasterExportResolution |
     SetRasterExportFormField |
-    RemoveAllExportGridCells;// |
+    RemoveAllExportGridCells |
+    RequestRasterExports | 
+    ReceivedTaskRasterExport |
+    FailedTaskRasterExport; // |
     // RequestedRasterExports; //| 
     // SetRasterExportBoundingBox;
 
@@ -362,10 +387,10 @@ export type RasterExportStateActionType =
 
 export interface RasterExportRequest {
     fetchingState: FetchingState;
-    id: number [];
+    id: ExportGridCelId;
     projection: string;
     bounds: Bounds;
-    resolution: number;
-    tileWidth: number;
-    tileHeight: number;
+    resolution: number | "";
+    tileWidth: number | "";
+    tileHeight: number | "";
 }
