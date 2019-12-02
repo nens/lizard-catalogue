@@ -41,6 +41,7 @@ export const switchDataType = (dataType: SwitchDataType['payload'], dispatch): v
 //MARK: Raster
 export const RASTERS_REQUESTED = 'RASTERS_REQUESTED';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
+export const RASTER_FETCHED = 'RASTER_FETCHED';
 
 const rastersRequested = () => ({
     type: RASTERS_REQUESTED
@@ -84,6 +85,18 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
         .catch(console.error)
 };
 
+export const fetchRasterByUUID = (uuid: string, dispatch): void => {
+    request
+        .get(`${baseUrl}/rasters/${uuid}`)
+        .then(response => {
+            dispatch({
+                type: RASTER_FETCHED,
+                raster: response.body
+            });
+        })
+        .catch(console.error)
+};
+
 //Decide whether gonna use this fetch function
 export const fetchRastersOnUuid = (searchUuid: string, dispatch): void => {
     request
@@ -96,14 +109,15 @@ export const fetchRastersOnUuid = (searchUuid: string, dispatch): void => {
 
 //MARK: WMS
 export const REQUEST_WMS = 'REQUEST_WMS';
-export const RECEIVE_WMS = 'RECEIVE_WMS';
+export const RECEIVE_WMS_LAYERS = 'RECEIVE_WMS_LAYERS';
+export const RECEIVE_WMS_LAYER = 'RECEIVE_WMS_LAYER';
 
 const wmsRequested = () => ({
     type: REQUEST_WMS
 });
 
-const wmsReceived = (wmsObject: WMSObject) => ({
-    type: RECEIVE_WMS,
+const wmsLayersReceived = (wmsObject: WMSObject) => ({
+    type: RECEIVE_WMS_LAYERS,
     payload: wmsObject
 });
 
@@ -129,12 +143,24 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
                 request
                     .get(`${baseUrl}/wmslayers/?${newQueries}`)
                     .then(response => {
-                        dispatch(wmsReceived(response.body))
+                        dispatch(wmsLayersReceived(response.body))
                     })
                     .catch(console.error)
             } else {
-                dispatch(wmsReceived(response.body))
+                dispatch(wmsLayersReceived(response.body))
             }
+        })
+        .catch(console.error)
+};
+
+export const fetchWMSByUUID = (uuid: string, dispatch): void => {
+    request
+        .get(`${baseUrl}/wmslayers/${uuid}`)
+        .then(response => {
+            dispatch({
+                type: RECEIVE_WMS_LAYER,
+                wms: response.body
+            });
         })
         .catch(console.error)
 };
