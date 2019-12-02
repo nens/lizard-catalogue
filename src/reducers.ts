@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import {
     RASTERS_FETCHED,
+    RASTER_FETCHED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
     DATASETS_FETCHED,
@@ -8,37 +9,34 @@ import {
     REQUEST_LIZARD_BOOTSTRAP,
     RECEIVE_LIZARD_BOOTSTRAP,
     REQUEST_WMS,
-    RECEIVE_WMS,
+    RECEIVE_WMS_LAYERS,
+    RECEIVE_WMS_LAYER,
     SWITCH_DATA_TYPE,
     ITEM_SELECTED,
-    UPDATE_ORGANISATION_RADIOBUTTON,
-    UPDATE_OBSERVATION_RADIOBUTTON,
-    UPDATE_DATASET_RADIOBUTTON,
     TOGGLE_ALERT,
     UPDATE_BASKET_WITH_RASTER,
     REMOVE_RASTER_FROM_BASKET,
     UPDATE_BASKET_WITH_WMS,
     REMOVE_WMS_FROM_BASKET,
+    SELECT_ORGANISATION,
+    SELECT_DATASET,
+    SELECT_OBSERVATIONTYPE,
+    UPDATE_SEARCH,
+    REMOVE_ORGANISATION,
+    REMOVE_DATASET,
+    REMOVE_OBSERVATIONTYPE,
+    REMOVE_SEARCH,
+    UPDATE_ORDER,
+    UPDATE_PAGE,
 } from "./action";
 import {
-    RastersFetched,
-    RasterActionType,
     Raster,
     ObservationType,
     Organisation,
     Dataset,
-    OrganisationsFetched,
-    ObservationTypesFetched,
-    DatasetsFetched,
     Bootstrap,
-    BootstrapActionType,
     WMS,
     SwitchDataType,
-    ItemSelected,
-    UpdateOrganisationRadiobutton,
-    UpdateObservationTypeRadiobutton,
-    UpdateDatasetRadiobutton,
-    WMSActionType,
 } from './interface';
 
 export interface MyStore {
@@ -69,11 +67,19 @@ export interface MyStore {
     allWMS: {
         [index: string]: WMS,
     } | {},
-    selectedItem: string | null,
+    selectedItem: string,
     basket: {
         rasters: string[],
         wmsLayers: string[]
-    }
+    },
+    filters: {
+        organisation: Organisation['name'],
+        dataset: Dataset['slug'],
+        observationType: ObservationType['parameter'],
+        searchTerm: string,
+        ordering: string,
+        page: number,
+    },
 };
 
 const bootstrap = (
@@ -85,7 +91,7 @@ const bootstrap = (
         },
         isFetching: false
     },
-    action: BootstrapActionType
+    action
 ): MyStore['bootstrap'] => {
     switch (action.type) {
         case REQUEST_LIZARD_BOOTSTRAP:
@@ -115,7 +121,7 @@ const currentDataType = (state: MyStore['currentDataType'] = "Raster", action: S
     };
 };
 
-const currentRasterList = (state: MyStore['currentRasterList'] = null, action: RasterActionType): MyStore['currentRasterList'] => {
+const currentRasterList = (state: MyStore['currentRasterList'] = null, action): MyStore['currentRasterList'] => {
     switch (action.type) {
         case RASTERS_REQUESTED:
             return {
@@ -150,7 +156,7 @@ const currentRasterList = (state: MyStore['currentRasterList'] = null, action: R
     };
 };
 
-const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched): MyStore['allRasters'] => {
+const allRasters = (state: MyStore['allRasters'] = {}, action): MyStore['allRasters'] => {
     switch (action.type) {
         case RASTERS_FETCHED:
             const newState = { ...state };
@@ -181,12 +187,32 @@ const allRasters = (state: MyStore['allRasters'] = {}, action: RastersFetched): 
                 };
             });
             return newState;
+        case RASTER_FETCHED:
+            const { raster } = action;
+            let layerStyle = raster.options.styles ? raster.options.styles : "";
+            let layerName = raster.wms_info.layer;
+            //In case of Regen raster
+            if (raster.uuid === "3e5f56a7-b16e-4deb-8449-cc2c88805159" || raster.uuid === "730d6675-35dd-4a35-aa9b-bfb8155f9ca7") {
+                layerName = "radar:hour";
+                layerStyle = "radar-hour";
+            };
+            state[raster.uuid] = {
+                ...raster,
+                options: {
+                    styles: layerStyle
+                },
+                wms_info: {
+                    ...raster.wms_info,
+                    layer: layerName
+                }
+            };
+            return state;
         default:
             return state;
     };
 };
 
-const currentWMSList = (state: MyStore['currentWMSList'] = null, action: WMSActionType): MyStore['currentWMSList'] => {
+const currentWMSList = (state: MyStore['currentWMSList'] = null, action): MyStore['currentWMSList'] => {
     switch (action.type) {
         case REQUEST_WMS:
             return {
@@ -197,7 +223,7 @@ const currentWMSList = (state: MyStore['currentWMSList'] = null, action: WMSActi
                 isFetching: true,
                 showAlert: false
             }
-        case RECEIVE_WMS:
+        case RECEIVE_WMS_LAYERS:
             const { count, previous, next } = action.payload;
             return {
                 count: count,
@@ -221,23 +247,27 @@ const currentWMSList = (state: MyStore['currentWMSList'] = null, action: WMSActi
     };
 };
 
-const allWMS = (state: MyStore['allWMS'] = {}, action: WMSActionType): MyStore['allWMS'] => {
+const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
     switch (action.type) {
-        case RECEIVE_WMS:
+        case RECEIVE_WMS_LAYERS:
             const newState = { ...state };
             action.payload.results.forEach(wms => {
                 newState[wms.uuid] = wms;
             });
             return newState;
+        case RECEIVE_WMS_LAYER:
+            const wms: WMS = action.wms;
+            state[wms.uuid] = wms;
+            return state;
         default:
             return state;
     };
 };
 
-const selectedItem = (state: MyStore['selectedItem'] = null, action: ItemSelected): MyStore['selectedItem'] => {
-    switch (action.type) {
+const selectedItem = (state: MyStore['selectedItem'] = '', { type, uuid }): MyStore['selectedItem'] => {
+    switch (type) {
         case ITEM_SELECTED:
-            return action.payload;
+            return uuid;
         default:
             return state;
     };
@@ -288,10 +318,24 @@ const basket = (
     };
 };
 
-const observationTypes = (state: MyStore['observationTypes'] = [], action: ObservationTypesFetched & UpdateObservationTypeRadiobutton): MyStore['observationTypes'] => {
-    switch (action.type) {
+const observationTypes = (state: MyStore['observationTypes'] = [], { type, observationTypes }): MyStore['observationTypes'] => {
+    switch (type) {
         case OBSERVATION_TYPES_FETCHED:
-            return action.payload.map(observation => {
+            //Remove observation types with empty parameter
+            const observationTypesWithoutEmptyNames = observationTypes.filter(observationType => observationType.parameter !== '');
+
+            //Remove duplicates in parameters using reduce() method
+            const parameters = observationTypesWithoutEmptyNames.map(observationType => observationType.parameter);
+            const parametersWithoutDuplicates = parameters.reduce((a: string[], b) => {
+                if (a.indexOf(b) < 0) a.push(b);
+                return a;
+            }, []);
+            const filteredObservationTypes = parametersWithoutDuplicates.map(parameter => {
+                return observationTypesWithoutEmptyNames.find(observationType => observationType.parameter === parameter);
+            });
+
+            //Update Redux state
+            return filteredObservationTypes.map(observation => {
                 return {
                     url: observation.url,
                     code: observation.code,
@@ -299,55 +343,35 @@ const observationTypes = (state: MyStore['observationTypes'] = [], action: Obser
                     unit: observation.unit,
                     scale: observation.scale,
                     description: observation.description,
-                    checked: false
                 };
             });
-        case UPDATE_OBSERVATION_RADIOBUTTON:
-            const observationTypes = [...state];
-            const checkedObservationTypeParameter = action.payload;
-            return observationTypes.map(obsType => {
-                if (obsType.parameter === checkedObservationTypeParameter) {
-                    return {
-                        ...obsType,
-                        checked: !obsType.checked
-                    };
-                } else {
-                    return {
-                        ...obsType,
-                        checked: false
-                    };
-                };
-            })
         default:
             return state;
     };
 };
 
-const organisations = (state: MyStore['organisations'] = [], action: OrganisationsFetched & UpdateOrganisationRadiobutton): MyStore['organisations'] => {
-    switch (action.type) {
+const organisations = (state: MyStore['organisations'] = [], { type, organisations }): MyStore['organisations'] => {
+    switch (type) {
         case ORGANISATIONS_FETCHED:
-            return action.payload.map(organisation => {
+            //Remove organisations with empty name
+            const organisationsWithoutEmptyNames = organisations.filter(organisation => organisation.name !== '');
+
+            //Remove duplications in organisation name using reduce() method
+            const names = organisationsWithoutEmptyNames.map(organisation => organisation.name);
+            const namesWithoutDuplicates = names.reduce((a: string[], b) => {
+                if (a.indexOf(b) < 0) a.push(b);
+                return a;
+            }, []);
+            const filteredOrganisations = namesWithoutDuplicates.map(name => {
+                return organisationsWithoutEmptyNames.find(organisation => organisation.name === name);
+            });
+
+            //Update Redux state
+            return filteredOrganisations.map(organisation => {
                 return {
                     url: organisation.url,
                     name: organisation.name,
                     uuid: organisation.uuid,
-                    checked: false
-                };
-            });
-        case UPDATE_ORGANISATION_RADIOBUTTON:
-            const organisations = [...state];
-            const checkedOrganisationName = action.payload
-            return organisations.map(organisation => {
-                if (organisation.name === checkedOrganisationName) {
-                    return {
-                        ...organisation,
-                        checked: !organisation.checked
-                    };
-                } else {
-                    return {
-                        ...organisation,
-                        checked: false
-                    };
                 };
             });
         default:
@@ -355,32 +379,86 @@ const organisations = (state: MyStore['organisations'] = [], action: Organisatio
     };
 };
 
-const datasets = (state: MyStore['datasets'] = [], action: DatasetsFetched & UpdateDatasetRadiobutton): MyStore['datasets'] => {
-    switch (action.type) {
+const datasets = (state: MyStore['datasets'] = [], { type, datasets }): MyStore['datasets'] => {
+    switch (type) {
         case DATASETS_FETCHED:
-            return action.payload.map(dataset => {
-                return {
-                    slug: dataset.slug,
-                    organisation: dataset.organisation,
-                    checked: false
-                };
-            });
-        case UPDATE_DATASET_RADIOBUTTON:
-            const datasets = [...state];
-            const checkedDatasetSlug = action.payload
-            return datasets.map(dataset => {
-                if (dataset.slug === checkedDatasetSlug) {
+            return datasets
+                //Remove datasets with empty slug name
+                .filter(dataset => dataset.slug !== '')
+                .map(dataset => {
                     return {
-                        ...dataset,
-                        checked: !dataset.checked
+                        slug: dataset.slug,
+                        organisation: dataset.organisation,
                     };
-                } else {
-                    return {
-                        ...dataset,
-                        checked: false
-                    };
-                };
-            });
+                });
+        default:
+            return state;
+    };
+};
+
+//Filters
+const filters =(
+    state: MyStore['filters'] = {
+        organisation: '',
+        dataset: '',
+        observationType: '',
+        searchTerm: '',
+        ordering: '',
+        page: 1,
+    },
+    { type, organisation, dataset, observationType, searchTerm, ordering, page }
+): MyStore['filters'] => {
+    switch (type) {
+        case UPDATE_PAGE:
+            return {
+                ...state,
+                page
+            };
+        case SELECT_ORGANISATION:
+            return {
+                ...state,
+                organisation
+            };
+        case SELECT_DATASET:
+            return {
+                ...state,
+                dataset
+            };
+        case SELECT_OBSERVATIONTYPE:
+            return {
+                ...state,
+                observationType
+            };
+        case UPDATE_SEARCH:
+            return {
+                ...state,
+                searchTerm
+            };
+        case UPDATE_ORDER:
+            return {
+                ...state,
+                ordering: state.ordering === ordering ? `-${ordering}` : ordering
+            };
+        case REMOVE_ORGANISATION:
+            return {
+                ...state,
+                organisation: ''
+            };
+        case REMOVE_DATASET:
+            return {
+                ...state,
+                dataset: ''
+            };
+        case REMOVE_OBSERVATIONTYPE:
+            return {
+                ...state,
+                observationType: ''
+            };
+        case REMOVE_SEARCH:
+            return {
+                ...state,
+                searchTerm: ''
+            };
         default:
             return state;
     };
@@ -411,34 +489,16 @@ export const getWMS = (state: MyStore, uuid: string) => {
 };
 
 export const getObservationTypes = (state: MyStore) => {
-    //Remove observation types with empty parameter
-    const observationTypes = state.observationTypes.filter(observationType => observationType.parameter !== "");
-
-    //Remove duplicates in parameters using reduce() method
-    const parameters = observationTypes.map(observationType => observationType.parameter);
-    const parametersWithoutDuplicates = parameters.reduce((a: string[], b) => {
-        if (a.indexOf(b) < 0) a.push(b);
-        return a;
-    }, []);
-
-    //Return all observation types based on their parameters
-    //For observation types with same parameters (i.e. waterhoogte), only select one of them as we are interested in getting one single result only
-    //So in this case, we select the first one from the array
-    return parametersWithoutDuplicates.map(parameter => {
-        //Get all the observation types with this parameter and select the first one
-        return observationTypes.filter(observationType => observationType.parameter === parameter)[0];
-    });
+    return state.observationTypes;
 };
 
 export const getOrganisations = (state: MyStore) => {
-    //Remove organisations with empty name
-    return state.organisations.filter(organisation => organisation.name !== "");
-}
+    return state.organisations;
+};
 
 export const getDatasets = (state: MyStore) => {
-    //Remove datasets with empty name
-    return state.datasets.filter(dataset => dataset.slug !== "");
-}
+    return state.datasets;
+};
 
 export default combineReducers({
     bootstrap,
@@ -447,6 +507,7 @@ export default combineReducers({
     allRasters,
     currentWMSList,
     allWMS,
+    filters,
     selectedItem,
     basket,
     observationTypes,
