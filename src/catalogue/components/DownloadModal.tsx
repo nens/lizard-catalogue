@@ -13,9 +13,9 @@ interface PropsFromState {
 class DownloadModal extends React.Component<PropsFromState> {
     render() {
         const { inbox, pendingExportTasks } = this.props;
-        const succesfulTasks = inbox.length;
-        const allTasks = pendingExportTasks + succesfulTasks;
-        const progressInPercentage = succesfulTasks / allTasks * 100;
+        const finishedTasks = inbox.length;
+        const allTasks = pendingExportTasks + finishedTasks;
+        const progressInPercentage = finishedTasks / allTasks * 100;
 
         return (
             <div className="download">
@@ -28,7 +28,7 @@ class DownloadModal extends React.Component<PropsFromState> {
                         trailWidth={4}
                         strokeColor="#2FCBAB"
                     />
-                    <i>{succesfulTasks} / {allTasks} export(s) finished ({Math.round(progressInPercentage)}%)</i>
+                    <i>{finishedTasks} / {allTasks} export(s) finished ({Math.round(progressInPercentage)}%)</i>
                 </div>
                 <div className="download-text">
                     This can take a while. You can wait here, 
