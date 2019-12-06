@@ -1,21 +1,23 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
-import { MyStore, getWMS } from '../../reducers';
-import { WMS, LatLng } from '../../interface';
+import { MyStore, getWMS, getOrganisations } from '../../reducers';
+import { WMS, LatLng, Organisation } from '../../interface';
 import '../styles/Details.css';
 
 import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL } from '../../utils/url';
 import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 
 interface PropsFromState {
-    wms: WMS | null
+    wms: WMS | null,
+    organisations: Organisation[],
 };
 
 class WMSDetails extends React.Component<PropsFromState> {
     render() {
         //Destructure the props
-        const { wms } = this.props;
+        const { wms, organisations } = this.props;
+        console.log(organisations);
 
         //If no WMS layer is selected, display a text
         if (!wms) return <div className="details details__loading">Please select a WMS Layer</div>;
@@ -107,11 +109,14 @@ class WMSDetails extends React.Component<PropsFromState> {
 };
 
 const mapStateToProps = (state: MyStore): PropsFromState => {
+    console.log(state.organisations);
     if (!state.selectedItem) return {
-        wms: null
+        wms: null,
+        organisations: getOrganisations(state),
     };
     return {
-        wms: getWMS(state, state.selectedItem)
+        wms: getWMS(state, state.selectedItem),
+        organisations: getOrganisations(state),
     };
 };
 
