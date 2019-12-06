@@ -108,7 +108,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
     fetchingStateGridMsg: "",
     fetchingStateTasks: "NOT_SEND",
     availableGridCells: [],
-    resolution: 10000,
+    resolution: 100,
     projection: "EPSG:28992",
     tileWidth: 1000,
     tileHeight: 1000,
