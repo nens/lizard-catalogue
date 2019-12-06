@@ -17,10 +17,30 @@ class WMSDetails extends React.Component<PropsFromState> {
     render() {
         //Destructure the props
         const { wms, organisations } = this.props;
-        console.log(organisations);
 
         //If no WMS layer is selected, display a text
         if (!wms) return <div className="details details__loading">Please select a WMS Layer</div>;
+
+        // Authorized to manage wms layer in lizard management client
+        // if user is administrator of the organisation of the wms layer
+        // or user is supplier of the organisation of the wms layer and
+        // the supplier of the wms layer.
+        let authorizedToManageWMS = false;
+        if (wms) {
+            // Filter organisations to only show orgs with a role.
+            organisations.filter(obj => {
+                if (obj.roles.length > 0) {
+                    // Check if user is in organisation of wms
+                    if (obj.name === wms.organisation.name) {
+                        // Check if user is "admin" or "supplier"
+                        // in the organisation of the wms.
+                        if (obj.roles.includes("admin") || obj.roles.includes("supplier")) {
+                            authorizedToManageWMS = true;
+                        }
+                    }
+                }
+            });
+        }
 
         //Get spatial bounds of the WMS layer
         const wmsBounds = getBounds(wms);
@@ -36,13 +56,16 @@ class WMSDetails extends React.Component<PropsFromState> {
             <div className="details">
                 <h3 title={wms.name}>
                     {wms.name}
-                    <a href={`/management/#/data_management/wms_layers/${wms.uuid}`}>
-                        <img
-                            className="details__icon"
-                            src="image/manageButton.svg"
-                            alt="View in manage client"
-                        />
-                    </a>
+                    { authorizedToManageWMS ?
+                        <a href={`/management/#/data_management/wms_layers/${wms.uuid}`}>
+                            <img
+                                className="details__icon"
+                                src="image/manageButton.svg"
+                                alt="View in manage client"
+                            />
+                        </a>
+                    : null
+                    }
                 </h3>
                 <div className="details__main-box">
                     <div className="details__description-box">
@@ -109,7 +132,6 @@ class WMSDetails extends React.Component<PropsFromState> {
 };
 
 const mapStateToProps = (state: MyStore): PropsFromState => {
-    console.log(state.organisations);
     if (!state.selectedItem) return {
         wms: null,
         organisations: getOrganisations(state),
