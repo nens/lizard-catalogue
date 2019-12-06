@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
-import { MyStore, getRaster } from '../../reducers';
-import { Raster, LatLng, Dataset } from '../../interface';
+import { MyStore, getRaster, getOrganisations } from '../../reducers';
+import { Raster, LatLng, Dataset, Organisation } from '../../interface';
 import '../styles/Details.css';
 
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import { openRasterInAPI, openRasterInLizard, openRasterGetCapabilities, openDatasetGetCapabilities, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
 
 interface PropsFromState {
-    raster: Raster | null
+    raster: Raster | null,
+    organisations: Organisation[]
 };
 
 interface MyProps {
@@ -26,11 +27,34 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
 
     render() {
         //Destructure the props
-        const { raster, datasets } = this.props;
+        console.log(this.props);
+        const { raster, datasets, organisations } = this.props;
 
         //If no raster is selected, display a text
         if (!raster) return <div className="details details__loading">Please select a raster</div>;
         const dataset = this.selectedDataset(datasets, raster);
+
+        // Authorized to manage raster layer in lizard management client
+        // if user is administrator of the organisation of the raster layer
+        // or user is supplier of the organisation of the raster layer and
+        // the supplier of the raster layer.
+        let authorizedToManageRaster: boolean = false;
+        if (raster) {
+            // Filter organisations to only show orgs with a role.
+            organisations.filter(obj => {
+                if (obj.roles.length > 0) {
+                    // Check if user is in the organisation of the raster
+                    if (obj.name === raster.organisation.name) {
+                        // Check if user is "admin" in the organisation of the raster
+                        // or "supplier" in the organisation of the raster.
+                        if (obj.roles.includes("admin") ||
+                                (obj.roles.includes("supplier") )) {
+                            authorizedToManageRaster = true;
+                        }
+                    }
+                }
+            });
+        }
 
         //Set the Map with bounds coming from spatial_bounds of the Raster
         const rasterBounds = getBounds(raster);
@@ -61,13 +85,16 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
             <div className="details">
                 <h3 title={raster.name}>
                     {raster.name}
-                    <a href={`/management/#/data_management/rasters/${raster.uuid}`}>
-                        <img
-                            className="details__icon"
-                            src="image/manageButton.svg"
-                            alt="View in manage client"
-                        />
-                    </a>
+                    { authorizedToManageRaster ?
+                        <a href={`/management/#/data_management/rasters/${raster.uuid}`}>
+                            <img
+                                className="details__icon"
+                                src="image/manageButton.svg"
+                                alt="View in manage client"
+                            />
+                        </a>
+                    :null
+                    }
                 </h3>
                 <div className="details__main-box">
                     <div className="details__description-box">
@@ -174,10 +201,12 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
 
 const mapStateToProps = (state: MyStore): PropsFromState => {
     if (!state.selectedItem) return {
-        raster: null
+        raster: null,
+        organisations: getOrganisations(state)
     };
     return {
-        raster: getRaster(state, state.selectedItem)
+        raster: getRaster(state, state.selectedItem),
+        organisations: getOrganisations(state)
     };
 };
 

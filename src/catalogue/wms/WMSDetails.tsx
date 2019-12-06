@@ -10,7 +10,7 @@ import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from
 
 interface PropsFromState {
     wms: WMS | null,
-    organisations: Organisation[],
+    organisations: Organisation[]
 };
 
 class WMSDetails extends React.Component<PropsFromState> {
@@ -30,10 +30,10 @@ class WMSDetails extends React.Component<PropsFromState> {
             // Filter organisations to only show orgs with a role.
             organisations.filter(obj => {
                 if (obj.roles.length > 0) {
-                    // Check if user is in organisation of wms
+                    // Check if user is in the organisation of the wms layer
                     if (obj.name === wms.organisation.name) {
-                        // Check if user is "admin" or "supplier"
-                        // in the organisation of the wms.
+                        // Check if user is "admin" in the organisation of the wms layer
+                        // or "supplier" in the organisation of the wms layer.
                         if (obj.roles.includes("admin") || obj.roles.includes("supplier")) {
                             authorizedToManageWMS = true;
                         }
@@ -134,11 +134,11 @@ class WMSDetails extends React.Component<PropsFromState> {
 const mapStateToProps = (state: MyStore): PropsFromState => {
     if (!state.selectedItem) return {
         wms: null,
-        organisations: getOrganisations(state),
+        organisations: getOrganisations(state)
     };
     return {
         wms: getWMS(state, state.selectedItem),
-        organisations: getOrganisations(state),
+        organisations: getOrganisations(state)
     };
 };
 
