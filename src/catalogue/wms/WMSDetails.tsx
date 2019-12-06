@@ -25,7 +25,7 @@ class WMSDetails extends React.Component<PropsFromState> {
         // if user is administrator of the organisation of the wms layer
         // or user is supplier of the organisation of the wms layer and
         // the supplier of the wms layer.
-        let authorizedToManageWMS = false;
+        let authorizedToManageWMS: boolean = false;
         if (wms) {
             // Filter organisations to only show orgs with a role.
             organisations.filter(obj => {
