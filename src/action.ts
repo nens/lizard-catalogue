@@ -486,7 +486,22 @@ export const updateExportFormAndFetchExportGridCells = (
             ];
             // const gridCells = JSON.parse(response).features;
             const gridCells = response.body.features;
-            console.log('gridCells', gridCells, response, dummieGridCells)
+            console.log('gridCells', gridCells, response, dummieGridCells);
+            emptiedGridCellsAndSelection = false;
+            fieldValuePairesToUpdate.forEach((fieldValuePair)=>{
+                if (
+                    (
+                        fieldValuePair.field === 'projection' ||
+                        fieldValuePair.field === 'resolution' ||
+                        fieldValuePair.field === 'tileWidth' ||
+                        fieldValuePair.field === 'tileHeight'
+                    ) && emptiedGridCellsAndSelection === false 
+                ) {
+                    dispatch(removeAllSelectedExportGridCellIds());
+                    dispatch(removeAllExportGridCells());
+                    emptiedGridCellsAndSelection = true;
+                }
+            });
             dispatch(retrievedGridCells(gridCells));
         })
         .catch(error=>{
