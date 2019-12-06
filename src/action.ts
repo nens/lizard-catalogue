@@ -307,17 +307,18 @@ export const REMOVE_MESSAGE = 'REMOVE_MESSAGE';
 export const DOWNLOAD_FILE = 'DOWNLOAD_FILE';
 
 export const requestInbox = (dispatch) => {
-    setInterval(() => {
-        request
-            .get(`/api/v3/inbox/`)
-            .then(response => {
-                dispatch({
-                    type: REQUEST_INBOX,
-                    messages: response.body.results
-                });
-            })
-            .catch(console.error)
-    }, 5000);
+    // setInterval(() => {
+    //     request
+    //         .get(`/api/v3/inbox/`)
+    //         .then(response => {
+    //             dispatch({
+    //                 type: REQUEST_INBOX,
+    //                 messages: response.body.results
+    //             });
+    //         })
+    //         .catch(console.error)
+    // }, 5000);
+    console.log(dispatch);
 };
 
 export const removeMessage = (dispatch, id: string) => {
@@ -448,9 +449,13 @@ export const updateExportFormAndFetchExportGridCells = (
 
 
     console.log('resolution', resolution, projection, tileWidth, tileHeight, rasterUuid, bounds);
+    const boundsString = `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`;
+    // const boundsString = `${bounds.north},${bounds.east},${bounds.south},${bounds.west}`;
+
     
     request
-        .get(`${baseUrl}/rasters/`)
+        .get(`${baseUrl}/rasters/${rasterUuid}/grid/?projection=${projection}&cell_size=${resolution}&tile_height=${tileHeight}&tile_width=${tileWidth}&bbox=${boundsString}`)
+        // .then(rawResponse => rawResponse.json())
         .then(response => {
             console.log('response grid cells', response);
             // console.log(response.body, rasterUuid, projection, resolution, width, height, bbox);
@@ -458,7 +463,7 @@ export const updateExportFormAndFetchExportGridCells = (
                 "type": "Feature",
                 "geometry": {
                   "type": "Polygon",
-                  "coordinates": [[52.339322, 4.767822], [53.339322, 4.997822]],
+                  "coordinates": [[52.339322, 4.767822], [53.339322, 4.997822],[51.339322, 4.997822], [51.339322, 4.997822]],
                 },
                 "properties": {
                   "projection": "EPSG:28992",
@@ -470,7 +475,7 @@ export const updateExportFormAndFetchExportGridCells = (
                 "type": "Feature",
                 "geometry": {
                   "type": "Polygon",
-                  "coordinates": [[52.339322, 4.997822], [53.339322, 5.997822]],
+                  "coordinates": [[52.339322, 4.997822], [53.339322, 5.997822], [51.339322, 4.997822], [51.339322, 4.997822]],
                 },
                 "properties": {
                   "projection": "EPSG:28992",
@@ -479,7 +484,10 @@ export const updateExportFormAndFetchExportGridCells = (
                 }
               }
             ];
-            dispatch(retrievedGridCells(dummieGridCells));
+            // const gridCells = JSON.parse(response).features;
+            const gridCells = response.body.features;
+            console.log('gridCells', gridCells, response, dummieGridCells)
+            dispatch(retrievedGridCells(gridCells));
         })
         .catch(error=>{
             console.error(error);

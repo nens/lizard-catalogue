@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { Map, TileLayer, WMSTileLayer, Rectangle } from 'react-leaflet';
+import { Map, TileLayer, WMSTileLayer, 
+    //Rectangle
+     Polygon } from 'react-leaflet';
 import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds, getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight} from '../../reducers';
 import {addToSelectedExportGridCellIds, removeFromSelectedExportGridCellIds, removeAllSelectedExportGridCellIds, updateExportFormAndFetchExportGridCells, 
     // setRasterExportBoundingBox 
@@ -54,6 +56,7 @@ class ExportModal extends React.Component<MyProps> {
         const selectedGridIds = this.props.selectedGridCellIds; 
 
         console.log('bounds render', bounds);
+        console.log('exportGridCells', exportGridCells)
 
         return (
             <div className="export_main">
@@ -84,10 +87,18 @@ class ExportModal extends React.Component<MyProps> {
                                     const isSelected = selectedGridIds.find(item=>{
                                         return areGridCelIdsEqual(gridcell.properties.id, item);
                                     })
-                                    console.log('refraw rectangles', isSelected, gridcell.properties.id[0]);
+                                    console.log('redraw rectangles', 
+                                    // isSelected, gridcell.properties.id[0], gridcell.geometry.coordinates
+                                    gridcell
+                                    );
+                                    const flippedCoordinates = gridcell.geometry.coordinates[0].map(coord=>{
+                                        return [coord[1], coord[0]];
+                                    })
                                     return (
-                                        <Rectangle
-                                            bounds={gridcell.geometry.coordinates}
+                                        <Polygon
+                                            // bounds={gridcell.geometry.coordinates}
+                                            // positions={gridcell.geometry.coordinates}
+                                            positions={flippedCoordinates}
                                             // unfortuenedly react leaflet doesnot seem to update the class
                                             // therefore we set a random key so the elements get rerendered every time
                                             // another option would be to set the color attribute, but this creates difficulties with transparency etc
