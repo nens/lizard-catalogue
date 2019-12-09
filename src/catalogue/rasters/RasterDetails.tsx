@@ -64,7 +64,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
         // or user is supplier for the organisation of the raster layer and
         // the supplier of the raster layer.
         let authorizedToManageRaster: boolean = false;
-        if (raster) {
+        if (raster && bootstrap) {
             // Filter organisations to only show orgs with a role.
             organisations.filter(obj => {
                 if (obj.roles.length > 0) {
