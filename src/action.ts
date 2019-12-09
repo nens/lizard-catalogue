@@ -400,40 +400,27 @@ export const failedTaskRasterExport = (id: ExportGridCelId): FailedTaskRasterExp
     id: id,
 })
 
-// const fieldValuePairContainsFieldThatShouldResetGridCells = (fieldValuePair: FieldValuePair) => {
-//      return   fieldValuePair.field === 'projection' ||
-//         fieldValuePair.field === 'resolution' ||
-//         fieldValuePair.field === 'tileWidth' ||
-//         fieldValuePair.field === 'tileHeight'
-// }
-// const fieldValuePairsListContainsFieldThatShouldResetGridCells = (fieldValuePair: FieldValuePair) => {
-//     return   fieldValuePair.field === 'projection' ||
-//        fieldValuePair.field === 'resolution' ||
-//        fieldValuePair.field === 'tileWidth' ||
-//        fieldValuePair.field === 'tileHeight'
-// }
+const fieldValuePairContainsFieldThatShouldResetGridCells = (fieldValuePair: FieldValuePair) => {
+     return   fieldValuePair.field === 'projection' ||
+        fieldValuePair.field === 'resolution' ||
+        fieldValuePair.field === 'tileWidth' ||
+        fieldValuePair.field === 'tileHeight'
+}
+const fieldValuePairsListContainsFieldThatShouldResetGridCells = (fieldValuePairs: FieldValuePair[]) => {
+    return   !!fieldValuePairs.find(fieldValuePairContainsFieldThatShouldResetGridCells);
+}
 
 export const updateExportFormAndFetchExportGridCells = (
     fieldValuePairesToUpdate: FieldValuePair[], 
     dispatch
 ): void => {
 
-    let emptiedGridCellsAndSelection = false;
+    if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
+        dispatch(removeAllSelectedExportGridCellIds());
+        dispatch(removeAllExportGridCells());
+    }
     fieldValuePairesToUpdate.forEach((fieldValuePair)=>{
         dispatch(updateExportRasterFormField(fieldValuePair));
-        if (
-            (
-                fieldValuePair.field === 'projection' ||
-                fieldValuePair.field === 'resolution' ||
-                fieldValuePair.field === 'tileWidth' ||
-                fieldValuePair.field === 'tileHeight'
-            ) && emptiedGridCellsAndSelection === false 
-        ) {
-            dispatch(removeAllSelectedExportGridCellIds());
-            dispatch(removeAllExportGridCells());
-            emptiedGridCellsAndSelection = true;
-        }
-        
     });
     dispatch(requestedGridCells());
 
@@ -442,30 +429,38 @@ export const updateExportFormAndFetchExportGridCells = (
     const projection = getExportGridCellProjection(state);
     const tileWidth = getExportGridCellTileWidth(state);
     const tileHeight = getExportGridCellTileHeight(state);
-    const bounds = getExportGridCellBounds(state);
     const rasterUuid = state.selectedItem;
+    const bounds = getExportGridCellBounds(state);
     const boundsString = `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`;
     
     request
         .get(`${baseUrl}/rasters/${rasterUuid}/grid/?projection=${projection}&cell_size=${resolution}&tile_height=${tileHeight}&tile_width=${tileWidth}&bbox=${boundsString}`)
         .then(response => {
             const gridCells = response.body.features;
-            emptiedGridCellsAndSelection = false;
-            fieldValuePairesToUpdate.forEach((fieldValuePair)=>{
-                if (
-                    (
-                        fieldValuePair.field === 'projection' ||
-                        fieldValuePair.field === 'resolution' ||
-                        fieldValuePair.field === 'tileWidth' ||
-                        fieldValuePair.field === 'tileHeight'
-                    ) && emptiedGridCellsAndSelection === false 
-                ) {
+
+            const newState = store.getState();
+            const newResolution = getExportGridCellResolution(newState);
+            const newProjection = getExportGridCellProjection(newState);
+            const newTileWidth = getExportGridCellTileWidth(newState);
+            const newTileHeight = getExportGridCellTileHeight(newState);
+            const newRasterUuid = newState.selectedItem;
+
+            if (
+                // only update the gridcells if the values for which the request was done were not changed
+                newResolution === resolution &&
+                newProjection === projection &&
+                newTileWidth === tileWidth &&
+                newTileHeight === tileHeight &&
+                newRasterUuid === rasterUuid
+            ) {
+                if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
                     dispatch(removeAllSelectedExportGridCellIds());
                     dispatch(removeAllExportGridCells());
-                    emptiedGridCellsAndSelection = true;
                 }
-            });
-            dispatch(retrievedGridCells(gridCells));
+                dispatch(retrievedGridCells(gridCells));
+            }
+
+            
         })
         .catch(error=>{
             console.error(error);
