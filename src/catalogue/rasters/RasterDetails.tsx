@@ -88,18 +88,22 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
 
         return (
             <div className="details">
-                <h3 title={raster.name}>
-                    {raster.name}
-                    { authorizedToManageRaster ?
-                        <a href={`/management/#/data_management/rasters/${raster.uuid}`}>
-                            <img
-                                className="details__icon"
-                                src="image/manageButton.svg"
-                                alt="View in manage client"
-                            />
-                        </a>
-                    :null
-                    }
+                <h3 title={raster.name} style={{display: "flex"}}>
+                    <span style={{display: "flex", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
+                        {raster.name}
+                    </span>
+                    <span>
+                        { authorizedToManageRaster ?
+                            <a href={`/management/#/data_management/rasters/${raster.uuid}`}>
+                                <img
+                                    className="details__icon"
+                                    src="image/manageButton.svg"
+                                    alt="View in manage client"
+                                />
+                            </a>
+                        :null
+                        }
+                    </span>
                 </h3>
                 <div className="details__main-box">
                     <div className="details__description-box">

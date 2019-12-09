@@ -61,18 +61,22 @@ class WMSDetails extends React.Component<PropsFromState> {
 
         return (
             <div className="details">
-                <h3 title={wms.name}>
-                    {wms.name}
-                    { authorizedToManageWMS ?
-                        <a href={`/management/#/data_management/wms_layers/${wms.uuid}`}>
-                            <img
-                                className="details__icon"
-                                src="image/manageButton.svg"
-                                alt="View in manage client"
-                            />
-                        </a>
-                    : null
-                    }
+                <h3 title={wms.name} style={{display: "flex"}}>
+                    <span style={{display: "flex", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
+                        {wms.name}
+                    </span>
+                    <span>
+                        { authorizedToManageWMS ?
+                            <a href={`/management/#/data_management/rasters/${wms.uuid}`}>
+                                <img
+                                    className="details__icon"
+                                    src="image/manageButton.svg"
+                                    alt="View in manage client"
+                                />
+                            </a>
+                        :null
+                        }
+                    </span>
                 </h3>
                 <div className="details__main-box">
                     <div className="details__description-box">
