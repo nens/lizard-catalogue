@@ -61,8 +61,8 @@ class WMSDetails extends React.Component<PropsFromState> {
 
         return (
             <div className="details">
-                <h3 title={wms.name} style={{display: "flex"}}>
-                    <span style={{display: "flex", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
+                <h3 title={wms.name}>
+                    <span className="details__title_text">
                         {wms.name}
                     </span>
                     <span>

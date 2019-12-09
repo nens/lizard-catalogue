@@ -88,8 +88,8 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
 
         return (
             <div className="details">
-                <h3 title={raster.name} style={{display: "flex"}}>
-                    <span style={{display: "flex", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
+                <h3 title={raster.name}>
+                    <span className="details__title_text">
                         {raster.name}
                     </span>
                     <span>
