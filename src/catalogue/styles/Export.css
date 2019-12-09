@@ -112,10 +112,20 @@
     flex: 1;
     display: flex;
     justify-content: space-around;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .export_buttons button {
     height: 3rem;
+}
+.details__button {
+    margin-top: 1rem;
+}
+
+.details__button:disabled {
+    background-color: #BFBFBF;
+    cursor: not-allowed;
 }
 
  /* MODAL CLOSE */
@@ -141,3 +151,5 @@
 .export_grid_cell.selected {
     /* TODO better styling here ? Or should we save the hoover in the redux store or react state*/
 } 
+
+

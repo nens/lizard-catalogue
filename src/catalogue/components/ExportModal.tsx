@@ -42,6 +42,9 @@ class ExportModal extends React.Component<MyProps> {
     componentWillMount() {
         this.props.updateExportFormAndFetchExportGridCells([
             {field: "projection", value: this.props.raster.projection},
+            {field: "resolution", value: '100'},
+            {field: "width", value: '1000'},
+            {field: "height", value: '1000'},
             {
                 field: 'bounds',
                 value: { 
@@ -237,22 +240,26 @@ class ExportModal extends React.Component<MyProps> {
                         </div>
                     <div className="export_buttons">
                         <button 
-                            className="details__button"
-                            onClick={()=>{
-                                this.props.removeAllSelectedExportGridCellIds();
-                            }}
-                        >
-                            Cancel
-                        </button>
-                        <button 
-                            className="details__button" 
+                            className={`details__button`}
+                            disabled={this.props.selectedGridCellIds.length === 0? true: false}
+                            title={this.props.selectedGridCellIds.length === 0 ? "First make a selection on the map" : undefined}  
                             onClick={()=>{
                                 this.props.requestRasterExports();
                                 openDownloadModal();
                             }}
                         >
                             <i className="fa fa-download" />
-                            &nbsp;&nbsp;Download selection
+                            {`Download ${this.props.selectedGridCellIds.length}  selected cells`}
+                        </button>
+                        <button 
+                            className={`details__button`}
+                            disabled={this.props.selectedGridCellIds.length === 0? true: false}
+                            title={this.props.selectedGridCellIds.length === 0 ? "No grid cells selected" : undefined}  
+                            onClick={()=>{
+                                this.props.removeAllSelectedExportGridCellIds();
+                            }}
+                        >
+                            Cancel selection
                         </button>
                     </div>
                 </div>
