@@ -71,7 +71,6 @@ class ExportModal extends React.Component<MyProps> {
                             zoomControl={false} 
                             style={{ width: "100%" }}
                             onMoveend={event=>{
-                                console.log('event', event.target.getBounds())
                                 const bounds = event.target.getBounds();
                                 this.props.updateExportFormAndFetchExportGridCells([
                                     {
@@ -237,21 +236,14 @@ class ExportModal extends React.Component<MyProps> {
                         desired tiles to export/download
                         </div>
                     <div className="export_buttons">
-                        <button className="details__button">
-                            Cancel
-                        </button>
-                        {/* <button 
-                            className="details__button" 
+                        <button 
+                            className="details__button"
                             onClick={()=>{
-                                true || openDownloadModal();
-                                if (this.props.resolution !== "") {
-                                    this.props.fetchExportGridCells([{field:'resolution', value:"2"}]);
-                                } 
+                                this.props.removeAllSelectedExportGridCellIds();
                             }}
                         >
-                            <i className="fa fa-download" />
-                            &nbsp;&nbsp;Make a selection
-                        </button> */}
+                            Cancel
+                        </button>
                         <button 
                             className="details__button" 
                             onClick={()=>{
