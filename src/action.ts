@@ -31,19 +31,22 @@ import {
     ExportGridCell,
     RetrievedRasterExportGridcells,
     FailedRetrievingRasterExportGridcells,
-    // SetRasterExportResolution,
     SetRasterExportFormField,
     FieldValuePair,
-    // SetRasterExportBoundingBox,
     RemoveAllExportGridCells,
-    // RequestedRasterExports,
     RequestRasterExports,
     ReceivedTaskRasterExport,
     FailedTaskRasterExport,
     areGridCelIdsEqual,
 } from './interface';
-import { getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight, getExportGridCellBounds, getExportSelectedGridCellIds } from './reducers';
-// import { MyStore } from './reducers';
+import { 
+    getExportGridCellResolution, 
+    getExportGridCellProjection, 
+    getExportGridCellTileWidth, 
+    getExportGridCellTileHeight, 
+    getExportGridCellBounds, 
+    getExportSelectedGridCellIds 
+} from './reducers';
 
 
 //MARK: Bootsrap
@@ -308,17 +311,17 @@ export const REMOVE_MESSAGE = 'REMOVE_MESSAGE';
 export const DOWNLOAD_FILE = 'DOWNLOAD_FILE';
 
 export const requestInbox = (dispatch) => {
-    // setInterval(() => {
-    //     request
-    //         .get(`/api/v3/inbox/`)
-    //         .then(response => {
-    //             dispatch({
-    //                 type: REQUEST_INBOX,
-    //                 messages: response.body.results
-    //             });
-    //         })
-    //         .catch(console.error)
-    // }, 5000);
+    setInterval(() => {
+        request
+            .get(`/api/v3/inbox/`)
+            .then(response => {
+                dispatch({
+                    type: REQUEST_INBOX,
+                    messages: response.body.results
+                });
+            })
+            .catch(console.error)
+    }, 5000);
     console.log(dispatch);
 };
 
@@ -345,10 +348,8 @@ export const RETRIEVED_RASTER_EXPORT_GRIDCELLS = 'RETRIEVED_RASTER_EXPORT_GRIDCE
 export const FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS = 'FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS';
 export const SET_RASTER_EXPORT_RESOLUTION = 'SET_RASTER_EXPORT_RESOLUTION';
 export const SET_RASTER_EXPORT_FORM_FIELD = 'SET_RASTER_EXPORT_FORM_FIELD';
-// export const SET_RASTER_EXPORT_BOUNDING_BOX = 'SET_RASTER_EXPORT_BOUNDING_BOX';
 export const REMOVE_ALL_EXPORT_GRID_CELLS = 'REMOVE_ALL_EXPORT_GRID_CELLS';
 export const REQUEST_RASTER_EXPORTS = "REQUEST_RASTER_EXPORTS";
-// export const RECEIVED_TASKS_RASTER_EXPORTS = "RECEIVED_TASKS_RASTER_EXPORTS";
 export const RECEIVED_TASK_RASTER_EXPORT = "RECEIVED_TASKS_RASTER_EXPORTS";
 export const FAILED_TASK_RASTER_EXPORT = "FAILED_TASK_RASTER_EXPORT";
 
@@ -447,47 +448,12 @@ export const updateExportFormAndFetchExportGridCells = (
     const tileHeight = getExportGridCellTileHeight(state);
     const bounds = getExportGridCellBounds(state);
     const rasterUuid = state.selectedItem;
-
-
-    console.log('resolution', resolution, projection, tileWidth, tileHeight, rasterUuid, bounds);
     const boundsString = `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`;
-    // const boundsString = `${bounds.north},${bounds.east},${bounds.south},${bounds.west}`;
-
     
     request
         .get(`${baseUrl}/rasters/${rasterUuid}/grid/?projection=${projection}&cell_size=${resolution}&tile_height=${tileHeight}&tile_width=${tileWidth}&bbox=${boundsString}`)
-        // .then(rawResponse => rawResponse.json())
         .then(response => {
-            console.log('response grid cells', response);
-            // console.log(response.body, rasterUuid, projection, resolution, width, height, bbox);
-            const dummieGridCells = [{
-                "type": "Feature",
-                "geometry": {
-                  "type": "Polygon",
-                  "coordinates": [[52.339322, 4.767822], [53.339322, 4.997822],[51.339322, 4.997822], [51.339322, 4.997822]],
-                },
-                "properties": {
-                  "projection": "EPSG:28992",
-                  "bounds": [130000, 510000, 140000, 520000],
-                  "id": [130, 510]
-                }
-              },
-              {
-                "type": "Feature",
-                "geometry": {
-                  "type": "Polygon",
-                  "coordinates": [[52.339322, 4.997822], [53.339322, 5.997822], [51.339322, 4.997822], [51.339322, 4.997822]],
-                },
-                "properties": {
-                  "projection": "EPSG:28992",
-                  "bounds": [130000, 510000, 140000, 520000],
-                  "id": [131, 510]
-                }
-              }
-            ];
-            // const gridCells = JSON.parse(response).features;
             const gridCells = response.body.features;
-            console.log('gridCells', gridCells, response, dummieGridCells);
             emptiedGridCellsAndSelection = false;
             fieldValuePairesToUpdate.forEach((fieldValuePair)=>{
                 if (
@@ -520,20 +486,20 @@ export const requestRasterExports = (
 
     const state = store.getState();
     const selectedGridCellIds = getExportSelectedGridCellIds(state);
-    const resolution = getExportGridCellResolution(state);
     const projection = getExportGridCellProjection(state);
     const tileWidth = getExportGridCellTileWidth(state);
     const tileHeight = getExportGridCellTileHeight(state);
-    const bounds = getExportGridCellBounds(state);
     const rasterUuid = state.selectedItem;
     const availableGridCells = state.rasterExportState.availableGridCells;
-
-    console.log(selectedGridCellIds, resolution, projection, tileWidth, tileHeight, bounds, rasterUuid);
 
     selectedGridCellIds.forEach((id)=>{
 
         const currentGrid = availableGridCells.find(cell=>{return areGridCelIdsEqual(cell.properties.id, id)});
-        if (!currentGrid) return;
+        if (!currentGrid) {
+            console.warn(`Raster with id ${id} not found among availableGridCells. Therefore export was not started.`);
+            // TODO how do we recover from this ?
+            return;
+        }
         const currentGridBbox = currentGrid.properties.bbox;
         request
         .get(`${baseUrl}/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&async=true&notify_user=true`)
@@ -549,73 +515,3 @@ export const requestRasterExports = (
     });
     
 };
-
-
-// export const fetchExportGridCells = (rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][], dispatch): void => {
-//     dispatch(requestedGridCells());
-    
-//     request
-//         .get(`${baseUrl}/rasters/`)
-//         .then(response => {
-//             console.log(response.body, rasterUuid, projection, resolution, width, height, bbox);
-//             const dummieGridCells = [{
-//                 "type": "Feature",
-//                 "geometry": {
-//                   "type": "Polygon",
-//                   "coordinates": [[52.339322, 4.767822], [53.339322, 4.997822]],
-//                 },
-//                 "properties": {
-//                   "projection": "EPSG:28992",
-//                   "bounds": [130000, 510000, 140000, 520000],
-//                   "id": [130, 510]
-//                 }
-//               },
-//               {
-//                 "type": "Feature",
-//                 "geometry": {
-//                   "type": "Polygon",
-//                   "coordinates": [[52.339322, 4.997822], [53.339322, 5.997822]],
-//                 },
-//                 "properties": {
-//                   "projection": "EPSG:28992",
-//                   "bounds": [130000, 510000, 140000, 520000],
-//                   "id": [131, 510]
-//                 }
-//               }
-//             ];
-//             dispatch(retrievedGridCells(dummieGridCells));
-//         })
-//         .catch(error=>{
-//             console.error(error);
-//             dispatch(failedRetrievingRasterExportGridcells(error+''));
-//         })
-// };
-
-/*
-const wmsReceived = (wmsObject: WMSObject): ReceiveWMS => ({
-    type: RECEIVE_WMS,
-    payload: wmsObject
-});
-
-export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string, dispatch): void => {
-    dispatch(wmsRequested());
-    const organisationParam = organisationName === '' ? '' : `&organisation__name__icontains=${organisationName}`;
-    const datasetParam = datasetSlug === '' ? '' : `&datasets__slug=${datasetSlug}`;
-    request
-        .get(`${baseUrl}/wmslayers/?name__icontains=${searchTerm}&page=${page}${organisationParam}${datasetParam}&ordering=${ordering}`)
-        .then(response => {
-            if(response.body.count === 0) {
-                //If could not find any raster with the search term by raster's name then look for raster's uuid
-                request
-                    .get(`${baseUrl}/wmslayers/?uuid=${searchTerm}&page=${page}${organisationParam}${datasetParam}&ordering=${ordering}`)
-                    .then(response => {
-                        dispatch(wmsReceived(response.body))
-                    })
-                    .catch(console.error)
-            } else {
-                dispatch(wmsReceived(response.body))
-            }
-        })
-        .catch(console.error)
-};
-//*/

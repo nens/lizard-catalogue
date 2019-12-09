@@ -21,16 +21,12 @@ import {
     RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
     SET_RASTER_EXPORT_FORM_FIELD,
-    // SET_RASTER_EXPORT_BOUNDING_BOX,
     REMOVE_ALL_EXPORT_GRID_CELLS,
-    // REQUESTED_RASTER_EXPORTS,
-    // RECEIVED_TASKS_RASTER_EXPORTS,
     REQUEST_RASTER_EXPORTS,
     RECEIVED_TASK_RASTER_EXPORT,
     FAILED_TASK_RASTER_EXPORT,
 } from "./action";
 import { MyStore } from './reducers';
-// import { number } from "prop-types";
 
 
 
@@ -331,12 +327,6 @@ export interface SetRasterExportFormField {
 
 export interface RequestRasterExports {
     type: typeof REQUEST_RASTER_EXPORTS,
-    // ids: ExportGridCelId[],
-    // resolution: number | "",
-    // projection: string,
-    // tileWidth: number | "",
-    // tileHeight: number | "",
-    // bounds: Bounds,
 }
 export interface ReceivedTaskRasterExport {
     type: typeof RECEIVED_TASK_RASTER_EXPORT,
