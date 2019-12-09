@@ -257,7 +257,7 @@ export interface ExportGridCell {
     },
     "properties": {
         "projection": string,
-        "bounds": number[],
+        "bbox": number[],
         "id": ExportGridCelId
     }
 };

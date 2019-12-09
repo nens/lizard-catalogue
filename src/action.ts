@@ -40,6 +40,7 @@ import {
     RequestRasterExports,
     ReceivedTaskRasterExport,
     FailedTaskRasterExport,
+    areGridCelIdsEqual,
 } from './interface';
 import { getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight, getExportGridCellBounds, getExportSelectedGridCellIds } from './reducers';
 // import { MyStore } from './reducers';
@@ -525,12 +526,17 @@ export const requestRasterExports = (
     const tileHeight = getExportGridCellTileHeight(state);
     const bounds = getExportGridCellBounds(state);
     const rasterUuid = state.selectedItem;
+    const availableGridCells = state.rasterExportState.availableGridCells;
 
     console.log(selectedGridCellIds, resolution, projection, tileWidth, tileHeight, bounds, rasterUuid);
 
     selectedGridCellIds.forEach((id)=>{
+
+        const currentGrid = availableGridCells.find(cell=>{return areGridCelIdsEqual(cell.properties.id, id)});
+        if (!currentGrid) return;
+        const currentGridBbox = currentGrid.properties.bbox;
         request
-        .get(`${baseUrl}/rasters/`)
+        .get(`${baseUrl}/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&async=true&notify_user=true`)
         .then(response => {
             console.log('response', response, id);
             dispatch(receivedTaskRasterExport(id));
