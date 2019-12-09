@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
-import { MyStore, getWMS, getOrganisations } from '../../reducers';
-import { WMS, LatLng, Organisation } from '../../interface';
+import { MyStore, getWMS, getOrganisations, getLizardBootstrap } from '../../reducers';
+import { WMS, LatLng, Organisation, Bootstrap } from '../../interface';
 import '../styles/Details.css';
 
 import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL } from '../../utils/url';
@@ -10,13 +10,14 @@ import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from
 
 interface PropsFromState {
     wms: WMS | null,
-    organisations: Organisation[]
+    organisations: Organisation[],
+    bootstrap: Bootstrap
 };
 
 class WMSDetails extends React.Component<PropsFromState> {
     render() {
         //Destructure the props
-        const { wms, organisations } = this.props;
+        const { wms, organisations, bootstrap } = this.props;
 
         //If no WMS layer is selected, display a text
         if (!wms) return <div className="details details__loading">Please select a WMS Layer</div>;
@@ -26,16 +27,22 @@ class WMSDetails extends React.Component<PropsFromState> {
         // or user is supplier of the organisation of the wms layer and
         // the supplier of the wms layer.
         let authorizedToManageWMS: boolean = false;
-        if (wms) {
+        if (wms && bootstrap) {
             // Filter organisations to only show orgs with a role.
             organisations.filter(obj => {
                 if (obj.roles.length > 0) {
                     // Check if user is in the organisation of the wms layer
                     if (obj.name === wms.organisation.name) {
                         // Check if user is "admin" in the organisation of the wms layer
-                        // or "supplier" in the organisation of the wms layer.
-                        if (obj.roles.includes("admin") || obj.roles.includes("supplier")) {
+                        // or "supplier" in the organisation of the wms layer and
+                        // supplier of the wms layer.
+                        if (obj.roles.includes("admin")) {
                             authorizedToManageWMS = true;
+                        } else if (wms.hasOwnProperty("supplier")) {
+                            if (obj.roles.includes("supplier") &&
+                                    wms["supplier"] === bootstrap.user.username) {
+                                authorizedToManageWMS = true;
+                            }
                         }
                     }
                 }
@@ -134,11 +141,13 @@ class WMSDetails extends React.Component<PropsFromState> {
 const mapStateToProps = (state: MyStore): PropsFromState => {
     if (!state.selectedItem) return {
         wms: null,
-        organisations: getOrganisations(state)
+        organisations: getOrganisations(state),
+        bootstrap: getLizardBootstrap(state)
     };
     return {
         wms: getWMS(state, state.selectedItem),
-        organisations: getOrganisations(state)
+        organisations: getOrganisations(state),
+        bootstrap: getLizardBootstrap(state)
     };
 };
 
