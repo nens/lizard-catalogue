@@ -372,9 +372,6 @@ export const removeAllExportGridCells = (): RemoveAllExportGridCells => ({
 export const requestedGridCells = (): RequestedGridCells => ({
     type: REQUESTED_RASTER_EXPORT_GRIDCELLS
 });
-// export const requestedRasterExports = (): RequestedRasterExports => ({
-//     type: REQUESTED_RASTER_EXPORTS
-// });
 export const retrievedGridCells = (gridCells: ExportGridCell[]): RetrievedRasterExportGridcells => ({
     type: RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     gridCells: gridCells,
@@ -383,19 +380,6 @@ export const failedRetrievingRasterExportGridcells = (msg: string): FailedRetrie
     type: FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
     failedMsg: msg,
 });
-
-// export const setRasterExportBoundingBox = (boundingBox:  MyStore['rasterExportState']['bounds']): SetRasterExportBoundingBox => ({
-//     type: SET_RASTER_EXPORT_BOUNDING_BOX,
-//     boundingBox 
-// })
-
-// export const setRasterExportResolution = (resolution: MyStore['rasterExportState']['resolution']): SetRasterExportResolution => ({
-//     type: SET_RASTER_EXPORT_RESOLUTION,
-//     resolution: resolution,
-// });
-
-// export type RasterExportFormFieldType = string | MyStore['rasterExportState']['resolution']
-// export interface FieldValuePair{field: string, value: RasterExportFormFieldType}
 
 export const updateExportRasterFormField = (fieldValuePair:FieldValuePair): SetRasterExportFormField => ({
     type: SET_RASTER_EXPORT_FORM_FIELD,
@@ -416,8 +400,20 @@ export const failedTaskRasterExport = (id: ExportGridCelId): FailedTaskRasterExp
     id: id,
 })
 
+// const fieldValuePairContainsFieldThatShouldResetGridCells = (fieldValuePair: FieldValuePair) => {
+//      return   fieldValuePair.field === 'projection' ||
+//         fieldValuePair.field === 'resolution' ||
+//         fieldValuePair.field === 'tileWidth' ||
+//         fieldValuePair.field === 'tileHeight'
+// }
+// const fieldValuePairsListContainsFieldThatShouldResetGridCells = (fieldValuePair: FieldValuePair) => {
+//     return   fieldValuePair.field === 'projection' ||
+//        fieldValuePair.field === 'resolution' ||
+//        fieldValuePair.field === 'tileWidth' ||
+//        fieldValuePair.field === 'tileHeight'
+// }
+
 export const updateExportFormAndFetchExportGridCells = (
-    // rasterUuid: string, projection: string, resolution: number, width: number, height: number, bbox: number[][],
     fieldValuePairesToUpdate: FieldValuePair[], 
     dispatch
 ): void => {
