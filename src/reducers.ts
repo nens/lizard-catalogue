@@ -327,11 +327,6 @@ const organisations = (state: MyStore['organisations'] = [], action: Organisatio
     switch (action.type) {
         case ORGANISATIONS_FETCHED:
             return action.payload.map(organisation => {
-                // console.log(organisation);
-                // if (organisation && organisation['roles'] && organisation['roles'].length > 0 ) {
-                //     // console.log(organisation);
-                //     console.log(organisation.roles);
-                // }
                 return {
                     url: organisation.url,
                     name: organisation.name,
