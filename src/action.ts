@@ -322,7 +322,6 @@ export const requestInbox = (dispatch) => {
             })
             .catch(console.error)
     }, 5000);
-    console.log(dispatch);
 };
 
 export const removeMessage = (dispatch, id: string) => {
@@ -495,7 +494,7 @@ export const requestRasterExports = (
         request
         .get(`${baseUrl}/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&async=true&notify_user=true`)
         .then(response => {
-            console.log('response', response, id);
+            console.log('raster grid cell export task returns, response: ', response, id);
             dispatch(receivedTaskRasterExport(id));
         })
         .catch(error=>{

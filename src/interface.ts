@@ -308,22 +308,11 @@ export interface  FailedRetrievingRasterExportGridcells {
     type: typeof FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
     failedMsg: string,
 }
-// export interface SetRasterExportResolution {
-//     type: typeof SET_RASTER_EXPORT_RESOLUTION,
-//     resolution: MyStore['rasterExportState']['resolution'],
-// }
+
 export interface SetRasterExportFormField {
     type: typeof SET_RASTER_EXPORT_FORM_FIELD,
     fieldValuePair: FieldValuePair,
 }
-// export interface SetRasterExportBoundingBox {
-//     type: typeof SET_RASTER_EXPORT_BOUNDING_BOX,
-//     boundingBox: MyStore['rasterExportState']['bounds'],
-// }
-
-// export interface RequestedRasterExports {
-//     type: typeof REQUESTED_RASTER_EXPORTS
-// }
 
 export interface RequestRasterExports {
     type: typeof REQUEST_RASTER_EXPORTS,
@@ -355,25 +344,11 @@ export type RasterExportStateActionType =
     RequestedGridCells| 
     RetrievedRasterExportGridcells | 
     FailedRetrievingRasterExportGridcells | 
-    // SetRasterExportResolution |
     SetRasterExportFormField |
     RemoveAllExportGridCells |
     RequestRasterExports | 
     ReceivedTaskRasterExport |
-    FailedTaskRasterExport; // |
-    // RequestedRasterExports; //| 
-    // SetRasterExportBoundingBox;
-
-// export interface RasterExport {
-//     type: typeof REQUEST_WMS
-// };
-
-// export interface ReceiveWMS {
-//     type: typeof RECEIVE_WMS,
-//     payload: WMSObject
-// };
-
-// export type WMSActionType = RequestWMS | ReceiveWMS | ToggleAlert;
+    FailedTaskRasterExport; 
 
 export interface RasterExportRequest {
     fetchingState: FetchingState;

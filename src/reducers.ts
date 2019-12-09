@@ -31,9 +31,7 @@ import {
     RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
     SET_RASTER_EXPORT_FORM_FIELD,
-    // SET_RASTER_EXPORT_BOUNDING_BOX,
     REMOVE_ALL_EXPORT_GRID_CELLS,
-    // REQUESTED_RASTER_EXPORTS,
     REQUEST_RASTER_EXPORTS,
     RECEIVED_TASK_RASTER_EXPORT,
 } from "./action";
@@ -161,16 +159,10 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 fetchingStateGrid: "FAILED",
                 fetchingStateGridMsg: action.failedMsg,
             }
-        // case REQUESTED_RASTER_EXPORTS:
-        //     return {
-        //         ...state,
-        //         fetchingStateTasks: "SEND"
-        //     }
         case SET_RASTER_EXPORT_FORM_FIELD:
             return {
                 ...state,
                 [action.fieldValuePair.field]: action.fieldValuePair.value,
-                // selectedGridCellIds: [],
             }
         case REQUEST_RASTER_EXPORTS:
             return {
@@ -202,12 +194,6 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                     }
                 }),
             }
-
-        // case SET_RASTER_EXPORT_BOUNDING_BOX:
-        //     return {
-        //         ...state,
-        //         bounds: action.boundingBox,
-        //     }
         default:
             return state;
     }
