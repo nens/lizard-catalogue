@@ -117,6 +117,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
         west: 1,
     },
     rasterExportRequests: [],
+    dateTimeStart: '',
     },
     action: RasterExportStateActionType
 ): MyStore['rasterExportState'] => {
@@ -576,6 +577,9 @@ export const getExportGridCellTileHeight = (state: MyStore) => {
 }
 export const getExportGridCellBounds = (state: MyStore) => {
     return state.rasterExportState.bounds;
+}
+export const getDateTimeStart = (state: MyStore) => {
+    return state.rasterExportState.dateTimeStart;
 }
 
 export const getIsFormValidForRequestingGridCells = (state: MyStore) => {

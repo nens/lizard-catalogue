@@ -45,7 +45,8 @@ import {
     getExportGridCellTileWidth, 
     getExportGridCellTileHeight, 
     getExportGridCellBounds, 
-    getExportSelectedGridCellIds 
+    getExportSelectedGridCellIds,
+    getDateTimeStart,
 } from './reducers';
 
 
@@ -479,6 +480,7 @@ export const requestRasterExports = (
     const projection = getExportGridCellProjection(state);
     const tileWidth = getExportGridCellTileWidth(state);
     const tileHeight = getExportGridCellTileHeight(state);
+    const start = getDateTimeStart(state);
     const rasterUuid = state.selectedItem;
     const availableGridCells = state.rasterExportState.availableGridCells;
 
@@ -491,8 +493,12 @@ export const requestRasterExports = (
             return;
         }
         const currentGridBbox = currentGrid.properties.bbox;
-        request
-        .get(`${baseUrl}/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&async=true&notify_user=true`)
+        const requestUrl = start===''?
+            `${baseUrl}/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&async=true&notify_user=true`
+            :
+            `${baseUrl}/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&start=${start}&async=true&notify_user=true`
+
+        request.get(requestUrl)
         .then(response => {
             console.log('raster grid cell export task returns, response: ', response, id);
             dispatch(receivedTaskRasterExport(id));

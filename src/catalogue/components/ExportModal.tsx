@@ -7,7 +7,7 @@ import {
     WMSTileLayer, 
     GeoJSON,
 } from 'react-leaflet';
-import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds, getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight} from '../../reducers';
+import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds, getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight,getDateTimeStart} from '../../reducers';
 import {
     addToSelectedExportGridCellIds, 
     removeFromSelectedExportGridCellIds, 
@@ -15,10 +15,14 @@ import {
     updateExportFormAndFetchExportGridCells, 
     requestRasterExports,
 } from '../../action';
-import {areGridCelIdsEqual, AddToSelectedExportGridCellIds, ExportGridCelId, RemoveFromSelectedExportGridCellIds,RemoveAllSelectedExportGridCellIds} from '../../interface';
+import {areGridCelIdsEqual, AddToSelectedExportGridCellIds, ExportGridCelId, RemoveFromSelectedExportGridCellIds,RemoveAllSelectedExportGridCellIds,} from '../../interface';
 
 import { Raster } from '../../interface';
 import '../styles/Export.css';
+import Datetime from "react-datetime";
+import "react-datetime/css/react-datetime.css";
+import moment from "moment"; // do not remove, is needed for datepicker!
+
 
 interface MyProps {
     raster: Raster,
@@ -35,6 +39,7 @@ interface MyProps {
     tileWidth: MyStore['rasterExportState']['tileWidth'],
     tileHeight: MyStore['rasterExportState']['tileHeight'],
     requestRasterExports: ()=> void,
+    dateTimeStart: MyStore['rasterExportState']['dateTimeStart'],
 };
 
 class ExportModal extends React.Component<MyProps> {
@@ -45,6 +50,7 @@ class ExportModal extends React.Component<MyProps> {
             {field: "resolution", value: '100'},
             {field: "width", value: '1000'},
             {field: "height", value: '1000'},
+            {field:'dateTimeStart', value: ""},
             {
                 field: 'bounds',
                 value: { 
@@ -62,7 +68,7 @@ class ExportModal extends React.Component<MyProps> {
         const exportGridCells = this.props.availableGridCells;
         const selectedGridIds = this.props.selectedGridCellIds; 
 
-        console.log('bounds render', bounds);
+        console.log('bounds render', bounds, this.props.dateTimeStart);
 
         return (
             <div className="export_main">
@@ -166,13 +172,43 @@ class ExportModal extends React.Component<MyProps> {
                         <hr />
                         <div>
                             {/* Datetime picker for temporal raster */}
-                            {/* {raster.temporal && (
+                            {raster.temporal && (
                                 <div>
                                     <h4>Date / Time</h4>
-                                    <input type="datetime-local" />
+                                    {/* <input type="datetime-local" /> */}
+                                    <Datetime
+                                        // value={e.dateTime}
+                                        onChange={event => {
+                                            
+                                            // if not valid date react-datetime returns string
+                                            // if (typeof event === "string") {
+                                            //     console.log("received string from react-datetime");
+                                            //     jsDate = event;
+                                            // } else {
+                                            //     // convert momentjs to js date
+                                            //     jsDate = event_.toDate();
+                                            // }
+                                            const isoDateTime = event === ''? '' : moment(event).toISOString()
+                                            console.log(isoDateTime);
+                                            this.props.updateExportFormAndFetchExportGridCells([{field:'dateTimeStart', value: isoDateTime}]);
+                                                
+                                        }}
+                                        // inputProps={
+                                        //     this.state.saveAllButtonBusy ||
+                                        //     e.sendingState === "SERVER_RECEIVED"
+                                        //         ? { readOnly: true }
+                                        //         : {}
+                                        // }
+                                        // open={
+                                        //     this.state.saveAllButtonBusy ||
+                                        //     e.sendingState === "SERVER_RECEIVED"
+                                        //         ? false
+                                        //         : undefined
+                                        // }
+                                    />
                                 </div>
                             )}
-                            <br /> */}
+                            <br />
                             <div>
                                 <h4>Projection</h4>
                                 <input 
@@ -275,6 +311,7 @@ interface PropsFromState {
     projection: MyStore['rasterExportState']['projection'],
     tileWidth: MyStore['rasterExportState']['tileWidth'],
     tileHeight: MyStore['rasterExportState']['tileHeight'],
+    dateTimeStart: MyStore['rasterExportState']['dateTimeStart'],
 
 };
 
@@ -285,6 +322,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     projection: getExportGridCellProjection(state),
     tileWidth: getExportGridCellTileWidth(state),
     tileHeight: getExportGridCellTileHeight(state),
+    dateTimeStart: getDateTimeStart(state)
 });
 
 interface PropsFromDispatch {

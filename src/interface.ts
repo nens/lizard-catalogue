@@ -279,6 +279,7 @@ export interface RasterExportState {
     tileHeight: number | "",
     bounds: Bounds,
     rasterExportRequests: RasterExportRequest[],
+    dateTimeStart: any,
 }
 
 export interface RemoveFromSelectedExportGridCellIds {
