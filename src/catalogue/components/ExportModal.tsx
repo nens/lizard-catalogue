@@ -48,8 +48,8 @@ class ExportModal extends React.Component<MyProps> {
         this.props.updateExportFormAndFetchExportGridCells([
             {field: "projection", value: this.props.raster.projection},
             {field: "resolution", value: '100'},
-            {field: "width", value: '1000'},
-            {field: "height", value: '1000'},
+            {field: "tileWidth", value: '1000'},
+            {field: "tileHeight", value: '1000'},
             {field:'dateTimeStart', value: ""},
             {
                 field: 'bounds',
@@ -175,36 +175,14 @@ class ExportModal extends React.Component<MyProps> {
                             {raster.temporal && (
                                 <div>
                                     <h4>Date / Time</h4>
-                                    {/* <input type="datetime-local" /> */}
                                     <Datetime
+                                        // For now do not set value because the field keeps itself in sync. TODO keep field in sync
                                         // value={e.dateTime}
                                         onChange={event => {
-                                            
-                                            // if not valid date react-datetime returns string
-                                            // if (typeof event === "string") {
-                                            //     console.log("received string from react-datetime");
-                                            //     jsDate = event;
-                                            // } else {
-                                            //     // convert momentjs to js date
-                                            //     jsDate = event_.toDate();
-                                            // }
                                             const isoDateTime = event === ''? '' : moment(event).toISOString()
-                                            console.log(isoDateTime);
                                             this.props.updateExportFormAndFetchExportGridCells([{field:'dateTimeStart', value: isoDateTime}]);
                                                 
                                         }}
-                                        // inputProps={
-                                        //     this.state.saveAllButtonBusy ||
-                                        //     e.sendingState === "SERVER_RECEIVED"
-                                        //         ? { readOnly: true }
-                                        //         : {}
-                                        // }
-                                        // open={
-                                        //     this.state.saveAllButtonBusy ||
-                                        //     e.sendingState === "SERVER_RECEIVED"
-                                        //         ? false
-                                        //         : undefined
-                                        // }
                                     />
                                 </div>
                             )}
@@ -227,11 +205,8 @@ class ExportModal extends React.Component<MyProps> {
                                     type="text"
                                     value={this.props.resolution}
                                     onChange={(event)=> {
-                                        if (parseInt(event.target.value)) {
-                                            this.props.updateExportFormAndFetchExportGridCells([{field:'resolution', value: event.target.value}]);
-                                        } else if (event.target.value==="") {
-                                            this.props.updateExportFormAndFetchExportGridCells([{field:'resolution', value: ""}]);
-                                        }
+                                        const filteredString = (event.target.value+'').replace(/[^\d.-]/g, '');
+                                        this.props.updateExportFormAndFetchExportGridCells([{field:'resolution', value: filteredString}]);
                                     }}
                                 />
                                 {this.props.resolution === ""? <span>* Choose a number</span>:null}
@@ -243,11 +218,8 @@ class ExportModal extends React.Component<MyProps> {
                                     type="text"
                                     value={this.props.tileWidth}
                                     onChange={(event)=> {
-                                        if (parseInt(event.target.value)) {
-                                            this.props.updateExportFormAndFetchExportGridCells([{field:'tileWidth', value: event.target.value}]);
-                                        } else if (event.target.value==="") {
-                                            this.props.updateExportFormAndFetchExportGridCells([{field:'tileWidth', value: ""}]);
-                                        }
+                                        const filteredString = (event.target.value+'').replace(/[^\d]/g, '');
+                                        this.props.updateExportFormAndFetchExportGridCells([{field:'tileWidth', value: filteredString}]);
                                     }}
                                 />
                                 {this.props.tileWidth === ""? <span><br/>* Choose a number</span>:null}
@@ -259,11 +231,8 @@ class ExportModal extends React.Component<MyProps> {
                                     type="text"
                                     value={this.props.tileHeight}
                                     onChange={(event)=> {
-                                        if (parseInt(event.target.value)) {
-                                            this.props.updateExportFormAndFetchExportGridCells([{field:'tileHeight', value: event.target.value}]);
-                                        } else if (event.target.value==="") {
-                                            this.props.updateExportFormAndFetchExportGridCells([{field:'tileHeight', value: ""}]);
-                                        }
+                                        const filteredString = (event.target.value+'').replace(/[^\d]/g, '');
+                                        this.props.updateExportFormAndFetchExportGridCells([{field:'tileHeight', value: filteredString}]);
                                     }}
                                 />
                                 {this.props.tileHeight === ""? <span>* Choose a number</span>:null}
