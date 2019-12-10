@@ -3,7 +3,6 @@ import { Message } from '../../interface';
 import { connect } from 'react-redux';
 import { removeMessage, downloadFile } from '../../action';
 import { MyStore } from '../../reducers';
-import MDSpinner from 'react-md-spinner';
 import '../styles/Inbox.css';
 
 interface MyProps {
@@ -77,7 +76,8 @@ class Inbox extends React.Component<InboxProps> {
                         <div className="inbox-filename">
                             {this.props.pendingExportTasks} export(s) in progress
                         </div>
-                        <MDSpinner style={{backgroundColor: 'inherit'}} />
+                        <i className="fa fa-download inbox-pending-downloads" />
+                        <div className="inbox-read" />
                     </div>
                 ): null}
                 {(this.props.inbox.length === 0 && this.props.pendingExportTasks === 0) ? (
