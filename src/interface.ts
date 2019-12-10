@@ -25,6 +25,7 @@ import {
     REQUEST_RASTER_EXPORTS,
     RECEIVED_TASK_RASTER_EXPORT,
     FAILED_TASK_RASTER_EXPORT,
+    RECEIVED_PROJECTIONS,
 } from "./action";
 import { MyStore } from './reducers';
 
@@ -342,6 +343,11 @@ export interface ReceivedTaskRasterExport {
 export interface FailedTaskRasterExport {
     type: typeof FAILED_TASK_RASTER_EXPORT,
     id: ExportGridCelId,
+}
+
+export interface ReceivedProjections {
+    type: typeof RECEIVED_PROJECTIONS,
+    projections: Projection[],
 }
 
 export type RasterExportFormFieldType = 

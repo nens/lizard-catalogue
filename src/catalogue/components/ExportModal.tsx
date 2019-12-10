@@ -14,6 +14,7 @@ import {
     removeAllSelectedExportGridCellIds, 
     updateExportFormAndFetchExportGridCells, 
     requestRasterExports,
+    requestProjections,
 } from '../../action';
 import {areGridCelIdsEqual, AddToSelectedExportGridCellIds, ExportGridCelId, RemoveFromSelectedExportGridCellIds,RemoveAllSelectedExportGridCellIds,} from '../../interface';
 
@@ -34,6 +35,7 @@ interface MyProps {
     removeFromSelectedExportGridCellIds: (gridCellIds: ExportGridCelId[]) => RemoveFromSelectedExportGridCellIds,
     removeAllSelectedExportGridCellIds: () => RemoveAllSelectedExportGridCellIds,
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[]) => void,
+    requestProjections: () => void,
     resolution: MyStore['rasterExportState']['resolution'],
     projection: MyStore['rasterExportState']['projection'],
     tileWidth: MyStore['rasterExportState']['tileWidth'],
@@ -46,6 +48,7 @@ interface MyProps {
 class ExportModal extends React.Component<MyProps> {
 
     componentWillMount() {
+        this.props.requestProjections();
         this.props.updateExportFormAndFetchExportGridCells([
             {field: "projection", value: this.props.raster.projection},
             {field: "resolution", value: '100'},
@@ -303,6 +306,7 @@ interface PropsFromDispatch {
     removeAllSelectedExportGridCellIds: () => void,
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[]) => void,
     requestRasterExports: (numberOfInboxMessages:number)=> void,
+    requestProjections: () => void,
 };
 
 const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
@@ -311,6 +315,7 @@ const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[])=> updateExportFormAndFetchExportGridCells(fieldValuePairs, dispatch),
     requestRasterExports: (numberOfInboxMessages:number)=> requestRasterExports(numberOfInboxMessages,dispatch),
+    requestProjections: () => requestProjections(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExportModal);
