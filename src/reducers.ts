@@ -35,6 +35,7 @@ import {
     REQUEST_RASTER_EXPORTS,
     RECEIVED_TASK_RASTER_EXPORT,
     RECEIVED_PROJECTIONS,
+    FETCHING_STATE_PROJECTIONS,
 } from "./action";
 import {
     RastersFetched,
@@ -210,6 +211,14 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                     projections: action.projections,
                 }
             }
+        case FETCHING_STATE_PROJECTIONS:
+                return {
+                    ...state,
+                    projectionsAvailableForCurrentRaster: {
+                        ...state.projectionsAvailableForCurrentRaster,
+                        fetchingState: action.fetchingState,
+                    }
+                }
         default:
             return state;
     }

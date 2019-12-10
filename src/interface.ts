@@ -26,6 +26,7 @@ import {
     RECEIVED_TASK_RASTER_EXPORT,
     FAILED_TASK_RASTER_EXPORT,
     RECEIVED_PROJECTIONS,
+    FETCHING_STATE_PROJECTIONS,
 } from "./action";
 import { MyStore } from './reducers';
 
@@ -349,6 +350,10 @@ export interface ReceivedProjections {
     type: typeof RECEIVED_PROJECTIONS,
     projections: Projection[],
 }
+export interface SetFetchingStateProjections {
+    type: typeof FETCHING_STATE_PROJECTIONS,
+    fetchingState: FetchingState,
+}
 
 export type RasterExportFormFieldType = 
     MyStore['rasterExportState']['resolution'] | 
@@ -372,7 +377,8 @@ export type RasterExportStateActionType =
     RequestRasterExports | 
     ReceivedTaskRasterExport |
     FailedTaskRasterExport |
-    ReceivedProjections; 
+    ReceivedProjections |
+    SetFetchingStateProjections ; 
 
 export interface RasterExportRequest {
     fetchingState: FetchingState;

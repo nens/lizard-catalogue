@@ -40,6 +40,8 @@ import {
     areGridCelIdsEqual,
     ReceivedProjections,
     Projection,
+    FetchingState,
+    SetFetchingStateProjections,
 } from './interface';
 import { 
     getExportGridCellResolution, 
@@ -355,6 +357,7 @@ export const REQUEST_RASTER_EXPORTS = "REQUEST_RASTER_EXPORTS";
 export const RECEIVED_TASK_RASTER_EXPORT = "RECEIVED_TASKS_RASTER_EXPORTS";
 export const FAILED_TASK_RASTER_EXPORT = "FAILED_TASK_RASTER_EXPORT";
 export const RECEIVED_PROJECTIONS = "RECEIVED_PROJECTIONS";
+export const FETCHING_STATE_PROJECTIONS = "FETCHING_STATE_PROJECTIONS";
 
 export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): RemoveFromSelectedExportGridCellIds => ({
     type: REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
@@ -407,6 +410,11 @@ export const receivedProjections = (projections: Projection[]) : ReceivedProject
     type: RECEIVED_PROJECTIONS,
     projections,
 })
+export const setFetchingStateProjections = (fetchingState: FetchingState) : SetFetchingStateProjections => ({
+    type: FETCHING_STATE_PROJECTIONS,
+    fetchingState,
+}) 
+
 
 const fieldValuePairContainsFieldThatShouldResetGridCells = (fieldValuePair: FieldValuePair) => {
      return   fieldValuePair.field === 'projection' ||
@@ -525,36 +533,17 @@ export const requestProjections = (
     dispatch
 ): void => {
 
-    // dispatch(setCurrentRasterExportsToStore(numberOfInboxMessages));
+    dispatch(setFetchingStateProjections("SEND"));
 
-    // const state = store.getState();
-    // const selectedGridCellIds = getExportSelectedGridCellIds(state);
-    // const projection = getExportGridCellProjection(state);
-    // const tileWidth = getExportGridCellTileWidth(state);
-    // const tileHeight = getExportGridCellTileHeight(state);
-    // const start = getDateTimeStart(state);
-    // const rasterUuid = state.selectedItem;
-    // const availableGridCells = state.rasterExportState.availableGridCells;
+    const requestUrl = `${baseUrl}/projections/?page_size=100000`;
+    request.get(requestUrl)
+    .then(response => {
+        dispatch(receivedProjections(response.body.results));
+    })
+    .catch(error=>{
+        console.error(error);
+        dispatch(setFetchingStateProjections("FAILED"));
+    })
 
-    // selectedGridCellIds.forEach((id)=>{
-
-    //     const currentGrid = availableGridCells.find(cell=>{return areGridCelIdsEqual(cell.properties.id, id)});
-    //     if (!currentGrid) {
-    //         console.warn(`Raster with id ${id} not found among availableGridCells. Therefore export was not started.`);
-    //         // TODO how do we recover from this ?
-    //         return;
-    //     }
-    //     const currentGridBbox = currentGrid.properties.bbox;
-        const requestUrl = `${baseUrl}/projections/?page_size=100000`;
-        request.get(requestUrl)
-        .then(response => {
-            console.log('retrieve projections, response: ', response, dispatch);
-            dispatch(receivedProjections(response.body.results));
-        })
-        .catch(error=>{
-            console.error(error);
-            // dispatch(failedTaskRasterExport(id));
-        })
-
-    };
+};
     
