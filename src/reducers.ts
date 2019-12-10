@@ -34,6 +34,7 @@ import {
     REMOVE_ALL_EXPORT_GRID_CELLS,
     REQUEST_RASTER_EXPORTS,
     RECEIVED_TASK_RASTER_EXPORT,
+    RECEIVED_PROJECTIONS,
 } from "./action";
 import {
     RastersFetched,
@@ -200,6 +201,14 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                         return exportItem;
                     }
                 }),
+            }
+        case RECEIVED_PROJECTIONS:
+            return {
+                ...state,
+                projectionsAvailableForCurrentRaster: {
+                    fetchingState: "RECEIVED",
+                    projections: action.projections,
+                }
             }
         default:
             return state;

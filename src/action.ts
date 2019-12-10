@@ -549,7 +549,7 @@ export const requestProjections = (
         request.get(requestUrl)
         .then(response => {
             console.log('retrieve projections, response: ', response, dispatch);
-            // dispatch(receivedTaskRasterExport(response.body.results));
+            dispatch(receivedProjections(response.body.results));
         })
         .catch(error=>{
             console.error(error);

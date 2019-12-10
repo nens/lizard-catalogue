@@ -371,7 +371,8 @@ export type RasterExportStateActionType =
     RemoveAllExportGridCells |
     RequestRasterExports | 
     ReceivedTaskRasterExport |
-    FailedTaskRasterExport; 
+    FailedTaskRasterExport |
+    ReceivedProjections; 
 
 export interface RasterExportRequest {
     fetchingState: FetchingState;
