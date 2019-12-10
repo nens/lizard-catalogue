@@ -38,8 +38,9 @@ interface MyProps {
     projection: MyStore['rasterExportState']['projection'],
     tileWidth: MyStore['rasterExportState']['tileWidth'],
     tileHeight: MyStore['rasterExportState']['tileHeight'],
-    requestRasterExports: ()=> void,
+    requestRasterExports: (numberOfInboxMessages:number)=> void,
     dateTimeStart: MyStore['rasterExportState']['dateTimeStart'],
+    inbox: MyStore['inbox'],
 };
 
 class ExportModal extends React.Component<MyProps> {
@@ -249,7 +250,7 @@ class ExportModal extends React.Component<MyProps> {
                             disabled={this.props.selectedGridCellIds.length === 0? true: false}
                             title={this.props.selectedGridCellIds.length === 0 ? "First make a selection on the map" : undefined}  
                             onClick={()=>{
-                                this.props.requestRasterExports();
+                                this.props.requestRasterExports(this.props.inbox.length);
                                 openDownloadModal();
                             }}
                         >
@@ -281,7 +282,7 @@ interface PropsFromState {
     tileWidth: MyStore['rasterExportState']['tileWidth'],
     tileHeight: MyStore['rasterExportState']['tileHeight'],
     dateTimeStart: MyStore['rasterExportState']['dateTimeStart'],
-
+    inbox: MyStore['inbox'],
 };
 
 const mapStateToProps = (state: MyStore): PropsFromState => ({
@@ -291,7 +292,9 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     projection: getExportGridCellProjection(state),
     tileWidth: getExportGridCellTileWidth(state),
     tileHeight: getExportGridCellTileHeight(state),
-    dateTimeStart: getDateTimeStart(state)
+    dateTimeStart: getDateTimeStart(state),
+    inbox: state.inbox,
+    // numberExistingInboxMessages: state.rasterExportState.number,
 });
 
 interface PropsFromDispatch {
@@ -299,7 +302,7 @@ interface PropsFromDispatch {
     removeFromSelectedExportGridCellIds: (ids: ExportGridCelId[]) => void,
     removeAllSelectedExportGridCellIds: () => void,
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[]) => void,
-    requestRasterExports: ()=> void,
+    requestRasterExports: (numberOfInboxMessages:number)=> void,
 };
 
 const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
@@ -307,7 +310,7 @@ const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[])=> updateExportFormAndFetchExportGridCells(fieldValuePairs, dispatch),
-    requestRasterExports: ()=> requestRasterExports(dispatch),
+    requestRasterExports: (numberOfInboxMessages:number)=> requestRasterExports(numberOfInboxMessages,dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExportModal);

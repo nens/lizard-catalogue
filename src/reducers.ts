@@ -118,6 +118,11 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
     },
     rasterExportRequests: [],
     dateTimeStart: '',
+    numberOfinboxMessagesBeforeRequest: 0,
+    projectionsAvailableForCurrentRaster: {
+        fetchingState: "NOT_SEND",
+        projections: [],
+    }
     },
     action: RasterExportStateActionType
 ): MyStore['rasterExportState'] => {
@@ -179,6 +184,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                         tileHeight: state.tileHeight,
                     }
                 }),
+                numberOfinboxMessagesBeforeRequest: action.numberOfInboxMessages,
             }
         case RECEIVED_TASK_RASTER_EXPORT:
             return {
@@ -512,6 +518,8 @@ const datasets = (state: MyStore['datasets'] = [], action: DatasetsFetched & Upd
 
 const pendingExportTasks = (state: MyStore['pendingExportTasks'] = 20, { type }): MyStore['pendingExportTasks'] => {
     switch (type) {
+        // case REQUEST_RASTER_EXPORTS:
+        //     return 3;
         default:
             return state;
     };

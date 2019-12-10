@@ -280,7 +280,22 @@ export interface RasterExportState {
     bounds: Bounds,
     rasterExportRequests: RasterExportRequest[],
     dateTimeStart: any,
+    numberOfinboxMessagesBeforeRequest: number,
+    projectionsAvailableForCurrentRaster: Projections,
 }
+
+export interface Projections {
+    fetchingState: FetchingState,
+    projections: Projection[],
+}
+
+export interface Projection {
+    url: string,
+    name: string,
+    code: string, // for time being the integer will be forced to a string. Untill we actually get string from the backend
+    extend: any, // what is the type here ?
+}
+
 
 export interface RemoveFromSelectedExportGridCellIds {
     type: typeof REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
@@ -317,6 +332,7 @@ export interface SetRasterExportFormField {
 
 export interface RequestRasterExports {
     type: typeof REQUEST_RASTER_EXPORTS,
+    numberOfInboxMessages:number,
 }
 export interface ReceivedTaskRasterExport {
     type: typeof RECEIVED_TASK_RASTER_EXPORT,

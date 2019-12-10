@@ -8,13 +8,15 @@ import { Message } from '../../interface';
 interface PropsFromState {
     inbox: Message[],
     pendingExportTasks: number,
+    numberOfinboxMessagesBeforeRequest: number,
+    rasterExportRequests: any[],
 };
 
 class DownloadModal extends React.Component<PropsFromState> {
     render() {
-        const { inbox, pendingExportTasks } = this.props;
-        const finishedTasks = inbox.length;
-        const allTasks = pendingExportTasks + finishedTasks;
+        const { inbox, pendingExportTasks, numberOfinboxMessagesBeforeRequest } = this.props; console.log(pendingExportTasks)
+        const finishedTasks = inbox.length - numberOfinboxMessagesBeforeRequest;
+        const allTasks =  this.props.rasterExportRequests.length;//finishedTasks - numberOfinboxMessagesBeforeRequest;//pendingExportTasks ;//+ finishedTasks;
         const progressInPercentage = finishedTasks / allTasks * 100;
 
         return (
@@ -42,6 +44,8 @@ class DownloadModal extends React.Component<PropsFromState> {
 const mapStateToProps = (state: MyStore): PropsFromState => ({
     inbox: state.inbox,
     pendingExportTasks: state.pendingExportTasks,
+    numberOfinboxMessagesBeforeRequest: state.rasterExportState.numberOfinboxMessagesBeforeRequest,
+    rasterExportRequests: state.rasterExportState.rasterExportRequests,
 });
 
 export default connect(mapStateToProps)(DownloadModal);

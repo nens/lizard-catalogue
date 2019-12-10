@@ -314,7 +314,7 @@ export const DOWNLOAD_FILE = 'DOWNLOAD_FILE';
 export const requestInbox = (dispatch) => {
     setInterval(() => {
         request
-            .get(`/api/v3/inbox/`)
+            .get(`/api/v3/inbox/?page_size=10000000`)
             .then(response => {
                 dispatch({
                     type: REQUEST_INBOX,
@@ -386,8 +386,9 @@ export const updateExportRasterFormField = (fieldValuePair:FieldValuePair): SetR
     fieldValuePair,
 });
 
-export const setCurrentRasterExportsToStore = (): RequestRasterExports => ({
+export const setCurrentRasterExportsToStore = (numberOfInboxMessages:number): RequestRasterExports => ({
     type: REQUEST_RASTER_EXPORTS,
+    numberOfInboxMessages,
 })
 
 export const receivedTaskRasterExport = (id: ExportGridCelId): ReceivedTaskRasterExport => ({
@@ -470,10 +471,11 @@ export const updateExportFormAndFetchExportGridCells = (
 
 
 export const requestRasterExports = (
+    numberOfInboxMessages,
     dispatch
 ): void => {
 
-    dispatch(setCurrentRasterExportsToStore());
+    dispatch(setCurrentRasterExportsToStore(numberOfInboxMessages));
 
     const state = store.getState();
     const selectedGridCellIds = getExportSelectedGridCellIds(state);
