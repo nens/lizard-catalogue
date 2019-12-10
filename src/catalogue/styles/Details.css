@@ -33,6 +33,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     display: flex;
+    justify-content: space-between;
 }
 .details__title_text {
     display: flex;
