@@ -21,7 +21,13 @@ class DownloadModal extends React.Component<PropsFromState> {
 
         return (
             <div className="download">
-                <h3>Getting your request ready ...</h3>
+                <h3>
+                {progressInPercentage===100? 
+                "Finished!"
+                :
+                "Getting your request ready ..."
+                }
+                </h3>
                 <div className="download-progress">
                     <Circle
                         className="download-progress-circle"
@@ -33,8 +39,12 @@ class DownloadModal extends React.Component<PropsFromState> {
                     <i>{finishedTasks} / {allTasks} export(s) finished ({Math.round(progressInPercentage)}%)</i>
                 </div>
                 <div className="download-text">
-                    This can take a while. You can wait here, 
-                    or we will let you know when the file is ready
+                {progressInPercentage===100? 
+                "Find your results in the 'Export' tab after closing this screen"
+                :
+                "This can take a while. You can wait here, or we will let you know when the file is ready"
+                }
+                    
                 </div>
             </div>
         );
