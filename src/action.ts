@@ -37,7 +37,6 @@ import {
     RequestRasterExports,
     ReceivedTaskRasterExport,
     FailedTaskRasterExport,
-    areGridCelIdsEqual,
     ReceivedProjections,
     Projection,
     FetchingState,
@@ -52,6 +51,8 @@ import {
     getExportSelectedGridCellIds,
     getDateTimeStart,
 } from './reducers';
+import {areGridCelIdsEqual} from './utils/rasterExportUtils'
+
 
 
 //MARK: Bootsrap
@@ -516,8 +517,7 @@ export const requestRasterExports = (
             `${baseUrl}/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&start=${start}&async=true&notify_user=true`
 
         request.get(requestUrl)
-        .then(response => {
-            console.log('raster grid cell export task returns, response: ', response, id);
+        .then(() => {
             dispatch(receivedTaskRasterExport(id));
         })
         .catch(error=>{
@@ -533,8 +533,7 @@ export const requestProjections = (
     rasterUuid: string,
     dispatch
 ): void => {
-    console.log(rasterUuid);
-    dispatch(setFetchingStateProjections("SEND"));
+    dispatch(setFetchingStateProjections("SENT"));
 
     const requestUrl = `${baseUrl}/rasters/${rasterUuid}/projections/?page_size=100000`;
     request.get(requestUrl)

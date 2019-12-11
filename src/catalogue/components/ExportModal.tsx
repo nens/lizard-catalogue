@@ -27,13 +27,13 @@ import {
     requestRasterExports,
     requestProjections,
 } from '../../action';
-import {areGridCelIdsEqual, AddToSelectedExportGridCellIds, ExportGridCelId, RemoveFromSelectedExportGridCellIds,RemoveAllSelectedExportGridCellIds,} from '../../interface';
-
-import { Raster } from '../../interface';
+import { AddToSelectedExportGridCellIds, ExportGridCelId, RemoveFromSelectedExportGridCellIds,RemoveAllSelectedExportGridCellIds,} from '../../interface';
+import {areGridCelIdsEqual} from '../../utils/rasterExportUtils';
+import { Raster, FieldValuePair } from '../../interface';
 import '../styles/Export.css';
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
-import moment from "moment"; // do not remove, is needed for datepicker!
+import moment from "moment";
 import MDSpinner from "react-md-spinner";
 
 
@@ -117,7 +117,7 @@ class ExportModal extends React.Component<MyProps> {
                                     }}
                                 >
                                     {
-                                         this.props.fetchingGridState === "SEND" || this.props.fetchingGridState === "NOT_SEND" ? 
+                                         this.props.fetchingGridState === "SENT" || this.props.fetchingGridState === "NOT_SENT" ? 
                                         "Retrieving Grid Cells..."
                                         : this.props.fetchingGridState === "FAILED" ?
                                         "Failed Retrieving Grid Cells... Please try different settings"
@@ -331,7 +331,7 @@ class ExportModal extends React.Component<MyProps> {
                     <div className="export_buttons">
                         <button 
                             className={`details__button`}
-                            disabled={this.props.selectedGridCellIds.length === 0? true: false}
+                            disabled={this.props.selectedGridCellIds.length === 0}
                             title={this.props.selectedGridCellIds.length === 0 ? "First make a selection on the map" : undefined}  
                             onClick={()=>{
                                 this.props.requestRasterExports(this.props.inbox.length);
@@ -382,7 +382,6 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     tileHeight: getExportGridCellTileHeight(state),
     dateTimeStart: getDateTimeStart(state),
     inbox: state.inbox,
-    // numberExistingInboxMessages: state.rasterExportState.number,
 });
 
 interface PropsFromDispatch {
@@ -398,7 +397,7 @@ const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
     addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
-    updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[])=> updateExportFormAndFetchExportGridCells(fieldValuePairs, dispatch),
+    updateExportFormAndFetchExportGridCells: (fieldValuePairs: FieldValuePair[])=> updateExportFormAndFetchExportGridCells(fieldValuePairs, dispatch),
     requestRasterExports: (numberOfInboxMessages:number)=> requestRasterExports(numberOfInboxMessages,dispatch),
     requestProjections: (rasterUuid:string) => requestProjections(rasterUuid, dispatch),
 });

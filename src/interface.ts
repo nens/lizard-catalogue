@@ -240,13 +240,6 @@ export interface Message {
 
 export type ExportGridCelId = number[];
 
-export const areGridCelIdsEqual = (id1:ExportGridCelId, id2:ExportGridCelId): boolean => (id1[0]+'') === (id2[0]+'') && (id1[1] + '') === (id2[1]+'')
-export const haveGridCellsSameId = (cell1:ExportGridCell, cell2:ExportGridCell): boolean => { 
-    const id1 = cell1.properties.id;
-    const id2 = cell2.properties.id;
-    return areGridCelIdsEqual(id1, id2);
-}
-
 export interface ExportGridCell {
     "type": string,
     "geometry": {
@@ -260,7 +253,7 @@ export interface ExportGridCell {
     }
 };
 
-export type FetchingState = "NOT_SEND" | "SEND" | "RECEIVED" | "FAILED";
+export type FetchingState = "NOT_SENT" | "SENT" | "RECEIVED" | "FAILED";
 
 export interface Bounds {
     north: number;
@@ -294,8 +287,7 @@ export interface Projections {
 export interface Projection {
     url: string,
     name: string,
-    code: string, // for time being the integer will be forced to a string. Untill we actually get string from the backend
-    extend: any, // what is the type here ?
+    code: string, 
 }
 
 

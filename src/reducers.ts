@@ -58,10 +58,9 @@ import {
     WMSActionType,
     Message,
     RasterExportState,
-    areGridCelIdsEqual,
-    haveGridCellsSameId,
     RasterExportStateActionType,
 } from './interface';
+import {areGridCelIdsEqual,haveGridCellsSameId} from './utils/rasterExportUtils'
 
 export interface MyStore {
     bootstrap: Bootstrap,
@@ -104,9 +103,9 @@ export interface MyStore {
 const rasterExportState = (state: MyStore["rasterExportState"]=
     {
     selectedGridCellIds: [],
-    fetchingStateGrid: "NOT_SEND",
+    fetchingStateGrid: "NOT_SENT",
     fetchingStateGridMsg: "",
-    fetchingStateTasks: "NOT_SEND",
+    fetchingStateTasks: "NOT_SENT",
     availableGridCells: [],
     resolution: 100,
     projection: "EPSG:28992",
@@ -122,7 +121,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
     dateTimeStart: '',
     numberOfinboxMessagesBeforeRequest: 0,
     projectionsAvailableForCurrentRaster: {
-        fetchingState: "NOT_SEND",
+        fetchingState: "NOT_SENT",
         projections: [],
     }
     },
@@ -148,11 +147,12 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
             return {
                 ...state,
                 availableGridCells: [],
+                selectedGridCellIds: [],
             }
         case REQUESTED_RASTER_EXPORT_GRIDCELLS:
             return {
                 ...state,
-                fetchingStateGrid: "SEND"
+                fetchingStateGrid: "SENT"
             }
         
         case RETRIEVED_RASTER_EXPORT_GRIDCELLS:
@@ -177,7 +177,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 ...state,
                 rasterExportRequests: state.selectedGridCellIds.map(selectedId=>{
                     return {
-                        fetchingState: "SEND",
+                        fetchingState: "SENT",
                         id: selectedId,
                         projection: state.projection,
                         bounds: state.bounds,
@@ -534,10 +534,8 @@ const datasets = (state: MyStore['datasets'] = [], action: DatasetsFetched & Upd
     };
 };
 
-const pendingExportTasks = (state: MyStore['pendingExportTasks'] = 20, { type }): MyStore['pendingExportTasks'] => {
+const pendingExportTasks = (state: MyStore['pendingExportTasks'] = 0, { type }): MyStore['pendingExportTasks'] => {
     switch (type) {
-        // case REQUEST_RASTER_EXPORTS:
-        //     return 3;
         default:
             return state;
     };

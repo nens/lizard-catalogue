@@ -14,9 +14,9 @@ interface PropsFromState {
 
 class DownloadModal extends React.Component<PropsFromState> {
     render() {
-        const { inbox, pendingExportTasks, numberOfinboxMessagesBeforeRequest } = this.props; console.log(pendingExportTasks)
+        const { inbox, numberOfinboxMessagesBeforeRequest } = this.props;
         const finishedTasks = inbox.length - numberOfinboxMessagesBeforeRequest;
-        const allTasks =  this.props.rasterExportRequests.length;//finishedTasks - numberOfinboxMessagesBeforeRequest;//pendingExportTasks ;//+ finishedTasks;
+        const allTasks =  this.props.rasterExportRequests.length;
         const progressInPercentage = finishedTasks / allTasks * 100;
 
         return (
