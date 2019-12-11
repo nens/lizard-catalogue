@@ -610,6 +610,9 @@ export const getDateTimeStart = (state: MyStore) => {
 export const getProjections = (state: MyStore) => {
     return state.rasterExportState.projectionsAvailableForCurrentRaster.projections;
 }
+export const getExportGridCellCellFetchingState = (state: MyStore) => {
+    return state.rasterExportState.fetchingStateGrid;
+}
 
 export const getIsFormValidForRequestingGridCells = (state: MyStore) => {
     return getExportGridCellResolution(state) !== "" && 
