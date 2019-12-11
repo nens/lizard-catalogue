@@ -530,12 +530,13 @@ export const requestRasterExports = (
 };
 
 export const requestProjections = (
+    rasterUuid: string,
     dispatch
 ): void => {
-
+    console.log(rasterUuid);
     dispatch(setFetchingStateProjections("SEND"));
 
-    const requestUrl = `${baseUrl}/projections/?page_size=100000`;
+    const requestUrl = `${baseUrl}/rasters/${rasterUuid}/projections/?page_size=100000`;
     request.get(requestUrl)
     .then(response => {
         dispatch(receivedProjections(response.body.results));

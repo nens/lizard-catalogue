@@ -50,7 +50,7 @@ interface MyProps {
     removeFromSelectedExportGridCellIds: (gridCellIds: ExportGridCelId[]) => RemoveFromSelectedExportGridCellIds,
     removeAllSelectedExportGridCellIds: () => RemoveAllSelectedExportGridCellIds,
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[]) => void,
-    requestProjections: () => void,
+    requestProjections: (rasterUuid:string) => void,
     resolution: MyStore['rasterExportState']['resolution'],
     projection: MyStore['rasterExportState']['projection'],
     tileWidth: MyStore['rasterExportState']['tileWidth'],
@@ -62,8 +62,8 @@ interface MyProps {
 
 class ExportModal extends React.Component<MyProps> {
 
-    componentWillMount() {
-        this.props.requestProjections();
+    componentDidMount() {
+        this.props.requestProjections(this.props.raster.uuid);
         this.props.updateExportFormAndFetchExportGridCells([
             {field: "projection", value: this.props.raster.projection},
             {field: "resolution", value: '100'},
@@ -254,7 +254,7 @@ class ExportModal extends React.Component<MyProps> {
                                     {this.props.availableProjections.map(projectionObj=>{
                                         return (
                                             <option
-                                                value={"epsg:" + projectionObj.code }
+                                                value={projectionObj.code }
                                             >
                                                 {projectionObj.name}
                                             </option>
@@ -391,7 +391,7 @@ interface PropsFromDispatch {
     removeAllSelectedExportGridCellIds: () => void,
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[]) => void,
     requestRasterExports: (numberOfInboxMessages:number)=> void,
-    requestProjections: () => void,
+    requestProjections: (rasterUuid:string) => void,
 };
 
 const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
@@ -400,7 +400,7 @@ const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[])=> updateExportFormAndFetchExportGridCells(fieldValuePairs, dispatch),
     requestRasterExports: (numberOfInboxMessages:number)=> requestRasterExports(numberOfInboxMessages,dispatch),
-    requestProjections: () => requestProjections(dispatch),
+    requestProjections: (rasterUuid:string) => requestProjections(rasterUuid, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExportModal);
