@@ -7,7 +7,7 @@ import {
     WMSTileLayer, 
     GeoJSON,
 } from 'react-leaflet';
-import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds, getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight,getDateTimeStart} from '../../reducers';
+import {MyStore, getExportAvailableGridCells, getExportSelectedGridCellIds, getExportGridCellResolution, getExportGridCellProjection, getExportGridCellTileWidth, getExportGridCellTileHeight,getDateTimeStart, getProjections} from '../../reducers';
 import {
     addToSelectedExportGridCellIds, 
     removeFromSelectedExportGridCellIds, 
@@ -29,6 +29,7 @@ interface MyProps {
     raster: Raster,
     bounds: number[][],
     openDownloadModal: () => void,
+    availableProjections: MyStore['rasterExportState']['projectionsAvailableForCurrentRaster']['projections'],
     availableGridCells: MyStore['rasterExportState']['availableGridCells'],
     selectedGridCellIds: MyStore['rasterExportState']['selectedGridCellIds'],
     addToSelectedExportGridCellIds: (gridCellIds: ExportGridCelId[]) => AddToSelectedExportGridCellIds,
@@ -193,14 +194,22 @@ class ExportModal extends React.Component<MyProps> {
                             <br />
                             <div>
                                 <h4>Projection</h4>
-                                <input 
-                                    type="text" 
+                                <select
                                     value={this.props.projection}
                                     onChange={(event)=> {
                                         this.props.updateExportFormAndFetchExportGridCells([{field:'projection', value: event.target.value+''}]);
-                                        
                                     }} 
-                                />
+                                >
+                                    {this.props.availableProjections.map(projectionObj=>{
+                                        return (
+                                            <option
+                                                value={"epsg:" + projectionObj.code }
+                                            >
+                                                {projectionObj.name}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
                             </div>
                             <br />
                             <div>
@@ -278,6 +287,7 @@ class ExportModal extends React.Component<MyProps> {
 };
 
 interface PropsFromState {
+    availableProjections: MyStore['rasterExportState']['projectionsAvailableForCurrentRaster']['projections'],
     availableGridCells: MyStore['rasterExportState']['availableGridCells'],
     selectedGridCellIds: MyStore['rasterExportState']['selectedGridCellIds'],
     resolution: MyStore['rasterExportState']['resolution'],
@@ -290,6 +300,7 @@ interface PropsFromState {
 
 const mapStateToProps = (state: MyStore): PropsFromState => ({
     availableGridCells: getExportAvailableGridCells(state),
+    availableProjections: getProjections(state),
     selectedGridCellIds: getExportSelectedGridCellIds(state),
     resolution: getExportGridCellResolution(state),
     projection: getExportGridCellProjection(state),
