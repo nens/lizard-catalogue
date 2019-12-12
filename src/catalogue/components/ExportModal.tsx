@@ -28,7 +28,6 @@ import {
     requestRasterExports,
     requestProjections,
 } from '../../action';
-import { AddToSelectedExportGridCellIds, ExportGridCelId, RemoveFromSelectedExportGridCellIds,RemoveAllSelectedExportGridCellIds,} from '../../interface';
 import {areGridCelIdsEqual} from '../../utils/rasterExportUtils';
 import { Raster, FieldValuePair } from '../../interface';
 import '../styles/Export.css';
@@ -37,29 +36,13 @@ import "react-datetime/css/react-datetime.css";
 import moment from "moment";
 import MDSpinner from "react-md-spinner";
 
-
-
-interface MyProps {
+interface PropsFromParent {
     raster: Raster,
     bounds: number[][],
     openDownloadModal: () => void,
-    fetchingGridState: MyStore['rasterExportState']['fetchingStateGrid'],
-    availableProjections: MyStore['rasterExportState']['projectionsAvailableForCurrentRaster']['projections'],
-    availableGridCells: MyStore['rasterExportState']['availableGridCells'],
-    selectedGridCellIds: MyStore['rasterExportState']['selectedGridCellIds'],
-    addToSelectedExportGridCellIds: (gridCellIds: ExportGridCelId[]) => AddToSelectedExportGridCellIds,
-    removeFromSelectedExportGridCellIds: (gridCellIds: ExportGridCelId[]) => RemoveFromSelectedExportGridCellIds,
-    removeAllSelectedExportGridCellIds: () => RemoveAllSelectedExportGridCellIds,
-    updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[]) => void,
-    requestProjections: (rasterUuid:string) => void,
-    resolution: MyStore['rasterExportState']['resolution'],
-    projection: MyStore['rasterExportState']['projection'],
-    tileWidth: MyStore['rasterExportState']['tileWidth'],
-    tileHeight: MyStore['rasterExportState']['tileHeight'],
-    requestRasterExports: (numberOfInboxMessages:number)=> void,
-    dateTimeStart: MyStore['rasterExportState']['dateTimeStart'],
-    inbox: MyStore['inbox'],
-};
+}
+
+type MyProps = PropsFromState & PropsFromDispatch & PropsFromParent
 
 class ExportModal extends React.Component<MyProps> {
 
@@ -87,8 +70,6 @@ class ExportModal extends React.Component<MyProps> {
         const { raster, bounds, openDownloadModal } = this.props;
         const exportGridCells = this.props.availableGridCells;
         const selectedGridIds = this.props.selectedGridCellIds; 
-
-        console.log('bounds render', bounds, this.props.dateTimeStart);
 
         return (
             <div className="export_main">
@@ -359,21 +340,7 @@ class ExportModal extends React.Component<MyProps> {
     };
 };
 
-interface PropsFromState {
-    fetchingGridState: ReturnType<typeof getExportGridCellCellFetchingState>,
-    availableGridCells: ReturnType<typeof getExportAvailableGridCells>,
-    availableProjections: ReturnType<typeof getProjections>,
-    
-    selectedGridCellIds: ReturnType<typeof getExportSelectedGridCellIds>,
-    resolution: ReturnType<typeof getExportGridCellResolution>,
-    projection: ReturnType<typeof getExportGridCellProjection>,
-    tileWidth: ReturnType<typeof getExportGridCellTileWidth>,
-    tileHeight: ReturnType<typeof getExportGridCellTileHeight>,
-    dateTimeStart: ReturnType<typeof getDateTimeStart>,
-    inbox: ReturnType<typeof getInbox>,
-};
-
-const mapStateToProps = (state: MyStore): PropsFromState => ({
+const mapStateToProps = (state: MyStore) => ({
     fetchingGridState: getExportGridCellCellFetchingState(state),
     availableGridCells: getExportAvailableGridCells(state),
     availableProjections: getProjections(state),
@@ -386,16 +353,9 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     inbox: getInbox(state),
 });
 
-interface PropsFromDispatch {
-    addToSelectedExportGridCellIds: (ids: ExportGridCelId[]) => void,
-    removeFromSelectedExportGridCellIds: (ids: ExportGridCelId[]) => void,
-    removeAllSelectedExportGridCellIds: () => void,
-    updateExportFormAndFetchExportGridCells: (fieldValuePairs: any[]) => void,
-    requestRasterExports: (numberOfInboxMessages:number)=> void,
-    requestProjections: (rasterUuid:string) => void,
-};
+type PropsFromState = ReturnType<typeof mapStateToProps>
 
-const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch: any) => ({
     addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
@@ -403,5 +363,7 @@ const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
     requestRasterExports: (numberOfInboxMessages:number)=> dispatch(requestRasterExports(numberOfInboxMessages)),
     requestProjections: (rasterUuid:string) => dispatch(requestProjections(rasterUuid)),
 });
+
+type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExportModal);
