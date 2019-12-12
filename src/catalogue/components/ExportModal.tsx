@@ -8,12 +8,11 @@ import {
     GeoJSON,
 } from 'react-leaflet';
 import {
-    MyStore, 
-    getExportAvailableGridCells, 
-    getExportSelectedGridCellIds, 
-    getExportGridCellResolution, 
-    getExportGridCellProjection, 
-    getExportGridCellTileWidth, 
+    getExportAvailableGridCells,
+    getExportSelectedGridCellIds,
+    getExportGridCellResolution,
+    getExportGridCellProjection,
+    getExportGridCellTileWidth,
     getExportGridCellTileHeight,
     getDateTimeStart, 
     getProjections,
@@ -21,10 +20,14 @@ import {
     getInbox,
 } from '../../reducers';
 import {
-    addToSelectedExportGridCellIds, 
-    removeFromSelectedExportGridCellIds, 
-    removeAllSelectedExportGridCellIds, 
-    updateExportFormAndFetchExportGridCells, 
+  RootState,
+  AppDispatch
+} from '../../store';
+import {
+    addToSelectedExportGridCellIds,
+    removeFromSelectedExportGridCellIds,
+    removeAllSelectedExportGridCellIds,
+    updateExportFormAndFetchExportGridCells,
     requestRasterExports,
     requestProjections,
 } from '../../action';
@@ -343,7 +346,7 @@ class ExportModal extends React.Component<MyProps> {
     };
 };
 
-const mapStateToProps = (state: MyStore) => ({
+const mapStateToProps = (state: RootState) => ({
     fetchingGridState: getExportGridCellCellFetchingState(state),
     availableGridCells: getExportAvailableGridCells(state),
     availableProjections: getProjections(state),
@@ -358,7 +361,7 @@ const mapStateToProps = (state: MyStore) => ({
 
 type PropsFromState = ReturnType<typeof mapStateToProps>
 
-const mapDispatchToProps = (dispatch: any) => ({
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
 // const mapDispatchToProps = (dispatch: any) => ({
     addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
