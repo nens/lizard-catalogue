@@ -427,10 +427,7 @@ const fieldValuePairsListContainsFieldThatShouldResetGridCells = (fieldValuePair
     return   !!fieldValuePairs.find(fieldValuePairContainsFieldThatShouldResetGridCells);
 }
 
-export const updateExportFormAndFetchExportGridCells = (
-    fieldValuePairesToUpdate: FieldValuePair[], 
-    dispatch
-): void => {
+export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate: FieldValuePair[]) => (dispatch) =>{
 
     if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
         dispatch(removeAllSelectedExportGridCellIds());
@@ -486,10 +483,7 @@ export const updateExportFormAndFetchExportGridCells = (
 };
 
 
-export const requestRasterExports = (
-    numberOfInboxMessages,
-    dispatch
-): void => {
+export const requestRasterExports = (numberOfInboxMessages) => (dispatch) =>{
 
     dispatch(setCurrentRasterExportsToStore(numberOfInboxMessages));
 
@@ -529,10 +523,7 @@ export const requestRasterExports = (
     
 };
 
-export const requestProjections = (
-    rasterUuid: string,
-    dispatch
-): void => {
+export const requestProjections = (rasterUuid: string) => (dispatch) => {
     dispatch(setFetchingStateProjections("SENT"));
 
     const requestUrl = `${baseUrl}/rasters/${rasterUuid}/projections/?page_size=100000`;

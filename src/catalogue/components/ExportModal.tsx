@@ -397,9 +397,9 @@ const mapDispatchToProps = (dispatch: any): PropsFromDispatch => ({
     addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
-    updateExportFormAndFetchExportGridCells: (fieldValuePairs: FieldValuePair[])=> updateExportFormAndFetchExportGridCells(fieldValuePairs, dispatch),
-    requestRasterExports: (numberOfInboxMessages:number)=> requestRasterExports(numberOfInboxMessages,dispatch),
-    requestProjections: (rasterUuid:string) => requestProjections(rasterUuid, dispatch),
+    updateExportFormAndFetchExportGridCells: (fieldValuePairs: FieldValuePair[])=> dispatch(updateExportFormAndFetchExportGridCells(fieldValuePairs)),
+    requestRasterExports: (numberOfInboxMessages:number)=> dispatch(requestRasterExports(numberOfInboxMessages)),
+    requestProjections: (rasterUuid:string) => dispatch(requestProjections(rasterUuid)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExportModal);
