@@ -34,7 +34,6 @@ class Inbox extends React.Component<InboxProps> {
         return (
             <div
                 className="inbox"
-                onMouseLeave={this.props.closeAllDropdowns}
                 onClick={(e) => e.stopPropagation()}
             >
                 {this.props.inbox.map(message => (

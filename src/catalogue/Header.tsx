@@ -60,7 +60,8 @@ class Header extends React.Component<MyProps & PropsFromState> {
                         </svg>
                         <span className="header-nav__notification">{inbox.length}</span>
                         <span className="header-nav__inbox-text" style={{marginLeft: "1rem"}}>Export</span>
-                        {this.props.showInboxDropdown && (
+                        {
+                        this.props.showInboxDropdown && (
                             <Inbox
                                 inbox={inbox}
                                 closeAllDropdowns={closeAllDropdowns}

@@ -1,6 +1,7 @@
 import request from 'superagent';
 import { baseUrl } from './api';
-import { Dispatch } from 'redux';
+import { Dispatch,} from 'redux';
+import store  from './store';
 import {
     RastersFetched,
     RasterListObject,
@@ -22,7 +23,37 @@ import {
     UpdateObservationTypeRadiobutton,
     UpdateDatasetRadiobutton,
     ToggleAlert,
+    ExportGridCelId,
+    RemoveFromSelectedExportGridCellIds,
+    AddToSelectedExportGridCellIds,
+    RemoveAllSelectedExportGridCellIds,
+    RequestedGridCells,
+    ExportGridCell,
+    RetrievedRasterExportGridcells,
+    FailedRetrievingRasterExportGridcells,
+    SetRasterExportFormField,
+    FieldValuePair,
+    RemoveAllExportGridCells,
+    RequestRasterExports,
+    ReceivedTaskRasterExport,
+    FailedTaskRasterExport,
+    ReceivedProjections,
+    Projection,
+    FetchingState,
+    SetFetchingStateProjections,
 } from './interface';
+import { 
+    getExportGridCellResolution, 
+    getExportGridCellProjection, 
+    getExportGridCellTileWidth, 
+    getExportGridCellTileHeight, 
+    getExportGridCellBounds, 
+    getExportSelectedGridCellIds,
+    getDateTimeStart,
+} from './reducers';
+import {areGridCelIdsEqual} from './utils/rasterExportUtils'
+
+
 
 //MARK: Bootsrap
 export const REQUEST_LIZARD_BOOTSTRAP = "REQUEST_LIZARD_BOOTSTRAP";
@@ -288,7 +319,7 @@ export const DOWNLOAD_FILE = 'DOWNLOAD_FILE';
 export const requestInbox = (dispatch) => {
     setInterval(() => {
         request
-            .get(`/api/v3/inbox/`)
+            .get(`/api/v3/inbox/?page_size=10000000`)
             .then(response => {
                 dispatch({
                     type: REQUEST_INBOX,
@@ -312,3 +343,201 @@ export const downloadFile = (dispatch, id: string) => {
         id
     });
 };
+
+
+export const ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS = 'ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS';
+export const REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS = 'REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS';
+export const REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS = 'REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS';
+export const REQUESTED_RASTER_EXPORT_GRIDCELLS = 'REQUESTED_RASTER_EXPORT_GRIDCELLS';
+export const RETRIEVED_RASTER_EXPORT_GRIDCELLS = 'RETRIEVED_RASTER_EXPORT_GRIDCELLS';
+export const FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS = 'FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS';
+export const SET_RASTER_EXPORT_RESOLUTION = 'SET_RASTER_EXPORT_RESOLUTION';
+export const SET_RASTER_EXPORT_FORM_FIELD = 'SET_RASTER_EXPORT_FORM_FIELD';
+export const REMOVE_ALL_EXPORT_GRID_CELLS = 'REMOVE_ALL_EXPORT_GRID_CELLS';
+export const REQUEST_RASTER_EXPORTS = "REQUEST_RASTER_EXPORTS";
+export const RECEIVED_TASK_RASTER_EXPORT = "RECEIVED_TASKS_RASTER_EXPORTS";
+export const FAILED_TASK_RASTER_EXPORT = "FAILED_TASK_RASTER_EXPORT";
+export const RECEIVED_PROJECTIONS = "RECEIVED_PROJECTIONS";
+export const FETCHING_STATE_PROJECTIONS = "FETCHING_STATE_PROJECTIONS";
+
+export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): RemoveFromSelectedExportGridCellIds => ({
+    type: REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
+    gridCellIds,
+});
+export const addToSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): AddToSelectedExportGridCellIds => ({
+    type: ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
+    gridCellIds,
+});
+export const removeAllSelectedExportGridCellIds = (): RemoveAllSelectedExportGridCellIds => ({
+    type: REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
+});
+export const removeAllExportGridCells = (): RemoveAllExportGridCells => ({
+    type: REMOVE_ALL_EXPORT_GRID_CELLS,
+});
+
+
+export const requestedGridCells = (): RequestedGridCells => ({
+    type: REQUESTED_RASTER_EXPORT_GRIDCELLS
+});
+export const retrievedGridCells = (gridCells: ExportGridCell[]): RetrievedRasterExportGridcells => ({
+    type: RETRIEVED_RASTER_EXPORT_GRIDCELLS,
+    gridCells: gridCells,
+});
+export const failedRetrievingRasterExportGridcells = (msg: string): FailedRetrievingRasterExportGridcells=> ({
+    type: FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
+    failedMsg: msg,
+});
+
+export const updateExportRasterFormField = (fieldValuePair:FieldValuePair): SetRasterExportFormField => ({
+    type: SET_RASTER_EXPORT_FORM_FIELD,
+    fieldValuePair,
+});
+
+export const setCurrentRasterExportsToStore = (numberOfInboxMessages:number): RequestRasterExports => ({
+    type: REQUEST_RASTER_EXPORTS,
+    numberOfInboxMessages,
+})
+
+export const receivedTaskRasterExport = (id: ExportGridCelId): ReceivedTaskRasterExport => ({
+    type: RECEIVED_TASK_RASTER_EXPORT,
+    id: id,
+})
+
+export const failedTaskRasterExport = (id: ExportGridCelId): FailedTaskRasterExport => ({
+    type: FAILED_TASK_RASTER_EXPORT,
+    id: id,
+})
+export const receivedProjections = (projections: Projection[]) : ReceivedProjections => ({
+    type: RECEIVED_PROJECTIONS,
+    projections,
+})
+export const setFetchingStateProjections = (fetchingState: FetchingState) : SetFetchingStateProjections => ({
+    type: FETCHING_STATE_PROJECTIONS,
+    fetchingState,
+}) 
+
+
+const fieldValuePairContainsFieldThatShouldResetGridCells = (fieldValuePair: FieldValuePair) => {
+     return   fieldValuePair.field === 'projection' ||
+        fieldValuePair.field === 'resolution' ||
+        fieldValuePair.field === 'tileWidth' ||
+        fieldValuePair.field === 'tileHeight'
+}
+const fieldValuePairsListContainsFieldThatShouldResetGridCells = (fieldValuePairs: FieldValuePair[]) => {
+    return   !!fieldValuePairs.find(fieldValuePairContainsFieldThatShouldResetGridCells);
+}
+
+export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate: FieldValuePair[]) => 
+    (
+    dispatch: Dispatch<RemoveAllSelectedExportGridCellIds | RemoveAllExportGridCells | SetRasterExportFormField | RequestedGridCells | RetrievedRasterExportGridcells | FailedRetrievingRasterExportGridcells>
+    ) =>
+    {
+
+    if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
+        dispatch(removeAllSelectedExportGridCellIds());
+        dispatch(removeAllExportGridCells());
+    }
+    fieldValuePairesToUpdate.forEach((fieldValuePair)=>{
+        dispatch(updateExportRasterFormField(fieldValuePair));
+    });
+    dispatch(requestedGridCells());
+
+    const state = store.getState();
+    const resolution = getExportGridCellResolution(state);
+    const projection = getExportGridCellProjection(state);
+    const tileWidth = getExportGridCellTileWidth(state);
+    const tileHeight = getExportGridCellTileHeight(state);
+    const rasterUuid = state.selectedItem;
+    const bounds = getExportGridCellBounds(state);
+    const boundsString = `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`;
+    
+    request
+        .get(`${baseUrl}/rasters/${rasterUuid}/grid/?projection=${projection}&cell_size=${resolution}&tile_height=${tileHeight}&tile_width=${tileWidth}&bbox=${boundsString}`)
+        .then(response => {
+            const gridCells = response.body.features;
+
+            const newState = store.getState();
+            const newResolution = getExportGridCellResolution(newState);
+            const newProjection = getExportGridCellProjection(newState);
+            const newTileWidth = getExportGridCellTileWidth(newState);
+            const newTileHeight = getExportGridCellTileHeight(newState);
+            const newRasterUuid = newState.selectedItem;
+
+            if (
+                // only update the gridcells if the values for which the request was done were not changed
+                newResolution === resolution &&
+                newProjection === projection &&
+                newTileWidth === tileWidth &&
+                newTileHeight === tileHeight &&
+                newRasterUuid === rasterUuid
+            ) {
+                if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
+                    dispatch(removeAllSelectedExportGridCellIds());
+                    dispatch(removeAllExportGridCells());
+                }
+                dispatch(retrievedGridCells(gridCells));
+            }
+
+            
+        })
+        .catch(error=>{
+            console.error(error);
+            dispatch(failedRetrievingRasterExportGridcells(error+''));
+        })
+};
+
+export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch: Dispatch<RequestRasterExports | ReceivedTaskRasterExport | FailedTaskRasterExport>) =>{
+
+    dispatch(setCurrentRasterExportsToStore(numberOfInboxMessages));
+
+    const state = store.getState();
+    const selectedGridCellIds = getExportSelectedGridCellIds(state);
+    const projection = getExportGridCellProjection(state);
+    const tileWidth = getExportGridCellTileWidth(state);
+    const tileHeight = getExportGridCellTileHeight(state);
+    const start = getDateTimeStart(state);
+    const rasterUuid = state.selectedItem;
+    const availableGridCells = state.rasterExportState.availableGridCells;
+
+    selectedGridCellIds.forEach((id)=>{
+
+        const currentGrid = availableGridCells.find(cell=>{return areGridCelIdsEqual(cell.properties.id, id)});
+        if (!currentGrid) {
+            console.warn(`Raster with id ${id} not found among availableGridCells. Therefore export was not started.`);
+            // TODO how do we recover from this ?
+            return;
+        }
+        const currentGridBbox = currentGrid.properties.bbox;
+        const requestUrl = start===''?
+            `${baseUrl}/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&async=true&notify_user=true`
+            :
+            `${baseUrl}/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&start=${start}&async=true&notify_user=true`
+
+        request.get(requestUrl)
+        .then(() => {
+            dispatch(receivedTaskRasterExport(id));
+        })
+        .catch(error=>{
+            console.error(error);
+            dispatch(failedTaskRasterExport(id));
+        })
+
+    });
+    
+};
+
+export const requestProjections = (rasterUuid: string) => (dispatch: Dispatch<SetFetchingStateProjections | ReceivedProjections | SetFetchingStateProjections>) => {
+    dispatch(setFetchingStateProjections("SENT"));
+
+    const requestUrl = `${baseUrl}/rasters/${rasterUuid}/projections/?page_size=100000`;
+    request.get(requestUrl)
+    .then(response => {
+        dispatch(receivedProjections(response.body.results));
+    })
+    .catch(error=>{
+        console.error(error);
+        dispatch(setFetchingStateProjections("FAILED"));
+    })
+
+};
+    
