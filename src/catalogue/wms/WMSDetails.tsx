@@ -68,7 +68,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                     <span>
                         { authorizedToManageWMS ?
                             <a href={`/management/#/data_management/rasters/${wms.uuid}`}
-                               target="_black">
+                               target="_blank">
                                 <img
                                     className="details__icon"
                                     src="image/manageButton.svg"
