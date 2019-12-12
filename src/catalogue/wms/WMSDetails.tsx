@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getWMS, getOrganisations, getLizardBootstrap } from '../../reducers';
 import { WMS, LatLng, Organisation, Bootstrap } from '../../interface';
+import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import '../styles/Details.css';
 
 import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL } from '../../utils/url';
@@ -22,33 +23,6 @@ class WMSDetails extends React.Component<PropsFromState> {
         //If no WMS layer is selected, display a text
         if (!wms) return <div className="details details__loading">Please select a WMS Layer</div>;
 
-        // Authorized to manage wms layer in lizard management client
-        // if user is administrator of the organisation of the wms layer
-        // or user is supplier of the organisation of the wms layer and
-        // the supplier of the wms layer.
-        let authorizedToManageWMS: boolean = false;
-        if (wms && bootstrap) {
-            // Filter organisations to only show orgs with a role.
-            organisations.filter(obj => {
-                if (obj.roles.length > 0) {
-                    // Check if user is in the organisation of the wms layer
-                    if (obj.name === wms.organisation.name) {
-                        // Check if user is "admin" in the organisation of the wms layer
-                        // or "supplier" in the organisation of the wms layer and
-                        // supplier of the wms layer.
-                        if (obj.roles.includes("admin")) {
-                            authorizedToManageWMS = true;
-                        } else if (wms.hasOwnProperty("supplier")) {
-                            if (obj.roles.includes("supplier") &&
-                                    wms["supplier"] === bootstrap.user.username) {
-                                authorizedToManageWMS = true;
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
         //Get spatial bounds of the WMS layer
         const wmsBounds = getBounds(wms);
         const bounds = boundsToDisplay(wmsBounds);
@@ -59,6 +33,15 @@ class WMSDetails extends React.Component<PropsFromState> {
         //Calculate the zoom level of the raster by using the zoomLevelCalculation function
         const zoom = zoomLevelCalculation(wmsBounds);
 
+        // Only show manage button if user is admin of the organisation of the layer
+        // or the supplier of the layer and supplier in the organsation of the layer.
+        let authorizedToManageLayer: boolean = false;
+        if (wms && bootstrap) {
+            authorizedToManageLayer = isAuthorizedToManageLayer(
+                wms, bootstrap.user.username, organisations
+            );
+        }
+
         return (
             <div className="details">
                 <h3 title={wms.name}>
@@ -66,7 +49,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                         {wms.name}
                     </span>
                     <span>
-                        { authorizedToManageWMS ?
+                        { authorizedToManageLayer ?
                             <a href={`/management/#/data_management/rasters/${wms.uuid}`}
                                target="_blank">
                                 <img

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getRaster, getOrganisations, getLizardBootstrap } from '../../reducers';
 import { Raster, LatLng, Organisation, Bootstrap } from '../../interface';
+import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import '../styles/Details.css';
 
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
@@ -59,31 +60,13 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
         //If the projection is EPSG:4326, the resolution is calculated in square degrees, otherwise it is in m2
         const resolution = raster.projection === "EPSG:4326" ? rasterResolution.toFixed(6) + " deg2" : rasterResolution + " m2"
 
-        // Authorized to manage raster layer in lizard management client
-        // if user is administrator of the organisation of the raster layer
-        // or user is supplier for the organisation of the raster layer and
-        // the supplier of the raster layer.
-        let authorizedToManageRaster: boolean = false;
+        // Only show manage button if user is admin of the organisation of the layer
+        // or the supplier of the layer and supplier in the organsation of the layer.
+        let authorizedToManageLayer: boolean = false;
         if (raster && bootstrap) {
-            // Filter organisations to only show orgs with a role.
-            organisations.filter(obj => {
-                if (obj.roles.length > 0) {
-                    // Check if user is in the organisation of the raster
-                    if (obj.name === raster.organisation.name) {
-                        // Check if user is "admin" in the organisation of the raster
-                        // or "supplier" in the organisation of the raster and
-                        // supplier of the raster.
-                        if (obj.roles.includes("admin")) {
-                            authorizedToManageRaster = true;
-                        } else if (raster.hasOwnProperty("supplier")) {
-                            if (obj.roles.includes("supplier") &&
-                                    raster["supplier"] === bootstrap.user.username) {
-                                authorizedToManageRaster = true;
-                            }
-                        }
-                    }
-                }
-            });
+            authorizedToManageLayer = isAuthorizedToManageLayer(
+                raster, bootstrap.user.username, organisations
+            );
         }
 
         return (
@@ -93,7 +76,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
                         {raster.name}
                     </span>
                     <span>
-                        { authorizedToManageRaster ?
+                        { authorizedToManageLayer ?
                             <a href={`/management/#/data_management/rasters/${raster.uuid}`}
                                target="_blank">
                                 <img
