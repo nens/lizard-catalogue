@@ -359,15 +359,16 @@ class ExportModal extends React.Component<MyProps> {
 };
 
 interface PropsFromState {
-    fetchingGridState: MyStore['rasterExportState']['fetchingStateGrid'],
-    availableProjections: MyStore['rasterExportState']['projectionsAvailableForCurrentRaster']['projections'],
-    availableGridCells: MyStore['rasterExportState']['availableGridCells'],
-    selectedGridCellIds: MyStore['rasterExportState']['selectedGridCellIds'],
-    resolution: MyStore['rasterExportState']['resolution'],
-    projection: MyStore['rasterExportState']['projection'],
-    tileWidth: MyStore['rasterExportState']['tileWidth'],
-    tileHeight: MyStore['rasterExportState']['tileHeight'],
-    dateTimeStart: MyStore['rasterExportState']['dateTimeStart'],
+    fetchingGridState: ReturnType<typeof getExportGridCellCellFetchingState>,
+    availableGridCells: ReturnType<typeof getExportAvailableGridCells>,
+    availableProjections: ReturnType<typeof getProjections>,
+    
+    selectedGridCellIds: ReturnType<typeof getExportSelectedGridCellIds>,
+    resolution: ReturnType<typeof getExportGridCellResolution>,
+    projection: ReturnType<typeof getExportGridCellProjection>,
+    tileWidth: ReturnType<typeof getExportGridCellTileWidth>,
+    tileHeight: ReturnType<typeof getExportGridCellTileHeight>,
+    dateTimeStart: ReturnType<typeof getDateTimeStart>,
     inbox: MyStore['inbox'],
 };
 
