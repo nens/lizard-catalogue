@@ -673,6 +673,10 @@ export const getDatasets = (state: MyStore) => {
     return state.datasets.filter(dataset => dataset.slug !== "");
 }
 
+export const getInbox = (state: MyStore) => {
+    return state.inbox;
+};
+
 export default combineReducers({
     rasterExportState,
     bootstrap,

@@ -18,6 +18,7 @@ import {
     getDateTimeStart, 
     getProjections,
     getExportGridCellCellFetchingState,
+    getInbox,
 } from '../../reducers';
 import {
     addToSelectedExportGridCellIds, 
@@ -369,7 +370,7 @@ interface PropsFromState {
     tileWidth: ReturnType<typeof getExportGridCellTileWidth>,
     tileHeight: ReturnType<typeof getExportGridCellTileHeight>,
     dateTimeStart: ReturnType<typeof getDateTimeStart>,
-    inbox: MyStore['inbox'],
+    inbox: ReturnType<typeof getInbox>,
 };
 
 const mapStateToProps = (state: MyStore): PropsFromState => ({
@@ -382,7 +383,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     tileWidth: getExportGridCellTileWidth(state),
     tileHeight: getExportGridCellTileHeight(state),
     dateTimeStart: getDateTimeStart(state),
-    inbox: state.inbox,
+    inbox: getInbox(state),
 });
 
 interface PropsFromDispatch {
