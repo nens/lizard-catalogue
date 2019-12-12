@@ -29,7 +29,10 @@ import {
     requestProjections,
 } from '../../action';
 import {areGridCelIdsEqual} from '../../utils/rasterExportUtils';
-import { Raster, FieldValuePair } from '../../interface';
+import { 
+    Raster, 
+    FieldValuePair,
+ } from '../../interface';
 import '../styles/Export.css';
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
@@ -356,6 +359,7 @@ const mapStateToProps = (state: MyStore) => ({
 type PropsFromState = ReturnType<typeof mapStateToProps>
 
 const mapDispatchToProps = (dispatch: any) => ({
+// const mapDispatchToProps = (dispatch: any) => ({
     addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),

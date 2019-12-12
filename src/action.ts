@@ -427,7 +427,11 @@ const fieldValuePairsListContainsFieldThatShouldResetGridCells = (fieldValuePair
     return   !!fieldValuePairs.find(fieldValuePairContainsFieldThatShouldResetGridCells);
 }
 
-export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate: FieldValuePair[]) => (dispatch) =>{
+export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate: FieldValuePair[]) => 
+    (
+    dispatch: Dispatch<RemoveAllSelectedExportGridCellIds | RemoveAllExportGridCells | SetRasterExportFormField | RequestedGridCells | RetrievedRasterExportGridcells | FailedRetrievingRasterExportGridcells>
+    ) =>
+    {
 
     if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
         dispatch(removeAllSelectedExportGridCellIds());
@@ -482,8 +486,7 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
         })
 };
 
-
-export const requestRasterExports = (numberOfInboxMessages) => (dispatch) =>{
+export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch: Dispatch<RequestRasterExports | ReceivedTaskRasterExport | FailedTaskRasterExport>) =>{
 
     dispatch(setCurrentRasterExportsToStore(numberOfInboxMessages));
 
@@ -523,7 +526,7 @@ export const requestRasterExports = (numberOfInboxMessages) => (dispatch) =>{
     
 };
 
-export const requestProjections = (rasterUuid: string) => (dispatch) => {
+export const requestProjections = (rasterUuid: string) => (dispatch: Dispatch<SetFetchingStateProjections | ReceivedProjections | SetFetchingStateProjections>) => {
     dispatch(setFetchingStateProjections("SENT"));
 
     const requestUrl = `${baseUrl}/rasters/${rasterUuid}/projections/?page_size=100000`;

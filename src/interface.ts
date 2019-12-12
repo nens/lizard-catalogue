@@ -30,8 +30,6 @@ import {
 } from "./action";
 import { MyStore } from './reducers';
 
-
-
 //ACTION INTERFACE
 export interface RequestLizardBootstrap {
     type: typeof REQUEST_LIZARD_BOOTSTRAP
