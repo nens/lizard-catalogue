@@ -3,25 +3,9 @@ import { baseUrl } from './api';
 import { Dispatch,} from 'redux';
 import store  from './store';
 import {
-    RastersFetched,
     RasterListObject,
-    ObservationType,
-    Organisation,
-    Dataset,
-    ObservationTypesFetched,
-    OrganisationsFetched,
-    DatasetsFetched,
-    RastersRequested,
-    RequestLizardBootstrap,
-    ReceiveLizardBootstrap,
     WMSObject,
-    RequestWMS,
-    ReceiveWMS,
     SwitchDataType,
-    ItemSelected,
-    UpdateOrganisationRadiobutton,
-    UpdateObservationTypeRadiobutton,
-    UpdateDatasetRadiobutton,
     ToggleAlert,
     ExportGridCelId,
     RemoveFromSelectedExportGridCellIds,
@@ -59,24 +43,20 @@ import {areGridCelIdsEqual} from './utils/rasterExportUtils'
 export const REQUEST_LIZARD_BOOTSTRAP = "REQUEST_LIZARD_BOOTSTRAP";
 export const RECEIVE_LIZARD_BOOTSTRAP = "RECEIVE_LIZARD_BOOTSTRAP";
 
-const requestLizardBootsrap = (): RequestLizardBootstrap => ({
-    type: REQUEST_LIZARD_BOOTSTRAP
-});
-
-const receiveLizardBootstrap = (data): ReceiveLizardBootstrap => ({
-    type: RECEIVE_LIZARD_BOOTSTRAP,
-    payload: data
-});
-
 export const fetchLizardBootstrap = (dispatch) => {
-    dispatch(requestLizardBootsrap());
+    dispatch({
+        type: REQUEST_LIZARD_BOOTSTRAP
+    });
     fetch("/bootstrap/lizard/", {
         credentials: "same-origin"
     })
     .then(response => response.json())
     .then(data => {
         if (data && data.user && data.user.authenticated === true) {
-            dispatch(receiveLizardBootstrap(data));
+            dispatch({
+                type: RECEIVE_LIZARD_BOOTSTRAP,
+                payload: data
+            });
         } 
     });
 };
@@ -84,40 +64,49 @@ export const fetchLizardBootstrap = (dispatch) => {
 //MARK: Switch between rasters and wms layers
 export const SWITCH_DATA_TYPE = 'SWITCH_DATA_TYPE';
 
-const dataTypeSwitched = (dataType: SwitchDataType['payload']): SwitchDataType => ({
-    type: SWITCH_DATA_TYPE,
-    payload: dataType
-});
-
 export const switchDataType = (dataType: SwitchDataType['payload'], dispatch): void => {
-    dispatch(dataTypeSwitched(dataType));
+    dispatch({
+        type: SWITCH_DATA_TYPE,
+        payload: dataType
+    });
 };
 
 //MARK: Raster
 export const RASTERS_REQUESTED = 'RASTERS_REQUESTED';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
+export const RASTER_FETCHED = 'RASTER_FETCHED';
 
-const rastersRequested = (): RastersRequested => ({
+const rastersRequested = () => ({
     type: RASTERS_REQUESTED
 });
 
-const rastersFetched = (rasterListObject: RasterListObject): RastersFetched => ({
+const rastersFetched = (rasterListObject: RasterListObject) => ({
     type: RASTERS_FETCHED,
     payload: rasterListObject
 });
 
 export const fetchRasters = (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string, dispatch): void => {
     dispatch(rastersRequested());
-    const organisationParam = organisationName === '' ? '' : `&organisation__name__icontains=${organisationName}`;
-    const observationTypeParam = observationTypeParameter === '' ? '' : `&observation_type__parameter__icontains=${observationTypeParameter}`;
-    const datasetParam = datasetSlug === '' ? '' : `&datasets__slug=${datasetSlug}`;
+
+    const params: string[] = [];
+
+    if (page) params.push(`page=${page}`);
+    if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
+    if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
+    if (datasetSlug) params.push(`datasets__slug=${encodeURIComponent(datasetSlug)}`);
+    if (observationTypeParameter) params.push(`observation_type__parameter__icontains=${encodeURIComponent(observationTypeParameter)}`);
+    if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
+
+    const queries = params.join('&');
+
     request
-        .get(`${baseUrl}/rasters/?name__icontains=${searchTerm}&page=${page}${organisationParam}${observationTypeParam}${datasetParam}&ordering=${ordering}&scenario__isnull=true`)
+        .get(`${baseUrl}/rasters/?${queries}&scenario__isnull=true`)
         .then(response => {
-            if(response.body.count === 0) {
+            if(response.body.count === 0 && searchTerm) {
                 //If could not find any raster with the search term by raster's name then look for raster's uuid
+                const newQueries = queries.replace('name__icontains', 'uuid');
                 request
-                    .get(`${baseUrl}/rasters/?uuid=${searchTerm}&page=${page}${organisationParam}${observationTypeParam}${datasetParam}&scenario__isnull=true`)
+                    .get(`${baseUrl}/rasters/?${newQueries}&scenario__isnull=true`)
                     .then(response => {
                         dispatch(rastersFetched(response.body))
                     })
@@ -129,8 +118,20 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
         .catch(console.error)
 };
 
+export const fetchRasterByUUID = (uuid: string, dispatch): void => {
+    request
+        .get(`${baseUrl}/rasters/${uuid}`)
+        .then(response => {
+            dispatch({
+                type: RASTER_FETCHED,
+                raster: response.body
+            });
+        })
+        .catch(console.error)
+};
+
 //Decide whether gonna use this fetch function
-export const fetchRastersOnUuid = (searchUuid: string, dispatch: Dispatch<RastersFetched>): void => {
+export const fetchRastersOnUuid = (searchUuid: string, dispatch): void => {
     request
         .get(`${baseUrl}/rasters/?uuid=${searchUuid}`)
         .then(response => {
@@ -141,35 +142,58 @@ export const fetchRastersOnUuid = (searchUuid: string, dispatch: Dispatch<Raster
 
 //MARK: WMS
 export const REQUEST_WMS = 'REQUEST_WMS';
-export const RECEIVE_WMS = 'RECEIVE_WMS';
+export const RECEIVE_WMS_LAYERS = 'RECEIVE_WMS_LAYERS';
+export const RECEIVE_WMS_LAYER = 'RECEIVE_WMS_LAYER';
 
-const wmsRequested = (): RequestWMS => ({
+const wmsRequested = () => ({
     type: REQUEST_WMS
 });
 
-const wmsReceived = (wmsObject: WMSObject): ReceiveWMS => ({
-    type: RECEIVE_WMS,
+const wmsLayersReceived = (wmsObject: WMSObject) => ({
+    type: RECEIVE_WMS_LAYERS,
     payload: wmsObject
 });
 
 export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string, dispatch): void => {
     dispatch(wmsRequested());
-    const organisationParam = organisationName === '' ? '' : `&organisation__name__icontains=${organisationName}`;
-    const datasetParam = datasetSlug === '' ? '' : `&datasets__slug=${datasetSlug}`;
+
+    const params: string[] = [];
+
+    if (page) params.push(`page=${page}`);
+    if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
+    if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
+    if (datasetSlug) params.push(`datasets__slug=${encodeURIComponent(datasetSlug)}`);
+    if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
+
+    const queries = params.join('&');
+
     request
-        .get(`${baseUrl}/wmslayers/?name__icontains=${searchTerm}&page=${page}${organisationParam}${datasetParam}&ordering=${ordering}`)
+        .get(`${baseUrl}/wmslayers/?${queries}`)
         .then(response => {
-            if(response.body.count === 0) {
-                //If could not find any raster with the search term by raster's name then look for raster's uuid
+            if(response.body.count === 0 && searchTerm) {
+                //If could not find any WMS layer with the search term by WMS's name then look for WMS's uuid
+                const newQueries = queries.replace('name__icontains', 'uuid');
                 request
-                    .get(`${baseUrl}/wmslayers/?uuid=${searchTerm}&page=${page}${organisationParam}${datasetParam}&ordering=${ordering}`)
+                    .get(`${baseUrl}/wmslayers/?${newQueries}`)
                     .then(response => {
-                        dispatch(wmsReceived(response.body))
+                        dispatch(wmsLayersReceived(response.body))
                     })
                     .catch(console.error)
             } else {
-                dispatch(wmsReceived(response.body))
+                dispatch(wmsLayersReceived(response.body))
             }
+        })
+        .catch(console.error)
+};
+
+export const fetchWMSByUUID = (uuid: string, dispatch): void => {
+    request
+        .get(`${baseUrl}/wmslayers/${uuid}`)
+        .then(response => {
+            dispatch({
+                type: RECEIVE_WMS_LAYER,
+                wms: response.body
+            });
         })
         .catch(console.error)
 };
@@ -177,13 +201,11 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
 //MARK: Select Item to view (Raster or WMS layer)
 export const ITEM_SELECTED = 'ITEM_SELECTED';
 
-const itemSelected = (uuid: string): ItemSelected => ({
-    type: ITEM_SELECTED,
-    payload: uuid
-});
-
 export const selectItem = (uuid: string, dispatch): void => {
-    dispatch(itemSelected(uuid));
+    dispatch({
+        type: ITEM_SELECTED,
+        uuid
+    });
 };
 
 //MARK: Observation types and Organisation
@@ -191,80 +213,120 @@ export const OBSERVATION_TYPES_FETCHED = 'OBSERVATION_TYPES_FETCHED';
 export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
 export const DATASETS_FETCHED = 'DATASETS_FETCHED';
 
-const observationTypesFetched = (observationTypes: ObservationType[]): ObservationTypesFetched => ({
-    type: OBSERVATION_TYPES_FETCHED,
-    payload: observationTypes
-});
-
-export const fetchObservationTypes = (parameter: ObservationType['parameter'], dispatch: Dispatch<ObservationTypesFetched | UpdateObservationTypeRadiobutton>): void => {
+export const fetchObservationTypes = (dispatch): void => {
     request
         .get(`${baseUrl}/observationtypes/?page_size=0`)
         .then(response => {
-            dispatch(observationTypesFetched(response.body));
-            if (parameter && parameter !== '') updateObservationTypeRadiobutton(parameter, dispatch);
+            dispatch({
+                type: OBSERVATION_TYPES_FETCHED,
+                observationTypes: response.body
+            });
         })
         .catch(console.error)
 };
 
-const organisationsFetched = (organisations: Organisation[]): OrganisationsFetched => ({
-    type: ORGANISATIONS_FETCHED,
-    payload: organisations
-});
-
-export const fetchOrganisations = (name: Organisation['name'], dispatch: Dispatch<OrganisationsFetched | UpdateOrganisationRadiobutton>): void => {
+export const fetchOrganisations = (dispatch): void => {
     request
         .get(`${baseUrl}/organisations/?page_size=0`)
         .then(response => {
-            dispatch(organisationsFetched(response.body));
-            if (name && name !== '') updateOrganisationRadiobutton(name, dispatch);
+            dispatch({
+                type: ORGANISATIONS_FETCHED,
+                organisations: response.body
+            });
         })
         .catch(console.error)
 };
 
-const datasetsFetched = (datasets: Dataset[]): DatasetsFetched => ({
-    type: DATASETS_FETCHED,
-    payload: datasets
-});
-
-export const fetchDatasets = (slug: Dataset['slug'], dispatch: Dispatch<DatasetsFetched | UpdateDatasetRadiobutton>): void => {
+export const fetchDatasets = (dispatch): void => {
     request
         .get(`${baseUrl}/datasets/?page_size=0`)
         .then(response => {
-            dispatch(datasetsFetched(response.body));
-            if (slug && slug !== '') updateDatasetRadiobutton(slug, dispatch);
+            dispatch({
+                type: DATASETS_FETCHED,
+                datasets: response.body
+            });
         })
         .catch(console.error)
 };
-export const UPDATE_ORGANISATION_RADIOBUTTON = 'UPDATE_ORGANISATION_RADIOBUTTON';
-export const UPDATE_OBSERVATION_RADIOBUTTON = 'UPDATE_OBSERVATION_RADIOBUTTON';
-export const UPDATE_DATASET_RADIOBUTTON = 'UPDATE_DATASET_RADIOBUTTON';
 
-const organisationRadiobuttonUpdated = (name: Organisation['name']): UpdateOrganisationRadiobutton => ({
-    type: UPDATE_ORGANISATION_RADIOBUTTON,
-    payload: name
-});
+//MARK: Filters
+export const SELECT_ORGANISATION = 'SELECT_ORGANISATION';
+export const SELECT_DATASET = 'SELECT_DATASET';
+export const SELECT_OBSERVATIONTYPE = 'SELECT_OBSERVATIONTYPE';
+export const UPDATE_SEARCH = 'UPDATE_SEARCH';
+export const REMOVE_ORGANISATION = 'REMOVE_ORGANISATION';
+export const REMOVE_DATASET = 'REMOVE_DATASET';
+export const REMOVE_OBSERVATIONTYPE = 'REMOVE_OBSERVATIONTYPE';
+export const REMOVE_SEARCH = 'REMOVE_SEARCH';
+export const UPDATE_ORDER = 'UPDATE_ORDER';
+export const UPDATE_PAGE = 'UPDATE_PAGE';
 
-export const updateOrganisationRadiobutton = (name: Organisation['name'], dispatch: Dispatch<UpdateOrganisationRadiobutton>) => {
-    dispatch(organisationRadiobuttonUpdated(name));
+export const selectOrganisation = (dispatch, organisation: string) => {
+    dispatch({
+        type: SELECT_ORGANISATION,
+        organisation
+    });
 };
 
-const observationTypeRadiobuttonUpdated = (parameter: ObservationType['parameter']): UpdateObservationTypeRadiobutton => ({
-    type: UPDATE_OBSERVATION_RADIOBUTTON,
-    payload: parameter
-});
-
-export const updateObservationTypeRadiobutton = (parameter: ObservationType['parameter'], dispatch: Dispatch<UpdateObservationTypeRadiobutton>) => {
-    dispatch(observationTypeRadiobuttonUpdated(parameter));
+export const removeOrganisation = (dispatch) => {
+    dispatch({
+        type: REMOVE_ORGANISATION
+    });
 };
 
-const datasetRadiobuttonUpdated = (slug: Dataset['slug']): UpdateDatasetRadiobutton => ({
-    type: UPDATE_DATASET_RADIOBUTTON,
-    payload: slug
-});
-
-export const updateDatasetRadiobutton = (slug: Dataset['slug'], dispatch: Dispatch<UpdateDatasetRadiobutton>) => {
-    dispatch(datasetRadiobuttonUpdated(slug));
+export const selectDataset = (dispatch, dataset: string) => {
+    dispatch({
+        type: SELECT_DATASET,
+        dataset
+    });
 };
+
+export const removeDataset = (dispatch) => {
+    dispatch({
+        type: REMOVE_DATASET
+    });
+};
+
+export const selectObservationType = (dispatch, observationType: string) => {
+    dispatch({
+        type: SELECT_OBSERVATIONTYPE,
+        observationType
+    });
+};
+
+export const removeObservationType = (dispatch) => {
+    dispatch({
+        type: REMOVE_OBSERVATIONTYPE
+    });
+};
+
+export const updateSearch = (dispatch, searchTerm: string) => {
+    dispatch({
+        type: UPDATE_SEARCH,
+        searchTerm
+    });
+};
+
+export const removeSearch = (dispatch) => {
+    dispatch({
+        type: REMOVE_SEARCH
+    });
+};
+
+export const updateOrder = (dispatch, ordering: string) => {
+    dispatch({
+        type: UPDATE_ORDER,
+        ordering
+    });
+};
+
+export const updatePage = (dispatch, page: number) => {
+    dispatch({
+        type: UPDATE_PAGE,
+        page
+    });
+};
+
 
 //MARK: Basket
 export const UPDATE_BASKET_WITH_RASTER = 'UPDATE_BASKET_WITH_RASTER';
@@ -303,7 +365,7 @@ export const removeWMSFromBasket = (uuid: string, dispatch): void => {
 //MARK: Toggle the showAlert
 export const TOGGLE_ALERT = 'TOGGLE_ALERT';
 
-const alertToggled = (): ToggleAlert => ({
+const alertToggled = (): any => ({
     type: TOGGLE_ALERT
 });
 
@@ -541,3 +603,8 @@ export const requestProjections = (rasterUuid: string) => (dispatch: Dispatch<Se
 
 };
     
+// export const toggleAlert = (dispatch) => {
+//     dispatch({
+//         type: TOGGLE_ALERT
+//     });
+// };

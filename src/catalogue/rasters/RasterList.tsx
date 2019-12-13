@@ -9,7 +9,6 @@ import Pagination from '../components/Pagination';
 import '../styles/List.css';
 
 interface MyProps {
-    page: number,
     searchTerm: string,
 
     currentRasterList: MyStore['currentRasterList'] | null,
@@ -24,7 +23,8 @@ interface MyProps {
 };
 
 interface PropsFromState {
-    rasters: Raster[]
+    rasters: Raster[],
+    page: number,
 };
 
 type RasterListProps = MyProps & PropsFromState;
@@ -189,10 +189,12 @@ class RasterList extends React.Component<RasterListProps, MyState> {
 
 const mapStateToProps = (state: MyStore, ownProps: MyProps): PropsFromState => {
     if (!ownProps.currentRasterList) return {
-        rasters: []
+        rasters: [],
+        page: 1,
     };
     return {
-        rasters: ownProps.currentRasterList.rasterList.map(uuid => getRaster(state, uuid))
+        rasters: ownProps.currentRasterList.rasterList.map(uuid => getRaster(state, uuid)),
+        page: state.filters.page,
     };
 };
 

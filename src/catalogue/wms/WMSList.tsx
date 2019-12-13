@@ -9,7 +9,6 @@ import Pagination from '../components/Pagination';
 import '../styles/List.css';
 
 interface MyProps {
-    page: number,
     searchTerm: string,
 
     currentWMSList: MyStore['currentWMSList'] | null,
@@ -24,7 +23,8 @@ interface MyProps {
 };
 
 interface PropsFromState {
-    wmsLayers: WMS[]
+    wmsLayers: WMS[],
+    page: number,
 };
 
 type WMSListProps = MyProps & PropsFromState;
@@ -173,10 +173,12 @@ class WMSList extends React.Component<WMSListProps, MyState> {
 
 const mapStateToProps = (state: MyStore, ownProps: MyProps): PropsFromState => {
     if (!ownProps.currentWMSList) return {
-        wmsLayers: []
+        wmsLayers: [],
+        page: 1,
     };
     return {
-        wmsLayers: ownProps.currentWMSList.wmsList.map(uuid => getWMS(state, uuid))
+        wmsLayers: ownProps.currentWMSList.wmsList.map(uuid => getWMS(state, uuid)),
+        page: state.filters.page,
     };
 };
 
