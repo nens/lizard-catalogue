@@ -93,7 +93,6 @@ export interface MyStore {
         rasters: string[],
         wmsLayers: string[]
     },
-    pendingExportTasks: number,
     inbox: Message[],
     rasterExportState: RasterExportState,
     filters: {
@@ -612,13 +611,6 @@ const filters =(
     };
 };
 
-const pendingExportTasks = (state: MyStore['pendingExportTasks'] = 0, { type }): MyStore['pendingExportTasks'] => {
-    switch (type) {
-        default:
-            return state;
-    };
-};
-
 const inbox = (state: MyStore['inbox'] = [], { type, messages, id }) => {
     switch (type) {
         case REQUEST_INBOX:
@@ -751,6 +743,5 @@ export default combineReducers({
     observationTypes,
     organisations,
     datasets,
-    pendingExportTasks,
     inbox,
 });
