@@ -365,7 +365,7 @@ export const removeWMSFromBasket = (uuid: string, dispatch): void => {
 //MARK: Toggle the showAlert
 export const TOGGLE_ALERT = 'TOGGLE_ALERT';
 
-const alertToggled = (): any => ({
+const alertToggled = (): ToggleAlert => ({
     type: TOGGLE_ALERT
 });
 
@@ -602,9 +602,3 @@ export const requestProjections = (rasterUuid: string) => (dispatch: Dispatch<Se
     })
 
 };
-    
-// export const toggleAlert = (dispatch) => {
-//     dispatch({
-//         type: TOGGLE_ALERT
-//     });
-// };
