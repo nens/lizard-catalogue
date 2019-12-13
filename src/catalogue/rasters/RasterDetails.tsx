@@ -78,7 +78,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
                     <span>
                         { authorizedToManageLayer ?
                             <a href={`/management/#/data_management/rasters/${raster.uuid}`}
-                               target="_blank">
+                               target="_blank" rel="noopener noreferrer">
                                 <img
                                     className="details__icon"
                                     src="image/manageButton.svg"
