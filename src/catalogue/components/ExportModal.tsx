@@ -18,6 +18,7 @@ import {
     getProjections,
     getExportGridCellCellFetchingState,
     getInbox,
+    getExportGridCellBounds,
 } from '../../reducers';
 import {
   RootState,
@@ -41,6 +42,7 @@ import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
 import moment from "moment";
 import MDSpinner from "react-md-spinner";
+import { getSpatialBoundsIntersect, gridPolygonToSpatialBounds } from '../../utils/geoUtils';
 
 interface PropsFromParent {
     raster: Raster,
@@ -73,8 +75,8 @@ class ExportModal extends React.Component<MyProps> {
     }
 
     render() {
-        const { raster, bounds, openDownloadModal,fetchingGridState } = this.props;
-        const exportGridCells = this.props.availableGridCells;
+        const { raster, bounds, openDownloadModal,fetchingGridState, exportBounds } = this.props;
+        const exportGridCells = this.props.availableGridCells.filter(grid=> getSpatialBoundsIntersect(gridPolygonToSpatialBounds(grid), exportBounds));
         const selectedGridIds = this.props.selectedGridCellIds; 
 
         return (
@@ -124,16 +126,8 @@ class ExportModal extends React.Component<MyProps> {
                                     west: bounds._southWest.lng,
                                 };
                                 const rasterBounds = raster.spatial_bounds;
-                                const intersectSpatialBounds = {
-                                    north: mapSpatialBounds.north < rasterBounds.north ? mapSpatialBounds.north : rasterBounds.north,
-                                    east: mapSpatialBounds.east < rasterBounds.east ? mapSpatialBounds.east : rasterBounds.east,
-                                    south: mapSpatialBounds.south > rasterBounds.south ? mapSpatialBounds.south : rasterBounds.south,
-                                    west: mapSpatialBounds.west > rasterBounds.west ? mapSpatialBounds.west : rasterBounds.west,
-                                }
-                                if (
-                                    intersectSpatialBounds.north > intersectSpatialBounds.south ||
-                                    intersectSpatialBounds.east > intersectSpatialBounds.west
-                                    ) {
+                                const intersectSpatialBounds = getSpatialBoundsIntersect(mapSpatialBounds, rasterBounds);
+                                if (intersectSpatialBounds===null) {
                                     return;
                                 }
 
@@ -303,6 +297,19 @@ class ExportModal extends React.Component<MyProps> {
                     
                     <div className="export_text">
                         {
+                            exportGridCells.length > 1500 ? 
+                            <div style={{color:"#A10000"}}> 
+                                <span
+                                    style={{fontSize: "2rem"}}
+                                >
+                                    Resolution too small: 
+                                </span>
+                                <span>
+                                <br/>
+                                Zoom-in when using a fine resolution
+                                </span>
+                            </div>
+                            :
                             parseInt(this.props.tileHeight + '') && 
                             parseInt(this.props.tileWidth + '') && 
                             (parseInt(this.props.tileHeight+'') * parseInt(this.props.tileWidth+'') > 1000000000) 
@@ -369,6 +376,7 @@ const mapStateToProps = (state: RootState) => ({
     tileHeight: getExportGridCellTileHeight(state),
     dateTimeStart: getDateTimeStart(state),
     inbox: getInbox(state),
+    exportBounds: getExportGridCellBounds(state),
 });
 
 type PropsFromState = ReturnType<typeof mapStateToProps>
