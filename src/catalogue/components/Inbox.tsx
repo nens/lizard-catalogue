@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Message, RasterExportRequest } from '../../interface';
 import { connect } from 'react-redux';
-import { removeMessage, downloadFile } from '../../action';
+import { removeMessage, downloadFile, removeCurrentExportTasks } from '../../action';
 import { MyStore } from '../../reducers';
 import '../styles/Inbox.css';
 
@@ -18,6 +18,7 @@ interface PropsFromState {
 interface PropsFromDispatch {
     removeMessage: (id: string) => void,
     downloadFile: (id: string) => void,
+    removeCurrentExportTasks: () => void,
 };
 
 type InboxProps = MyProps & PropsFromState & PropsFromDispatch;
@@ -29,6 +30,22 @@ class Inbox extends React.Component<InboxProps> {
             method: 'POST'
         });
         this.props.removeMessage(message.id);
+    };
+
+    componentWillUpdate(nextProps: InboxProps) {
+        const {
+            inbox,
+            numberOfinboxMessagesBeforeRequest,
+            rasterExportRequests,
+        } = nextProps;
+        // Remove all current export tasks and set number of inbox messages before request
+        // back to 0 after all export tasks have been finished
+        if (
+            rasterExportRequests.length &&
+            (rasterExportRequests.length - (inbox.length - numberOfinboxMessagesBeforeRequest)) === 0
+        ) {
+            this.props.removeCurrentExportTasks();
+        };
     };
 
     render() {
@@ -72,7 +89,7 @@ class Inbox extends React.Component<InboxProps> {
                             title="remove file"
                             onClick={() => this.removeMessage(message)}
                             style={{
-                                visibility: (message.downloaded || !message.url) ? 'visible' : 'hidden'
+                                // visibility: (message.downloaded || !message.url) ? 'visible' : 'hidden'
                             }}
                         >
                             &times;
@@ -114,6 +131,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
 const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
     removeMessage: (id: string) => removeMessage(dispatch, id),
     downloadFile: (id: string) => downloadFile(dispatch, id),
+    removeCurrentExportTasks: () => removeCurrentExportTasks(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Inbox);
