@@ -1,6 +1,20 @@
 import {
     SWITCH_DATA_TYPE,
+    REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
+    ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
+    REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
+    REQUESTED_RASTER_EXPORT_GRIDCELLS,
+    RETRIEVED_RASTER_EXPORT_GRIDCELLS,
+    FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
+    SET_RASTER_EXPORT_FORM_FIELD,
+    REMOVE_ALL_EXPORT_GRID_CELLS,
+    REQUEST_RASTER_EXPORTS,
+    RECEIVED_TASK_RASTER_EXPORT,
+    FAILED_TASK_RASTER_EXPORT,
+    RECEIVED_PROJECTIONS,
+    FETCHING_STATE_PROJECTIONS,
 } from "./action";
+import { MyStore } from './reducers';
 
 //ACTION
 export interface SwitchDataType {
@@ -120,3 +134,155 @@ export interface LatLng {
     lat: number,
     lng: number
 };
+
+//EXPORT MESSAGE
+export interface Message {
+    id: string,
+    message: string,
+    url: string,
+    downloaded: boolean,
+};
+
+export type ExportGridCelId = number[];
+
+export interface ExportGridCell {
+    "type": string,
+    "geometry": {
+        "type": string,
+        "coordinates": number[][],
+    },
+    "properties": {
+        "projection": string,
+        "bbox": number[],
+        "id": ExportGridCelId
+    }
+};
+
+export type FetchingState = "NOT_SENT" | "SENT" | "RECEIVED" | "FAILED";
+
+export interface Bounds {
+    north: number;
+    east: number;
+    south: number;
+    west: number;
+}
+
+export interface RasterExportState {
+    selectedGridCellIds: ExportGridCelId[],
+    availableGridCells: ExportGridCell[],
+    fetchingStateGrid: FetchingState,
+    fetchingStateGridMsg: string,
+    fetchingStateTasks: FetchingState,
+    resolution: number | "",
+    projection: string,
+    tileWidth: number | "",
+    tileHeight: number | "",
+    bounds: Bounds,
+    rasterExportRequests: RasterExportRequest[],
+    dateTimeStart: string,
+    numberOfinboxMessagesBeforeRequest: number,
+    projectionsAvailableForCurrentRaster: Projections,
+}
+
+export interface Projections {
+    fetchingState: FetchingState,
+    projections: Projection[],
+}
+
+export interface Projection {
+    url: string,
+    name: string,
+    code: string, 
+}
+
+
+export interface RemoveFromSelectedExportGridCellIds {
+    type: typeof REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
+    gridCellIds: ExportGridCelId[],
+};
+export interface AddToSelectedExportGridCellIds { 
+    type: typeof ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
+    gridCellIds: ExportGridCelId[],
+};
+export interface RemoveAllSelectedExportGridCellIds {
+    type: typeof REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
+};
+export interface RemoveAllExportGridCells{
+    type: typeof REMOVE_ALL_EXPORT_GRID_CELLS,
+}
+export interface RequestedGridCells {
+    type: typeof REQUESTED_RASTER_EXPORT_GRIDCELLS,
+};
+export interface RetrievedRasterExportGridcells {
+    type: typeof RETRIEVED_RASTER_EXPORT_GRIDCELLS,
+    gridCells: ExportGridCell[]
+
+}
+
+export interface  FailedRetrievingRasterExportGridcells {
+    type: typeof FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
+    failedMsg: string,
+}
+
+export interface SetRasterExportFormField {
+    type: typeof SET_RASTER_EXPORT_FORM_FIELD,
+    fieldValuePair: FieldValuePair,
+}
+
+export interface RequestRasterExports {
+    type: typeof REQUEST_RASTER_EXPORTS,
+    numberOfInboxMessages:number,
+}
+export interface ReceivedTaskRasterExport {
+    type: typeof RECEIVED_TASK_RASTER_EXPORT,
+    id: ExportGridCelId,
+}
+
+export interface FailedTaskRasterExport {
+    type: typeof FAILED_TASK_RASTER_EXPORT,
+    id: ExportGridCelId,
+}
+
+export interface ReceivedProjections {
+    type: typeof RECEIVED_PROJECTIONS,
+    projections: Projection[],
+}
+export interface SetFetchingStateProjections {
+    type: typeof FETCHING_STATE_PROJECTIONS,
+    fetchingState: FetchingState,
+}
+
+export type RasterExportFormFieldType = 
+    MyStore['rasterExportState']['resolution'] | 
+    MyStore['rasterExportState']['projection'] |
+    MyStore['rasterExportState']['tileWidth'] |
+    MyStore['rasterExportState']['tileHeight'] |
+    MyStore['rasterExportState']['bounds']
+
+
+export interface FieldValuePair{field: string, value: RasterExportFormFieldType}
+
+export type RasterExportStateActionType = 
+    RemoveFromSelectedExportGridCellIds | 
+    AddToSelectedExportGridCellIds | 
+    RemoveAllSelectedExportGridCellIds | 
+    RequestedGridCells| 
+    RetrievedRasterExportGridcells | 
+    FailedRetrievingRasterExportGridcells | 
+    SetRasterExportFormField |
+    RemoveAllExportGridCells |
+    RequestRasterExports | 
+    ReceivedTaskRasterExport |
+    FailedTaskRasterExport |
+    ReceivedProjections |
+    SetFetchingStateProjections ; 
+
+export interface RasterExportRequest {
+    fetchingState: FetchingState;
+    id: ExportGridCelId;
+    projection: string;
+    bounds: Bounds;
+    resolution: number | "";
+    tileWidth: number | "";
+    tileHeight: number | "";
+}

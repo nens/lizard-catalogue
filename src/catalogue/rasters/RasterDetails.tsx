@@ -4,9 +4,11 @@ import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getRaster } from '../../reducers';
 import { Raster, LatLng } from '../../interface';
 import '../styles/Details.css';
+import '../styles/Export.css';
 
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import { openRasterInAPI, openRasterInLizard, openRasterGetCapabilities, openDatasetGetCapabilities, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
+import Export from '../components/Export';
 
 interface PropsFromState {
     raster: Raster | null
@@ -16,11 +18,25 @@ interface MyProps {
     filters: MyStore['filters'],
 };
 
-class RasterDetails extends React.Component<PropsFromState & MyProps> {
+interface MyState {
+    showExport: boolean
+};
+
+class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
+    state = {
+        showExport: false
+    };
+
+    toggleExportModal = () => {
+        this.setState({
+            showExport: !this.state.showExport
+        });
+    };
+
     selectedDataset = (raster: Raster) => {
+        
         const { dataset } = this.props.filters;
         const selectedDataset = dataset && raster.datasets.find(dataSet => dataSet.slug === dataset);
-
         return (dataset && selectedDataset) || null;
     };
 
@@ -152,12 +168,22 @@ class RasterDetails extends React.Component<PropsFromState & MyProps> {
                             <i className="fa fa-external-link"/>
                             &nbsp;&nbsp;OPEN IN API
                         </button>
-                        <button className="details__button" title="Export" style={{visibility: "hidden"}}>
+                        <button className="details__button" onClick={this.toggleExportModal} title="Export">
                             <i className="fa fa-download"/>
                             &nbsp;&nbsp;EXPORT RASTER
                         </button>
                     </div>
                 </div>
+                {/*This is the PopUp window for the export screen*/}
+                {this.state.showExport && (
+                    <div className="raster-export">
+                        <Export
+                            raster={raster}
+                            bounds={bounds}
+                            toggleExportModal={this.toggleExportModal}
+                        />
+                    </div>
+                )}
             </div>
         );
     };

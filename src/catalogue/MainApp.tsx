@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
-import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, toggleAlert, updateBasketWithRaster, updateBasketWithWMS, updateSearch, updateOrder, updatePage, selectOrganisation, selectDataset, selectObservationType, fetchRasterByUUID, fetchWMSByUUID } from '../action';
+import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, toggleAlert, updateBasketWithRaster, updateBasketWithWMS, requestInbox, updateSearch, updateOrder, updatePage, selectOrganisation, selectDataset, selectObservationType, fetchRasterByUUID, fetchWMSByUUID } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList } from '../reducers';
 import { ObservationType, Organisation, Dataset, SwitchDataType } from '../interface';
 import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL, getUUID } from '../utils/getUrlParams';
@@ -38,6 +38,7 @@ interface PropsFromDispatch {
     fetchWMSByUUID: (uuid: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void,
     toggleAlert: () => void,
+    requestInbox: () => void,
     updateSearch: (searchTerm: string) => void,
     updateOrder: (ordering: string) => void,
     updatePage: (page: number) => void,
@@ -50,21 +51,54 @@ type MainAppProps = PropsFromState & PropsFromDispatch & RouteComponentProps;
 
 interface MyState {
     showProfileDropdown: boolean,
+    showInboxDropdown: boolean,
+    page: number,
+    initialPage: number,
     searchTerm: string,
 };
 
 class MainApp extends React.Component<MainAppProps, MyState> {
     state: MyState = {
         showProfileDropdown: false,
+        showInboxDropdown: false,
+        page: 1,
+        initialPage: 1,
         searchTerm: '',
     };
 
-    toggleProfileDropdownAndAlertMessage = (event) => {
+    toggleAlertMessage = () => {
         if (this.props.currentRasterList && this.props.currentRasterList.showAlert === true) this.props.toggleAlert();
         if (this.props.currentWMSList && this.props.currentWMSList.showAlert === true) this.props.toggleAlert();
-        return event.target.id === "user-profile" ?
-            this.setState({ showProfileDropdown: !this.state.showProfileDropdown }) :
-            this.setState({ showProfileDropdown: false });
+    };
+
+    closeDropdowns = () => {
+        this.state.showProfileDropdown && this.setState({
+            showProfileDropdown: false,
+        });
+        this.state.showInboxDropdown && this.setState({
+            showInboxDropdown: false,
+        });
+    };
+
+    openProfileDropdown = () => {
+        this.setState({
+            showProfileDropdown: true,
+            showInboxDropdown: false
+        });
+    };
+
+    openInboxDropdown = () => {
+        this.setState({
+            showProfileDropdown: false,
+            showInboxDropdown: true
+        });
+    };
+
+    closeAllDropdowns = () => {
+        this.setState({
+            showProfileDropdown: false,
+            showInboxDropdown: false
+        });
     };
 
     onPageClick = (page: number) => {
@@ -131,7 +165,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             searchTerm: search
         });
 
-        //Fetch Rasters or WMS layers depends on the selected data type
+        //Poll the inbox regularly with timer set inside the action creator
+        this.props.requestInbox();
         if (dataType === 'Raster') {
             this.props.fetchRasters(
                 this.props.filters.page,
@@ -222,11 +257,21 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 
     render() {
         return (
-            <div className="main-container" onClick={this.toggleProfileDropdownAndAlertMessage}>
+            <div
+                className="main-container"
+                onClick={() => {
+                    this.toggleAlertMessage();
+                    this.closeDropdowns();
+                }}
+            >
                 <div className="main-header">
                     <Header
                         showProfileDropdown={this.state.showProfileDropdown}
-                        toggleProfileDropdown={this.toggleProfileDropdownAndAlertMessage}
+                        showInboxDropdown={this.state.showInboxDropdown}
+                        toggleAlertMessage={this.toggleAlertMessage}
+                        openProfileDropdown={this.openProfileDropdown}
+                        openInboxDropdown={this.openInboxDropdown}
+                        closeAllDropdowns={this.closeAllDropdowns}
                     />
                 </div>
                 <div className="main-body">
@@ -325,6 +370,7 @@ const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
     toggleAlert: () => toggleAlert(dispatch),
+    requestInbox: () => requestInbox(dispatch),
     updateSearch: (searchTerm: string) => updateSearch(dispatch, searchTerm),
     updateOrder: (ordering: string) => updateOrder(dispatch, ordering),
     updatePage: (page: number) => updatePage(dispatch, page),
