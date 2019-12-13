@@ -1,9 +1,10 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { ObservationType, Organisation, Dataset, SwitchDataType } from '../interface';
 import { MyStore } from '../reducers';
-import { getUrlParams, getOrganisation, getObservationType, getDataset } from '../utils/getUrlParams';
 import SearchBar from './components/SearchBar';
+import { selectOrganisation, removeOrganisation, selectDataset, selectObservationType, removeObservationType, removeDataset } from '../action';
 import './styles/FilterBar.css';
 
 interface MyProps {
@@ -11,18 +12,7 @@ interface MyProps {
     organisations: Organisation[],
     datasets: Dataset[],
     currentDataType: MyStore['currentDataType'],
-    fetchObservationTypes: (parameter: ObservationType['parameter']) => void,
-    fetchOrganisations: (name: Organisation['name']) => void,
-    fetchDatasets: (slug: Dataset['slug']) => void,
-    fetchRasters: (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string) => void,
-    fetchWMSLayers: (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string) => void,
-    onObservationTypeRadiobutton: (obsType: ObservationType) => void,
-    onOrganisationRadiobutton: (organisation: Organisation) => void,
-    onDatasetRadiobutton: (dataset: Dataset) => void,
     onDataTypeChange: (dataType: SwitchDataType['payload']) => void,
-    onOrganisationSearchSubmit: (name: string) => void,
-    onObservationTypeSearchSubmit: (obsTypeParameter: string) => void,
-    onDatasetSearchSubmit: (slug: string) => void,
 };
 
 interface MyState {
@@ -34,7 +24,22 @@ interface MyState {
     datasetItems: number
 };
 
-class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> {
+interface PropsFromState {
+    filters: MyStore['filters'],
+};
+
+interface PropsFromDispatch {
+    selectOrganisation: (organisationName: string) => void,
+    removeOrganisation: () => void,
+    selectDataset: (datasetSlug: string) => void,
+    removeDataset: () => void,
+    selectObservationType: (observationTypeParameter: string) => void,
+    removeObservationType: () => void,
+};
+
+type FilterBarProps = MyProps & PropsFromState & PropsFromDispatch & RouteComponentProps;
+
+class FilterBar extends React.Component<FilterBarProps, MyState> {
     state: MyState = {
         searchObs: '',
         searchOrg: '',
@@ -44,55 +49,23 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
         datasetItems: 4
     };
 
-    //Handling on change and on submit for the Observation Type search
-    onObsChange = (event) => {
-        this.setState({
+    onFilterChange = (event, formName: string) => {
+        //for organisation
+        if (formName === 'organisation') this.setState({
+            searchOrg: event.target.value
+        });
+        //for dataset
+        if (formName === 'dataset') this.setState({
+            searchDataset: event.target.value
+        });
+        //for observation type
+        if (formName === 'observationType') this.setState({
             searchObs: event.target.value
         });
     };
 
-    onObsSubmit = (event) => {
+    onFilterSubmit = (event) => {
         event.preventDefault();
-        this.props.onObservationTypeSearchSubmit(this.state.searchObs);
-    };
-
-    //Handling on change and on submit for the Organisation search
-    onOrgChange = (event) => {
-        this.setState({
-            searchOrg: event.target.value
-        });
-    };
-
-    onOrgSubmit = (event) => {
-        event.preventDefault();
-        this.props.onOrganisationSearchSubmit(this.state.searchOrg);
-    };
-
-    //Handling on change and on submit for the Dataset search
-    onDatasetChange = (event) => {
-        this.setState({
-            searchDataset: event.target.value
-        });
-    };
-
-    onDatasetSubmit = (event) => {
-        event.preventDefault();
-        this.props.onDatasetSearchSubmit(this.state.searchDataset);
-    };
-
-    componentDidMount() {
-        const urlSearchParams = getUrlParams(this.props.location.search);
-        const organisation = getOrganisation(urlSearchParams);
-        const observation = getObservationType(urlSearchParams);
-        const dataset = getDataset(urlSearchParams);
-        this.setState({
-            searchOrg: organisation,
-            searchObs: observation,
-            searchDataset: dataset
-        });
-        this.props.fetchObservationTypes(observation);
-        this.props.fetchOrganisations(organisation);
-        this.props.fetchDatasets(dataset);
     };
 
     render() {
@@ -102,22 +75,21 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
             observationTypes,
             organisations,
             datasets,
-            onObservationTypeRadiobutton,
-            onOrganisationRadiobutton,
-            onDatasetRadiobutton,
             currentDataType,
-            onDataTypeChange
+            onDataTypeChange,
+            filters,
+            selectOrganisation,
+            removeOrganisation,
+            selectDataset,
+            removeDataset,
+            selectObservationType,
+            removeObservationType,
         } = this.props;
 
         //Filter observation types & organisations & datasets at the client side instead of fetching again from the server after each search
         const filteredObservationTypes = observationTypes.filter(observationTypes => observationTypes.parameter.toLowerCase().includes(this.state.searchObs.toLowerCase()));
         const filteredOrganisations = organisations.filter(organisation => organisation.name.toLowerCase().includes(this.state.searchOrg.toLowerCase()));
         const filteredDatasets = datasets.filter(dataset => dataset.slug.toLowerCase().includes(this.state.searchDataset.toLowerCase()));
-
-        //Find the the observation type and the organisation and the dataset that have been checked in the filter list
-        const checkedObservationType = observationTypes.find(observationType => observationType.checked);
-        const checkedOrganisation = organisations.find(organisation => organisation.checked);
-        const checkedDataset = datasets.find(dataset => dataset.checked);
 
         return (
             <div className="filter-box">
@@ -152,23 +124,28 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                         searchTerm={searchOrg}
                         title="Type organisation name"
                         placeholder="search"
-                        onSearchSubmit={this.onOrgSubmit}
-                        onSearchChange={this.onOrgChange}
+                        onSearchSubmit={this.onFilterSubmit}
+                        onSearchChange={(event) => this.onFilterChange(event, 'organisation')}
                     />
-                    {checkedOrganisation ?
-                        //Showing the checked item and the option the remove this checked item from the filter
+                    {filters.organisation ? (
                         <div className="filter__checked-item">
-                            <button onClick={() => onOrganisationRadiobutton(checkedOrganisation)}>x</button>
-                            {checkedOrganisation.name}
+                            <button onClick={removeOrganisation}>x</button>
+                            {filters.organisation}
                         </div>
-                        :
+                    ) : (
                         <div className="filter__checked-item" />
-                    }
+                    )}
                     <ul className="filter-list">
-                        {filteredOrganisations.slice(0, this.state.orgItems).map((organisation: Organisation) => (
+                        {filteredOrganisations.slice(0, this.state.orgItems).map(organisation => (
                             <li className="filter-item" key={organisation.uuid}>
-                                <input type="radio" className="filter-radiobutton" onChange={() => onOrganisationRadiobutton(organisation)} checked={organisation.checked} />
-                                <span className="filter-item-name">{organisation.name}</span>
+                                <input
+                                    type="radio"
+                                    name="organisation"
+                                    className="filter-radiobutton"
+                                    onChange={() => selectOrganisation(organisation.name)}
+                                    checked={organisation.name === filters.organisation}
+                                />
+                                <label className="filter-item-name">{organisation.name}</label>
                             </li>
                         ))}
                         {this.state.orgItems < filteredOrganisations.length ?
@@ -190,23 +167,28 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                         searchTerm={searchDataset}
                         title="Type dataset name"
                         placeholder="search"
-                        onSearchSubmit={this.onDatasetSubmit}
-                        onSearchChange={this.onDatasetChange}
+                        onSearchSubmit={this.onFilterSubmit}
+                        onSearchChange={(event) => this.onFilterChange(event, 'dataset')}
                     />
-                    {checkedDataset ?
-                        //Showing the checked item and the option the remove this checked item from the filter
+                    {filters.dataset ?
                         <div className="filter__checked-item">
-                            <button onClick={() => onDatasetRadiobutton(checkedDataset)}>x</button>
-                            {checkedDataset.slug}
+                            <button onClick={removeDataset}>x</button>
+                            {filters.dataset}
                         </div>
                         :
                         <div className="filter__checked-item" />
                     }
                     <ul className="filter-list">
-                        {filteredDatasets.slice(0, this.state.datasetItems).map((dataset: Dataset) => (
+                        {filteredDatasets.slice(0, this.state.datasetItems).map(dataset => (
                             <li className="filter-item" key={dataset.slug}>
-                                <input type="radio" className="filter-radiobutton" onChange={() => onDatasetRadiobutton(dataset)} checked={dataset.checked} />
-                                <span className="filter-item-name">{dataset.slug}</span>
+                                <input
+                                    type="radio"
+                                    name="dataset"
+                                    className="filter-radiobutton"
+                                    onChange={() => selectDataset(dataset.slug)}
+                                    checked={dataset.slug === filters.dataset}
+                                />
+                                <label className="filter-item-name">{dataset.slug}</label>
                             </li>
                         ))}
                         {this.state.datasetItems < filteredDatasets.length ?
@@ -229,22 +211,27 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
                         searchTerm={searchObs}
                         title="Type observation type's parameter name"
                         placeholder="search"
-                        onSearchSubmit={this.onObsSubmit}
-                        onSearchChange={this.onObsChange}
+                        onSearchSubmit={this.onFilterSubmit}
+                        onSearchChange={(event) => this.onFilterChange(event, 'observationType')}
                     />
-                    {checkedObservationType ?
-                        //Showing the checked item and the option the remove this checked item from the filter
+                    {filters.observationType ? (
                         <div className="filter__checked-item">
-                            <button onClick={() => onObservationTypeRadiobutton(checkedObservationType)}>x</button>
-                            {checkedObservationType.parameter}
+                            <button onClick={removeObservationType}>x</button>
+                            {filters.observationType}
                         </div>
-                        :
+                    ) : (
                         <div className="filter__checked-item" />
-                    }
+                    )}
                     <ul className="filter-list">
-                        {filteredObservationTypes.slice(0, this.state.obsItems).map((observationType: ObservationType) => (
+                        {filteredObservationTypes.slice(0, this.state.obsItems).map(observationType => (
                             <li className="filter-item" key={observationType.code}>
-                                <input type="radio" className="filter-radiobutton" onChange={() => onObservationTypeRadiobutton(observationType)} checked={observationType.checked} />
+                                <input
+                                    type="radio"
+                                    name="observationType"
+                                    className="filter-radiobutton"
+                                    onChange={() => selectObservationType(observationType.parameter)}
+                                    checked={observationType.parameter === filters.observationType}
+                                />
                                 <span className="filter-item-name">{observationType.parameter}</span>
                             </li>
                         ))}
@@ -259,4 +246,17 @@ class FilterBar extends React.Component<MyProps & RouteComponentProps, MyState> 
     };
 };
 
-export default withRouter(FilterBar);
+const mapStateToProps = (state: MyStore): PropsFromState => ({
+    filters: state.filters,
+});
+
+const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
+    selectOrganisation: (organisationName: string) => selectOrganisation(dispatch, organisationName),
+    removeOrganisation: () => removeOrganisation(dispatch),
+    selectDataset: (datasetSlug: string) => selectDataset(dispatch, datasetSlug),
+    removeDataset: () => removeDataset(dispatch),
+    selectObservationType: (observationTypeParameter: string) => selectObservationType(dispatch, observationTypeParameter),
+    removeObservationType: () => removeObservationType(dispatch),
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FilterBar));

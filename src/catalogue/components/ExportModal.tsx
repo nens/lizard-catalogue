@@ -239,10 +239,11 @@ class ExportModal extends React.Component<MyProps> {
                                         this.props.updateExportFormAndFetchExportGridCells([{field:'projection', value: event.target.value+''}]);
                                     }} 
                                 >
-                                    {this.props.availableProjections.map(projectionObj=>{
+                                    {this.props.availableProjections.map((projectionObj, i)=>{
                                         return (
                                             <option
-                                                value={projectionObj.code }
+                                                key={i}
+                                                value={projectionObj.code}
                                             >
                                                 {projectionObj.name}
                                             </option>
@@ -362,7 +363,6 @@ const mapStateToProps = (state: RootState) => ({
 type PropsFromState = ReturnType<typeof mapStateToProps>
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
-// const mapDispatchToProps = (dispatch: any) => ({
     addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),

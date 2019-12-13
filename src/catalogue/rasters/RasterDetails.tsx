@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getRaster } from '../../reducers';
-import { Raster, LatLng, Dataset } from '../../interface';
+import { Raster, LatLng } from '../../interface';
 import '../styles/Details.css';
 import '../styles/Export.css';
 
@@ -15,7 +15,7 @@ interface PropsFromState {
 };
 
 interface MyProps {
-    datasets: Dataset[]
+    filters: MyStore['filters'],
 };
 
 interface MyState {
@@ -33,20 +33,20 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
         });
     };
 
-    selectedDataset = (datasets: Dataset[], raster: Raster) => {
-        const checkedDataset = datasets.filter(dataset => dataset.checked)[0];
-        const selectedDataset = checkedDataset && raster.datasets.find(dataset => dataset.slug === checkedDataset.slug);
-
-        return (checkedDataset && selectedDataset) || null;
+    selectedDataset = (raster: Raster) => {
+        
+        const { dataset } = this.props.filters;
+        const selectedDataset = dataset && raster.datasets.find(dataSet => dataSet.slug === dataset);
+        return (dataset && selectedDataset) || null;
     };
 
     render() {
         //Destructure the props
-        const { raster, datasets } = this.props;
+        const { raster } = this.props;
 
         //If no raster is selected, display a text
         if (!raster) return <div className="details details__loading">Please select a raster</div>;
-        const dataset = this.selectedDataset(datasets, raster);
+        const dataset = this.selectedDataset(raster);
 
         //Set the Map with bounds coming from spatial_bounds of the Raster
         const rasterBounds = getBounds(raster);
