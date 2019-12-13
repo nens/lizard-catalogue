@@ -89,7 +89,7 @@ class Inbox extends React.Component<InboxProps> {
                             title="remove file"
                             onClick={() => this.removeMessage(message)}
                             style={{
-                                // visibility: (message.downloaded || !message.url) ? 'visible' : 'hidden'
+                                visibility: (message.downloaded || !message.url) ? 'visible' : 'hidden'
                             }}
                         >
                             &times;
