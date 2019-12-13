@@ -13,5 +13,3 @@ export const baseUrl = (() => {
     }
     return absoluteBase;
 })();
-
-// export const PROXY_SERVER = 'https://nxt3.staging.lizard.net';

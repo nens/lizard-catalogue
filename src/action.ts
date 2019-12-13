@@ -6,7 +6,6 @@ import {
     RasterListObject,
     WMSObject,
     SwitchDataType,
-    ToggleAlert,
     ExportGridCelId,
     RemoveFromSelectedExportGridCellIds,
     AddToSelectedExportGridCellIds,
@@ -365,12 +364,10 @@ export const removeWMSFromBasket = (uuid: string, dispatch): void => {
 //MARK: Toggle the showAlert
 export const TOGGLE_ALERT = 'TOGGLE_ALERT';
 
-const alertToggled = (): ToggleAlert => ({
-    type: TOGGLE_ALERT
-});
-
-export const toggleAlert = (dispatch: Dispatch<ToggleAlert>) => {
-    dispatch(alertToggled());
+export const toggleAlert = (dispatch) => {
+    dispatch({
+        type: TOGGLE_ALERT
+    });
 };
 
 //MARK: Request inbox messages

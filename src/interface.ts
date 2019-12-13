@@ -1,6 +1,5 @@
 import {
     SWITCH_DATA_TYPE,
-    TOGGLE_ALERT,
     REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
     ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
     REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
@@ -21,10 +20,6 @@ import { MyStore } from './reducers';
 export interface SwitchDataType {
     type: typeof SWITCH_DATA_TYPE,
     payload: "Raster" | "WMS"
-};
-
-export interface ToggleAlert {
-    type: typeof TOGGLE_ALERT
 };
 
 //LIZARD BOOTSTRAP
@@ -184,7 +179,7 @@ export interface RasterExportState {
     tileHeight: number | "",
     bounds: Bounds,
     rasterExportRequests: RasterExportRequest[],
-    dateTimeStart: any,
+    dateTimeStart: string,
     numberOfinboxMessagesBeforeRequest: number,
     projectionsAvailableForCurrentRaster: Projections,
 }
