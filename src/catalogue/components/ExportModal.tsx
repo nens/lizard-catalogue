@@ -73,7 +73,7 @@ class ExportModal extends React.Component<MyProps> {
     }
 
     render() {
-        const { raster, bounds, openDownloadModal } = this.props;
+        const { raster, bounds, openDownloadModal,fetchingGridState } = this.props;
         const exportGridCells = this.props.availableGridCells;
         const selectedGridIds = this.props.selectedGridCellIds; 
 
@@ -83,7 +83,7 @@ class ExportModal extends React.Component<MyProps> {
                     <h3>Export Selection</h3>
                     <div className="export_map-box" style={{position:"relative"}}>
                         { 
-                            this.props.fetchingGridState !== "RECEIVED"?
+                            (fetchingGridState === "SENT" || fetchingGridState === "NOT_SENT") && exportGridCells.length===0 ?
                             <div 
                                 className="loading-screen"
                                 style={{
@@ -104,15 +104,7 @@ class ExportModal extends React.Component<MyProps> {
                                         color: "white",
                                     }}
                                 >
-                                    {
-                                         this.props.fetchingGridState === "SENT" || this.props.fetchingGridState === "NOT_SENT" ? 
-                                        "Retrieving Grid Cells..."
-                                        : this.props.fetchingGridState === "FAILED" ?
-                                        "Failed Retrieving Grid Cells... Please try different settings"
-                                        :
-                                        // should never happen ..
-                                        null
-                                    }
+                                    Retrieving Grid Cells..."
                                 </div>
                             </div>
                             :
@@ -125,15 +117,30 @@ class ExportModal extends React.Component<MyProps> {
                             style={{ width: "100%" }}
                             onMoveend={event=>{
                                 const bounds = event.target.getBounds();
+                                const mapSpatialBounds = { 
+                                    north: bounds._northEast.lat,
+                                    east: bounds._northEast.lng,
+                                    south: bounds._southWest.lat,
+                                    west: bounds._southWest.lng,
+                                };
+                                const rasterBounds = raster.spatial_bounds;
+                                const intersectSpatialBounds = {
+                                    north: mapSpatialBounds.north < rasterBounds.north ? mapSpatialBounds.north : rasterBounds.north,
+                                    east: mapSpatialBounds.east < rasterBounds.east ? mapSpatialBounds.east : rasterBounds.east,
+                                    south: mapSpatialBounds.south > rasterBounds.south ? mapSpatialBounds.south : rasterBounds.south,
+                                    west: mapSpatialBounds.west > rasterBounds.west ? mapSpatialBounds.west : rasterBounds.west,
+                                }
+                                if (
+                                    intersectSpatialBounds.north > intersectSpatialBounds.south ||
+                                    intersectSpatialBounds.east > intersectSpatialBounds.west
+                                    ) {
+                                    return;
+                                }
+
                                 this.props.updateExportFormAndFetchExportGridCells([
                                     {
                                     field: 'bounds',
-                                    value: { 
-                                        north: bounds._northEast.lat,
-                                        east: bounds._northEast.lng,
-                                        south: bounds._southWest.lat,
-                                        west: bounds._southWest.lng,
-                                    }
+                                    value: intersectSpatialBounds,
                                 }])
                             }}
                         >
@@ -234,6 +241,7 @@ class ExportModal extends React.Component<MyProps> {
                             <div>
                                 <h4>Projection</h4>
                                 <select
+                                    style={{maxWidth: "245px",}}
                                     value={this.props.projection}
                                     onChange={(event)=> {
                                         this.props.updateExportFormAndFetchExportGridCells([{field:'projection', value: event.target.value+''}]);
@@ -289,34 +297,37 @@ class ExportModal extends React.Component<MyProps> {
                                     }}
                                 />
                                 {this.props.tileHeight === ""? <span>* Choose a number</span>:null}
-                                {
-                                    parseInt(this.props.tileHeight + '') && 
-                                    parseInt(this.props.tileWidth + '') && 
-                                    (parseInt(this.props.tileHeight+'') * parseInt(this.props.tileWidth+'') > 1000000000) 
-                                    ? 
-                                    <div style={{color:"#A10000", marginTop: "1rem"}}> 
-                                        <span
-                                            style={{fontSize: "1.5rem"}}
-                                        >
-                                            Too many pixels: 
-                                        </span>
-                                        <br/>
-                                        Tile-Width × Tile-Height
-                                        <br/>
-                                        must be below 
-                                        <br/>
-                                        1.000.000.000 pixels 
-                                    </div>
-                                    :
-                                    null
-                                }
                             </div>
                         </div>
                     </div>
+                    
                     <div className="export_text">
-                        First choose your settings then select the
-                        desired tiles to export/download
-                        </div>
+                        {
+                            parseInt(this.props.tileHeight + '') && 
+                            parseInt(this.props.tileWidth + '') && 
+                            (parseInt(this.props.tileHeight+'') * parseInt(this.props.tileWidth+'') > 1000000000) 
+                            ? 
+                            <div style={{color:"#A10000"}}> 
+                                <span
+                                    style={{fontSize: "2rem"}}
+                                >
+                                    Too many pixels: 
+                                </span>
+                                <span>
+                                <br/>
+                                Tile-Width × Tile-Height
+                                <br/>
+                                must be below 1.000.000.000 pixels 
+                                </span>
+                            </div>
+                            :
+                            <span>
+                            First choose your settings then select the
+                            desired tiles to export/download
+                            </span>
+                        }
+                        
+                    </div>
                     <div className="export_buttons">
                         <button 
                             className={`details__button`}

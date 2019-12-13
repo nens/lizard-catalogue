@@ -12,8 +12,8 @@
 
 /* CONTENTS OF EXPORT SCREEN */
 .export {
-    width: 80%;
-    min-height: 80%;
+    width: 96%;
+    min-height: 96%;
     color: #333;
     border: 1px solid #BEBEBE;
     border-radius: 1rem;
@@ -24,8 +24,8 @@
     transition: all .4s .2s;
 
     position: absolute;
-    top: 10%;
-    left: 10%;
+    top: 2%;
+    left: 2%;
 
     display: flex;
     flex-direction: column;
@@ -72,7 +72,6 @@
 }
 
 .export_raster {
-    flex: 5;
     margin-bottom: 1rem;
 }
 
