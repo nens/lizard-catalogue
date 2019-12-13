@@ -32,22 +32,6 @@ class Inbox extends React.Component<InboxProps> {
         this.props.removeMessage(message.id);
     };
 
-    componentWillUpdate(nextProps: InboxProps) {
-        const {
-            inbox,
-            numberOfinboxMessagesBeforeRequest,
-            rasterExportRequests,
-        } = nextProps;
-        // Remove all current export tasks and set number of inbox messages before request
-        // back to 0 after all export tasks have been finished
-        if (
-            rasterExportRequests.length &&
-            (rasterExportRequests.length - (inbox.length - numberOfinboxMessagesBeforeRequest)) === 0
-        ) {
-            this.props.removeCurrentExportTasks();
-        };
-    };
-
     render() {
         const {
             inbox,
@@ -59,6 +43,15 @@ class Inbox extends React.Component<InboxProps> {
         const pendingExportTasks = rasterExportRequests.length && (
             rasterExportRequests.length - (inbox.length - numberOfinboxMessagesBeforeRequest)
         );
+
+        // Remove all current export tasks and set number of inbox messages before request
+        // back to 0 if all export tasks have been finished
+        if (
+            rasterExportRequests.length &&
+            pendingExportTasks === 0
+        ) {
+            this.props.removeCurrentExportTasks();
+        };
 
         return (
             <div
