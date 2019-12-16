@@ -149,6 +149,13 @@
 }
 .export_grid_cell.selected {
     /* TODO better styling here ? Or should we save the hoover in the redux store or react state*/
-} 
+}
 
+ /* normal input fields  */
+.export_input,
+/* input fields as part of datetimepicker */
+.export_settings .rdt input {
+    min-width: 245px;
+    width: 100%;
+}
 

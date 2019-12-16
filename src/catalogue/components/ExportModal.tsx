@@ -235,7 +235,7 @@ class ExportModal extends React.Component<MyProps> {
                             <div>
                                 <h4>Projection</h4>
                                 <select
-                                    style={{maxWidth: "245px",}}
+                                    className="export_input" 
                                     value={this.props.projection}
                                     onChange={(event)=> {
                                         this.props.updateExportFormAndFetchExportGridCells([{field:'projection', value: event.target.value+''}]);
@@ -257,6 +257,7 @@ class ExportModal extends React.Component<MyProps> {
                             <div>
                                 <h4>Resolution (based on projection)</h4>
                                 <input 
+                                    className="export_input" 
                                     type="text"
                                     value={this.props.resolution}
                                     onChange={(event)=> {
@@ -270,6 +271,7 @@ class ExportModal extends React.Component<MyProps> {
                             <div>
                                 <h4>Tile Width in Pixels</h4>
                                 <input 
+                                    className="export_input" 
                                     type="text"
                                     value={this.props.tileWidth}
                                     onChange={(event)=> {
@@ -282,7 +284,8 @@ class ExportModal extends React.Component<MyProps> {
                             <br />
                             <div>
                                 <h4>Tile Height in Pixels</h4>
-                                <input 
+                                <input
+                                    className="export_input" 
                                     type="text"
                                     value={this.props.tileHeight}
                                     onChange={(event)=> {
