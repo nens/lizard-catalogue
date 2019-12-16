@@ -44,6 +44,8 @@ import moment from "moment";
 import MDSpinner from "react-md-spinner";
 import { getSpatialBoundsIntersect, gridPolygonToSpatialBounds } from '../../utils/geoUtils';
 
+const maximumSelectForExport = 3;
+
 interface PropsFromParent {
     raster: Raster,
     bounds: number[][],
@@ -142,6 +144,13 @@ class ExportModal extends React.Component<MyProps> {
                                                 "fillOpacity": "0.71",
     
                                             }
+                                        } else if (selectedGridIds.length === maximumSelectForExport) {
+                                            return {
+                                                "color": "#A10000",
+                                                "fillColor": "transparent",
+                                                "fillOpacity": "0.71",
+    
+                                            }
                                         } else {
                                             return {
                                                 "color": "#A10000",
@@ -161,7 +170,7 @@ class ExportModal extends React.Component<MyProps> {
                                                 })
                                                 if (isSelected) {
                                                     this.props.removeFromSelectedExportGridCellIds([gridcell.properties.id])
-                                                } else {
+                                                } else if (selectedGridIds.length < maximumSelectForExport) {
                                                     this.props.addToSelectedExportGridCellIds([gridcell.properties.id]);
                                                 }
 
@@ -315,6 +324,18 @@ class ExportModal extends React.Component<MyProps> {
                                 Tile-Width × Tile-Height
                                 <br/>
                                 must be below 1.000.000.000 pixels 
+                                </span>
+                            </div>
+                            : selectedGridIds.length === maximumSelectForExport ?
+                            <div className="export-input-error-msg"> 
+                                <span
+                                    className="export-input-error-msg-large"
+                                >
+                                    Maximum amount selected: 
+                                </span>
+                                <span>
+                                <br/>
+                                It is not allowed to export more then 3 items at once
                                 </span>
                             </div>
                             :
