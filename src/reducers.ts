@@ -45,6 +45,7 @@ import {
     REMOVE_SEARCH,
     UPDATE_ORDER,
     UPDATE_PAGE,
+    REMOVE_CURRENT_EXPORT_TASKS,
 } from "./action";
 import {
     Raster,
@@ -56,7 +57,7 @@ import {
     SwitchDataType,
     Message,
     RasterExportState,
-    RasterExportStateActionType,
+    // RasterExportStateActionType,
 } from './interface';
 import {areGridCelIdsEqual,haveGridCellsSameId} from './utils/rasterExportUtils'
 
@@ -93,7 +94,6 @@ export interface MyStore {
         rasters: string[],
         wmsLayers: string[]
     },
-    pendingExportTasks: number,
     inbox: Message[],
     rasterExportState: RasterExportState,
     filters: {
@@ -131,7 +131,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
         projections: [],
     }
     },
-    action: RasterExportStateActionType
+    action
 ): MyStore['rasterExportState'] => {
     switch (action.type) {
         case ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS:
@@ -218,13 +218,19 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 }
             }
         case FETCHING_STATE_PROJECTIONS:
-                return {
-                    ...state,
-                    projectionsAvailableForCurrentRaster: {
-                        ...state.projectionsAvailableForCurrentRaster,
-                        fetchingState: action.fetchingState,
-                    }
+            return {
+                ...state,
+                projectionsAvailableForCurrentRaster: {
+                    ...state.projectionsAvailableForCurrentRaster,
+                    fetchingState: action.fetchingState,
                 }
+            }
+        case REMOVE_CURRENT_EXPORT_TASKS:
+            return {
+                ...state,
+                rasterExportRequests: [],
+                numberOfinboxMessagesBeforeRequest: 0,
+            }
         default:
             return state;
     }
@@ -613,13 +619,6 @@ const filters =(
     };
 };
 
-const pendingExportTasks = (state: MyStore['pendingExportTasks'] = 0, { type }): MyStore['pendingExportTasks'] => {
-    switch (type) {
-        default:
-            return state;
-    };
-};
-
 const inbox = (state: MyStore['inbox'] = [], { type, messages, id }) => {
     switch (type) {
         case REQUEST_INBOX:
@@ -752,6 +751,5 @@ export default combineReducers({
     observationTypes,
     organisations,
     datasets,
-    pendingExportTasks,
     inbox,
 });
