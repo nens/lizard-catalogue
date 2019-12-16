@@ -247,7 +247,7 @@ class ExportModal extends React.Component<MyProps> {
                                                 key={i}
                                                 value={projectionObj.code}
                                             >
-                                                {projectionObj.name}
+                                                {projectionObj.code+ " - "+ projectionObj.name}
                                             </option>
                                         );
                                     })}
