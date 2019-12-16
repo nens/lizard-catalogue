@@ -32,33 +32,35 @@ class Inbox extends React.Component<InboxProps> {
         this.props.removeMessage(message.id);
     };
 
-    render() {
+    getNumberOfPendingExportTasks = () => {
         const {
             inbox,
             numberOfinboxMessagesBeforeRequest,
             rasterExportRequests,
         } = this.props;
-
-        // Get the number of pending export tasks that are not ready yet
-        const pendingExportTasks = rasterExportRequests.length && (
+        // Return the number of pending export tasks that are not ready yet
+        return rasterExportRequests.length && (
             rasterExportRequests.length - (inbox.length - numberOfinboxMessagesBeforeRequest)
         );
+    };
 
+    componentDidUpdate() {
         // Remove all current export tasks and set number of inbox messages before request
         // back to 0 if all export tasks have been finished
-        if (
-            rasterExportRequests.length &&
-            pendingExportTasks === 0
-        ) {
+        if (this.props.rasterExportRequests.length && this.getNumberOfPendingExportTasks() === 0) {
             this.props.removeCurrentExportTasks();
         };
+    };
+
+    render() {
+        const pendingExportTasks = this.getNumberOfPendingExportTasks();
 
         return (
             <div
                 className="inbox"
                 onClick={(e) => e.stopPropagation()}
             >
-                {inbox.map(message => (
+                {this.props.inbox.map(message => (
                     <div className="inbox-file" key={message.id}>
                         <div
                             className="inbox-filename"
@@ -101,7 +103,7 @@ class Inbox extends React.Component<InboxProps> {
                         <div className="inbox-read" />
                     </div>
                 ): null}
-                {(inbox.length === 0 && pendingExportTasks === 0) ? (
+                {(this.props.inbox.length === 0 && pendingExportTasks === 0) ? (
                     <i className="inbox-info">
                         No export tasks at the moment.
                     </i>
