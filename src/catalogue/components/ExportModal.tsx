@@ -164,7 +164,7 @@ class ExportModal extends React.Component<MyProps> {
                                         }
                                         
                                     }}
-                                    key={JSON.stringify(exportGridCells) + JSON.stringify(selectedGridIds)}
+                                    key={exportGridCells.length + JSON.stringify(selectedGridIds)}
                                     onEachFeature={(_, layer) => { // _ = feature
                                         layer.on({
                                           click: (event)=>{
