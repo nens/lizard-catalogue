@@ -83,28 +83,15 @@ class ExportModal extends React.Component<MyProps> {
             <div className="export_main">
                 <div className="export_map-selection">
                     <h3>Export Selection</h3>
-                    <div className="export_map-box" style={{position:"relative"}}>
+                    <div className="export_map-box">
                         { 
                             (fetchingGridState === "SENT" || fetchingGridState === "NOT_SENT") && exportGridCells.length===0 ?
                             <div 
-                                className="loading-screen"
-                                style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    position: "absolute",
-                                    zIndex: 999999999,
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    backgroundColor: "rgba(0,0,0,0.3)",
-                                }}
+                                className="loading-screen loading-screen-export"
                             >
                                 <MDSpinner size={150} />
                                 <div
-                                    style={{
-                                        fontSize: "3rem",
-                                        marginTop: "3rem",
-                                        color: "white",
-                                    }}
+                                    className="loading-screen-export-text"
                                 >
                                     Retrieving Grid Cells..."
                                 </div>
@@ -301,9 +288,9 @@ class ExportModal extends React.Component<MyProps> {
                     <div className="export_text">
                         {
                             exportGridCells.length > 1500 ? 
-                            <div style={{color:"#A10000"}}> 
+                            <div className="export-input-error-msg"> 
                                 <span
-                                    style={{fontSize: "2rem"}}
+                                    className="export-input-error-msg-large"
                                 >
                                     Resolution too small: 
                                 </span>
@@ -317,9 +304,9 @@ class ExportModal extends React.Component<MyProps> {
                             parseInt(this.props.tileWidth + '') && 
                             (parseInt(this.props.tileHeight+'') * parseInt(this.props.tileWidth+'') > 1000000000) 
                             ? 
-                            <div style={{color:"#A10000"}}> 
+                            <div className="export-input-error-msg"> 
                                 <span
-                                    style={{fontSize: "2rem"}}
+                                    className="export-input-error-msg-large"
                                 >
                                     Too many pixels: 
                                 </span>

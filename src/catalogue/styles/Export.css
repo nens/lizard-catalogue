@@ -59,6 +59,7 @@
     outline: auto;
     height: 93%;
     display: flex;
+    position: relative;
 }
 
 /* CONTENT */
@@ -158,4 +159,24 @@
     min-width: 245px;
     width: 100%;
 }
-
+.export-input-error-msg {
+    color:#A10000;
+}
+.export-input-error-msg-large {
+    font-size: 2rem;
+    color:#A10000;
+}
+.loading-screen-export {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 999999999;
+    display: flex;
+    flex-direction: column;;
+    background-color: rgba(0,0,0,0.3);
+    font-size: 3rem;
+    color: white;
+}
+.loading-screen-export-text {
+    margin-top: 3rem;
+}
