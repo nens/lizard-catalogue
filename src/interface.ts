@@ -108,6 +108,7 @@ export interface Organisation {
     url: string,
     name: string,
     uuid: string,
+    roles: string[]
 };
 
 //OBSERVATION TYPE

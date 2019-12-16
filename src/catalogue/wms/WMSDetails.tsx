@@ -1,21 +1,24 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
-import { MyStore, getWMS } from '../../reducers';
-import { WMS, LatLng } from '../../interface';
+import { MyStore, getWMS, getOrganisations, getLizardBootstrap } from '../../reducers';
+import { WMS, LatLng, Organisation, Bootstrap } from '../../interface';
+import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import '../styles/Details.css';
 
 import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL } from '../../utils/url';
 import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 
 interface PropsFromState {
-    wms: WMS | null
+    wms: WMS | null,
+    organisations: Organisation[],
+    bootstrap: Bootstrap
 };
 
 class WMSDetails extends React.Component<PropsFromState> {
     render() {
         //Destructure the props
-        const { wms } = this.props;
+        const { wms, organisations, bootstrap } = this.props;
 
         //If no WMS layer is selected, display a text
         if (!wms) return <div className="details details__loading">Please select a WMS Layer</div>;
@@ -30,9 +33,35 @@ class WMSDetails extends React.Component<PropsFromState> {
         //Calculate the zoom level of the raster by using the zoomLevelCalculation function
         const zoom = zoomLevelCalculation(wmsBounds);
 
+        // Only show manage button if user is admin of the organisation of the layer
+        // or the supplier of the layer and supplier in the organsation of the layer.
+        let authorizedToManageLayer: boolean = false;
+        if (wms && bootstrap) {
+            authorizedToManageLayer = isAuthorizedToManageLayer(
+                wms, bootstrap.user.username, organisations
+            );
+        }
+
         return (
             <div className="details">
-                <h3 title={wms.name}>{wms.name}</h3>
+                <h3 title={wms.name}>
+                    <span className="details__title_text">
+                        {wms.name}
+                    </span>
+                    <span>
+                        { authorizedToManageLayer ?
+                            <a href={`/management/#/data_management/rasters/${wms.uuid}`}
+                               target="_blank" rel="noopener noreferrer">
+                                <img
+                                    className="details__icon"
+                                    src="image/manageButton.svg"
+                                    alt="View in manage client"
+                                />
+                            </a>
+                        :null
+                        }
+                    </span>
+                </h3>
                 <div className="details__main-box">
                     <div className="details__description-box">
                         <h4>Description</h4>
@@ -99,10 +128,14 @@ class WMSDetails extends React.Component<PropsFromState> {
 
 const mapStateToProps = (state: MyStore): PropsFromState => {
     if (!state.selectedItem) return {
-        wms: null
+        wms: null,
+        organisations: getOrganisations(state),
+        bootstrap: getLizardBootstrap(state)
     };
     return {
-        wms: getWMS(state, state.selectedItem)
+        wms: getWMS(state, state.selectedItem),
+        organisations: getOrganisations(state),
+        bootstrap: getLizardBootstrap(state)
     };
 };
 

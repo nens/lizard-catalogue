@@ -520,6 +520,7 @@ const organisations = (state: MyStore['organisations'] = [], { type, organisatio
                     url: organisation.url,
                     name: organisation.name,
                     uuid: organisation.uuid,
+                    roles: organisation.roles
                 };
             });
         default:
