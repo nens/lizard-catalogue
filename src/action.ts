@@ -14,7 +14,7 @@ import {
     ExportGridCell,
     RetrievedRasterExportGridcells,
     FailedRetrievingRasterExportGridcells,
-    SetRasterExportFormField,
+    // SetRasterExportFormField,
     FieldValuePair,
     RemoveAllExportGridCells,
     RequestRasterExports,
@@ -24,6 +24,7 @@ import {
     Projection,
     FetchingState,
     SetFetchingStateProjections,
+    SetRasterExportFormFields,
 } from './interface';
 import { 
     getExportGridCellResolution, 
@@ -411,13 +412,14 @@ export const REQUESTED_RASTER_EXPORT_GRIDCELLS = 'REQUESTED_RASTER_EXPORT_GRIDCE
 export const RETRIEVED_RASTER_EXPORT_GRIDCELLS = 'RETRIEVED_RASTER_EXPORT_GRIDCELLS';
 export const FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS = 'FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS';
 export const SET_RASTER_EXPORT_RESOLUTION = 'SET_RASTER_EXPORT_RESOLUTION';
-export const SET_RASTER_EXPORT_FORM_FIELD = 'SET_RASTER_EXPORT_FORM_FIELD';
+// export const SET_RASTER_EXPORT_FORM_FIELD = 'SET_RASTER_EXPORT_FORM_FIELD';
 export const REMOVE_ALL_EXPORT_GRID_CELLS = 'REMOVE_ALL_EXPORT_GRID_CELLS';
 export const REQUEST_RASTER_EXPORTS = "REQUEST_RASTER_EXPORTS";
 export const RECEIVED_TASK_RASTER_EXPORT = "RECEIVED_TASKS_RASTER_EXPORTS";
 export const FAILED_TASK_RASTER_EXPORT = "FAILED_TASK_RASTER_EXPORT";
 export const RECEIVED_PROJECTIONS = "RECEIVED_PROJECTIONS";
 export const FETCHING_STATE_PROJECTIONS = "FETCHING_STATE_PROJECTIONS";
+export const SET_RASTER_EXPORT_FORM_FIELDS = "SET_RASTER_EXPORT_FORM_FIELDS";
 
 export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): RemoveFromSelectedExportGridCellIds => ({
     type: REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
@@ -447,9 +449,13 @@ export const failedRetrievingRasterExportGridcells = (msg: string): FailedRetrie
     failedMsg: msg,
 });
 
-export const updateExportRasterFormField = (fieldValuePair:FieldValuePair): SetRasterExportFormField => ({
-    type: SET_RASTER_EXPORT_FORM_FIELD,
-    fieldValuePair,
+// export const updateExportRasterFormField = (fieldValuePair:FieldValuePair): SetRasterExportFormField => ({
+//     type: SET_RASTER_EXPORT_FORM_FIELD,
+//     fieldValuePair,
+// });
+export const updateExportRasterFormFields = (fieldValuePairs:FieldValuePair[]): SetRasterExportFormFields => ({
+    type: SET_RASTER_EXPORT_FORM_FIELDS,
+    fieldValuePairs,
 });
 
 export const setCurrentRasterExportsToStore = (numberOfInboxMessages:number): RequestRasterExports => ({
@@ -488,18 +494,18 @@ const fieldValuePairsListContainsFieldThatShouldResetGridCells = (fieldValuePair
 
 export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate: FieldValuePair[]) => 
     (
-    dispatch: Dispatch<RemoveAllSelectedExportGridCellIds | RemoveAllExportGridCells | SetRasterExportFormField | RequestedGridCells | RetrievedRasterExportGridcells | FailedRetrievingRasterExportGridcells>
+    dispatch: Dispatch<RemoveAllSelectedExportGridCellIds | RemoveAllExportGridCells | SetRasterExportFormFields | RequestedGridCells | RetrievedRasterExportGridcells | FailedRetrievingRasterExportGridcells>
     ) =>
     {
 
     if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
-        dispatch(removeAllSelectedExportGridCellIds());
         dispatch(removeAllExportGridCells());
     }
-    fieldValuePairesToUpdate.forEach((fieldValuePair)=>{
-        dispatch(updateExportRasterFormField(fieldValuePair));
-    });
-    dispatch(requestedGridCells());
+    // fieldValuePairesToUpdate.forEach((fieldValuePair)=>{
+    //     dispatch(updateExportRasterFormField(fieldValuePair));
+    // });
+    // dispatch(requestedGridCells());
+    dispatch(updateExportRasterFormFields(fieldValuePairesToUpdate));
 
     const state = store.getState();
     const resolution = getExportGridCellResolution(state);
@@ -531,7 +537,6 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
                 newRasterUuid === rasterUuid
             ) {
                 if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
-                    dispatch(removeAllSelectedExportGridCellIds());
                     dispatch(removeAllExportGridCells());
                 }
                 dispatch(retrievedGridCells(gridCells));

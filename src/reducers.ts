@@ -29,7 +29,8 @@ import {
     REQUESTED_RASTER_EXPORT_GRIDCELLS,
     RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
-    SET_RASTER_EXPORT_FORM_FIELD,
+    // SET_RASTER_EXPORT_FORM_FIELD,
+    SET_RASTER_EXPORT_FORM_FIELDS,
     REMOVE_ALL_EXPORT_GRID_CELLS,
     REQUEST_RASTER_EXPORTS,
     RECEIVED_TASK_RASTER_EXPORT,
@@ -173,10 +174,16 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 fetchingStateGrid: "FAILED",
                 fetchingStateGridMsg: action.failedMsg,
             }
-        case SET_RASTER_EXPORT_FORM_FIELD:
-            return {
-                ...state,
-                [action.fieldValuePair.field]: action.fieldValuePair.value,
+        case SET_RASTER_EXPORT_FORM_FIELDS:
+            {
+                const stateCopy = {...state}
+                action.fieldValuePairs.forEach(fieldValuePair => {
+                    stateCopy[fieldValuePair.field] = fieldValuePair.value;
+                })
+                return {
+                    ...stateCopy,
+                    fetchingStateGrid: "SENT",
+                }
             }
         case REQUEST_RASTER_EXPORTS:
             return {
