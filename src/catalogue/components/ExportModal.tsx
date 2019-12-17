@@ -253,7 +253,7 @@ class ExportModal extends React.Component<MyProps> {
                             </div>
                             <br />
                             <div>
-                                <h4>Resolution (based on projection)</h4>
+                                <h4>Pixel size (based on projection)</h4>
                                 <input 
                                     type="text"
                                     value={this.props.resolution}
