@@ -328,6 +328,7 @@ class ExportModal extends React.Component<MyProps> {
                             }}
                         >
                             <i className="fa fa-download" />
+                            &nbsp;&nbsp;
                             {`Download ${this.props.selectedGridCellIds.length}  selected cells`}
                         </button>
                         <button 
