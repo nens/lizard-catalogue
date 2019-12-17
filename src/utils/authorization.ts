@@ -9,6 +9,13 @@ export const isAuthorizedToManageLayer = (layer, userName, allOrganisations) => 
         return organisation.name === layer.organisation.name;
     });
 
+    if (!layerOrganisationWithRolesOfUser) {
+        return false;
+    }
+    if ( !layerOrganisationWithRolesOfUser.roles) {
+        return false;
+    }
+
     // Check if user is "admin" in the organisation of the layer or
     // "supplier" in the organisation of the layer and supplier of the layer.
     if (layerOrganisationWithRolesOfUser.roles.includes("admin")) {
