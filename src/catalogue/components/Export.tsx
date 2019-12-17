@@ -21,6 +21,20 @@ export default class Export extends React.Component<MyProps> {
         });
     };
 
+    closeModalOnEsc = (e) => {
+        if (e.key === "Escape") {
+            this.props.toggleExportModal();
+        };
+    };
+
+    componentDidMount() {
+        window.addEventListener("keydown", this.closeModalOnEsc, false);
+    };
+
+    componentWillUnmount() {
+        window.removeEventListener("keydown", this.closeModalOnEsc, false);
+    };
+
     render() {
         return (
             <div className="export">
