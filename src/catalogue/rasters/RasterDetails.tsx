@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
-import { MyStore, getRaster } from '../../reducers';
-import { Raster, LatLng } from '../../interface';
+import { MyStore, getRaster, getOrganisations, getLizardBootstrap } from '../../reducers';
+import { Raster, LatLng, Organisation, Bootstrap } from '../../interface';
+import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import '../styles/Details.css';
 import '../styles/Export.css';
 
@@ -11,7 +12,9 @@ import { openRasterInAPI, openRasterInLizard, openRasterGetCapabilities, openDat
 import Export from '../components/Export';
 
 interface PropsFromState {
-    raster: Raster | null
+    raster: Raster | null,
+    organisations: Organisation[],
+    bootstrap: Bootstrap
 };
 
 interface MyProps {
@@ -42,7 +45,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
 
     render() {
         //Destructure the props
-        const { raster } = this.props;
+        const { raster, organisations, bootstrap } = this.props;
 
         //If no raster is selected, display a text
         if (!raster) return <div className="details details__loading">Please select a raster</div>;
@@ -73,9 +76,38 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
         //If the projection is EPSG:4326, the resolution is calculated in square degrees, otherwise it is in m2
         const resolution = raster.projection === "EPSG:4326" ? rasterResolution.toFixed(6) + " deg2" : rasterResolution + " m2"
 
+        // Only show manage button if user is admin of the organisation of the layer
+        // or the supplier of the layer and supplier in the organsation of the layer.
+        let authorizedToManageLayer: boolean = false;
+        if (raster && bootstrap) {
+            authorizedToManageLayer = isAuthorizedToManageLayer(
+                raster, bootstrap.user.username, organisations
+            );
+        }
+
         return (
             <div className="details">
-                <h3 title={raster.name}>{raster.name}</h3>
+                <h3 title={raster.name}>
+                    <span className="details__title_text">
+                        {raster.name}
+                    </span>
+                    <span>
+                        { authorizedToManageLayer ?
+                            <a
+                                href={`/management/#/data_management/rasters/${raster.uuid}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <img
+                                    className="details__icon"
+                                    src="image/manageButton.svg"
+                                    alt="View in manage client"
+                                />
+                            </a>
+                        :null
+                        }
+                    </span>
+                </h3>
                 <div className="details__main-box">
                     <div className="details__description-box">
                         <h4>Description</h4>
@@ -191,10 +223,14 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
 
 const mapStateToProps = (state: MyStore): PropsFromState => {
     if (!state.selectedItem) return {
-        raster: null
+        raster: null,
+        organisations: getOrganisations(state),
+        bootstrap: getLizardBootstrap(state)
     };
     return {
-        raster: getRaster(state, state.selectedItem)
+        raster: getRaster(state, state.selectedItem),
+        organisations: getOrganisations(state),
+        bootstrap: getLizardBootstrap(state)
     };
 };
 

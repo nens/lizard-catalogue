@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Message } from '../../interface';
+import { Message, RasterExportRequest } from '../../interface';
 import { connect } from 'react-redux';
-import { removeMessage, downloadFile } from '../../action';
+import { removeMessage, downloadFile, removeCurrentExportTasks } from '../../action';
 import { MyStore } from '../../reducers';
 import '../styles/Inbox.css';
 
@@ -11,12 +11,14 @@ interface MyProps {
 };
 
 interface PropsFromState {
-    pendingExportTasks: number,
+    numberOfinboxMessagesBeforeRequest: number,
+    rasterExportRequests: RasterExportRequest[],
 };
 
 interface PropsFromDispatch {
     removeMessage: (id: string) => void,
     downloadFile: (id: string) => void,
+    removeCurrentExportTasks: () => void,
 };
 
 type InboxProps = MyProps & PropsFromState & PropsFromDispatch;
@@ -30,7 +32,29 @@ class Inbox extends React.Component<InboxProps> {
         this.props.removeMessage(message.id);
     };
 
+    getNumberOfPendingExportTasks = () => {
+        const {
+            inbox,
+            numberOfinboxMessagesBeforeRequest,
+            rasterExportRequests,
+        } = this.props;
+        // Return the number of pending export tasks that are not ready yet
+        return rasterExportRequests.length && (
+            rasterExportRequests.length - (inbox.length - numberOfinboxMessagesBeforeRequest)
+        );
+    };
+
+    componentDidUpdate() {
+        // Remove all current export tasks and set number of inbox messages before request
+        // back to 0 if all export tasks have been finished
+        if (this.props.rasterExportRequests.length && this.getNumberOfPendingExportTasks() === 0) {
+            this.props.removeCurrentExportTasks();
+        };
+    };
+
     render() {
+        const pendingExportTasks = this.getNumberOfPendingExportTasks();
+
         return (
             <div
                 className="inbox"
@@ -67,19 +91,19 @@ class Inbox extends React.Component<InboxProps> {
                         </div>
                     </div>
                 ))}
-                {this.props.pendingExportTasks ? (
+                {pendingExportTasks ? (
                     <div
                         className="inbox-file inbox-pending-exports"
-                        title={`${this.props.pendingExportTasks} export(s) in progress`}
+                        title={`${pendingExportTasks} export(s) in progress`}
                     >
                         <div className="inbox-filename">
-                            {this.props.pendingExportTasks} export(s) in progress
+                            {pendingExportTasks} export(s) in progress
                         </div>
                         <i className="fa fa-download inbox-pending-downloads" />
                         <div className="inbox-read" />
                     </div>
                 ): null}
-                {(this.props.inbox.length === 0 && this.props.pendingExportTasks === 0) ? (
+                {(this.props.inbox.length === 0 && pendingExportTasks === 0) ? (
                     <i className="inbox-info">
                         No export tasks at the moment.
                     </i>
@@ -95,12 +119,14 @@ class Inbox extends React.Component<InboxProps> {
 };
 
 const mapStateToProps = (state: MyStore): PropsFromState => ({
-    pendingExportTasks: state.pendingExportTasks,
+    numberOfinboxMessagesBeforeRequest: state.rasterExportState.numberOfinboxMessagesBeforeRequest,
+    rasterExportRequests: state.rasterExportState.rasterExportRequests,
 });
 
 const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
     removeMessage: (id: string) => removeMessage(dispatch, id),
     downloadFile: (id: string) => downloadFile(dispatch, id),
+    removeCurrentExportTasks: () => removeCurrentExportTasks(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Inbox);

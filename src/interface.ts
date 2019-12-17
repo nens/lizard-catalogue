@@ -6,13 +6,13 @@ import {
     REQUESTED_RASTER_EXPORT_GRIDCELLS,
     RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
-    SET_RASTER_EXPORT_FORM_FIELD,
     REMOVE_ALL_EXPORT_GRID_CELLS,
     REQUEST_RASTER_EXPORTS,
     RECEIVED_TASK_RASTER_EXPORT,
     FAILED_TASK_RASTER_EXPORT,
     RECEIVED_PROJECTIONS,
     FETCHING_STATE_PROJECTIONS,
+    SET_RASTER_EXPORT_FORM_FIELDS,
 } from "./action";
 import { MyStore } from './reducers';
 
@@ -108,6 +108,7 @@ export interface Organisation {
     url: string,
     name: string,
     uuid: string,
+    roles: string[]
 };
 
 //OBSERVATION TYPE
@@ -224,11 +225,6 @@ export interface  FailedRetrievingRasterExportGridcells {
     failedMsg: string,
 }
 
-export interface SetRasterExportFormField {
-    type: typeof SET_RASTER_EXPORT_FORM_FIELD,
-    fieldValuePair: FieldValuePair,
-}
-
 export interface RequestRasterExports {
     type: typeof REQUEST_RASTER_EXPORTS,
     numberOfInboxMessages:number,
@@ -251,6 +247,10 @@ export interface SetFetchingStateProjections {
     type: typeof FETCHING_STATE_PROJECTIONS,
     fetchingState: FetchingState,
 }
+export interface SetRasterExportFormFields {
+    type: typeof SET_RASTER_EXPORT_FORM_FIELDS,
+    fieldValuePairs: FieldValuePair[],
+}
 
 export type RasterExportFormFieldType = 
     MyStore['rasterExportState']['resolution'] | 
@@ -269,13 +269,13 @@ export type RasterExportStateActionType =
     RequestedGridCells| 
     RetrievedRasterExportGridcells | 
     FailedRetrievingRasterExportGridcells | 
-    SetRasterExportFormField |
     RemoveAllExportGridCells |
     RequestRasterExports | 
     ReceivedTaskRasterExport |
     FailedTaskRasterExport |
     ReceivedProjections |
-    SetFetchingStateProjections ; 
+    SetFetchingStateProjections |
+    SetRasterExportFormFields ; 
 
 export interface RasterExportRequest {
     fetchingState: FetchingState;

@@ -29,7 +29,7 @@ import {
     REQUESTED_RASTER_EXPORT_GRIDCELLS,
     RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
-    SET_RASTER_EXPORT_FORM_FIELD,
+    SET_RASTER_EXPORT_FORM_FIELDS,
     REMOVE_ALL_EXPORT_GRID_CELLS,
     REQUEST_RASTER_EXPORTS,
     RECEIVED_TASK_RASTER_EXPORT,
@@ -45,6 +45,7 @@ import {
     REMOVE_SEARCH,
     UPDATE_ORDER,
     UPDATE_PAGE,
+    REMOVE_CURRENT_EXPORT_TASKS,
 } from "./action";
 import {
     Raster,
@@ -56,7 +57,7 @@ import {
     SwitchDataType,
     Message,
     RasterExportState,
-    RasterExportStateActionType,
+    // RasterExportStateActionType,
 } from './interface';
 import {areGridCelIdsEqual,haveGridCellsSameId} from './utils/rasterExportUtils'
 
@@ -93,7 +94,6 @@ export interface MyStore {
         rasters: string[],
         wmsLayers: string[]
     },
-    pendingExportTasks: number,
     inbox: Message[],
     rasterExportState: RasterExportState,
     filters: {
@@ -131,7 +131,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
         projections: [],
     }
     },
-    action: RasterExportStateActionType
+    action
 ): MyStore['rasterExportState'] => {
     switch (action.type) {
         case ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS:
@@ -173,10 +173,16 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 fetchingStateGrid: "FAILED",
                 fetchingStateGridMsg: action.failedMsg,
             }
-        case SET_RASTER_EXPORT_FORM_FIELD:
-            return {
-                ...state,
-                [action.fieldValuePair.field]: action.fieldValuePair.value,
+        case SET_RASTER_EXPORT_FORM_FIELDS:
+            {
+                const stateCopy = {...state}
+                action.fieldValuePairs.forEach(fieldValuePair => {
+                    stateCopy[fieldValuePair.field] = fieldValuePair.value;
+                })
+                return {
+                    ...stateCopy,
+                    fetchingStateGrid: "SENT",
+                }
             }
         case REQUEST_RASTER_EXPORTS:
             return {
@@ -218,13 +224,19 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 }
             }
         case FETCHING_STATE_PROJECTIONS:
-                return {
-                    ...state,
-                    projectionsAvailableForCurrentRaster: {
-                        ...state.projectionsAvailableForCurrentRaster,
-                        fetchingState: action.fetchingState,
-                    }
+            return {
+                ...state,
+                projectionsAvailableForCurrentRaster: {
+                    ...state.projectionsAvailableForCurrentRaster,
+                    fetchingState: action.fetchingState,
                 }
+            }
+        case REMOVE_CURRENT_EXPORT_TASKS:
+            return {
+                ...state,
+                rasterExportRequests: [],
+                numberOfinboxMessagesBeforeRequest: 0,
+            }
         default:
             return state;
     }
@@ -520,6 +532,7 @@ const organisations = (state: MyStore['organisations'] = [], { type, organisatio
                     url: organisation.url,
                     name: organisation.name,
                     uuid: organisation.uuid,
+                    roles: organisation.roles
                 };
             });
         default:
@@ -607,13 +620,6 @@ const filters =(
                 ...state,
                 searchTerm: ''
             };
-        default:
-            return state;
-    };
-};
-
-const pendingExportTasks = (state: MyStore['pendingExportTasks'] = 0, { type }): MyStore['pendingExportTasks'] => {
-    switch (type) {
         default:
             return state;
     };
@@ -751,6 +757,5 @@ export default combineReducers({
     observationTypes,
     organisations,
     datasets,
-    pendingExportTasks,
     inbox,
 });

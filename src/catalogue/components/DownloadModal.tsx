@@ -3,13 +3,12 @@ import { connect } from 'react-redux';
 import { Circle } from 'rc-progress';
 import '../styles/Download.css';
 import { MyStore } from '../../reducers';
-import { Message } from '../../interface';
+import { Message, RasterExportRequest } from '../../interface';
 
 interface PropsFromState {
     inbox: Message[],
-    pendingExportTasks: number,
     numberOfinboxMessagesBeforeRequest: number,
-    rasterExportRequests: any[],
+    rasterExportRequests: RasterExportRequest[],
 };
 
 class DownloadModal extends React.Component<PropsFromState> {
@@ -53,7 +52,6 @@ class DownloadModal extends React.Component<PropsFromState> {
 
 const mapStateToProps = (state: MyStore): PropsFromState => ({
     inbox: state.inbox,
-    pendingExportTasks: state.pendingExportTasks,
     numberOfinboxMessagesBeforeRequest: state.rasterExportState.numberOfinboxMessagesBeforeRequest,
     rasterExportRequests: state.rasterExportState.rasterExportRequests,
 });
