@@ -418,6 +418,13 @@ export const FAILED_TASK_RASTER_EXPORT = "FAILED_TASK_RASTER_EXPORT";
 export const RECEIVED_PROJECTIONS = "RECEIVED_PROJECTIONS";
 export const FETCHING_STATE_PROJECTIONS = "FETCHING_STATE_PROJECTIONS";
 export const SET_RASTER_EXPORT_FORM_FIELDS = "SET_RASTER_EXPORT_FORM_FIELDS";
+export const REMOVE_CURRENT_EXPORT_TASKS = "REMOVE_CURRENT_EXPORT_TASKS";
+
+export const removeCurrentExportTasks = (dispatch) => {
+    dispatch({
+        type: REMOVE_CURRENT_EXPORT_TASKS
+    });
+};
 
 export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): RemoveFromSelectedExportGridCellIds => ({
     type: REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,

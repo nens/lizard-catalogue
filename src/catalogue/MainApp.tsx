@@ -11,6 +11,7 @@ import WMSList from './wms/WMSList';
 import WMSDetails from './wms/WMSDetails';
 import FilterBar from './FilterBar';
 import Header from './Header';
+import AlertPopup from './components/AlertPopup';
 import './styles/MainApp.css';
 
 interface PropsFromState {
@@ -314,19 +315,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                     }
                 </div>
                 {/* ALERT POPUP */}
-                <div
-                    className="authorisation-alert"
-                    style={{
-                        display: (this.props.currentRasterList && this.props.currentRasterList.showAlert === true) || (this.props.currentWMSList && this.props.currentWMSList.showAlert === true) ? "flex" : "none"
-                    }}
-                    onClick={() => this.props.toggleAlert()}
-                >
-                    No Rasters/WMS layers found!
-                    Please check your search selection
-                    <br />
-                    You may need to login or might have insufficient rights to view
-                    the Rasters/WMS layers
-                </div>
+                {(
+                    this.props.currentRasterList && this.props.currentRasterList.showAlert === true
+                ) || (
+                    this.props.currentWMSList && this.props.currentWMSList.showAlert === true
+                ) ? (
+                    <AlertPopup toggleAlert={this.props.toggleAlert} />
+                ) : null}
             </div>
         );
     };
