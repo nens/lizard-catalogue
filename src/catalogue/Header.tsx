@@ -58,7 +58,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-download" />
                         </svg>
-                        <span className="header-nav__notification">{inbox.length}</span>
+                        {inbox.length === 0 ? <span /> : <span className="header-nav__notification">{inbox.length}</span>}
                         <span className="header-nav__inbox-text" style={{marginLeft: "1rem"}}>Export</span>
                         {
                         this.props.showInboxDropdown && (
