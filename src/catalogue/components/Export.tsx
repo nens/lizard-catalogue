@@ -28,11 +28,11 @@ export default class Export extends React.Component<MyProps> {
     };
 
     componentDidMount() {
-        window.addEventListener("keydown", this.closeModalOnEsc, false);
+        window.addEventListener("keydown", this.closeModalOnEsc);
     };
 
     componentWillUnmount() {
-        window.removeEventListener("keydown", this.closeModalOnEsc, false);
+        window.removeEventListener("keydown", this.closeModalOnEsc);
     };
 
     render() {
