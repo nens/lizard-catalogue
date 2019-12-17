@@ -39,9 +39,9 @@ class DownloadModal extends React.Component<PropsFromState> {
                 </div>
                 <div className="download-text">
                 {progressInPercentage===100? 
-                "Find your results in the 'Export' tab after closing this screen"
+                "Find your results in the 'Export' tab after closing this screen."
                 :
-                "This can take a while. You can wait here, or we will let you know when the file is ready"
+                "This may take a while. You can wait here, but we'll let you know when your files are available in the Export Inbox."
                 }
                     
                 </div>
