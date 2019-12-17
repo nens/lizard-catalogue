@@ -412,7 +412,6 @@ export const REQUESTED_RASTER_EXPORT_GRIDCELLS = 'REQUESTED_RASTER_EXPORT_GRIDCE
 export const RETRIEVED_RASTER_EXPORT_GRIDCELLS = 'RETRIEVED_RASTER_EXPORT_GRIDCELLS';
 export const FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS = 'FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS';
 export const SET_RASTER_EXPORT_RESOLUTION = 'SET_RASTER_EXPORT_RESOLUTION';
-// export const SET_RASTER_EXPORT_FORM_FIELD = 'SET_RASTER_EXPORT_FORM_FIELD';
 export const REMOVE_ALL_EXPORT_GRID_CELLS = 'REMOVE_ALL_EXPORT_GRID_CELLS';
 export const REQUEST_RASTER_EXPORTS = "REQUEST_RASTER_EXPORTS";
 export const RECEIVED_TASK_RASTER_EXPORT = "RECEIVED_TASKS_RASTER_EXPORTS";
@@ -448,11 +447,6 @@ export const failedRetrievingRasterExportGridcells = (msg: string): FailedRetrie
     type: FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
     failedMsg: msg,
 });
-
-// export const updateExportRasterFormField = (fieldValuePair:FieldValuePair): SetRasterExportFormField => ({
-//     type: SET_RASTER_EXPORT_FORM_FIELD,
-//     fieldValuePair,
-// });
 export const updateExportRasterFormFields = (fieldValuePairs:FieldValuePair[]): SetRasterExportFormFields => ({
     type: SET_RASTER_EXPORT_FORM_FIELDS,
     fieldValuePairs,
@@ -501,10 +495,6 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
     if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
         dispatch(removeAllExportGridCells());
     }
-    // fieldValuePairesToUpdate.forEach((fieldValuePair)=>{
-    //     dispatch(updateExportRasterFormField(fieldValuePair));
-    // });
-    // dispatch(requestedGridCells());
     dispatch(updateExportRasterFormFields(fieldValuePairesToUpdate));
 
     const state = store.getState();
@@ -541,8 +531,6 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
                 }
                 dispatch(retrievedGridCells(gridCells));
             }
-
-            
         })
         .catch(error=>{
             console.error(error);
