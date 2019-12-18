@@ -87,6 +87,7 @@ class ExportModal extends React.Component<MyProps> {
                     <h3>Export Selection</h3>
                     <div className="export_map-box">
                         { 
+                            // show spinner if gridcells are not yet retrieved
                             (fetchingGridState === "SENT" || fetchingGridState === "NOT_SENT") && exportGridCells.length===0 ?
                             <div 
                                 className="loading-screen loading-screen-export"
@@ -185,7 +186,7 @@ class ExportModal extends React.Component<MyProps> {
                         </Map>
                     </div>
                 </div>
-                <div className="export_content">
+                <div className="export_rightsidebar">
                     <div className="export_raster">
                         <h3>Selected Raster</h3>
                         <hr />

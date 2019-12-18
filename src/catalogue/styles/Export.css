@@ -62,8 +62,7 @@
     position: relative;
 }
 
-/* CONTENT */
-.export_content {
+.export_rightsidebar {
     flex: 1;
     padding: 2rem;
     display: flex;
@@ -172,7 +171,7 @@
     position: absolute;
     z-index: 999999999;
     display: flex;
-    flex-direction: column;;
+    flex-direction: column;
     background-color: rgba(0,0,0,0.3);
     font-size: 3rem;
     color: white;
