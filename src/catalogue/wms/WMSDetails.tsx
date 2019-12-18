@@ -6,7 +6,7 @@ import { WMS, LatLng, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import '../styles/Details.css';
 
-import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL } from '../../utils/url';
+import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL, getDatasetGetCapabilitesURL, openDatasetGetCapabilities } from '../../utils/url';
 import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 
 interface PropsFromState {
@@ -15,13 +15,24 @@ interface PropsFromState {
     bootstrap: Bootstrap
 };
 
-class WMSDetails extends React.Component<PropsFromState> {
+interface MyProps {
+    filters: MyStore['filters'],
+};
+
+class WMSDetails extends React.Component<PropsFromState & MyProps> {
+    selectedDataset = (wms: WMS) => {
+        const { dataset } = this.props.filters;
+        const selectedDataset = dataset && wms.datasets.find(dataSet => dataSet.slug === dataset);
+        return (dataset && selectedDataset) || null;
+    };
+
     render() {
         //Destructure the props
         const { wms, organisations, bootstrap } = this.props;
 
         //If no WMS layer is selected, display a text
         if (!wms) return <div className="details details__loading">Please select a WMS Layer</div>;
+        const dataset = this.selectedDataset(wms);
 
         //Get spatial bounds of the WMS layer
         const wmsBounds = getBounds(wms);
@@ -94,12 +105,36 @@ class WMSDetails extends React.Component<PropsFromState> {
                 <div className="details__wms-info">
                     <h4>Details</h4><hr/><br/>
                     <h4>WMS layer's URL</h4>
-                    <span>{wms.wms_url}</span>
+                    <div
+                        className="details__get-capabilities-url"
+                        title={wms.wms_url}
+                        onClick={() => window.open(wms.wms_url, '_blank')}
+                    >
+                        {wms.wms_url}
+                    </div>
                     <br /><br />
                     <h4>Slug</h4>
                     <span>{wms.slug}</span>
                 </div>
                 <br />
+                {dataset ? (
+                    <div className="details__get-capabilities">
+                        <h4>Lizard WMS GetCapabilities</h4>
+                        <hr/>
+                        <div
+                            style={{display: dataset ? "block" : "none"}}
+                        >
+                            For this complete dataset:
+                            <div
+                                className="details__get-capabilities-url"
+                                title={getDatasetGetCapabilitesURL(dataset) || ""}
+                                onClick={() => dataset && openDatasetGetCapabilities(dataset)}
+                            >
+                                {getDatasetGetCapabilitesURL(dataset)}
+                            </div>
+                        </div>
+                    </div>
+                ) : null}
                 <div className="details__button-container">
                     <h4>Actions</h4><hr/>
                     <div className="details__buttons">
