@@ -6,7 +6,6 @@ import { WMS, LatLng, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL, getDatasetGetCapabilitesURL, openDatasetGetCapabilities } from '../../utils/url';
 import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
-import { copyToClipboard } from '../../utils/copyToClipboard';
 import '../styles/Details.css';
 
 interface PropsFromState {
@@ -124,7 +123,7 @@ class WMSDetails extends React.Component<PropsFromState & MyProps> {
                         <i
                             className="fas fa-copy"
                             title="Copy to clipboard"
-                            onClick={() => copyToClipboard(wmsUrl)}
+                            onClick={() => navigator.clipboard.writeText(wmsUrl)}
                         />
                     </div>
                     <br /><br />
@@ -142,14 +141,14 @@ class WMSDetails extends React.Component<PropsFromState & MyProps> {
                                 <div
                                     className="details__get-capabilities-url"
                                     title={getDatasetGetCapabilitesURL(dataset) || ""}
-                                    onClick={() => dataset && openDatasetGetCapabilities(dataset)}
+                                    onClick={() => openDatasetGetCapabilities(dataset)}
                                 >
                                     {getDatasetGetCapabilitesURL(dataset)}
                                 </div>
                                 <i
                                     className="fas fa-copy"
                                     title="Copy to clipboard"
-                                    onClick={() => copyToClipboard(getDatasetGetCapabilitesURL(dataset))}
+                                    onClick={() => navigator.clipboard.writeText(getDatasetGetCapabilitesURL(dataset))}
                                 />
                             </div>
                         </div>

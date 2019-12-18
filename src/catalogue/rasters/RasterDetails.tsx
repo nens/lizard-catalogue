@@ -6,7 +6,6 @@ import { Raster, LatLng, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import { openRasterInAPI, openRasterInLizard, openRasterGetCapabilities, openDatasetGetCapabilities, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
-import { copyToClipboard } from '../../utils/copyToClipboard';
 import Export from '../components/Export';
 import '../styles/Details.css';
 import '../styles/Export.css';
@@ -178,7 +177,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                             <i
                                 className="fas fa-copy"
                                 title="Copy to clipboard"
-                                onClick={() => copyToClipboard(getRasterGetCapabilitesURL(raster))}
+                                onClick={() => navigator.clipboard.writeText(getRasterGetCapabilitesURL(raster))}
                             />
                         </div>
                     </div>
@@ -190,14 +189,14 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                                 <div
                                     className="details__get-capabilities-url"
                                     title={getDatasetGetCapabilitesURL(dataset) || ""}
-                                    onClick={() => dataset && openDatasetGetCapabilities(dataset)}
+                                    onClick={() => openDatasetGetCapabilities(dataset)}
                                 >
                                     {getDatasetGetCapabilitesURL(dataset)}
                                 </div>
                                 <i
                                     className="fas fa-copy"
                                     title="Copy to clipboard"
-                                    onClick={() => copyToClipboard(getDatasetGetCapabilitesURL(dataset))}
+                                    onClick={() => navigator.clipboard.writeText(getDatasetGetCapabilitesURL(dataset))}
                                 />
                             </div>
                         </div>

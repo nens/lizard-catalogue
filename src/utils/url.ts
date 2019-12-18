@@ -52,6 +52,6 @@ export const getRasterGetCapabilitesURL = (raster: Raster) => {
     return `${baseUrl}/wms/${raster.uuid}/?request=GetCapabilities`;
 };
 
-export const getDatasetGetCapabilitesURL = (dataset: Dataset | null) => {
+export const getDatasetGetCapabilitesURL = (dataset: Dataset) => {
     return dataset && `${baseUrl}/wms/${dataset.slug}/?request=GetCapabilities`;
 };
