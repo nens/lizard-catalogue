@@ -131,9 +131,10 @@
     align-items: center;
 }
 
+/* Copy to clipboard icon */
 .details__url-field i {
     cursor: pointer;
-    color: #2FCBAB;
+    color: grey;
     font-size: 1.6rem;
 }
 
