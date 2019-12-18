@@ -34,6 +34,9 @@ class WMSDetails extends React.Component<PropsFromState & MyProps> {
         if (!wms) return <div className="details details__loading">Please select a WMS Layer</div>;
         const dataset = this.selectedDataset(wms);
 
+        //Get WMS layer's getCapabilities link based on WMS layer's URL
+        const wmsUrl = wms.wms_url && `${wms.wms_url}/?request=GetCapabilities`;
+
         //Get spatial bounds of the WMS layer
         const wmsBounds = getBounds(wms);
         const bounds = boundsToDisplay(wmsBounds);
@@ -113,15 +116,15 @@ class WMSDetails extends React.Component<PropsFromState & MyProps> {
                     >
                         <div
                             className="details__get-capabilities-url"
-                            title={wms.wms_url}
-                            onClick={() => window.open(wms.wms_url, '_blank')}
+                            title={wmsUrl}
+                            onClick={() => window.open(wmsUrl, '_blank')}
                         >
-                            {wms.wms_url}
+                            {wmsUrl}
                         </div>
                         <i
                             className="fas fa-copy"
                             title="Copy to clipboard"
-                            onClick={() => copyToClipboard(wms.wms_url)}
+                            onClick={() => copyToClipboard(wmsUrl)}
                         />
                     </div>
                     <br /><br />
