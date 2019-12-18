@@ -122,7 +122,7 @@ class WMSDetails extends React.Component<PropsFromState & MyProps> {
                         </div>
                         <i
                             className="fas fa-copy"
-                            title="Copy to clipboard"
+                            title="Copy link"
                             onClick={() => navigator.clipboard.writeText(wmsUrl)}
                         />
                     </div>
@@ -147,7 +147,7 @@ class WMSDetails extends React.Component<PropsFromState & MyProps> {
                                 </div>
                                 <i
                                     className="fas fa-copy"
-                                    title="Copy to clipboard"
+                                    title="Copy link"
                                     onClick={() => navigator.clipboard.writeText(getDatasetGetCapabilitesURL(dataset))}
                                 />
                             </div>

@@ -138,6 +138,10 @@
     font-size: 1.6rem;
 }
 
+.details__url-field i:active {
+    transform: translateY(2px);
+}
+
 .details__get-capabilities-url {
     cursor: pointer;
     padding: .4rem;

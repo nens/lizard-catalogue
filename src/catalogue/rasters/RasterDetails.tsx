@@ -176,7 +176,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                             </div>
                             <i
                                 className="fas fa-copy"
-                                title="Copy to clipboard"
+                                title="Copy link"
                                 onClick={() => navigator.clipboard.writeText(getRasterGetCapabilitesURL(raster))}
                             />
                         </div>
@@ -195,7 +195,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                                 </div>
                                 <i
                                     className="fas fa-copy"
-                                    title="Copy to clipboard"
+                                    title="Copy link"
                                     onClick={() => navigator.clipboard.writeText(getDatasetGetCapabilitesURL(dataset))}
                                 />
                             </div>
