@@ -50,7 +50,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
         return (
             <nav className="header">
                 <div className="header-logo">
-                    <img src="image/lizard.png" alt="logo" className="header-logo__logo" onClick={() => window.location.href = ""} />
+                    <img src="image/lizard-logo-white.svg" alt="logo" className="header-logo__logo" onClick={() => window.location.href = ""} />
                     <h3 className="header-logo__text">Lizard Catalogue</h3>
                 </div>
                 <div className="header-nav">
