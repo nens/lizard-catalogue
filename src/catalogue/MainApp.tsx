@@ -72,6 +72,12 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         if (this.props.currentWMSList && this.props.currentWMSList.showAlert === true) this.props.toggleAlert();
     };
 
+    closeModalsOnEsc = (e) => {
+        if (e.key === "Escape") {
+            window.location.href = "#";
+        };
+    };
+
     closeDropdowns = () => {
         this.state.showProfileDropdown && this.setState({
             showProfileDropdown: false,
@@ -135,7 +141,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         });
     };
 
-    async componentDidMount() {
+    componentDidMount() {
         //Fetch Lizard Bootstrap
         this.props.fetchLizardBootstrap();
 
@@ -189,6 +195,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             //Fetch the WMS layer by UUID from the url
             if (uuid) this.props.fetchWMSByUUID(uuid);
         };
+
+        //Add event listener to use ESC to close a modal
+        window.addEventListener("keydown", this.closeModalsOnEsc);
+    };
+
+    componentWillUnmount() {
+        window.removeEventListener("keydown", this.closeModalsOnEsc);
     };
 
     componentWillUpdate(nextProps: MainAppProps) {
