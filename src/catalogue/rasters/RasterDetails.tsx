@@ -4,12 +4,12 @@ import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getRaster, getOrganisations, getLizardBootstrap } from '../../reducers';
 import { Raster, LatLng, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
-import '../styles/Details.css';
-import '../styles/Export.css';
-
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import { openRasterInAPI, openRasterInLizard, openRasterGetCapabilities, openDatasetGetCapabilities, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
+import { copyToClipboard } from '../../utils/copyToClipboard';
 import Export from '../components/Export';
+import '../styles/Details.css';
+import '../styles/Export.css';
 
 interface PropsFromState {
     raster: Raster | null,
@@ -167,27 +167,41 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                     <hr/>
                     <div>
                         For this raster:
-                        <div
-                            className="details__get-capabilities-url"
-                            title={getRasterGetCapabilitesURL(raster)}
-                            onClick={() => openRasterGetCapabilities(raster)}
-                        >
-                            {getRasterGetCapabilitesURL(raster)}
+                        <div className="details__url-field">
+                            <div
+                                className="details__get-capabilities-url"
+                                title={getRasterGetCapabilitesURL(raster)}
+                                onClick={() => openRasterGetCapabilities(raster)}
+                            >
+                                {getRasterGetCapabilitesURL(raster)}
+                            </div>
+                            <i
+                                className="fas fa-copy"
+                                title="Copy to clipboard"
+                                onClick={() => copyToClipboard(getRasterGetCapabilitesURL(raster))}
+                            />
                         </div>
                     </div>
                     <br/>
-                    <div
-                        style={{display: dataset ? "block" : "none"}}
-                    >
-                        For this complete dataset:
-                        <div
-                            className="details__get-capabilities-url"
-                            title={getDatasetGetCapabilitesURL(dataset) || ""}
-                            onClick={() => dataset && openDatasetGetCapabilities(dataset)}
-                        >
-                            {getDatasetGetCapabilitesURL(dataset)}
+                    {dataset ? (
+                        <div>
+                            For this complete dataset:
+                            <div className="details__url-field">
+                                <div
+                                    className="details__get-capabilities-url"
+                                    title={getDatasetGetCapabilitesURL(dataset) || ""}
+                                    onClick={() => dataset && openDatasetGetCapabilities(dataset)}
+                                >
+                                    {getDatasetGetCapabilitesURL(dataset)}
+                                </div>
+                                <i
+                                    className="fas fa-copy"
+                                    title="Copy to clipboard"
+                                    onClick={() => copyToClipboard(getDatasetGetCapabilitesURL(dataset))}
+                                />
+                            </div>
                         </div>
-                    </div>
+                    ) : null}
                 </div>
                 <div className="details__button-container">
                     <h4>Actions</h4><hr/>

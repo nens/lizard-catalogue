@@ -125,6 +125,18 @@
     margin-bottom: 1rem;
 }
 
+.details__url-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.details__url-field i {
+    cursor: pointer;
+    color: #2FCBAB;
+    font-size: 1.6rem;
+}
+
 .details__get-capabilities-url {
     cursor: pointer;
     padding: .4rem;
@@ -133,7 +145,8 @@
     border: 1px solid #707070;
     color: #707070;
     background: #FFFFFF 0% 0% no-repeat padding-box;
-    width: 100%;
+    width: 94%;
+    height: 2.5rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

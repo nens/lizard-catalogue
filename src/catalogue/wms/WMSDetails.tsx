@@ -4,10 +4,10 @@ import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getWMS, getOrganisations, getLizardBootstrap } from '../../reducers';
 import { WMS, LatLng, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
-import '../styles/Details.css';
-
 import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL, getDatasetGetCapabilitesURL, openDatasetGetCapabilities } from '../../utils/url';
 import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
+import { copyToClipboard } from '../../utils/copyToClipboard';
+import '../styles/Details.css';
 
 interface PropsFromState {
     wms: WMS | null,
@@ -106,11 +106,23 @@ class WMSDetails extends React.Component<PropsFromState & MyProps> {
                     <h4>Details</h4><hr/><br/>
                     <h4>WMS layer's URL</h4>
                     <div
-                        className="details__get-capabilities-url"
-                        title={wms.wms_url}
-                        onClick={() => window.open(wms.wms_url, '_blank')}
+                        className="details__url-field"
+                        style={{
+                            visibility: wms.wms_url ? "visible" : "hidden"
+                        }}
                     >
-                        {wms.wms_url}
+                        <div
+                            className="details__get-capabilities-url"
+                            title={wms.wms_url}
+                            onClick={() => window.open(wms.wms_url, '_blank')}
+                        >
+                            {wms.wms_url}
+                        </div>
+                        <i
+                            className="fas fa-copy"
+                            title="Copy to clipboard"
+                            onClick={() => copyToClipboard(wms.wms_url)}
+                        />
                     </div>
                     <br /><br />
                     <h4>Slug</h4>
@@ -121,16 +133,21 @@ class WMSDetails extends React.Component<PropsFromState & MyProps> {
                     <div className="details__get-capabilities">
                         <h4>Lizard WMS GetCapabilities</h4>
                         <hr/>
-                        <div
-                            style={{display: dataset ? "block" : "none"}}
-                        >
+                        <div>
                             For this complete dataset:
-                            <div
-                                className="details__get-capabilities-url"
-                                title={getDatasetGetCapabilitesURL(dataset) || ""}
-                                onClick={() => dataset && openDatasetGetCapabilities(dataset)}
-                            >
-                                {getDatasetGetCapabilitesURL(dataset)}
+                            <div className="details__url-field">
+                                <div
+                                    className="details__get-capabilities-url"
+                                    title={getDatasetGetCapabilitesURL(dataset) || ""}
+                                    onClick={() => dataset && openDatasetGetCapabilities(dataset)}
+                                >
+                                    {getDatasetGetCapabilitesURL(dataset)}
+                                </div>
+                                <i
+                                    className="fas fa-copy"
+                                    title="Copy to clipboard"
+                                    onClick={() => copyToClipboard(getDatasetGetCapabilitesURL(dataset))}
+                                />
                             </div>
                         </div>
                     </div>
