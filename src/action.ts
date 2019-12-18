@@ -1,5 +1,4 @@
 import request from 'superagent';
-import { baseUrl } from './api';
 import { Dispatch,} from 'redux';
 import store  from './store';
 import {
@@ -99,13 +98,13 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
     const queries = params.join('&');
 
     request
-        .get(`${baseUrl}/rasters/?${queries}&scenario__isnull=true`)
+        .get(`/api/v4/rasters/?${queries}&scenario__isnull=true`)
         .then(response => {
             if(response.body.count === 0 && searchTerm) {
                 //If could not find any raster with the search term by raster's name then look for raster's uuid
                 const newQueries = queries.replace('name__icontains', 'uuid');
                 request
-                    .get(`${baseUrl}/rasters/?${newQueries}&scenario__isnull=true`)
+                    .get(`/api/v4/rasters/?${newQueries}&scenario__isnull=true`)
                     .then(response => {
                         dispatch(rastersFetched(response.body))
                     })
@@ -119,7 +118,7 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
 
 export const fetchRasterByUUID = (uuid: string, dispatch): void => {
     request
-        .get(`${baseUrl}/rasters/${uuid}`)
+        .get(`/api/v4/rasters/${uuid}`)
         .then(response => {
             dispatch({
                 type: RASTER_FETCHED,
@@ -132,7 +131,7 @@ export const fetchRasterByUUID = (uuid: string, dispatch): void => {
 //Decide whether gonna use this fetch function
 export const fetchRastersOnUuid = (searchUuid: string, dispatch): void => {
     request
-        .get(`${baseUrl}/rasters/?uuid=${searchUuid}`)
+        .get(`/api/v4/rasters/?uuid=${searchUuid}`)
         .then(response => {
             dispatch(rastersFetched(response.body))
         })
@@ -167,13 +166,13 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
     const queries = params.join('&');
 
     request
-        .get(`${baseUrl}/wmslayers/?${queries}`)
+        .get(`/api/v4/wmslayers/?${queries}`)
         .then(response => {
             if(response.body.count === 0 && searchTerm) {
                 //If could not find any WMS layer with the search term by WMS's name then look for WMS's uuid
                 const newQueries = queries.replace('name__icontains', 'uuid');
                 request
-                    .get(`${baseUrl}/wmslayers/?${newQueries}`)
+                    .get(`/api/v4/wmslayers/?${newQueries}`)
                     .then(response => {
                         dispatch(wmsLayersReceived(response.body))
                     })
@@ -187,7 +186,7 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
 
 export const fetchWMSByUUID = (uuid: string, dispatch): void => {
     request
-        .get(`${baseUrl}/wmslayers/${uuid}`)
+        .get(`/api/v4/wmslayers/${uuid}`)
         .then(response => {
             dispatch({
                 type: RECEIVE_WMS_LAYER,
@@ -214,7 +213,7 @@ export const DATASETS_FETCHED = 'DATASETS_FETCHED';
 
 export const fetchObservationTypes = (dispatch): void => {
     request
-        .get(`${baseUrl}/observationtypes/?page_size=0`)
+        .get(`/api/v4/observationtypes/?page_size=0`)
         .then(response => {
             dispatch({
                 type: OBSERVATION_TYPES_FETCHED,
@@ -226,7 +225,7 @@ export const fetchObservationTypes = (dispatch): void => {
 
 export const fetchOrganisations = (dispatch): void => {
     request
-        .get(`${baseUrl}/organisations/?page_size=0`)
+        .get(`/api/v4/organisations/?page_size=0`)
         .then(response => {
             dispatch({
                 type: ORGANISATIONS_FETCHED,
@@ -238,7 +237,7 @@ export const fetchOrganisations = (dispatch): void => {
 
 export const fetchDatasets = (dispatch): void => {
     request
-        .get(`${baseUrl}/datasets/?page_size=0`)
+        .get(`/api/v4/datasets/?page_size=0`)
         .then(response => {
             dispatch({
                 type: DATASETS_FETCHED,
@@ -513,7 +512,7 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
     const boundsString = `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`;
     
     request
-        .get(`${baseUrl}/rasters/${rasterUuid}/grid/?projection=${projection}&cell_size=${resolution}&tile_height=${tileHeight}&tile_width=${tileWidth}&bbox=${boundsString}`)
+        .get(`/api/v4/rasters/${rasterUuid}/grid/?projection=${projection}&cell_size=${resolution}&tile_height=${tileHeight}&tile_width=${tileWidth}&bbox=${boundsString}`)
         .then(response => {
             const gridCells = response.body.features;
 
@@ -567,9 +566,9 @@ export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch:
         }
         const currentGridBbox = currentGrid.properties.bbox;
         const requestUrl = start===''?
-            `${baseUrl}/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&async=true&notify_user=true`
+            `/api/v4/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&async=true&notify_user=true`
             :
-            `${baseUrl}/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&start=${start}&async=true&notify_user=true`
+            `/api/v4/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&start=${start}&async=true&notify_user=true`
 
         request.get(requestUrl)
         .then(() => {
@@ -587,7 +586,7 @@ export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch:
 export const requestProjections = (rasterUuid: string) => (dispatch: Dispatch<SetFetchingStateProjections | ReceivedProjections | SetFetchingStateProjections>) => {
     dispatch(setFetchingStateProjections("SENT"));
 
-    const requestUrl = `${baseUrl}/rasters/${rasterUuid}/projections/?page_size=100000`;
+    const requestUrl = `/api/v4/rasters/${rasterUuid}/projections/?page_size=100000`;
     request.get(requestUrl)
     .then(response => {
         dispatch(receivedProjections(response.body.results));
