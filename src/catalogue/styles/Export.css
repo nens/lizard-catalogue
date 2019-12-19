@@ -12,8 +12,8 @@
 
 /* CONTENTS OF EXPORT SCREEN */
 .export {
-    width: 80%;
-    min-height: 80%;
+    width: 96%;
+    min-height: 96%;
     color: #333;
     border: 1px solid #BEBEBE;
     border-radius: 1rem;
@@ -24,8 +24,8 @@
     transition: all .4s .2s;
 
     position: absolute;
-    top: 10%;
-    left: 10%;
+    top: 2%;
+    left: 2%;
 
     display: flex;
     flex-direction: column;
@@ -59,10 +59,10 @@
     outline: auto;
     height: 93%;
     display: flex;
+    position: relative;
 }
 
-/* CONTENT */
-.export_content {
+.export_rightsidebar {
     flex: 1;
     padding: 2rem;
     display: flex;
@@ -72,7 +72,6 @@
 }
 
 .export_raster {
-    flex: 5;
     margin-bottom: 1rem;
 }
 
@@ -150,6 +149,33 @@
 }
 .export_grid_cell.selected {
     /* TODO better styling here ? Or should we save the hoover in the redux store or react state*/
-} 
+}
 
-
+ /* normal input fields  */
+.export_input,
+/* input fields as part of datetimepicker */
+.export_settings .rdt input {
+    min-width: 245px;
+    width: 100%;
+}
+.export-input-error-msg {
+    color:#A10000;
+}
+.export-input-error-msg-large {
+    font-size: 2rem;
+    color:#A10000;
+}
+.loading-screen-export {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 999999999;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0,0,0,0.3);
+    font-size: 3rem;
+    color: white;
+}
+.loading-screen-export-text {
+    margin-top: 3rem;
+}

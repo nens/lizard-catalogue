@@ -86,11 +86,11 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
 
         return (
             <div className="details">
-                <h3 title={raster.name}>
-                    <span className="details__title_text">
+                <h3>
+                    <span className="details__title_text" title={raster.name}>
                         {raster.name}
                     </span>
-                    <span>
+                    <span title="To manage this raster">
                         { authorizedToManageLayer ?
                             <a
                                 href={`/management/#/data_management/rasters/${raster.uuid}`}

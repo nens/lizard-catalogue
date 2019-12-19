@@ -14,7 +14,9 @@
 }
 
 .header-logo img {
-    height: 7.4rem;
+    height: 3rem;
+    width: 18.6rem;
+    margin-right: 1rem;
     cursor: pointer;
 }
 
@@ -82,7 +84,7 @@
     border-radius: 50%;
     background-color: orangered;
     position: absolute;
-    margin: -1rem 0 0 -1rem;
+    margin: -1rem 0 0 -1.5rem;
 
     display: flex;
     justify-content: center;

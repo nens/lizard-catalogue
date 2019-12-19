@@ -50,8 +50,8 @@ class Header extends React.Component<MyProps & PropsFromState> {
         return (
             <nav className="header">
                 <div className="header-logo">
-                    <img src="image/lizard.png" alt="logo" className="header-logo__logo" onClick={() => window.location.href = ""} />
-                    <h3 className="header-logo__text">Lizard Catalogue</h3>
+                    <img src="image/lizard-logo-white.svg" alt="logo" className="header-logo__logo" onClick={() => window.location.href = ""} />
+                    <h3 className="header-logo__text">Catalogue</h3>
                 </div>
                 <div className="header-nav">
                     <div className="header-nav__icon-box inbox-dropdown" style={{marginRight: "5rem"}} onClick={openInboxDropdown}>

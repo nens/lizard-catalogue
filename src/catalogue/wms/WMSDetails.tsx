@@ -57,14 +57,14 @@ class WMSDetails extends React.Component<PropsFromState & MyProps> {
 
         return (
             <div className="details">
-                <h3 title={wms.name}>
-                    <span className="details__title_text">
+                <h3>
+                    <span className="details__title_text" title={wms.name}>
                         {wms.name}
                     </span>
-                    <span>
+                    <span title="To manage this WMS layer">
                         { authorizedToManageLayer ?
                             <a
-                                href={`/management/#/data_management/rasters/${wms.uuid}`}
+                                href={`/management/#/data_management/wms_layers/${wms.uuid}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
