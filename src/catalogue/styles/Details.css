@@ -143,18 +143,41 @@
 }
 
 .details__get-capabilities-url {
-    cursor: pointer;
+    cursor: default;
     padding: .4rem;
     margin: .4rem 0;
     border-radius: .2rem;
-    border: 1px solid #707070;
-    color: #707070;
+    border: 1px solid lightgrey;
+    color: grey;
     background: #FFFFFF 0% 0% no-repeat padding-box;
-    width: 94%;
+    width: 84%;
     height: 2.5rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.details__button-copy {
+    cursor: pointer;
+    width: 15%;
+    margin: 0;
+    padding: 0.5rem;
+    color: #fff;
+    background-color: #2FCBAB;
+    border: none;
+    border-radius: .2rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    box-shadow: .1rem .1rem .3rem rgba(12, 12, 12, 0.5);
+}
+
+.details__button-copy:focus {
+    outline: none;
+}
+
+.details__button-copy:active {
+    transform: translateY(2px);
 }
 
 .details__button-container {

@@ -4,7 +4,7 @@ import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getWMS, getOrganisations, getLizardBootstrap } from '../../reducers';
 import { WMS, LatLng, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
-import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL, getDatasetGetCapabilitesURL, openDatasetGetCapabilities } from '../../utils/url';
+import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL, getDatasetGetCapabilitesURL} from '../../utils/url';
 import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import '../styles/Details.css';
 
@@ -116,15 +116,16 @@ class WMSDetails extends React.Component<PropsFromState & MyProps> {
                         <div
                             className="details__get-capabilities-url"
                             title={wmsUrl}
-                            onClick={() => window.open(wmsUrl, '_blank')}
                         >
                             {wmsUrl}
                         </div>
-                        <i
-                            className="fas fa-copy"
+                        <button
+                            className="details__button-copy"
                             title="Copy link"
                             onClick={() => navigator.clipboard.writeText(wmsUrl)}
-                        />
+                        >
+                            Copy link
+                        </button>
                     </div>
                     <br /><br />
                     <h4>Slug</h4>
@@ -141,15 +142,16 @@ class WMSDetails extends React.Component<PropsFromState & MyProps> {
                                 <div
                                     className="details__get-capabilities-url"
                                     title={getDatasetGetCapabilitesURL(dataset) || ""}
-                                    onClick={() => openDatasetGetCapabilities(dataset)}
                                 >
                                     {getDatasetGetCapabilitesURL(dataset)}
                                 </div>
-                                <i
-                                    className="fas fa-copy"
+                                <button
+                                    className="details__button-copy"
                                     title="Copy link"
                                     onClick={() => navigator.clipboard.writeText(getDatasetGetCapabilitesURL(dataset))}
-                                />
+                                >
+                                    Copy link
+                                </button>
                             </div>
                         </div>
                     </div>

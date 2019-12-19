@@ -5,7 +5,7 @@ import { MyStore, getRaster, getOrganisations, getLizardBootstrap } from '../../
 import { Raster, LatLng, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
-import { openRasterInAPI, openRasterInLizard, openRasterGetCapabilities, openDatasetGetCapabilities, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
+import { openRasterInAPI, openRasterInLizard, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
 import Export from '../components/Export';
 import '../styles/Details.css';
 import '../styles/Export.css';
@@ -170,15 +170,16 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                             <div
                                 className="details__get-capabilities-url"
                                 title={getRasterGetCapabilitesURL(raster)}
-                                onClick={() => openRasterGetCapabilities(raster)}
                             >
                                 {getRasterGetCapabilitesURL(raster)}
                             </div>
-                            <i
-                                className="fas fa-copy"
+                            <button
+                                className="details__button-copy"
                                 title="Copy link"
                                 onClick={() => navigator.clipboard.writeText(getRasterGetCapabilitesURL(raster))}
-                            />
+                            >
+                                Copy link
+                            </button>
                         </div>
                     </div>
                     <br/>
@@ -189,15 +190,16 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                                 <div
                                     className="details__get-capabilities-url"
                                     title={getDatasetGetCapabilitesURL(dataset) || ""}
-                                    onClick={() => openDatasetGetCapabilities(dataset)}
                                 >
                                     {getDatasetGetCapabilitesURL(dataset)}
                                 </div>
-                                <i
-                                    className="fas fa-copy"
+                                <button
+                                    className="details__button-copy"
                                     title="Copy link"
                                     onClick={() => navigator.clipboard.writeText(getDatasetGetCapabilitesURL(dataset))}
-                                />
+                                >
+                                    Copy link
+                                </button>
                             </div>
                         </div>
                     ) : null}

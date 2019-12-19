@@ -40,14 +40,6 @@ export const openWMSDownloadURL = (wms: WMS) => {
     return wms.download_url ? window.open(wms.download_url) : null;
 };
 
-export const openRasterGetCapabilities = (raster: Raster) => {
-    window.open(`/wms/${raster.uuid}/?request=GetCapabilities`);
-};
-
-export const openDatasetGetCapabilities = (dataset: Dataset) => {
-    window.open(`/wms/${dataset.slug}/?request=GetCapabilities`);
-};
-
 export const getRasterGetCapabilitesURL = (raster: Raster) => {
     return `${baseUrl}/wms/${raster.uuid}/?request=GetCapabilities`;
 };
