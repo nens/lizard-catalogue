@@ -74,6 +74,11 @@
 
 .details__description-box h4 {
     font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.details__description-box span {
+    margin-bottom: .5rem;
 }
 
 .description {

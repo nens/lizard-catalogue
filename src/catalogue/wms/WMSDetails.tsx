@@ -81,14 +81,11 @@ class WMSDetails extends React.Component<PropsFromState & MyProps> {
                 <div className="details__main-box">
                     <div className="details__description-box">
                         <h4>Description</h4>
-                        <div className="description">{wms.description}</div>
-                        <br />
+                        <span className="description">{wms.description}</span>
                         <h4>Organisation</h4>
                         <span>{wms.organisation && wms.organisation.name}</span>
-                        <br />
                         <h4>UUID</h4>
                         <span>{wms.uuid}</span>
-                        <br />
                         <h4>Dataset</h4>
                         <span>{wms.datasets && wms.datasets[0] && wms.datasets[0].slug}</span>
                     </div>
