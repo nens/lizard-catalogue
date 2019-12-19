@@ -113,12 +113,13 @@ class WMSDetails extends React.Component<PropsFromState & MyProps> {
                             visibility: wms.wms_url ? "visible" : "hidden"
                         }}
                     >
-                        <div
+                        <input
+                            type="text"
                             className="details__get-capabilities-url"
                             title={wmsUrl}
-                        >
-                            {wmsUrl}
-                        </div>
+                            value={wmsUrl}
+                            spellCheck={false}
+                        />
                         <button
                             className="details__button-copy"
                             title="Copy link"
@@ -139,12 +140,13 @@ class WMSDetails extends React.Component<PropsFromState & MyProps> {
                         <div>
                             For this complete dataset:
                             <div className="details__url-field">
-                                <div
+                                <input
+                                    type="text"
                                     className="details__get-capabilities-url"
-                                    title={getDatasetGetCapabilitesURL(dataset) || ""}
-                                >
-                                    {getDatasetGetCapabilitesURL(dataset)}
-                                </div>
+                                    title={getDatasetGetCapabilitesURL(dataset)}
+                                    value={getDatasetGetCapabilitesURL(dataset)}
+                                    spellCheck={false}
+                                />
                                 <button
                                     className="details__button-copy"
                                     title="Copy link"

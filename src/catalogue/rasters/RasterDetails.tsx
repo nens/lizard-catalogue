@@ -167,12 +167,13 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                     <div>
                         For this raster:
                         <div className="details__url-field">
-                            <div
+                            <input
+                                type="text"
                                 className="details__get-capabilities-url"
                                 title={getRasterGetCapabilitesURL(raster)}
-                            >
-                                {getRasterGetCapabilitesURL(raster)}
-                            </div>
+                                value={getRasterGetCapabilitesURL(raster)}
+                                spellCheck={false}
+                            />
                             <button
                                 className="details__button-copy"
                                 title="Copy link"
@@ -187,12 +188,13 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                         <div>
                             For this complete dataset:
                             <div className="details__url-field">
-                                <div
+                                <input
+                                    type="text"
                                     className="details__get-capabilities-url"
-                                    title={getDatasetGetCapabilitesURL(dataset) || ""}
-                                >
-                                    {getDatasetGetCapabilitesURL(dataset)}
-                                </div>
+                                    title={getDatasetGetCapabilitesURL(dataset)}
+                                    value={getDatasetGetCapabilitesURL(dataset)}
+                                    spellCheck={false}
+                                />
                                 <button
                                     className="details__button-copy"
                                     title="Copy link"

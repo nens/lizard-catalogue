@@ -143,18 +143,18 @@
 }
 
 .details__get-capabilities-url {
-    cursor: default;
+    width: 84%;
+    height: 2.5rem;
     padding: .4rem;
     margin: .4rem 0;
     border-radius: .2rem;
     border: 1px solid lightgrey;
     color: grey;
     background: #FFFFFF 0% 0% no-repeat padding-box;
-    width: 84%;
-    height: 2.5rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+}
+
+.details__get-capabilities-url:focus {
+    outline: none;
 }
 
 .details__button-copy {
