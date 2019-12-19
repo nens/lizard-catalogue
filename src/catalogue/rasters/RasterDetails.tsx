@@ -4,12 +4,11 @@ import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getRaster, getOrganisations, getLizardBootstrap } from '../../reducers';
 import { Raster, LatLng, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
+import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
+import { openRasterInAPI, openRasterInLizard, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
+import Export from '../components/Export';
 import '../styles/Details.css';
 import '../styles/Export.css';
-
-import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
-import { openRasterInAPI, openRasterInLizard, openRasterGetCapabilities, openDatasetGetCapabilities, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
-import Export from '../components/Export';
 
 interface PropsFromState {
     raster: Raster | null,
@@ -111,14 +110,11 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                 <div className="details__main-box">
                     <div className="details__description-box">
                         <h4>Description</h4>
-                        <div className="description">{raster.description}</div>
-                        <br />
+                        <span className="description">{raster.description}</span>
                         <h4>Organisation</h4>
                         <span>{raster.organisation && raster.organisation.name}</span>
-                        <br />
                         <h4>UUID</h4>
                         <span>{raster.uuid}</span>
-                        <br />
                         <h4>Dataset</h4>
                         <span>{dataset && dataset.slug}</span>
                     </div>
@@ -167,27 +163,45 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                     <hr/>
                     <div>
                         For this raster:
-                        <div
-                            className="details__get-capabilities-url"
-                            title={getRasterGetCapabilitesURL(raster)}
-                            onClick={() => openRasterGetCapabilities(raster)}
-                        >
-                            {getRasterGetCapabilitesURL(raster)}
+                        <div className="details__url-field">
+                            <input
+                                type="text"
+                                className="details__get-capabilities-url"
+                                title={getRasterGetCapabilitesURL(raster)}
+                                value={getRasterGetCapabilitesURL(raster)}
+                                spellCheck={false}
+                            />
+                            <button
+                                className="details__button-copy"
+                                title="Copy link"
+                                onClick={() => navigator.clipboard.writeText(getRasterGetCapabilitesURL(raster))}
+                            >
+                                Copy link
+                            </button>
                         </div>
                     </div>
                     <br/>
-                    <div
-                        style={{display: dataset ? "block" : "none"}}
-                    >
-                        For this complete dataset:
-                        <div
-                            className="details__get-capabilities-url"
-                            title={getDatasetGetCapabilitesURL(dataset) || ""}
-                            onClick={() => dataset && openDatasetGetCapabilities(dataset)}
-                        >
-                            {getDatasetGetCapabilitesURL(dataset)}
+                    {dataset ? (
+                        <div>
+                            For this complete dataset:
+                            <div className="details__url-field">
+                                <input
+                                    type="text"
+                                    className="details__get-capabilities-url"
+                                    title={getDatasetGetCapabilitesURL(dataset)}
+                                    value={getDatasetGetCapabilitesURL(dataset)}
+                                    spellCheck={false}
+                                />
+                                <button
+                                    className="details__button-copy"
+                                    title="Copy link"
+                                    onClick={() => navigator.clipboard.writeText(getDatasetGetCapabilitesURL(dataset))}
+                                >
+                                    Copy link
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    ) : null}
                 </div>
                 <div className="details__button-container">
                     <h4>Actions</h4><hr/>

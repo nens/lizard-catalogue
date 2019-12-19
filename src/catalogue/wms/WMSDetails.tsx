@@ -4,10 +4,9 @@ import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getWMS, getOrganisations, getLizardBootstrap } from '../../reducers';
 import { WMS, LatLng, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
-import '../styles/Details.css';
-
-import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL } from '../../utils/url';
+import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL, getDatasetGetCapabilitesURL} from '../../utils/url';
 import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
+import '../styles/Details.css';
 
 interface PropsFromState {
     wms: WMS | null,
@@ -15,13 +14,27 @@ interface PropsFromState {
     bootstrap: Bootstrap
 };
 
-class WMSDetails extends React.Component<PropsFromState> {
+interface MyProps {
+    filters: MyStore['filters'],
+};
+
+class WMSDetails extends React.Component<PropsFromState & MyProps> {
+    selectedDataset = (wms: WMS) => {
+        const { dataset } = this.props.filters;
+        const selectedDataset = dataset && wms.datasets.find(dataSet => dataSet.slug === dataset);
+        return (dataset && selectedDataset) || null;
+    };
+
     render() {
         //Destructure the props
         const { wms, organisations, bootstrap } = this.props;
 
         //If no WMS layer is selected, display a text
         if (!wms) return <div className="details details__loading">Please select a WMS Layer</div>;
+        const dataset = this.selectedDataset(wms);
+
+        //Get WMS layer's getCapabilities link based on WMS layer's URL
+        const wmsUrl = wms.wms_url && `${wms.wms_url}/?request=GetCapabilities`;
 
         //Get spatial bounds of the WMS layer
         const wmsBounds = getBounds(wms);
@@ -68,14 +81,11 @@ class WMSDetails extends React.Component<PropsFromState> {
                 <div className="details__main-box">
                     <div className="details__description-box">
                         <h4>Description</h4>
-                        <div className="description">{wms.description}</div>
-                        <br />
+                        <span className="description">{wms.description}</span>
                         <h4>Organisation</h4>
                         <span>{wms.organisation && wms.organisation.name}</span>
-                        <br />
                         <h4>UUID</h4>
                         <span>{wms.uuid}</span>
-                        <br />
                         <h4>Dataset</h4>
                         <span>{wms.datasets && wms.datasets[0] && wms.datasets[0].slug}</span>
                     </div>
@@ -94,12 +104,57 @@ class WMSDetails extends React.Component<PropsFromState> {
                 <div className="details__wms-info">
                     <h4>Details</h4><hr/><br/>
                     <h4>WMS layer's URL</h4>
-                    <span>{wms.wms_url}</span>
+                    <div
+                        className="details__url-field"
+                        style={{
+                            visibility: wms.wms_url ? "visible" : "hidden"
+                        }}
+                    >
+                        <input
+                            type="text"
+                            className="details__get-capabilities-url"
+                            title={wmsUrl}
+                            value={wmsUrl}
+                            spellCheck={false}
+                        />
+                        <button
+                            className="details__button-copy"
+                            title="Copy link"
+                            onClick={() => navigator.clipboard.writeText(wmsUrl)}
+                        >
+                            Copy link
+                        </button>
+                    </div>
                     <br /><br />
                     <h4>Slug</h4>
                     <span>{wms.slug}</span>
                 </div>
                 <br />
+                {dataset ? (
+                    <div className="details__get-capabilities">
+                        <h4>Lizard WMS GetCapabilities</h4>
+                        <hr/>
+                        <div>
+                            For this complete dataset:
+                            <div className="details__url-field">
+                                <input
+                                    type="text"
+                                    className="details__get-capabilities-url"
+                                    title={getDatasetGetCapabilitesURL(dataset)}
+                                    value={getDatasetGetCapabilitesURL(dataset)}
+                                    spellCheck={false}
+                                />
+                                <button
+                                    className="details__button-copy"
+                                    title="Copy link"
+                                    onClick={() => navigator.clipboard.writeText(getDatasetGetCapabilitesURL(dataset))}
+                                >
+                                    Copy link
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ) : null}
                 <div className="details__button-container">
                     <h4>Actions</h4><hr/>
                     <div className="details__buttons">

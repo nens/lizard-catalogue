@@ -324,7 +324,9 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                             filters={this.props.filters}
                         />
                         :
-                        <WMSDetails />
+                        <WMSDetails
+                            filters={this.props.filters}
+                        />
                     }
                 </div>
                 {/* ALERT POPUP */}
