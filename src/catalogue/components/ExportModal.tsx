@@ -189,20 +189,16 @@ class ExportModal extends React.Component<MyProps> {
                 <div className="export_rightsidebar">
                     <div className="export_raster">
                         <h3>Selected Raster</h3>
-                        <hr />
                         <div className="export_raster-info">
                             <div className="export_raster-name" title={raster.name}>{raster.name}</div>
-                            <br />
                             <div>
                                 <h4>Description</h4>
                                 <div className="export_raster-description">{raster.description}</div>
                             </div>
-                            <br />
                             <div>
                                 <h4>Organisation</h4>
                                 <span>{raster.organisation && raster.organisation.name}</span>
                             </div>
-                            <br />
                             <div>
                                 <h4>UUID</h4>
                                 <span>{raster.uuid}</span>
@@ -211,7 +207,6 @@ class ExportModal extends React.Component<MyProps> {
                     </div>
                     <div className="export_settings">
                         <h3>Export Settings</h3>
-                        <hr />
                         <div>
                             {/* Datetime picker for temporal raster */}
                             {raster.temporal && (

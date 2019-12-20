@@ -64,14 +64,22 @@
 
 .export_rightsidebar {
     flex: 1;
-    padding: 2rem;
+    padding: 1rem 2rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     overflow: auto;
 }
 
+.export_rightsidebar h3 {
+    border-bottom: 1px solid grey;
+}
+
 .export_raster {
+    margin-bottom: 1rem;
+}
+
+.export_raster-info div {
     margin-bottom: 1rem;
 }
 
@@ -146,9 +154,6 @@
 
 .export_grid_cell:hover {
     fill-opacity: 0.5;
-}
-.export_grid_cell.selected {
-    /* TODO better styling here ? Or should we save the hoover in the redux store or react state*/
 }
 
  /* normal input fields  */
