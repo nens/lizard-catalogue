@@ -54,7 +54,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
                     <h3 className="header-logo__text">Catalogue</h3>
                 </div>
                 <div className="header-nav">
-                    <div className="header-nav__icon-box inbox-dropdown" style={{marginRight: "5rem"}} onClick={openInboxDropdown}>
+                    <div className="header-nav__icon-box inbox-dropdown" onClick={openInboxDropdown}>
                         <svg className="header-nav__icon">
                             <use xlinkHref="image/symbols.svg#icon-download" />
                         </svg>

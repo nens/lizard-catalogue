@@ -208,6 +208,10 @@
     text-transform: uppercase;
 }
 
+.details__button-danger {
+    background-color: #ff7070;
+}
+
 .details__button:last-child {
     margin-right: 0;
 }
