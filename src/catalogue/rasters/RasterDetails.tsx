@@ -5,7 +5,7 @@ import { MyStore, getRaster, getOrganisations, getLizardBootstrap } from '../../
 import { Raster, LatLng, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
-import { openRasterInAPI, openRasterInLizard, getRasterGetCapabilitesURL, getDatasetGetCapabilitesURL } from '../../utils/url';
+import { openRasterInAPI, openRasterInLizard, getDatasetGetCapabilitesURL } from '../../utils/url';
 import Export from '../components/Export';
 import '../styles/Details.css';
 import '../styles/Export.css';
@@ -158,30 +158,10 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                         <p className="column column-1">End</p><p className="column column-2">{stop}</p>
                     </div>
                 </div>
-                <div className="details__get-capabilities">
-                    <h4>Lizard WMS GetCapabilities</h4>
-                    <hr/>
-                    <div>
-                        For this raster:
-                        <div className="details__url-field">
-                            <input
-                                type="text"
-                                className="details__get-capabilities-url"
-                                title={getRasterGetCapabilitesURL(raster)}
-                                value={getRasterGetCapabilitesURL(raster)}
-                                spellCheck={false}
-                            />
-                            <button
-                                className="details__button-copy"
-                                title="Copy link"
-                                onClick={() => navigator.clipboard.writeText(getRasterGetCapabilitesURL(raster))}
-                            >
-                                Copy link
-                            </button>
-                        </div>
-                    </div>
-                    <br/>
-                    {dataset ? (
+                {dataset ? (
+                    <div className="details__get-capabilities">
+                        <h4>Lizard WMS GetCapabilities</h4>
+                        <hr/>
                         <div>
                             For this complete dataset:
                             <div className="details__url-field">
@@ -201,8 +181,8 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                                 </button>
                             </div>
                         </div>
-                    ) : null}
-                </div>
+                    </div>
+                ) : null}
                 <div className="details__button-container">
                     <h4>Actions</h4><hr/>
                     <div className="details__buttons">
