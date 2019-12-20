@@ -357,7 +357,7 @@ class ExportModal extends React.Component<MyProps> {
                             {`Download ${this.props.selectedGridCellIds.length}  selected cells`}
                         </button>
                         <button 
-                            className={`details__button`}
+                            className={`details__button details__button-danger`}
                             disabled={this.props.selectedGridCellIds.length === 0? true: false}
                             title={this.props.selectedGridCellIds.length === 0 ? "No grid cells selected" : undefined}  
                             onClick={()=>{
