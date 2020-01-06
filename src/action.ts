@@ -1,6 +1,8 @@
 import request from 'superagent';
-import { Dispatch,} from 'redux';
-import store  from './store';
+import { Dispatch } from 'redux';
+import { baseUrl } from './api';
+import store, { RootDispatch }  from './store';
+
 import {
     RasterListObject,
     WMSObject,
@@ -24,12 +26,12 @@ import {
     SetFetchingStateProjections,
     SetRasterExportFormFields,
 } from './interface';
-import { 
-    getExportGridCellResolution, 
-    getExportGridCellProjection, 
-    getExportGridCellTileWidth, 
-    getExportGridCellTileHeight, 
-    getExportGridCellBounds, 
+import {
+    getExportGridCellResolution,
+    getExportGridCellProjection,
+    getExportGridCellTileWidth,
+    getExportGridCellTileHeight,
+    getExportGridCellBounds,
     getExportSelectedGridCellIds,
     getDateTimeStart,
 } from './reducers';
@@ -41,7 +43,7 @@ import {areGridCelIdsEqual} from './utils/rasterExportUtils'
 export const REQUEST_LIZARD_BOOTSTRAP = "REQUEST_LIZARD_BOOTSTRAP";
 export const RECEIVE_LIZARD_BOOTSTRAP = "RECEIVE_LIZARD_BOOTSTRAP";
 
-export const fetchLizardBootstrap = (dispatch) => {
+export const fetchLizardBootstrap = (dispatch: RootDispatch) => {
     dispatch({
         type: REQUEST_LIZARD_BOOTSTRAP
     });
@@ -55,14 +57,14 @@ export const fetchLizardBootstrap = (dispatch) => {
                 type: RECEIVE_LIZARD_BOOTSTRAP,
                 payload: data
             });
-        } 
+        }
     });
 };
 
 //MARK: Switch between rasters and wms layers
 export const SWITCH_DATA_TYPE = 'SWITCH_DATA_TYPE';
 
-export const switchDataType = (dataType: SwitchDataType['payload'], dispatch): void => {
+export const switchDataType = (dataType: SwitchDataType['payload'], dispatch: RootDispatch): void => {
     dispatch({
         type: SWITCH_DATA_TYPE,
         payload: dataType
@@ -83,7 +85,7 @@ const rastersFetched = (rasterListObject: RasterListObject) => ({
     payload: rasterListObject
 });
 
-export const fetchRasters = (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string, dispatch): void => {
+export const fetchRasters = (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string, dispatch: RootDispatch): void => {
     dispatch(rastersRequested());
 
     const params: string[] = [];
@@ -116,7 +118,7 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
         .catch(console.error)
 };
 
-export const fetchRasterByUUID = (uuid: string, dispatch): void => {
+export const fetchRasterByUUID = (uuid: string, dispatch: RootDispatch): void => {
     request
         .get(`/api/v4/rasters/${uuid}`)
         .then(response => {
@@ -129,7 +131,7 @@ export const fetchRasterByUUID = (uuid: string, dispatch): void => {
 };
 
 //Decide whether gonna use this fetch function
-export const fetchRastersOnUuid = (searchUuid: string, dispatch): void => {
+export const fetchRastersOnUuid = (searchUuid: string, dispatch: RootDispatch): void => {
     request
         .get(`/api/v4/rasters/?uuid=${searchUuid}`)
         .then(response => {
@@ -152,7 +154,7 @@ const wmsLayersReceived = (wmsObject: WMSObject) => ({
     payload: wmsObject
 });
 
-export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string, dispatch): void => {
+export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string, dispatch: RootDispatch): void => {
     dispatch(wmsRequested());
 
     const params: string[] = [];
@@ -184,7 +186,7 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
         .catch(console.error)
 };
 
-export const fetchWMSByUUID = (uuid: string, dispatch): void => {
+export const fetchWMSByUUID = (uuid: string, dispatch: RootDispatch): void => {
     request
         .get(`/api/v4/wmslayers/${uuid}`)
         .then(response => {
@@ -199,7 +201,7 @@ export const fetchWMSByUUID = (uuid: string, dispatch): void => {
 //MARK: Select Item to view (Raster or WMS layer)
 export const ITEM_SELECTED = 'ITEM_SELECTED';
 
-export const selectItem = (uuid: string, dispatch): void => {
+export const selectItem = (uuid: string, dispatch: RootDispatch): void => {
     dispatch({
         type: ITEM_SELECTED,
         uuid
@@ -211,7 +213,7 @@ export const OBSERVATION_TYPES_FETCHED = 'OBSERVATION_TYPES_FETCHED';
 export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
 export const DATASETS_FETCHED = 'DATASETS_FETCHED';
 
-export const fetchObservationTypes = (dispatch): void => {
+export const fetchObservationTypes = (dispatch: RootDispatch): void => {
     request
         .get(`/api/v4/observationtypes/?page_size=0`)
         .then(response => {
@@ -223,7 +225,7 @@ export const fetchObservationTypes = (dispatch): void => {
         .catch(console.error)
 };
 
-export const fetchOrganisations = (dispatch): void => {
+export const fetchOrganisations = (dispatch: RootDispatch): void => {
     request
         .get(`/api/v4/organisations/?page_size=0`)
         .then(response => {
@@ -235,7 +237,7 @@ export const fetchOrganisations = (dispatch): void => {
         .catch(console.error)
 };
 
-export const fetchDatasets = (dispatch): void => {
+export const fetchDatasets = (dispatch: RootDispatch): void => {
     request
         .get(`/api/v4/datasets/?page_size=0`)
         .then(response => {
@@ -259,66 +261,66 @@ export const REMOVE_SEARCH = 'REMOVE_SEARCH';
 export const UPDATE_ORDER = 'UPDATE_ORDER';
 export const UPDATE_PAGE = 'UPDATE_PAGE';
 
-export const selectOrganisation = (dispatch, organisation: string) => {
+export const selectOrganisation = (dispatch: RootDispatch, organisation: string) => {
     dispatch({
         type: SELECT_ORGANISATION,
         organisation
     });
 };
 
-export const removeOrganisation = (dispatch) => {
+export const removeOrganisation = (dispatch: RootDispatch) => {
     dispatch({
         type: REMOVE_ORGANISATION
     });
 };
 
-export const selectDataset = (dispatch, dataset: string) => {
+export const selectDataset = (dispatch: RootDispatch, dataset: string) => {
     dispatch({
         type: SELECT_DATASET,
         dataset
     });
 };
 
-export const removeDataset = (dispatch) => {
+export const removeDataset = (dispatch: RootDispatch) => {
     dispatch({
         type: REMOVE_DATASET
     });
 };
 
-export const selectObservationType = (dispatch, observationType: string) => {
+export const selectObservationType = (dispatch: RootDispatch, observationType: string) => {
     dispatch({
         type: SELECT_OBSERVATIONTYPE,
         observationType
     });
 };
 
-export const removeObservationType = (dispatch) => {
+export const removeObservationType = (dispatch: RootDispatch) => {
     dispatch({
         type: REMOVE_OBSERVATIONTYPE
     });
 };
 
-export const updateSearch = (dispatch, searchTerm: string) => {
+export const updateSearch = (dispatch: RootDispatch, searchTerm: string) => {
     dispatch({
         type: UPDATE_SEARCH,
         searchTerm
     });
 };
 
-export const removeSearch = (dispatch) => {
+export const removeSearch = (dispatch: RootDispatch) => {
     dispatch({
         type: REMOVE_SEARCH
     });
 };
 
-export const updateOrder = (dispatch, ordering: string) => {
+export const updateOrder = (dispatch: RootDispatch, ordering: string) => {
     dispatch({
         type: UPDATE_ORDER,
         ordering
     });
 };
 
-export const updatePage = (dispatch, page: number) => {
+export const updatePage = (dispatch: RootDispatch, page: number) => {
     dispatch({
         type: UPDATE_PAGE,
         page
@@ -332,28 +334,28 @@ export const REMOVE_RASTER_FROM_BASKET = 'REMOVE_RASTER_FROM_BASKET';
 export const UPDATE_BASKET_WITH_WMS = 'UPDATE_BASKET_WITH_WMS';
 export const REMOVE_WMS_FROM_BASKET = 'REMOVE_WMS_FROM_BASKET';
 
-export const updateBasketWithRaster = (rasters: string[], dispatch): void => {
+export const updateBasketWithRaster = (rasters: string[], dispatch: RootDispatch): void => {
     dispatch({
         type: UPDATE_BASKET_WITH_RASTER,
         rasters
     });
 };
 
-export const removeRasterFromBasket = (uuid: string, dispatch): void => {
+export const removeRasterFromBasket = (uuid: string, dispatch: RootDispatch): void => {
     dispatch({
         type: REMOVE_RASTER_FROM_BASKET,
         uuid
     });
 };
 
-export const updateBasketWithWMS = (wmsLayers: string[], dispatch): void => {
+export const updateBasketWithWMS = (wmsLayers: string[], dispatch: RootDispatch): void => {
     dispatch({
         type: UPDATE_BASKET_WITH_WMS,
         wmsLayers
     });
 };
 
-export const removeWMSFromBasket = (uuid: string, dispatch): void => {
+export const removeWMSFromBasket = (uuid: string, dispatch: RootDispatch): void => {
     dispatch({
         type: REMOVE_WMS_FROM_BASKET,
         uuid
@@ -363,7 +365,7 @@ export const removeWMSFromBasket = (uuid: string, dispatch): void => {
 //MARK: Toggle the showAlert
 export const TOGGLE_ALERT = 'TOGGLE_ALERT';
 
-export const toggleAlert = (dispatch) => {
+export const toggleAlert = (dispatch: RootDispatch) => {
     dispatch({
         type: TOGGLE_ALERT
     });
@@ -374,7 +376,7 @@ export const REQUEST_INBOX = 'REQUEST_INBOX';
 export const REMOVE_MESSAGE = 'REMOVE_MESSAGE';
 export const DOWNLOAD_FILE = 'DOWNLOAD_FILE';
 
-export const requestInbox = (dispatch) => {
+export const requestInbox = (dispatch: RootDispatch) => {
     setInterval(() => {
         request
             .get(`/api/v3/inbox/?page_size=10000000`)
@@ -388,14 +390,14 @@ export const requestInbox = (dispatch) => {
     }, 5000);
 };
 
-export const removeMessage = (dispatch, id: string) => {
+export const removeMessage = (dispatch: RootDispatch, id: string) => {
     dispatch({
         type: REMOVE_MESSAGE,
         id
     });
 };
 
-export const downloadFile = (dispatch, id: string) => {
+export const downloadFile = (dispatch: RootDispatch, id: string) => {
     dispatch({
         type: DOWNLOAD_FILE,
         id
@@ -419,7 +421,7 @@ export const FETCHING_STATE_PROJECTIONS = "FETCHING_STATE_PROJECTIONS";
 export const SET_RASTER_EXPORT_FORM_FIELDS = "SET_RASTER_EXPORT_FORM_FIELDS";
 export const REMOVE_CURRENT_EXPORT_TASKS = "REMOVE_CURRENT_EXPORT_TASKS";
 
-export const removeCurrentExportTasks = (dispatch) => {
+export const removeCurrentExportTasks = (dispatch: RootDispatch) => {
     dispatch({
         type: REMOVE_CURRENT_EXPORT_TASKS
     });
@@ -478,7 +480,7 @@ export const receivedProjections = (projections: Projection[]) : ReceivedProject
 export const setFetchingStateProjections = (fetchingState: FetchingState) : SetFetchingStateProjections => ({
     type: FETCHING_STATE_PROJECTIONS,
     fetchingState,
-}) 
+})
 
 
 const fieldValuePairContainsFieldThatShouldResetGridCells = (fieldValuePair: FieldValuePair) => {
@@ -491,10 +493,7 @@ const fieldValuePairsListContainsFieldThatShouldResetGridCells = (fieldValuePair
     return   !!fieldValuePairs.find(fieldValuePairContainsFieldThatShouldResetGridCells);
 }
 
-export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate: FieldValuePair[]) => 
-    (
-    dispatch: Dispatch<RemoveAllSelectedExportGridCellIds | RemoveAllExportGridCells | SetRasterExportFormFields | RequestedGridCells | RetrievedRasterExportGridcells | FailedRetrievingRasterExportGridcells>
-    ) =>
+export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate: FieldValuePair[]) => (dispatch: RootDispatch) =>
     {
 
     if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
@@ -510,7 +509,7 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
     const rasterUuid = state.selectedItem;
     const bounds = getExportGridCellBounds(state);
     const boundsString = `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`;
-    
+
     request
         .get(`/api/v4/rasters/${rasterUuid}/grid/?projection=${projection}&cell_size=${resolution}&tile_height=${tileHeight}&tile_width=${tileWidth}&bbox=${boundsString}`)
         .then(response => {
@@ -543,7 +542,7 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
         })
 };
 
-export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch: Dispatch<RequestRasterExports | ReceivedTaskRasterExport | FailedTaskRasterExport>) =>{
+export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch: RootDispatch) =>{
 
     dispatch(setCurrentRasterExportsToStore(numberOfInboxMessages));
 
@@ -580,10 +579,10 @@ export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch:
         })
 
     });
-    
+
 };
 
-export const requestProjections = (rasterUuid: string) => (dispatch: Dispatch<SetFetchingStateProjections | ReceivedProjections | SetFetchingStateProjections>) => {
+export const requestProjections = (rasterUuid: string) => (dispatch: RootDispatch) => {
     dispatch(setFetchingStateProjections("SENT"));
 
     const requestUrl = `/api/v4/rasters/${rasterUuid}/projections/?page_size=100000`;

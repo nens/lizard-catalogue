@@ -48,16 +48,16 @@ import {
     REMOVE_CURRENT_EXPORT_TASKS,
 } from "./action";
 import {
-    Raster,
-    ObservationType,
-    Organisation,
-    Dataset,
-    Bootstrap,
-    WMS,
-    SwitchDataType,
-    Message,
-    RasterExportState,
-    // RasterExportStateActionType,
+  Raster,
+  ObservationType,
+  Organisation,
+  Dataset,
+  Bootstrap,
+  WMS,
+  SwitchDataType,
+  Message,
+  RasterExportState,
+  RasterExportStateActionType,
 } from './interface';
 import {areGridCelIdsEqual,haveGridCellsSameId} from './utils/rasterExportUtils'
 
@@ -107,7 +107,7 @@ export interface MyStore {
 };
 
 const rasterExportState = (state: MyStore["rasterExportState"]=
-    {
+  {
     selectedGridCellIds: [],
     fetchingStateGrid: "NOT_SENT",
     fetchingStateGridMsg: "",
@@ -118,20 +118,20 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
     tileWidth: 1000,
     tileHeight: 1000,
     bounds: {
-        north: 1,
-        east: 1,
-        south: 1,
-        west: 1,
+      north: 1,
+      east: 1,
+      south: 1,
+      west: 1,
     },
     rasterExportRequests: [],
     dateTimeStart: '',
     numberOfinboxMessagesBeforeRequest: 0,
     projectionsAvailableForCurrentRaster: {
-        fetchingState: "NOT_SENT",
-        projections: [],
+      fetchingState: "NOT_SENT",
+      projections: [],
     }
-    },
-    action
+  },
+                           action: RasterExportStateActionType
 ): MyStore['rasterExportState'] => {
     switch (action.type) {
         case ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS:
@@ -149,7 +149,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 ...state,
                 selectedGridCellIds: [],
             }
-        case REMOVE_ALL_EXPORT_GRID_CELLS: 
+        case REMOVE_ALL_EXPORT_GRID_CELLS:
             return {
                 ...state,
                 availableGridCells: [],
@@ -160,14 +160,14 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 ...state,
                 fetchingStateGrid: "SENT"
             }
-        
+
         case RETRIEVED_RASTER_EXPORT_GRIDCELLS:
             return {
                 ...state,
                 fetchingStateGrid: "RECEIVED",
                 availableGridCells: uniqWith( state.availableGridCells.concat(action.gridCells),  haveGridCellsSameId),
-            } 
-        case FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS: 
+            }
+        case FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS:
             return {
                 ...state,
                 fetchingStateGrid: "FAILED",
@@ -175,7 +175,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
             }
         case SET_RASTER_EXPORT_FORM_FIELDS:
             {
-                const stateCopy = {...state}
+                const stateCopy = {...state};
                 action.fieldValuePairs.forEach(fieldValuePair => {
                     stateCopy[fieldValuePair.field] = fieldValuePair.value;
                 })
@@ -697,8 +697,8 @@ export const getExportGridCellCellFetchingState = (state: MyStore) => {
 }
 
 export const getIsFormValidForRequestingGridCells = (state: MyStore) => {
-    return getExportGridCellResolution(state) !== "" && 
-    getExportGridCellProjection(state) !== "" && 
+    return getExportGridCellResolution(state) !== "" &&
+    getExportGridCellProjection(state) !== "" &&
     getExportGridCellTileWidth(state) !== "" &&
     getExportGridCellTileHeight(state) !== "";
 }
