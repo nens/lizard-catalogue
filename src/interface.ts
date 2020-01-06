@@ -12,8 +12,12 @@ import {
     FAILED_TASK_RASTER_EXPORT,
     RECEIVED_PROJECTIONS,
     FETCHING_STATE_PROJECTIONS,
-    SET_RASTER_EXPORT_FORM_FIELDS,
+  SET_RASTER_EXPORT_FORM_FIELDS,
+  REMOVE_CURRENT_EXPORT_TASKS
 } from "./action";
+import {
+  Polygon
+} from 'geojson';
 import { MyStore } from './reducers';
 
 //ACTION
@@ -68,7 +72,8 @@ export interface Raster {
     },
     options: {
         styles: string
-    }
+    },
+  supplier: string | null
 };
 
 //WMS
@@ -101,6 +106,7 @@ export interface WMS {
         north: number,
         south: number
     } | null,
+  supplier: string | null
 };
 
 //ORGANISATION
@@ -144,18 +150,15 @@ export interface Message {
     downloaded: boolean,
 };
 
-export type ExportGridCelId = number[];
+export type ExportGridCellId = number[];
 
 export interface ExportGridCell {
     "type": string,
-    "geometry": {
-        "type": string,
-        "coordinates": number[][],
-    },
+    "geometry": Polygon,
     "properties": {
         "projection": string,
         "bbox": number[],
-        "id": ExportGridCelId
+        "id": ExportGridCellId
     }
 };
 
@@ -169,7 +172,7 @@ export interface Bounds {
 }
 
 export interface RasterExportState {
-    selectedGridCellIds: ExportGridCelId[],
+    selectedGridCellIds: ExportGridCellId[],
     availableGridCells: ExportGridCell[],
     fetchingStateGrid: FetchingState,
     fetchingStateGridMsg: string,
@@ -193,17 +196,17 @@ export interface Projections {
 export interface Projection {
     url: string,
     name: string,
-    code: string, 
+    code: string,
 }
 
 
 export interface RemoveFromSelectedExportGridCellIds {
     type: typeof REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
-    gridCellIds: ExportGridCelId[],
+    gridCellIds: ExportGridCellId[],
 };
-export interface AddToSelectedExportGridCellIds { 
+export interface AddToSelectedExportGridCellIds {
     type: typeof ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
-    gridCellIds: ExportGridCelId[],
+    gridCellIds: ExportGridCellId[],
 };
 export interface RemoveAllSelectedExportGridCellIds {
     type: typeof REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
@@ -231,12 +234,12 @@ export interface RequestRasterExports {
 }
 export interface ReceivedTaskRasterExport {
     type: typeof RECEIVED_TASK_RASTER_EXPORT,
-    id: ExportGridCelId,
+    id: ExportGridCellId,
 }
 
 export interface FailedTaskRasterExport {
     type: typeof FAILED_TASK_RASTER_EXPORT,
-    id: ExportGridCelId,
+    id: ExportGridCellId,
 }
 
 export interface ReceivedProjections {
@@ -251,35 +254,39 @@ export interface SetRasterExportFormFields {
     type: typeof SET_RASTER_EXPORT_FORM_FIELDS,
     fieldValuePairs: FieldValuePair[],
 }
+export interface RemoveCurrentExportTasks {
+  type: typeof REMOVE_CURRENT_EXPORT_TASKS
+}
 
-export type RasterExportFormFieldType = 
-    MyStore['rasterExportState']['resolution'] | 
+export type RasterExportFormFieldType =
+    MyStore['rasterExportState']['resolution'] |
     MyStore['rasterExportState']['projection'] |
     MyStore['rasterExportState']['tileWidth'] |
     MyStore['rasterExportState']['tileHeight'] |
     MyStore['rasterExportState']['bounds']
 
 
-export interface FieldValuePair{field: string, value: RasterExportFormFieldType}
+export interface FieldValuePair{field: keyof MyStore['rasterExportState'], value: RasterExportFormFieldType}
 
-export type RasterExportStateActionType = 
-    RemoveFromSelectedExportGridCellIds | 
-    AddToSelectedExportGridCellIds | 
-    RemoveAllSelectedExportGridCellIds | 
-    RequestedGridCells| 
-    RetrievedRasterExportGridcells | 
-    FailedRetrievingRasterExportGridcells | 
+export type RasterExportStateActionType =
+    RemoveFromSelectedExportGridCellIds |
+    AddToSelectedExportGridCellIds |
+    RemoveAllSelectedExportGridCellIds |
+    RequestedGridCells|
+    RetrievedRasterExportGridcells |
+    FailedRetrievingRasterExportGridcells |
     RemoveAllExportGridCells |
-    RequestRasterExports | 
+    RequestRasterExports |
     ReceivedTaskRasterExport |
     FailedTaskRasterExport |
     ReceivedProjections |
     SetFetchingStateProjections |
-    SetRasterExportFormFields ; 
+    SetRasterExportFormFields |
+    RemoveCurrentExportTasks;
 
 export interface RasterExportRequest {
     fetchingState: FetchingState;
-    id: ExportGridCelId;
+    id: ExportGridCellId;
     projection: string;
     bounds: Bounds;
     resolution: number | "";

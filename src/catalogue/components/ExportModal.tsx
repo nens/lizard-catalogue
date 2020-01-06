@@ -37,9 +37,12 @@ import {
 } from '../../action';
 import {areGridCelIdsEqual} from '../../utils/rasterExportUtils';
 import {
-    Raster,
-    FieldValuePair,
- } from '../../interface';
+  Raster,
+  FieldValuePair,
+  ExportGridCell,
+  ExportGridCellId,
+  Projection
+} from '../../interface';
 import '../styles/Export.css';
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
@@ -59,7 +62,9 @@ type MyProps = PropsFromState & PropsFromDispatch & PropsFromParent
 
 class ExportModal extends React.Component<MyProps> {
 
-    componentDidMount() {
+  componentDidMount() {
+    const bounds = this.props.bounds;
+
         this.props.requestProjections(this.props.raster.uuid);
         this.props.updateExportFormAndFetchExportGridCells([
             {field: "projection", value: this.props.raster.projection},
@@ -70,10 +75,10 @@ class ExportModal extends React.Component<MyProps> {
             {
                 field: 'bounds',
                 value: {
-                    north: this.props.bounds[0][0],
-                    east: this.props.bounds[0][1],
-                    south: this.props.bounds[1][0],
-                    west: this.props.bounds[1][1],
+                    north: bounds.getNorth(),
+                    east: bounds.getEast(),
+                    south: bounds.getSouth(),
+                    west: bounds.getWest()
                 }
             },
         ]);
@@ -81,8 +86,11 @@ class ExportModal extends React.Component<MyProps> {
 
     render() {
         const { raster, bounds, openDownloadModal,fetchingGridState, exportBounds } = this.props;
-        const exportGridCells = this.props.availableGridCells.filter(grid=> getSpatialBoundsIntersect(gridPolygonToSpatialBounds(grid), exportBounds));
+        const exportGridCells = this.props.availableGridCells.filter((grid: ExportGridCell) => getSpatialBoundsIntersect(gridPolygonToSpatialBounds(grid), exportBounds));
         const selectedGridIds = this.props.selectedGridCellIds;
+
+      if (!!bounds) {
+      }
 
         return (
             <div className="export_main">
@@ -107,69 +115,69 @@ class ExportModal extends React.Component<MyProps> {
                         }
 
                         <Map
-                            bounds={bounds}
-                            zoomControl={false}
-                            style={{ width: "100%" }}
-                            onMoveend={event=>{
-                                const bounds = event.target.getBounds();
-                                const mapSpatialBounds = {
-                                    north: bounds._northEast.lat,
-                                    east: bounds._northEast.lng,
-                                    south: bounds._southWest.lat,
-                                    west: bounds._southWest.lng,
-                                };
-                                const rasterBounds = raster.spatial_bounds;
-                                const intersectSpatialBounds = getSpatialBoundsIntersect(mapSpatialBounds, rasterBounds);
-                                if (intersectSpatialBounds===null) {
-                                    return;
-                                }
+                          bounds={bounds}
+                          zoomControl={false}
+                          style={{ width: "100%" }}
+                          onmoveend={event=>{
+                            const bounds = event.target.getBounds();
+                            const mapSpatialBounds = {
+                              north: bounds._northEast.lat,
+                              east: bounds._northEast.lng,
+                              south: bounds._southWest.lat,
+                              west: bounds._southWest.lng,
+                            };
+                            const rasterBounds = raster.spatial_bounds;
+                            const intersectSpatialBounds = getSpatialBoundsIntersect(mapSpatialBounds, rasterBounds);
+                            if (intersectSpatialBounds===null) {
+                              return;
+                            }
 
-                                this.props.updateExportFormAndFetchExportGridCells([
-                                    {
-                                    field: 'bounds',
-                                    value: intersectSpatialBounds,
-                                }])
-                            }}
+                            this.props.updateExportFormAndFetchExportGridCells([
+                              {
+                                field: 'bounds',
+                                value: intersectSpatialBounds,
+                              }])
+                          }}
                         >
                             <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
                             <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
                             {exportGridCells.length !== 0 ?
                                 <GeoJSON
                                     className={"export_grid_cell"}
-                                    data={{"type": "FeatureCollection", "features": exportGridCells}}
+                                    data={{"type": "FeatureCollection", "features": exportGridCells} as GeoJSON.FeatureCollection}
                                     style={(feature)=>{
-                                        const isSelected = selectedGridIds.find(item=>{
+                                      if (feature === undefined) return {};
+
+                                        const isSelected = selectedGridIds.find((item: number[]) =>{
                                             return areGridCelIdsEqual(feature.properties.id, item);
                                         })
                                         if (isSelected) {
                                             return {
                                                 "color": "#A10000",
                                                 "fillColor": "#E2D300",
-                                                "fillOpacity": "0.71",
+                                                "fillOpacity": 0.71,
 
                                             }
                                         } else if (selectedGridIds.length === maximumSelectForExport) {
                                             return {
                                                 "color": "#A10000",
                                                 "fillColor": "transparent",
-                                                "fillOpacity": "0.71",
+                                                "fillOpacity": 0.71,
 
                                             }
                                         } else {
                                             return {
                                                 "color": "#A10000",
-                                                "fillOpacity": "0",
-
+                                                "fillOpacity": 0,
                                             }
                                         }
-
                                     }}
                                     key={exportGridCells.length + JSON.stringify(selectedGridIds)}
                                     onEachFeature={(_, layer) => { // _ = feature
                                         layer.on({
                                           click: (event)=>{
                                                 const gridcell = event.target.feature;
-                                                const isSelected = selectedGridIds.find(item=>{
+                                                const isSelected = selectedGridIds.find((item: number[]) => {
                                                     return areGridCelIdsEqual(gridcell.properties.id, item);
                                                 })
                                                 if (isSelected) {
@@ -236,7 +244,7 @@ class ExportModal extends React.Component<MyProps> {
                                         this.props.updateExportFormAndFetchExportGridCells([{field:'projection', value: event.target.value+''}]);
                                     }}
                                 >
-                                    {this.props.availableProjections.map((projectionObj, i)=>{
+                                    {this.props.availableProjections.map((projectionObj: Projection, i: number) => {
                                         return (
                                             <option
                                                 key={i}
@@ -393,12 +401,12 @@ const mapStateToProps = (state: RootState) => ({
 type PropsFromState = ReturnType<typeof mapStateToProps>
 
 const mapDispatchToProps = (dispatch: RootDispatch) => ({
-    addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
-    removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
-    removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
-    updateExportFormAndFetchExportGridCells: (fieldValuePairs: FieldValuePair[])=> dispatch(updateExportFormAndFetchExportGridCells(fieldValuePairs)),
-    requestRasterExports: (numberOfInboxMessages:number)=> dispatch(requestRasterExports(numberOfInboxMessages)),
-    requestProjections: (rasterUuid:string) => dispatch(requestProjections(rasterUuid)),
+  addToSelectedExportGridCellIds: (ids: ExportGridCellId[]) => dispatch(addToSelectedExportGridCellIds(ids)),
+  removeFromSelectedExportGridCellIds: (ids: ExportGridCellId[]) => dispatch(removeFromSelectedExportGridCellIds(ids)),
+  removeAllSelectedExportGridCellIds: () => dispatch(removeAllSelectedExportGridCellIds()),
+  updateExportFormAndFetchExportGridCells: (fieldValuePairs: FieldValuePair[])=> dispatch(updateExportFormAndFetchExportGridCells(fieldValuePairs)),
+  requestRasterExports: (numberOfInboxMessages: number)=> dispatch(requestRasterExports(numberOfInboxMessages)),
+  requestProjections: (rasterUuid: string) => dispatch(requestProjections(rasterUuid)),
 });
 
 type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>

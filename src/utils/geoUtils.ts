@@ -1,4 +1,13 @@
-export const getSpatialBoundsIntersect = (bounds1, bounds2) => {
+import { Polygon } from 'geojson';
+
+interface NWESBounds {
+  north: number,
+  east: number,
+  south: number,
+  west: number
+}
+
+export const getSpatialBoundsIntersect = (bounds1: NWESBounds, bounds2: NWESBounds) => {
   const intersectSpatialBounds = {
     north: bounds1.north < bounds2.north ? bounds1.north : bounds2.north,
     east: bounds1.east < bounds2.east ? bounds1.east : bounds2.east,
@@ -15,7 +24,11 @@ export const getSpatialBoundsIntersect = (bounds1, bounds2) => {
   }
 }
 
-export const gridPolygonToSpatialBounds = (polygon) => {
+interface HasPolygonGeometry {
+  geometry: Polygon
+}
+
+export const gridPolygonToSpatialBounds = (polygon: HasPolygonGeometry): NWESBounds => {
   const coordinates = polygon.geometry.coordinates[0];
   const eastWests = coordinates.map(e=>e[0]);
   const northSouths = coordinates.map(e=>e[1]);

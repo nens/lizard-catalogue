@@ -2,9 +2,9 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getRaster, getOrganisations, getLizardBootstrap } from '../../reducers';
-import { Raster, LatLng, Organisation, Bootstrap } from '../../interface';
+import { Raster, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
-import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
+import { zoomLevelCalculation, getBounds } from '../../utils/latLngZoomCalculation';
 import { openRasterInAPI, openRasterInLizard, getDatasetGetCapabilitesURL } from '../../utils/url';
 import Export from '../components/Export';
 import '../styles/Details.css';
@@ -36,7 +36,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
     };
 
     selectedDataset = (raster: Raster) => {
-        
+
         const { dataset } = this.props.filters;
         const selectedDataset = dataset && raster.datasets.find(dataSet => dataSet.slug === dataset);
         return (dataset && selectedDataset) || null;
@@ -52,10 +52,9 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
 
         //Set the Map with bounds coming from spatial_bounds of the Raster
         const rasterBounds = getBounds(raster);
-        const bounds = boundsToDisplay(rasterBounds);
 
         //Get the center point of the raster based on its spatial bounds
-        const centerPoint: LatLng = getCenterPoint(rasterBounds);
+        const centerPoint = rasterBounds.getCenter();
 
         //Calculate the zoom level of the raster by using the zoomLevelCalculation function
         const zoom = zoomLevelCalculation(rasterBounds);
@@ -119,7 +118,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                         <span>{dataset && dataset.slug}</span>
                     </div>
                     <div className="details__map-box">
-                        <Map bounds={bounds} zoomControl={false}>
+                        <Map bounds={rasterBounds} zoomControl={false}>
                             <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
                             <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
                         </Map>
@@ -205,7 +204,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                     <div className="raster-export">
                         <Export
                             raster={raster}
-                            bounds={bounds}
+                            bounds={rasterBounds}
                             toggleExportModal={this.toggleExportModal}
                         />
                     </div>
