@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, compose, AnyAction } from 'redux';
 import reducer from './reducers';
 import ReduxThunk, { ThunkDispatch } from 'redux-thunk';
 
-const devTools = (window as any).__REDUX_DEVTOOLS_EXTENSION__ ? (window as any).__REDUX_DEVTOOLS_EXTENSION__() : f => f;
+const devTools = (window as any).__REDUX_DEVTOOLS_EXTENSION__ ? (window as any).__REDUX_DEVTOOLS_EXTENSION__() : (f: Function) => f;
 
 // The typing below is based on https://stackoverflow.com/a/57102280/
 
@@ -17,6 +17,6 @@ const enhancer = compose(
 
 const store = createStore(reducer, enhancer);
 
-export type AppDispatch = typeof store.dispatch
+export type RootDispatch = typeof store.dispatch
 
 export default store;

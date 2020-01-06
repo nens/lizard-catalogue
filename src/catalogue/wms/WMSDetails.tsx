@@ -2,10 +2,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getWMS, getOrganisations, getLizardBootstrap } from '../../reducers';
-import { WMS, LatLng, Organisation, Bootstrap } from '../../interface';
+import { WMS, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL} from '../../utils/url';
-import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
+import { zoomLevelCalculation, getBounds } from '../../utils/latLngZoomCalculation';
 import '../styles/Details.css';
 
 interface PropsFromState {
@@ -27,10 +27,9 @@ class WMSDetails extends React.Component<PropsFromState> {
 
         //Get spatial bounds of the WMS layer
         const wmsBounds = getBounds(wms);
-        const bounds = boundsToDisplay(wmsBounds);
 
         //Get the center point of the raster based on its spatial bounds
-        const centerPoint: LatLng = getCenterPoint(wmsBounds);
+        const centerPoint = wmsBounds.getCenter();
 
         //Calculate the zoom level of the raster by using the zoomLevelCalculation function
         const zoom = zoomLevelCalculation(wmsBounds);
@@ -79,7 +78,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                         <span>{wms.datasets && wms.datasets[0] && wms.datasets[0].slug}</span>
                     </div>
                     <div className="details__map-box">
-                        <Map bounds={bounds} zoom={wms.min_zoom} zoomControl={false}>
+                        <Map bounds={wmsBounds} zoom={wms.min_zoom} zoomControl={false}>
                             <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
                             {wms.wms_url ? <WMSTileLayer
                                 url={wms.wms_url}
@@ -161,4 +160,4 @@ const mapStateToProps = (state: MyStore): PropsFromState => {
     };
 };
 
-export default connect(mapStateToProps)(WMSDetails); 
+export default connect(mapStateToProps)(WMSDetails);

@@ -3,6 +3,8 @@ import { Message, RasterExportRequest } from '../../interface';
 import { connect } from 'react-redux';
 import { removeMessage, downloadFile, removeCurrentExportTasks } from '../../action';
 import { MyStore } from '../../reducers';
+import { RootDispatch } from '../../store';
+
 import '../styles/Inbox.css';
 
 interface MyProps {
@@ -109,7 +111,7 @@ class Inbox extends React.Component<InboxProps> {
                     </i>
                 ) : (
                     <i className="inbox-info">
-                        When your files are ready, 
+                        When your files are ready,
                         click on the download icon.
                     </i>
                 )}
@@ -123,10 +125,10 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     rasterExportRequests: state.rasterExportState.rasterExportRequests,
 });
 
-const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch: RootDispatch): PropsFromDispatch => ({
     removeMessage: (id: string) => removeMessage(dispatch, id),
     downloadFile: (id: string) => downloadFile(dispatch, id),
-    removeCurrentExportTasks: () => removeCurrentExportTasks(dispatch),
+    removeCurrentExportTasks: () => dispatch(removeCurrentExportTasks()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Inbox);

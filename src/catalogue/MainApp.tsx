@@ -12,6 +12,7 @@ import WMSDetails from './wms/WMSDetails';
 import FilterBar from './FilterBar';
 import Header from './Header';
 import AlertPopup from './components/AlertPopup';
+import { RootDispatch } from '../store';
 import './styles/MainApp.css';
 
 interface PropsFromState {
@@ -72,7 +73,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         if (this.props.currentWMSList && this.props.currentWMSList.showAlert === true) this.props.toggleAlert();
     };
 
-    closeModalsOnEsc = (e) => {
+    closeModalsOnEsc = (e: KeyboardEvent) => {
         if (e.key === "Escape") {
             window.location.href = "#";
         };
@@ -113,13 +114,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
         this.props.updatePage(page);
     };
 
-    onSearchChange = (event) => {
+    onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
             searchTerm: event.target.value
         });
     };
 
-    onSearchSubmit = (event) => {
+    onSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         this.props.updateSearch(this.state.searchTerm);
     };
@@ -351,7 +352,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     selectedItem: state.selectedItem,
 });
 
-const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch: RootDispatch): PropsFromDispatch => ({
     fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
     fetchRasters: (
         page: number,

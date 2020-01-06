@@ -6,28 +6,28 @@ export const getUrlParams = (search: string) => {
 };
 
 //Capture the value of the search property in the search params object
-export const getSearch = (urlSearchParams) => {
-    return urlSearchParams.get('search') || '';
+export const getSearch = (urlSearchParams: URLSearchParams) => {
+  return urlSearchParams.get('search') || '';
 };
 //Capture the value of the organisation property in the search params object
-export const getOrganisation = (urlSearchParams) => {
-    return urlSearchParams.get('organisation') || '';
+export const getOrganisation = (urlSearchParams: URLSearchParams) => {
+  return urlSearchParams.get('organisation') || '';
 };
 //Capture the value of the observation type property in the search params object
-export const getObservationType = (urlSearchParams) => {
-    return urlSearchParams.get('observation') || '';
+export const getObservationType = (urlSearchParams: URLSearchParams) => {
+  return urlSearchParams.get('observation') || '';
 };
 //Capture the value of the dataset property in the search params object
-export const getDataset = (urlSearchParams) => {
-    return urlSearchParams.get('dataset') || '';
+export const getDataset = (urlSearchParams: URLSearchParams) => {
+  return urlSearchParams.get('dataset') || '';
 };
 //Capture the current data type selection of the Catalogue (Raster or WMS)
-export const getDataType = (urlSearchParams) => {
-    //data type can only be WMS or Raster
-    return urlSearchParams.get('data') === 'WMS' ? 'WMS' : 'Raster';
+export const getDataType = (urlSearchParams: URLSearchParams) => {
+  //data type can only be WMS or Raster
+  return urlSearchParams.get('data') === 'WMS' ? 'WMS' : 'Raster';
 };
 //Capture the selected item's UUID
-export const getUUID = (URLSearchParams) => {
+export const getUUID = (URLSearchParams: URLSearchParams) => {
     return URLSearchParams.get('uuid') || '';
 };
 

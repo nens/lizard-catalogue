@@ -5,6 +5,7 @@ import { ObservationType, Organisation, Dataset, SwitchDataType } from '../inter
 import { MyStore } from '../reducers';
 import SearchBar from './components/SearchBar';
 import { selectOrganisation, removeOrganisation, selectDataset, selectObservationType, removeObservationType, removeDataset } from '../action';
+import { RootDispatch } from '../store';
 import './styles/FilterBar.css';
 
 interface MyProps {
@@ -49,7 +50,7 @@ class FilterBar extends React.Component<FilterBarProps, MyState> {
         datasetItems: 4
     };
 
-    onFilterChange = (event, formName: string) => {
+    onFilterChange = (event: React.ChangeEvent<HTMLInputElement>, formName: string) => {
         //for organisation
         if (formName === 'organisation') this.setState({
             searchOrg: event.target.value
@@ -64,7 +65,7 @@ class FilterBar extends React.Component<FilterBarProps, MyState> {
         });
     };
 
-    onFilterSubmit = (event) => {
+    onFilterSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
     };
 
@@ -94,7 +95,7 @@ class FilterBar extends React.Component<FilterBarProps, MyState> {
         return (
             <div className="filter-box">
                 <div className="switcher">
-                    <button 
+                    <button
                         className="switcher-button switcher-button-raster"
                         title="Raster"
                         onClick={() => onDataTypeChange('Raster')}
@@ -102,7 +103,7 @@ class FilterBar extends React.Component<FilterBarProps, MyState> {
                     >
                         <div>RASTER</div>
                     </button>
-                    <button 
+                    <button
                         className="switcher-button switcher-button-wms"
                         title="WMS layer"
                         onClick={() => onDataTypeChange('WMS')}
@@ -111,7 +112,7 @@ class FilterBar extends React.Component<FilterBarProps, MyState> {
                         <div>FROM WEB</div>
                     </button>
                 </div>
-                <div 
+                <div
                     className="filter-organisation"
                     //if there is no organisation in the filter bar then don't show this section
                     style={{
@@ -154,7 +155,7 @@ class FilterBar extends React.Component<FilterBarProps, MyState> {
                         }
                     </ul>
                 </div>
-                <div 
+                <div
                     className="filter-dataset"
                     //if there is no dataset in the filter bar then don't show this section
                     style={{
@@ -197,12 +198,12 @@ class FilterBar extends React.Component<FilterBarProps, MyState> {
                         }
                     </ul>
                 </div>
-                <div 
+                <div
                     className="filter-observation-type"
                     //if there is no observation type in the filter bar then don't show this section
                     //Also don't show the observation type filter option for WMS layers
-                    style={{ 
-                        display: observationTypes.length === 0 || this.props.currentDataType === "WMS" ? "none" : "" 
+                    style={{
+                        display: observationTypes.length === 0 || this.props.currentDataType === "WMS" ? "none" : ""
                     }}
                 >
                     <h4 title="Filter by Observation Type">Observation Type</h4>
@@ -250,7 +251,7 @@ const mapStateToProps = (state: MyStore): PropsFromState => ({
     filters: state.filters,
 });
 
-const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch: RootDispatch): PropsFromDispatch => ({
     selectOrganisation: (organisationName: string) => selectOrganisation(dispatch, organisationName),
     removeOrganisation: () => removeOrganisation(dispatch),
     selectDataset: (datasetSlug: string) => selectDataset(dispatch, datasetSlug),

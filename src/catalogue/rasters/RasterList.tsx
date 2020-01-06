@@ -14,8 +14,8 @@ interface MyProps {
     currentRasterList: MyStore['currentRasterList'] | null,
 
     onPageClick: (page: number) => void,
-    onSearchChange: (event: object) => void,
-    onSearchSubmit: (event: object) => void,
+    onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onSearchSubmit: (event: React.FormEvent<HTMLFormElement>) => void,
     onSorting: (ordering: string) => void,
 
     selectItem: (uuid: string) => void,
@@ -86,8 +86,8 @@ class RasterList extends React.Component<RasterListProps, MyState> {
             window.location.href = '#notification';
 
             updateBasketWithRaster(checkedRasters);
-            this.setState({ 
-                checkedRasters: [] 
+            this.setState({
+                checkedRasters: []
             });
         };
 

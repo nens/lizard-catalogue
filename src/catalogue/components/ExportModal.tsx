@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { 
-    Map, 
-    TileLayer, 
-    WMSTileLayer, 
+import {
+  LatLngBounds
+} from 'leaflet';
+import {
+    Map,
+    TileLayer,
+    WMSTileLayer,
     GeoJSON,
 } from 'react-leaflet';
 import {
@@ -14,7 +17,7 @@ import {
     getExportGridCellProjection,
     getExportGridCellTileWidth,
     getExportGridCellTileHeight,
-    getDateTimeStart, 
+    getDateTimeStart,
     getProjections,
     getExportGridCellCellFetchingState,
     getInbox,
@@ -22,7 +25,7 @@ import {
 } from '../../reducers';
 import {
   RootState,
-  AppDispatch
+  RootDispatch
 } from '../../store';
 import {
     addToSelectedExportGridCellIds,
@@ -33,10 +36,13 @@ import {
     requestProjections,
 } from '../../action';
 import {areGridCelIdsEqual} from '../../utils/rasterExportUtils';
-import { 
-    Raster, 
-    FieldValuePair,
- } from '../../interface';
+import {
+  Raster,
+  FieldValuePair,
+  ExportGridCell,
+  ExportGridCellId,
+  Projection
+} from '../../interface';
 import '../styles/Export.css';
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
@@ -48,7 +54,7 @@ const maximumSelectForExport = 3;
 
 interface PropsFromParent {
     raster: Raster,
-    bounds: number[][],
+    bounds: LatLngBounds,
     openDownloadModal: () => void,
 }
 
@@ -56,7 +62,9 @@ type MyProps = PropsFromState & PropsFromDispatch & PropsFromParent
 
 class ExportModal extends React.Component<MyProps> {
 
-    componentDidMount() {
+  componentDidMount() {
+    const bounds = this.props.bounds;
+
         this.props.requestProjections(this.props.raster.uuid);
         this.props.updateExportFormAndFetchExportGridCells([
             {field: "projection", value: this.props.raster.projection},
@@ -66,11 +74,11 @@ class ExportModal extends React.Component<MyProps> {
             {field:'dateTimeStart', value: ""},
             {
                 field: 'bounds',
-                value: { 
-                    north: this.props.bounds[0][0],
-                    east: this.props.bounds[0][1],
-                    south: this.props.bounds[1][0],
-                    west: this.props.bounds[1][1],
+                value: {
+                    north: bounds.getNorth(),
+                    east: bounds.getEast(),
+                    south: bounds.getSouth(),
+                    west: bounds.getWest()
                 }
             },
         ]);
@@ -78,18 +86,21 @@ class ExportModal extends React.Component<MyProps> {
 
     render() {
         const { raster, bounds, openDownloadModal,fetchingGridState, exportBounds } = this.props;
-        const exportGridCells = this.props.availableGridCells.filter(grid=> getSpatialBoundsIntersect(gridPolygonToSpatialBounds(grid), exportBounds));
-        const selectedGridIds = this.props.selectedGridCellIds; 
+        const exportGridCells = this.props.availableGridCells.filter((grid: ExportGridCell) => getSpatialBoundsIntersect(gridPolygonToSpatialBounds(grid), exportBounds));
+        const selectedGridIds = this.props.selectedGridCellIds;
+
+      if (!!bounds) {
+      }
 
         return (
             <div className="export_main">
                 <div className="export_map-selection">
                     <h3>Export Selection</h3>
                     <div className="export_map-box">
-                        { 
+                        {
                             // show spinner if gridcells are not yet retrieved
                             (fetchingGridState === "SENT" || fetchingGridState === "NOT_SENT") && exportGridCells.length===0 ?
-                            <div 
+                            <div
                                 className="loading-screen loading-screen-export"
                             >
                                 <MDSpinner size={150} />
@@ -102,71 +113,71 @@ class ExportModal extends React.Component<MyProps> {
                             :
                             null
                         }
-                        
-                        <Map 
-                            bounds={bounds} 
-                            zoomControl={false} 
-                            style={{ width: "100%" }}
-                            onMoveend={event=>{
-                                const bounds = event.target.getBounds();
-                                const mapSpatialBounds = { 
-                                    north: bounds._northEast.lat,
-                                    east: bounds._northEast.lng,
-                                    south: bounds._southWest.lat,
-                                    west: bounds._southWest.lng,
-                                };
-                                const rasterBounds = raster.spatial_bounds;
-                                const intersectSpatialBounds = getSpatialBoundsIntersect(mapSpatialBounds, rasterBounds);
-                                if (intersectSpatialBounds===null) {
-                                    return;
-                                }
 
-                                this.props.updateExportFormAndFetchExportGridCells([
-                                    {
-                                    field: 'bounds',
-                                    value: intersectSpatialBounds,
-                                }])
-                            }}
+                        <Map
+                          bounds={bounds}
+                          zoomControl={false}
+                          style={{ width: "100%" }}
+                          onmoveend={event=>{
+                            const bounds = event.target.getBounds();
+                            const mapSpatialBounds = {
+                              north: bounds._northEast.lat,
+                              east: bounds._northEast.lng,
+                              south: bounds._southWest.lat,
+                              west: bounds._southWest.lng,
+                            };
+                            const rasterBounds = raster.spatial_bounds;
+                            const intersectSpatialBounds = getSpatialBoundsIntersect(mapSpatialBounds, rasterBounds);
+                            if (intersectSpatialBounds===null) {
+                              return;
+                            }
+
+                            this.props.updateExportFormAndFetchExportGridCells([
+                              {
+                                field: 'bounds',
+                                value: intersectSpatialBounds,
+                              }])
+                          }}
                         >
                             <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
                             <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
                             {exportGridCells.length !== 0 ?
-                                <GeoJSON 
+                                <GeoJSON
                                     className={"export_grid_cell"}
-                                    data={{"type": "FeatureCollection", "features": exportGridCells}}
+                                    data={{"type": "FeatureCollection", "features": exportGridCells} as GeoJSON.FeatureCollection}
                                     style={(feature)=>{
-                                        const isSelected = selectedGridIds.find(item=>{
+                                      if (feature === undefined) return {};
+
+                                        const isSelected = selectedGridIds.find((item: number[]) =>{
                                             return areGridCelIdsEqual(feature.properties.id, item);
                                         })
                                         if (isSelected) {
                                             return {
                                                 "color": "#A10000",
                                                 "fillColor": "#E2D300",
-                                                "fillOpacity": "0.71",
-    
+                                                "fillOpacity": 0.71,
+
                                             }
                                         } else if (selectedGridIds.length === maximumSelectForExport) {
                                             return {
                                                 "color": "#A10000",
                                                 "fillColor": "transparent",
-                                                "fillOpacity": "0.71",
-    
+                                                "fillOpacity": 0.71,
+
                                             }
                                         } else {
                                             return {
                                                 "color": "#A10000",
-                                                "fillOpacity": "0",
-    
+                                                "fillOpacity": 0,
                                             }
                                         }
-                                        
                                     }}
                                     key={exportGridCells.length + JSON.stringify(selectedGridIds)}
                                     onEachFeature={(_, layer) => { // _ = feature
                                         layer.on({
                                           click: (event)=>{
                                                 const gridcell = event.target.feature;
-                                                const isSelected = selectedGridIds.find(item=>{
+                                                const isSelected = selectedGridIds.find((item: number[]) => {
                                                     return areGridCelIdsEqual(gridcell.properties.id, item);
                                                 })
                                                 if (isSelected) {
@@ -176,7 +187,7 @@ class ExportModal extends React.Component<MyProps> {
                                                 }
 
                                             },
-                                            
+
                                         });
                                       }}
                                 />
@@ -218,7 +229,7 @@ class ExportModal extends React.Component<MyProps> {
                                         onChange={event => {
                                             const isoDateTime = event === ''? '' : moment(event).toISOString()
                                             this.props.updateExportFormAndFetchExportGridCells([{field:'dateTimeStart', value: isoDateTime}]);
-                                                
+
                                         }}
                                     />
                                 </div>
@@ -227,13 +238,13 @@ class ExportModal extends React.Component<MyProps> {
                             <div>
                                 <h4>Projection</h4>
                                 <select
-                                    className="export_input" 
+                                    className="export_input"
                                     value={this.props.projection}
                                     onChange={(event)=> {
                                         this.props.updateExportFormAndFetchExportGridCells([{field:'projection', value: event.target.value+''}]);
-                                    }} 
+                                    }}
                                 >
-                                    {this.props.availableProjections.map((projectionObj, i)=>{
+                                    {this.props.availableProjections.map((projectionObj: Projection, i: number) => {
                                         return (
                                             <option
                                                 key={i}
@@ -248,8 +259,8 @@ class ExportModal extends React.Component<MyProps> {
                             <br />
                             <div>
                                 <h4>Pixel size (based on projection)</h4>
-                                <input 
-                                    className="export_input" 
+                                <input
+                                    className="export_input"
                                     type="text"
                                     value={this.props.resolution}
                                     onChange={(event)=> {
@@ -262,8 +273,8 @@ class ExportModal extends React.Component<MyProps> {
                             <br />
                             <div>
                                 <h4>Tile Width in Pixels</h4>
-                                <input 
-                                    className="export_input" 
+                                <input
+                                    className="export_input"
                                     type="text"
                                     value={this.props.tileWidth}
                                     onChange={(event)=> {
@@ -277,7 +288,7 @@ class ExportModal extends React.Component<MyProps> {
                             <div>
                                 <h4>Tile Height in Pixels</h4>
                                 <input
-                                    className="export_input" 
+                                    className="export_input"
                                     type="text"
                                     value={this.props.tileHeight}
                                     onChange={(event)=> {
@@ -289,15 +300,15 @@ class ExportModal extends React.Component<MyProps> {
                             </div>
                         </div>
                     </div>
-                    
+
                     <div className="export_text">
                         {
-                            exportGridCells.length > 1500 ? 
-                            <div className="export-input-error-msg"> 
+                            exportGridCells.length > 1500 ?
+                            <div className="export-input-error-msg">
                                 <span
                                     className="export-input-error-msg-large"
                                 >
-                                    Resolution too small: 
+                                    Resolution too small:
                                 </span>
                                 <span>
                                 <br/>
@@ -305,29 +316,29 @@ class ExportModal extends React.Component<MyProps> {
                                 </span>
                             </div>
                             :
-                            parseInt(this.props.tileHeight + '') && 
-                            parseInt(this.props.tileWidth + '') && 
-                            (parseInt(this.props.tileHeight+'') * parseInt(this.props.tileWidth+'') > 1000000000) 
-                            ? 
-                            <div className="export-input-error-msg"> 
+                            parseInt(this.props.tileHeight + '') &&
+                            parseInt(this.props.tileWidth + '') &&
+                            (parseInt(this.props.tileHeight+'') * parseInt(this.props.tileWidth+'') > 1000000000)
+                            ?
+                            <div className="export-input-error-msg">
                                 <span
                                     className="export-input-error-msg-large"
                                 >
-                                    Too many pixels: 
+                                    Too many pixels:
                                 </span>
                                 <span>
                                 <br/>
                                 Tile-Width × Tile-Height
                                 <br/>
-                                must be below 1.000.000.000 pixels 
+                                must be below 1.000.000.000 pixels
                                 </span>
                             </div>
                             : selectedGridIds.length === maximumSelectForExport ?
-                            <div className="export-input-error-msg"> 
+                            <div className="export-input-error-msg">
                                 <span
                                     className="export-input-error-msg-large"
                                 >
-                                    Maximum amount selected: 
+                                    Maximum amount selected:
                                 </span>
                                 <span>
                                 <br/>
@@ -340,13 +351,13 @@ class ExportModal extends React.Component<MyProps> {
                             desired tiles to export/download
                             </span>
                         }
-                        
+
                     </div>
                     <div className="export_buttons">
-                        <button 
+                        <button
                             className={`details__button`}
                             disabled={this.props.selectedGridCellIds.length === 0}
-                            title={this.props.selectedGridCellIds.length === 0 ? "First make a selection on the map" : undefined}  
+                            title={this.props.selectedGridCellIds.length === 0 ? "First make a selection on the map" : undefined}
                             onClick={()=>{
                                 this.props.requestRasterExports(this.props.inbox.length);
                                 openDownloadModal();
@@ -356,10 +367,10 @@ class ExportModal extends React.Component<MyProps> {
                             &nbsp;&nbsp;
                             {`Download ${this.props.selectedGridCellIds.length}  selected cells`}
                         </button>
-                        <button 
+                        <button
                             className={`details__button details__button-danger`}
                             disabled={this.props.selectedGridCellIds.length === 0? true: false}
-                            title={this.props.selectedGridCellIds.length === 0 ? "No grid cells selected" : undefined}  
+                            title={this.props.selectedGridCellIds.length === 0 ? "No grid cells selected" : undefined}
                             onClick={()=>{
                                 this.props.removeAllSelectedExportGridCellIds();
                             }}
@@ -389,13 +400,13 @@ const mapStateToProps = (state: RootState) => ({
 
 type PropsFromState = ReturnType<typeof mapStateToProps>
 
-const mapDispatchToProps = (dispatch: AppDispatch) => ({
-    addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
-    removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
-    removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
-    updateExportFormAndFetchExportGridCells: (fieldValuePairs: FieldValuePair[])=> dispatch(updateExportFormAndFetchExportGridCells(fieldValuePairs)),
-    requestRasterExports: (numberOfInboxMessages:number)=> dispatch(requestRasterExports(numberOfInboxMessages)),
-    requestProjections: (rasterUuid:string) => dispatch(requestProjections(rasterUuid)),
+const mapDispatchToProps = (dispatch: RootDispatch) => ({
+  addToSelectedExportGridCellIds: (ids: ExportGridCellId[]) => dispatch(addToSelectedExportGridCellIds(ids)),
+  removeFromSelectedExportGridCellIds: (ids: ExportGridCellId[]) => dispatch(removeFromSelectedExportGridCellIds(ids)),
+  removeAllSelectedExportGridCellIds: () => dispatch(removeAllSelectedExportGridCellIds()),
+  updateExportFormAndFetchExportGridCells: (fieldValuePairs: FieldValuePair[])=> dispatch(updateExportFormAndFetchExportGridCells(fieldValuePairs)),
+  requestRasterExports: (numberOfInboxMessages: number)=> dispatch(requestRasterExports(numberOfInboxMessages)),
+  requestProjections: (rasterUuid: string) => dispatch(requestProjections(rasterUuid)),
 });
 
 type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>

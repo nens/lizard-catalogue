@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Raster, WMS, LatLng } from '../../interface';
-import { getCenterPoint, zoomLevelCalculation, getBounds } from '../../utils/latLngZoomCalculation';
+import { Raster, WMS } from '../../interface';
+import { zoomLevelCalculation, getBounds } from '../../utils/latLngZoomCalculation';
 import { openAllInLizard } from '../../utils/url';
 import { removeRasterFromBasket, removeWMSFromBasket } from '../../action';
+import { RootDispatch } from '../../store';
 import '../styles/Basket.css';
 
 interface PropsFromDispatch {
@@ -33,12 +34,10 @@ class Basket extends React.Component<PropsFromDispatch & MyProps> {
 
         //Get the spatial bounds of the last selected object,
         //if lastSelectedObject is null then set it to the global map
-        const bounds = lastSelectedObject ? getBounds(lastSelectedObject) : {
-            north: 85, east: 180, south: -85, west: -180
-        };
+        const bounds = getBounds(lastSelectedObject);
 
         //Get the center point based on its spatial bounds
-        const centerPoint: LatLng = getCenterPoint(bounds);
+        const centerPoint = bounds.getCenter();
 
         //Calculate the zoom level by using the zoomLevelCalculation function
         const zoom = zoomLevelCalculation(bounds);
@@ -105,7 +104,7 @@ class Basket extends React.Component<PropsFromDispatch & MyProps> {
     };
 };
 
-const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch: RootDispatch): PropsFromDispatch => ({
     removeRasterFromBasket: (uuid: string) => removeRasterFromBasket(uuid, dispatch),
     removeWMSFromBasket: (uuid: string) => removeWMSFromBasket(uuid, dispatch)
 });
