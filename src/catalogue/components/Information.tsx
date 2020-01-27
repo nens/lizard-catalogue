@@ -16,7 +16,13 @@ export default class Information extends React.Component {
                     </div>
                 </div>
                 <div className="information_footer">
-                    <a href="/static_media/documents/privacy.pdf" target="_blank">Privacy Statement</a>
+                    <a
+                        href="https://docs.lizard.net/e_catalog.html"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Documentation
+                    </a>
                     <button onClick={() => window.location.href = '#'}>Close</button>
                 </div>
                 {/* eslint-disable-next-line */}
