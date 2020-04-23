@@ -158,6 +158,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                         <p className="column column-1">End</p><p className="column column-2">{stop}</p>
                     </div>
                 </div>
+                {!raster.temporal ? (
                 <div className="details__get-capabilities">
                     <h4>Lizard WMS GetCapabilities</h4>
                     <hr/>
@@ -203,6 +204,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                         </div>
                     ) : null}
                 </div>
+                ) : null}
                 <div className="details__button-container">
                     <h4>Actions</h4><hr/>
                     <div className="details__buttons">
