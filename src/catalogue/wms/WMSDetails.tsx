@@ -6,6 +6,7 @@ import { WMS, LatLng, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL} from '../../utils/url';
 import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
+import {mapBoxAccesToken} from "../../mapboxConfig.js"
 import '../styles/Details.css';
 
 interface PropsFromState {
@@ -80,7 +81,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                     </div>
                     <div className="details__map-box">
                         <Map bounds={bounds} zoom={wms.min_zoom} zoomControl={false}>
-                            <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
+                            <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/{z}/{x}/{y}?access_token=${mapBoxAccesToken}`} />
                             {wms.wms_url ? <WMSTileLayer
                                 url={wms.wms_url}
                                 layers={wms.slug}
