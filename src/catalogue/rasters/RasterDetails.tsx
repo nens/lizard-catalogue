@@ -7,6 +7,7 @@ import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import { openRasterInAPI, openRasterInLizard, getDatasetGetCapabilitesURL, getRasterGetCapabilitesURL } from '../../utils/url';
 import Export from '../components/Export';
+import {mapBoxAccesToken} from "../../mapboxConfig.js"
 import '../styles/Details.css';
 import '../styles/Export.css';
 
@@ -120,7 +121,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                     </div>
                     <div className="details__map-box">
                         <Map bounds={bounds} zoomControl={false}>
-                            <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
+                            <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                             <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
                         </Map>
                     </div>

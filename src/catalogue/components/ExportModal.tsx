@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import {mapBoxAccesToken} from "../../mapboxConfig.js"
 
 import { 
     Map, 
@@ -128,7 +129,7 @@ class ExportModal extends React.Component<MyProps> {
                                 }])
                             }}
                         >
-                            <TileLayer url="https://{s}.tiles.mapbox.com/v3/nelenschuurmans.iaa98k8k/{z}/{x}/{y}.png" />
+                            <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                             <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
                             {exportGridCells.length !== 0 ?
                                 <GeoJSON 
