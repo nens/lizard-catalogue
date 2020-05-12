@@ -41,7 +41,7 @@ export const openWMSDownloadURL = (wms: WMS) => {
 };
 
 export const getRasterGetCapabilitesURL = (raster: Raster) => {
-    return `${baseUrl}/wms/${raster.uuid}/?request=GetCapabilities`;
+    return `${baseUrl}/wms/raster_${raster.uuid}/?request=GetCapabilities`;
 };
 
 export const getDatasetGetCapabilitesURL = (dataset: Dataset) => {
