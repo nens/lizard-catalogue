@@ -41,5 +41,5 @@ def get_password():
 if __name__ == '__main__':
     username = get_username()
     password = get_password()
-    os.system(' PROXY_USERNAME=%s PROXY_PASSWORD=%s yarn start' % \
+    os.system(' PROXY_USERNAME=%s PROXY_PASSWORD="%s" yarn start' % \
         (username, password))
