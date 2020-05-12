@@ -81,7 +81,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                     </div>
                     <div className="details__map-box">
                         <Map bounds={bounds} zoom={wms.min_zoom} zoomControl={false}>
-                            <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/{z}/{x}/{y}?access_token=${mapBoxAccesToken}`} />
+                            <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                             {wms.wms_url ? <WMSTileLayer
                                 url={wms.wms_url}
                                 layers={wms.slug}
