@@ -217,7 +217,12 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                             <i className="fa fa-external-link"/>
                             &nbsp;&nbsp;OPEN IN API
                         </button>
-                        <button className="details__button" onClick={this.toggleExportModal} title="Export">
+                        <button 
+                            className="details__button" 
+                            onClick={this.toggleExportModal} 
+                            disabled={!this.props.bootstrap.user.authenticated}
+                            title={!this.props.bootstrap.user.authenticated? "Login to export" : "Export"}
+                        >
                             <i className="fa fa-download"/>
                             &nbsp;&nbsp;EXPORT RASTER
                         </button>
@@ -242,12 +247,12 @@ const mapStateToProps = (state: MyStore): PropsFromState => {
     if (!state.selectedItem) return {
         raster: null,
         organisations: getOrganisations(state),
-        bootstrap: getLizardBootstrap(state)
+        bootstrap: getLizardBootstrap(state),
     };
     return {
         raster: getRaster(state, state.selectedItem),
         organisations: getOrganisations(state),
-        bootstrap: getLizardBootstrap(state)
+        bootstrap: getLizardBootstrap(state),
     };
 };
 
