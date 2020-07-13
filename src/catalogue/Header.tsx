@@ -47,7 +47,11 @@ class Header extends React.Component<MyProps & PropsFromState> {
         const { rasters, wmsLayers, user, inbox, openInboxDropdown, openProfileDropdown, closeAllDropdowns } = this.props;
         const basket = [...rasters, ...wmsLayers];
 
-        const routeCurrentLocationInCatalog = window.location.href.split('?')[1];
+        const routeCurrentLocationInCatalog = window.location.href.split('?')[1] ?  
+          "?" + window.location.href.split('?')[1]
+          :  
+          "";
+        console.log('routeCurrentLocationInCatalog', routeCurrentLocationInCatalog);
 
         return (
             <nav className="header">
@@ -86,7 +90,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
                             {this.props.showProfileDropdown && this.renderProfileDropdown()}
                         </div>
                         :
-                        <a href={`/accounts/login/?next=/catalogue/?${routeCurrentLocationInCatalog}`} className="header-nav__icon-box user-profile">
+                        <a href={`/accounts/login/?next=/catalogue/${encodeURIComponent(routeCurrentLocationInCatalog)}`} className="header-nav__icon-box user-profile">
                             <svg className="header-nav__icon">
                                 <use xlinkHref="image/symbols.svg#icon-user" />
                             </svg>

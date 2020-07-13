@@ -14,7 +14,8 @@ import '../styles/Export.css';
 interface PropsFromState {
     raster: Raster | null,
     organisations: Organisation[],
-    bootstrap: Bootstrap
+    bootstrap: Bootstrap,
+    user: Bootstrap['user'],
 };
 
 interface MyProps {
@@ -220,8 +221,8 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                         <button 
                             className="details__button" 
                             onClick={this.toggleExportModal} 
-                            disabled={!this.props.bootstrap.user.authenticated}
-                            title={!this.props.bootstrap.user.authenticated? "Login to export" : "Export"}
+                            disabled={!this.props.user.authenticated}
+                            title={!this.props.user.authenticated? "Login to export" : "Export"}
                         >
                             <i className="fa fa-download"/>
                             &nbsp;&nbsp;EXPORT RASTER
@@ -248,11 +249,13 @@ const mapStateToProps = (state: MyStore): PropsFromState => {
         raster: null,
         organisations: getOrganisations(state),
         bootstrap: getLizardBootstrap(state),
+        user: state.bootstrap.user,
     };
     return {
         raster: getRaster(state, state.selectedItem),
         organisations: getOrganisations(state),
         bootstrap: getLizardBootstrap(state),
+        user: state.bootstrap.user,
     };
 };
 
