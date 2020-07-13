@@ -51,7 +51,6 @@ class Header extends React.Component<MyProps & PropsFromState> {
           "?" + window.location.href.split('?')[1]
           :  
           "";
-        console.log('routeCurrentLocationInCatalog', routeCurrentLocationInCatalog);
 
         return (
             <nav className="header">
