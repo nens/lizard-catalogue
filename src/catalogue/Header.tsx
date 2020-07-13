@@ -24,7 +24,7 @@ interface PropsFromState {
 };
 
 class Header extends React.Component<MyProps & PropsFromState> {
-    renderProfileDropdown() {
+    renderProfileDropdown(routeCurrentLocationInCatalog) {
         return (
             <div className="user-profile_dropdown" onMouseLeave={this.props.closeAllDropdowns}>
                 <a
@@ -35,7 +35,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
                     <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
                     Edit Profile
                 </a>
-                <a href="/accounts/logout/?next=/catalogue/">
+                <a href={`/accounts/logout/?next=/catalogue/${encodeURIComponent(routeCurrentLocationInCatalog)}`}>
                     <i className="fa fa-power-off" style={{ paddingRight: "2rem" }} />
                     Logout
                 </a>
@@ -86,7 +86,7 @@ class Header extends React.Component<MyProps & PropsFromState> {
                                 <use xlinkHref="image/symbols.svg#icon-user" />
                             </svg>
                             <span className="header-nav__text">{user.first_name}</span>
-                            {this.props.showProfileDropdown && this.renderProfileDropdown()}
+                            {this.props.showProfileDropdown && this.renderProfileDropdown(routeCurrentLocationInCatalog)}
                         </div>
                         :
                         <a href={`/accounts/login/?next=/catalogue/${encodeURIComponent(routeCurrentLocationInCatalog)}`} className="header-nav__icon-box user-profile">
