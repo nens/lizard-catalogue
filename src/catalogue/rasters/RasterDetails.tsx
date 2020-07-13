@@ -222,7 +222,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                             className="details__button" 
                             onClick={this.toggleExportModal} 
                             disabled={!this.props.user.authenticated}
-                            title={!this.props.user.authenticated? "Login to export" : "Export"}
+                            title={!this.props.user.authenticated? "Log in to export" : "Export"}
                         >
                             <i className="fa fa-download"/>
                             &nbsp;&nbsp;EXPORT RASTER
