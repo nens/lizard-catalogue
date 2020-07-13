@@ -57,8 +57,9 @@ if (password && username) {
     PROXY_SETTING[proxy].headers.password = password;
   });
 } else {
-  console.log("Please set PROXY_PASSWORD and PROXY_USERNAME variables!");
-  process.exit(1);
+  console.log("WARNING: did not set PROXY_PASSWORD and PROXY_USERNAME variables! Proceed without!");
+  // we would like to test without username password, therefore do not exit!
+  // process.exit(1);
 }
 
 module.exports = function(allowedHost) {
