@@ -103,6 +103,25 @@ export interface WMS {
     } | null,
 };
 
+//MONITORING NETWORK FOR TIMESERIES
+export interface MonitoringNetworkObject {
+    count: number,
+    previous: string,
+    next: string,
+    results: MonitoringNetwork[]
+};
+
+export interface MonitoringNetwork {
+    url: string,
+    uuid: string,
+    name: string,
+    organisation: Organisation,
+    access_modifier: string,
+    supplier: string,
+    num_timeseries: number,
+    description: string,
+};
+
 //ORGANISATION
 export interface Organisation {
     url: string,

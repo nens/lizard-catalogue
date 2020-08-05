@@ -46,6 +46,9 @@ import {
     UPDATE_ORDER,
     UPDATE_PAGE,
     REMOVE_CURRENT_EXPORT_TASKS,
+    REQUEST_MONITORING_NETWORKS,
+    RECEIVE_MONITORING_NETWORKS,
+    RECEIVE_MONITORING_NETWORK,
 } from "./action";
 import {
     Raster,
@@ -57,6 +60,7 @@ import {
     SwitchDataType,
     Message,
     RasterExportState,
+    MonitoringNetwork,
     // RasterExportStateActionType,
 } from './interface';
 import {areGridCelIdsEqual,haveGridCellsSameId} from './utils/rasterExportUtils'
@@ -88,6 +92,17 @@ export interface MyStore {
     } | null,
     allWMS: {
         [index: string]: WMS,
+    } | {},
+    currentMonitoringNetworkList: {
+        count: number,
+        previous: string | null,
+        next: string | null,
+        monitoringNetworksList: string[],
+        isFetching: boolean,
+        showAlert: boolean,
+    } | null,
+    allMonitoringNetworks: {
+        [index: string]: MonitoringNetwork,
     } | {},
     selectedItem: string,
     basket: {
@@ -424,6 +439,58 @@ const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
     };
 };
 
+const currentMonitoringNetworkList = (state: MyStore['currentMonitoringNetworkList'] = null, action): MyStore['currentMonitoringNetworkList'] => {
+    switch (action.type) {
+        case REQUEST_MONITORING_NETWORKS:
+            return {
+                count: 0,
+                previous: null,
+                next: null,
+                monitoringNetworksList: [],
+                isFetching: true,
+                showAlert: false
+            }
+        case RECEIVE_MONITORING_NETWORKS:
+            const { count, previous, next } = action.payload;
+            return {
+                count: count,
+                previous: previous,
+                next: next,
+                monitoringNetworksList: action.payload.results.map(network => network.uuid),
+                isFetching: false,
+                showAlert: count === 0 ? true : false
+            };
+        case TOGGLE_ALERT:
+            if (state) {
+                return {
+                    ...state,
+                    showAlert: false
+                }
+            } else {
+                return state;
+            };
+        default:
+            return state;
+    };
+};
+
+const allMonitoringNetworks = (state: MyStore['allMonitoringNetworks'] = {}, action): MyStore['allMonitoringNetworks'] => {
+    switch (action.type) {
+        case RECEIVE_MONITORING_NETWORKS:
+            const newState = { ...state };
+            action.payload.results.forEach(network => {
+                newState[network.uuid] = network;
+            });
+            return newState;
+        case RECEIVE_MONITORING_NETWORK:
+            const network: MonitoringNetwork = action.payload;
+            state[network.uuid] = network;
+            return state;
+        default:
+            return state;
+    };
+};
+
 const selectedItem = (state: MyStore['selectedItem'] = '', { type, uuid }): MyStore['selectedItem'] => {
     switch (type) {
         case ITEM_SELECTED:
@@ -727,6 +794,14 @@ export const getWMS = (state: MyStore, uuid: string) => {
     return state.allWMS[uuid];
 };
 
+export const getCurrentMonitoringNetworkList = (state: MyStore) => {
+    return state.currentMonitoringNetworkList;
+};
+
+export const getMonitoringNetwork = (state: MyStore, uuid: string) => {
+    return state.allMonitoringNetworks[uuid];
+};
+
 export const getObservationTypes = (state: MyStore) => {
     return state.observationTypes;
 };
@@ -751,6 +826,8 @@ export default combineReducers({
     allRasters,
     currentWMSList,
     allWMS,
+    currentMonitoringNetworkList,
+    allMonitoringNetworks,
     filters,
     selectedItem,
     basket,

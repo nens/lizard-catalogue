@@ -24,7 +24,7 @@ export const getDataset = (urlSearchParams) => {
 //Capture the current data type selection of the Catalogue (Raster or WMS)
 export const getDataType = (urlSearchParams) => {
     //data type can only be WMS or Raster
-    return urlSearchParams.get('data') === 'WMS' ? 'WMS' : 'Raster';
+    return urlSearchParams.get('data') || 'Raster';
 };
 //Capture the selected item's UUID
 export const getUUID = (URLSearchParams) => {

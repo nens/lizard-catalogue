@@ -1,13 +1,37 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
-import { fetchRasters, fetchObservationTypes, fetchOrganisations, fetchDatasets, fetchLizardBootstrap, switchDataType, selectItem, fetchWMSLayers, toggleAlert, updateBasketWithRaster, updateBasketWithWMS, requestInbox, updateSearch, updateOrder, updatePage, selectOrganisation, selectDataset, selectObservationType, fetchRasterByUUID, fetchWMSByUUID } from '../action';
-import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList } from '../reducers';
+import {
+    fetchRasters,
+    fetchObservationTypes,
+    fetchOrganisations,
+    fetchDatasets,
+    fetchLizardBootstrap,
+    switchDataType,
+    selectItem,
+    fetchWMSLayers,
+    toggleAlert,
+    updateBasketWithRaster,
+    updateBasketWithWMS,
+    requestInbox,
+    updateSearch,
+    updateOrder,
+    updatePage,
+    selectOrganisation,
+    selectDataset,
+    selectObservationType,
+    fetchRasterByUUID,
+    fetchWMSByUUID,
+    fetchMonitoringNetworks,
+    fetchMonitoringNetworkByUUID
+} from '../action';
+import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList, getCurrentMonitoringNetworkList } from '../reducers';
 import { ObservationType, Organisation, Dataset, SwitchDataType } from '../interface';
 import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL, getUUID } from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
+import MonitoringNetworkList from './timeseries/MonitoringNetworkList';
 import WMSDetails from './wms/WMSDetails';
 import FilterBar from './FilterBar';
 import Header from './Header';
@@ -17,6 +41,7 @@ import './styles/MainApp.css';
 interface PropsFromState {
     currentRasterList: MyStore['currentRasterList'] | null,
     currentWMSList: MyStore['currentWMSList'] | null,
+    currentMonitoringNetworkList: MyStore['currentMonitoringNetworkList'] | null,
     observationTypes: ObservationType[],
     organisations: Organisation[],
     datasets: Dataset[],
@@ -37,6 +62,8 @@ interface PropsFromDispatch {
     fetchDatasets: () => void,
     fetchWMSLayers: (page: number, searchTerm: string | null, organisationName: string | null, datasetSlug: string | null, ordering: string) => void,
     fetchWMSByUUID: (uuid: string) => void,
+    fetchMonitoringNetworks: (page: number, searchTerm: string | null, organisationName: string | null, observationType: string | null, ordering: string) => void,
+    fetchMonitoringNetworkByUUID: (uuid: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void,
     toggleAlert: () => void,
     requestInbox: () => void,
@@ -174,6 +201,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 
         //Poll the inbox regularly with timer set inside the action creator
         this.props.requestInbox();
+
+        //Fetch relevant data for Rasters or WMS layers or Timeseries monitoring networks
         if (dataType === 'Raster') {
             this.props.fetchRasters(
                 this.props.filters.page,
@@ -184,7 +213,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             );
             //Fetch the raster by UUID from the url
             if (uuid) this.props.fetchRasterByUUID(uuid);
-        } else { // dataType === 'WMS'
+        } else if (dataType === 'WMS') {
             this.props.fetchWMSLayers(
                 this.props.filters.page,
                 search,
@@ -194,6 +223,16 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             );
             //Fetch the WMS layer by UUID from the url
             if (uuid) this.props.fetchWMSByUUID(uuid);
+        } else { // dataType === 'Timeseries'
+            this.props.fetchMonitoringNetworks(
+                this.props.filters.page,
+                search,
+                organisation,
+                observation,
+                this.props.filters.ordering
+            );
+            //Fetch the Mornitoring network by UUID from the url
+            if (uuid) this.props.fetchMonitoringNetworkByUUID(uuid);
         };
 
         //Add event listener to use ESC to close a modal
@@ -219,53 +258,77 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 nextProps.currentDataType,
                 nextFilters.searchTerm,
                 nextFilters.organisation,
-                nextProps.currentDataType === "Raster" ? nextFilters.observationType : '',
-                nextFilters.dataset,
+                nextProps.currentDataType === "WMS" ? '' : nextFilters.observationType,
+                nextProps.currentDataType === "Timeseries" ? '': nextFilters.dataset,
                 nextProps.selectedItem
             );
             this.updateURL(url);
             if (nextFilters.page !== 1) this.props.updatePage(1);
-            nextProps.currentDataType === "Raster" ? this.props.fetchRasters(
-                1,
-                nextFilters.searchTerm,
-                nextFilters.organisation,
-                nextFilters.observationType,
-                nextFilters.dataset,
-                nextFilters.ordering
-            ) : this.props.fetchWMSLayers(
-                1,
-                nextFilters.searchTerm,
-                nextFilters.organisation,
-                nextFilters.dataset,
-                nextFilters.ordering
-            );
+            if (nextProps.currentDataType === "Raster") {
+                this.props.fetchRasters(
+                    1,
+                    nextFilters.searchTerm,
+                    nextFilters.organisation,
+                    nextFilters.observationType,
+                    nextFilters.dataset,
+                    nextFilters.ordering
+                );
+            } else if (nextProps.currentDataType === "WMS") {
+                this.props.fetchWMSLayers(
+                    1,
+                    nextFilters.searchTerm,
+                    nextFilters.organisation,
+                    nextFilters.dataset,
+                    nextFilters.ordering
+                );
+            } else { //dataType === "Timeseries"
+                this.props.fetchMonitoringNetworks(
+                    1,
+                    nextFilters.searchTerm,
+                    nextFilters.organisation,
+                    nextFilters.observationType,
+                    nextFilters.ordering
+                );
+            };
         } else if (nextProps.selectedItem !== this.props.selectedItem) {
             //If selected item is changed then update the URL only
             const url = newURL(
                 nextProps.currentDataType,
                 nextFilters.searchTerm,
                 nextFilters.organisation,
-                nextProps.currentDataType === "Raster" ? nextFilters.observationType : '',
-                nextFilters.dataset,
+                nextProps.currentDataType === "WMS" ? '' : nextFilters.observationType,
+                nextProps.currentDataType === "Timeseries" ? '': nextFilters.dataset,
                 nextProps.selectedItem
             );
             this.updateURL(url);
         } else if (nextFilters.page !== filters.page) {
             //Fetch rasters/wms layers if page number changed without updating the URL
-            nextProps.currentDataType === "Raster" ? this.props.fetchRasters(
-                nextFilters.page,
-                nextFilters.searchTerm,
-                nextFilters.organisation,
-                nextFilters.observationType,
-                nextFilters.dataset,
-                nextFilters.ordering
-            ) : this.props.fetchWMSLayers(
-                nextFilters.page,
-                nextFilters.searchTerm,
-                nextFilters.organisation,
-                nextFilters.dataset,
-                nextFilters.ordering
-            );
+            if (nextProps.currentDataType === "Raster") {
+                this.props.fetchRasters(
+                    nextFilters.page,
+                    nextFilters.searchTerm,
+                    nextFilters.organisation,
+                    nextFilters.observationType,
+                    nextFilters.dataset,
+                    nextFilters.ordering
+                );
+            } else if (nextProps.currentDataType === "WMS") {
+                this.props.fetchWMSLayers(
+                    nextFilters.page,
+                    nextFilters.searchTerm,
+                    nextFilters.organisation,
+                    nextFilters.dataset,
+                    nextFilters.ordering
+                );
+            } else { //dataType === "Timeseries"
+                this.props.fetchMonitoringNetworks(
+                    nextFilters.page,
+                    nextFilters.searchTerm,
+                    nextFilters.organisation,
+                    nextFilters.observationType,
+                    nextFilters.ordering
+                );
+            };
         };
     };
 
@@ -330,7 +393,15 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                     : null}
                     {this.props.currentDataType === "Timeseries" ?
                         <>
-                            <div/>
+                            <MonitoringNetworkList
+                                searchTerm={this.state.searchTerm}
+                                currentMonitoringNetworkList={this.props.currentMonitoringNetworkList}
+                                selectItem={this.props.selectItem}
+                                onPageClick={this.onPageClick}
+                                onSearchChange={this.onSearchChange}
+                                onSearchSubmit={this.onSearchSubmit}
+                                onSorting={this.props.updateOrder}
+                            />
                             <div/>
                         </>
                     : null}
@@ -340,6 +411,8 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                     this.props.currentRasterList && this.props.currentRasterList.showAlert === true
                 ) || (
                     this.props.currentWMSList && this.props.currentWMSList.showAlert === true
+                ) || (
+                    this.props.currentMonitoringNetworkList && this.props.currentMonitoringNetworkList.showAlert === true
                 ) ? (
                     <AlertPopup toggleAlert={this.props.toggleAlert} />
                 ) : null}
@@ -351,6 +424,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 const mapStateToProps = (state: MyStore): PropsFromState => ({
     currentRasterList: getCurrentRasterList(state),
     currentWMSList: getCurrentWMSList(state),
+    currentMonitoringNetworkList: getCurrentMonitoringNetworkList(state),
     observationTypes: getObservationTypes(state),
     organisations: getOrganisations(state),
     datasets: getDatasets(state),
@@ -383,6 +457,14 @@ const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
         ordering: string
     ) => fetchWMSLayers(page, searchTerm, organisationName, datasetSlug, ordering, dispatch),
     fetchWMSByUUID: (uuid: string) => fetchWMSByUUID(uuid, dispatch),
+    fetchMonitoringNetworks: (
+        page: number,
+        searchTerm: string,
+        organisationName: string,
+        observationType: string,
+        ordering: string
+    ) => fetchMonitoringNetworks(page, searchTerm, organisationName, observationType, ordering, dispatch),
+    fetchMonitoringNetworkByUUID: (uuid: string) => fetchMonitoringNetworkByUUID(uuid, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
     toggleAlert: () => toggleAlert(dispatch),
