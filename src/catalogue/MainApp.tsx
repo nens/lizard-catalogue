@@ -297,35 +297,43 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                         currentDataType={this.props.currentDataType}
                     />
                     {this.props.currentDataType === "Raster" ?
-                        <RasterList
-                            searchTerm={this.state.searchTerm}
-                            currentRasterList={this.props.currentRasterList}
-                            selectItem={this.props.selectItem}
-                            updateBasketWithRaster={this.props.updateBasketWithRaster}
-                            onPageClick={this.onPageClick}
-                            onSearchChange={this.onSearchChange}
-                            onSearchSubmit={this.onSearchSubmit}
-                            onSorting={this.props.updateOrder}
-                        />
-                        :
-                        <WMSList
-                            searchTerm={this.state.searchTerm}
-                            currentWMSList={this.props.currentWMSList}
-                            selectItem={this.props.selectItem}
-                            updateBasketWithWMS={this.props.updateBasketWithWMS}
-                            onPageClick={this.onPageClick}
-                            onSearchChange={this.onSearchChange}
-                            onSearchSubmit={this.onSearchSubmit}
-                            onSorting={this.props.updateOrder}
-                        />
-                    }
-                    {this.props.currentDataType === "Raster" ?
-                        <RasterDetails
-                            filters={this.props.filters}
-                        />
-                        :
-                        <WMSDetails />
-                    }
+                        <>
+                            <RasterList
+                                searchTerm={this.state.searchTerm}
+                                currentRasterList={this.props.currentRasterList}
+                                selectItem={this.props.selectItem}
+                                updateBasketWithRaster={this.props.updateBasketWithRaster}
+                                onPageClick={this.onPageClick}
+                                onSearchChange={this.onSearchChange}
+                                onSearchSubmit={this.onSearchSubmit}
+                                onSorting={this.props.updateOrder}
+                            />
+                            <RasterDetails
+                                filters={this.props.filters}
+                            />
+                        </>
+                    : null}
+                    {this.props.currentDataType === "WMS" ?
+                        <>
+                            <WMSList
+                                searchTerm={this.state.searchTerm}
+                                currentWMSList={this.props.currentWMSList}
+                                selectItem={this.props.selectItem}
+                                updateBasketWithWMS={this.props.updateBasketWithWMS}
+                                onPageClick={this.onPageClick}
+                                onSearchChange={this.onSearchChange}
+                                onSearchSubmit={this.onSearchSubmit}
+                                onSorting={this.props.updateOrder}
+                            />
+                            <WMSDetails />
+                        </>
+                    : null}
+                    {this.props.currentDataType === "Timeseries" ?
+                        <>
+                            <div/>
+                            <div/>
+                        </>
+                    : null}
                 </div>
                 {/* ALERT POPUP */}
                 {(
