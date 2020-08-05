@@ -94,7 +94,7 @@ class FilterBar extends React.Component<FilterBarProps, MyState> {
         return (
             <div className="filter-box">
                 <div className="switcher">
-                    <button 
+                    <button
                         className="switcher-button switcher-button-raster"
                         title="Raster"
                         onClick={() => onDataTypeChange('Raster')}
@@ -102,13 +102,21 @@ class FilterBar extends React.Component<FilterBarProps, MyState> {
                     >
                         <div>RASTER</div>
                     </button>
-                    <button 
+                    <button
                         className="switcher-button switcher-button-wms"
                         title="WMS layer"
                         onClick={() => onDataTypeChange('WMS')}
                         disabled={currentDataType === "WMS" ? true : false}
                     >
                         <div>FROM WEB</div>
+                    </button>
+                    <button
+                        className="switcher-button switcher-button-timeseries"
+                        title="Time series"
+                        onClick={() => onDataTypeChange('Timeseries')}
+                        disabled={currentDataType === "Timeseries" ? true : false}
+                    >
+                        <div>TIME SERIES</div>
                     </button>
                 </div>
                 <div 
@@ -158,7 +166,7 @@ class FilterBar extends React.Component<FilterBarProps, MyState> {
                     className="filter-dataset"
                     //if there is no dataset in the filter bar then don't show this section
                     style={{
-                        display: datasets.length === 0 ? "none" : ""
+                        display: datasets.length === 0 ? "none" : "" || this.props.currentDataType === "Timeseries" ? "none" : ""
                     }}
                 >
                     <h4 title="Filter by Dataset">Dataset</h4>

@@ -66,7 +66,7 @@ export interface MyStore {
     observationTypes: ObservationType[],
     organisations: Organisation[],
     datasets: Dataset[],
-    currentDataType: 'Raster' | 'WMS',
+    currentDataType: 'Raster' | 'WMS' | 'Timeseries',
     currentRasterList: {
         count: number,
         previous: string | null,
