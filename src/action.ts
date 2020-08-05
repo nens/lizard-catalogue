@@ -23,6 +23,7 @@ import {
     FetchingState,
     SetFetchingStateProjections,
     SetRasterExportFormFields,
+    MonitoringNetworkObject,
 } from './interface';
 import { 
     getExportGridCellResolution, 
@@ -128,16 +129,6 @@ export const fetchRasterByUUID = (uuid: string, dispatch): void => {
         .catch(console.error)
 };
 
-//Decide whether gonna use this fetch function
-export const fetchRastersOnUuid = (searchUuid: string, dispatch): void => {
-    request
-        .get(`/api/v4/rasters/?uuid=${searchUuid}`)
-        .then(response => {
-            dispatch(rastersFetched(response.body))
-        })
-        .catch(console.error)
-};
-
 //MARK: WMS
 export const REQUEST_WMS = 'REQUEST_WMS';
 export const RECEIVE_WMS_LAYERS = 'RECEIVE_WMS_LAYERS';
@@ -191,6 +182,64 @@ export const fetchWMSByUUID = (uuid: string, dispatch): void => {
             dispatch({
                 type: RECEIVE_WMS_LAYER,
                 wms: response.body
+            });
+        })
+        .catch(console.error)
+};
+
+//MARK: Monitoring Networks for Timeseries
+export const REQUEST_MONITORING_NETWORKS = 'REQUEST_MONITORING_NETWORKS';
+export const RECEIVE_MONITORING_NETWORKS = 'RECEIVE_MONITORING_NETWORKS';
+export const RECEIVE_MONITORING_NETWORK = 'RECEIVE_MONITORING_NETWORK';
+
+const monitoringNetworksRequested = () => ({
+    type: REQUEST_MONITORING_NETWORKS
+});
+
+const monitoringNetworksReceived = (monitoringNetwork: MonitoringNetworkObject) => ({
+    type: RECEIVE_MONITORING_NETWORKS,
+    payload: monitoringNetwork
+});
+
+export const fetchMonitoringNetworks = (page: number, searchTerm: string, organisationName: string, observationType: string, ordering: string, dispatch): void => {
+    dispatch(monitoringNetworksRequested());
+
+    const params: string[] = [];
+
+    if (page) params.push(`page=${page}`);
+    if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
+    if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
+    if (observationType) params.push(`observation_type__parameter__icontains=${encodeURIComponent(observationType)}`);
+    if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
+
+    const queries = params.join('&');
+
+    request
+        .get(`/api/v4/monitoringnetworks/?${queries}`)
+        .then(response => {
+            if(response.body.count === 0 && searchTerm) {
+                //If could not find any monitoring network with the search term by monitoring network's name then look for its uuid
+                const newQueries = queries.replace('name__icontains', 'uuid');
+                request
+                    .get(`/api/v4/monitoringnetworks/?${newQueries}`)
+                    .then(response => {
+                        dispatch(monitoringNetworksReceived(response.body))
+                    })
+                    .catch(console.error)
+            } else {
+                dispatch(monitoringNetworksReceived(response.body))
+            }
+        })
+        .catch(console.error)
+};
+
+export const fetchMonitoringNetworkByUUID = (uuid: string, dispatch): void => {
+    request
+        .get(`/api/v4/monitoringnetworks/${uuid}`)
+        .then(response => {
+            dispatch({
+                type: RECEIVE_MONITORING_NETWORK,
+                monitoringNetwork: response.body
             });
         })
         .catch(console.error)
