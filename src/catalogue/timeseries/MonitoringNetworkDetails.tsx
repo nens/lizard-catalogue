@@ -31,7 +31,7 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
         //Destructure the props
         const { monitoringNetwork } = this.props;
 
-        //If no raster is selected, display a text
+        //If no monitoring network is selected, display a text
         if (!monitoringNetwork) return <div className="details details__loading">Please select a monitoring network</div>;
 
         return (
