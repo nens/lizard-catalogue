@@ -37,6 +37,7 @@ import FilterBar from './FilterBar';
 import Header from './Header';
 import AlertPopup from './components/AlertPopup';
 import './styles/MainApp.css';
+import MonitoringNetworkDetails from './timeseries/MonitoringNetworkDetails';
 
 interface PropsFromState {
     currentRasterList: MyStore['currentRasterList'] | null,
@@ -402,7 +403,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                                 onSearchSubmit={this.onSearchSubmit}
                                 onSorting={this.props.updateOrder}
                             />
-                            <div/>
+                            <MonitoringNetworkDetails />
                         </>
                     : null}
                 </div>

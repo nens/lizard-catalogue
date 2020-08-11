@@ -483,7 +483,7 @@ const allMonitoringNetworks = (state: MyStore['allMonitoringNetworks'] = {}, act
             });
             return newState;
         case RECEIVE_MONITORING_NETWORK:
-            const network: MonitoringNetwork = action.payload;
+            const network: MonitoringNetwork = action.monitoringNetwork;
             state[network.uuid] = network;
             return state;
         default:
