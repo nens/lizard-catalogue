@@ -103,7 +103,7 @@ export interface WMS {
     } | null,
 };
 
-//MONITORING NETWORK FOR TIMESERIES
+// MONITORING NETWORK FOR TIMESERIES
 export interface MonitoringNetworkObject {
     count: number,
     previous: string,
@@ -120,7 +120,27 @@ export interface MonitoringNetwork {
     supplier: string,
     num_timeseries: number,
     description: string,
-};
+    timeseries: TimeSeries[],
+}
+
+// TIMESERIES
+export interface TimeSeries {
+    url: string,
+    uuid: string,
+    code: string,
+    name: string,
+    description: string,
+    observationType: ObservationType,
+    location: Location,
+}
+
+export interface Location {
+    url: string,
+    uuid: string,
+    code: string,
+    name: string,
+    geometry: Geometry,
+}
 
 //ORGANISATION
 export interface Organisation {
@@ -132,6 +152,7 @@ export interface Organisation {
 
 //OBSERVATION TYPE
 export interface ObservationType {
+    id: number,
     url: string,
     code: string,
     parameter: string,
@@ -155,6 +176,11 @@ export interface LatLng {
     lng: number
 };
 
+export interface Geometry {
+    type: string,
+    coordinates: number[][] | number[]
+}
+
 //EXPORT MESSAGE
 export interface Message {
     id: string,
@@ -167,10 +193,7 @@ export type ExportGridCelId = number[];
 
 export interface ExportGridCell {
     "type": string,
-    "geometry": {
-        "type": string,
-        "coordinates": number[][],
-    },
+    "geometry": Geometry,
     "properties": {
         "projection": string,
         "bbox": number[],

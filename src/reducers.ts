@@ -564,6 +564,7 @@ const observationTypes = (state: MyStore['observationTypes'] = [], { type, obser
             //Update Redux state
             return filteredObservationTypes.map(observation => {
                 return {
+                    id: observation.id,
                     url: observation.url,
                     code: observation.code,
                     parameter: observation.parameter,
