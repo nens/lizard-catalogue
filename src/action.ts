@@ -73,7 +73,6 @@ export const switchDataType = (dataType: SwitchDataType['payload'], dispatch): v
 //MARK: Raster
 export const RASTERS_REQUESTED = 'RASTERS_REQUESTED';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
-export const RASTER_FETCHED = 'RASTER_FETCHED';
 
 const rastersRequested = () => ({
     type: RASTERS_REQUESTED
@@ -117,22 +116,9 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
         .catch(console.error)
 };
 
-export const fetchRasterByUUID = (uuid: string, dispatch): void => {
-    request
-        .get(`/api/v4/rasters/${uuid}`)
-        .then(response => {
-            dispatch({
-                type: RASTER_FETCHED,
-                raster: response.body
-            });
-        })
-        .catch(console.error)
-};
-
 //MARK: WMS
 export const REQUEST_WMS = 'REQUEST_WMS';
 export const RECEIVE_WMS_LAYERS = 'RECEIVE_WMS_LAYERS';
-export const RECEIVE_WMS_LAYER = 'RECEIVE_WMS_LAYER';
 
 const wmsRequested = () => ({
     type: REQUEST_WMS
@@ -175,22 +161,9 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
         .catch(console.error)
 };
 
-export const fetchWMSByUUID = (uuid: string, dispatch): void => {
-    request
-        .get(`/api/v4/wmslayers/${uuid}`)
-        .then(response => {
-            dispatch({
-                type: RECEIVE_WMS_LAYER,
-                wms: response.body
-            });
-        })
-        .catch(console.error)
-};
-
 //MARK: Monitoring Networks for Timeseries
 export const REQUEST_MONITORING_NETWORKS = 'REQUEST_MONITORING_NETWORKS';
 export const RECEIVE_MONITORING_NETWORKS = 'RECEIVE_MONITORING_NETWORKS';
-export const RECEIVE_MONITORING_NETWORK = 'RECEIVE_MONITORING_NETWORK';
 
 const monitoringNetworksRequested = () => ({
     type: REQUEST_MONITORING_NETWORKS
@@ -229,18 +202,6 @@ export const fetchMonitoringNetworks = (page: number, searchTerm: string, organi
             } else {
                 dispatch(monitoringNetworksReceived(response.body))
             }
-        })
-        .catch(console.error)
-};
-
-export const fetchMonitoringNetworkByUUID = (uuid: string, dispatch): void => {
-    request
-        .get(`/api/v4/monitoringnetworks/${uuid}`)
-        .then(response => {
-            dispatch({
-                type: RECEIVE_MONITORING_NETWORK,
-                monitoringNetwork: response.body
-            });
         })
         .catch(console.error)
 };
