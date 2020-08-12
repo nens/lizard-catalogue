@@ -3,7 +3,6 @@ import {uniqWith, differenceWith} from 'lodash';
 
 import {
     RASTERS_FETCHED,
-    RASTER_FETCHED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
     DATASETS_FETCHED,
@@ -12,7 +11,6 @@ import {
     RECEIVE_LIZARD_BOOTSTRAP,
     REQUEST_WMS,
     RECEIVE_WMS_LAYERS,
-    RECEIVE_WMS_LAYER,
     SWITCH_DATA_TYPE,
     ITEM_SELECTED,
     TOGGLE_ALERT,
@@ -48,7 +46,6 @@ import {
     REMOVE_CURRENT_EXPORT_TASKS,
     REQUEST_MONITORING_NETWORKS,
     RECEIVE_MONITORING_NETWORKS,
-    RECEIVE_MONITORING_NETWORK,
 } from "./action";
 import {
     Raster,
@@ -362,26 +359,6 @@ const allRasters = (state: MyStore['allRasters'] = {}, action): MyStore['allRast
                 };
             });
             return newState;
-        case RASTER_FETCHED:
-            const { raster } = action;
-            let layerStyle = raster.options.styles ? raster.options.styles : "";
-            let layerName = raster.wms_info.layer;
-            //In case of Regen raster
-            if (raster.uuid === "3e5f56a7-b16e-4deb-8449-cc2c88805159" || raster.uuid === "730d6675-35dd-4a35-aa9b-bfb8155f9ca7") {
-                layerName = "radar:hour";
-                layerStyle = "radar-hour";
-            };
-            state[raster.uuid] = {
-                ...raster,
-                options: {
-                    styles: layerStyle
-                },
-                wms_info: {
-                    ...raster.wms_info,
-                    layer: layerName
-                }
-            };
-            return state;
         default:
             return state;
     };
@@ -430,10 +407,6 @@ const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
                 newState[wms.uuid] = wms;
             });
             return newState;
-        case RECEIVE_WMS_LAYER:
-            const wms: WMS = action.wms;
-            state[wms.uuid] = wms;
-            return state;
         default:
             return state;
     };
@@ -482,10 +455,6 @@ const allMonitoringNetworks = (state: MyStore['allMonitoringNetworks'] = {}, act
                 newState[network.uuid] = network;
             });
             return newState;
-        case RECEIVE_MONITORING_NETWORK:
-            const network: MonitoringNetwork = action.monitoringNetwork;
-            state[network.uuid] = network;
-            return state;
         default:
             return state;
     };

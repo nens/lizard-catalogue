@@ -20,10 +20,7 @@ import {
     selectOrganisation,
     selectDataset,
     selectObservationType,
-    fetchRasterByUUID,
-    fetchWMSByUUID,
     fetchMonitoringNetworks,
-    fetchMonitoringNetworkByUUID
 } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList, getCurrentMonitoringNetworkList } from '../reducers';
 import { ObservationType, Organisation, Dataset, SwitchDataType } from '../interface';
@@ -55,16 +52,13 @@ interface PropsFromDispatch {
     fetchLizardBootstrap: () => void,
     selectItem: (uuid: string) => void,
     fetchRasters: (page: number, searchTerm: string | null, organisationName: string | null, observationTypeParameter: string | null, datasetSlug: string | null, ordering: string) => void,
-    fetchRasterByUUID: (uuid: string) => void,
     updateBasketWithRaster: (rasters: string[]) => void,
     updateBasketWithWMS: (wmsLayers: string[]) => void,
     fetchObservationTypes: () => void,
     fetchOrganisations: () => void,
     fetchDatasets: () => void,
     fetchWMSLayers: (page: number, searchTerm: string | null, organisationName: string | null, datasetSlug: string | null, ordering: string) => void,
-    fetchWMSByUUID: (uuid: string) => void,
     fetchMonitoringNetworks: (page: number, searchTerm: string | null, organisationName: string | null, observationType: string | null, ordering: string) => void,
-    fetchMonitoringNetworkByUUID: (uuid: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void,
     toggleAlert: () => void,
     requestInbox: () => void,
@@ -212,8 +206,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 dataset,
                 this.props.filters.ordering
             );
-            //Fetch the raster by UUID from the url
-            if (uuid) this.props.fetchRasterByUUID(uuid);
         } else if (dataType === 'WMS') {
             this.props.fetchWMSLayers(
                 this.props.filters.page,
@@ -222,8 +214,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 dataset,
                 this.props.filters.ordering
             );
-            //Fetch the WMS layer by UUID from the url
-            if (uuid) this.props.fetchWMSByUUID(uuid);
         } else { // dataType === 'Timeseries'
             this.props.fetchMonitoringNetworks(
                 this.props.filters.page,
@@ -232,8 +222,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 observation,
                 this.props.filters.ordering
             );
-            //Fetch the Mornitoring network by UUID from the url
-            if (uuid) this.props.fetchMonitoringNetworkByUUID(uuid);
         };
 
         //Add event listener to use ESC to close a modal
@@ -444,7 +432,6 @@ const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
         datasetSlug: string,
         ordering: string
     ) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, datasetSlug, ordering, dispatch),
-    fetchRasterByUUID: (uuid: string) => fetchRasterByUUID(uuid, dispatch),
     updateBasketWithRaster: (rasters: string[]) => updateBasketWithRaster(rasters, dispatch),
     updateBasketWithWMS: (wmsLayers: string[]) => updateBasketWithWMS(wmsLayers, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
@@ -457,7 +444,6 @@ const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
         datasetSlug: string,
         ordering: string
     ) => fetchWMSLayers(page, searchTerm, organisationName, datasetSlug, ordering, dispatch),
-    fetchWMSByUUID: (uuid: string) => fetchWMSByUUID(uuid, dispatch),
     fetchMonitoringNetworks: (
         page: number,
         searchTerm: string,
@@ -465,7 +451,6 @@ const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
         observationType: string,
         ordering: string
     ) => fetchMonitoringNetworks(page, searchTerm, organisationName, observationType, ordering, dispatch),
-    fetchMonitoringNetworkByUUID: (uuid: string) => fetchMonitoringNetworkByUUID(uuid, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
     toggleAlert: () => toggleAlert(dispatch),
