@@ -6,8 +6,8 @@ interface MyProps {
     searchTerm: string,
     title: string,
     placeholder: string,
-    onSearchChange: (event: object) => void,
-    onSearchSubmit: (event: object) => void,
+    onSearchChange: (e: React.FormEvent<HTMLInputElement>) => void,
+    onSearchSubmit: (e: React.FormEvent<HTMLFormElement>) => void,
 };
 
 export default class SearchBar extends React.Component<MyProps> {

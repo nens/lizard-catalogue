@@ -1,0 +1,105 @@
+.filter-option {
+    max-height: 24rem;
+    margin-bottom: 2rem;
+}
+
+.filter-title {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.filter-title h4 {
+    font-size: 1.4rem;
+    font-weight: 500;
+    white-space: nowrap;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.filter-title button {
+    cursor: pointer;
+    border: none;
+}
+.filter-title button:focus {
+    outline: none;
+}
+
+.filter-content {
+    max-height: 20rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-list {
+    padding-left: 0;
+    overflow-y: scroll;
+    height: 100%;
+    margin: 1rem 0 0 0;
+}
+
+.filter-list-button {
+    font-size: 1.3rem;
+    line-height: 1.5rem;
+    bottom: 1rem;
+    border: none;
+    background-color: inherit;
+    color: #001AFF;
+    cursor: pointer;
+}
+
+.filter-list-button:focus {
+    outline: none;
+}
+
+.filter-item {
+    font-size: 1.3rem;
+    line-height: 1.5rem;
+    margin-bottom: .8rem;
+
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.filter-radiobutton {
+    vertical-align: middle;
+    margin: auto;
+    margin-right: 5px;
+}
+
+.filter-item-name {
+    vertical-align: middle;
+}
+
+.filter-checked-item {
+    font-size: .9rem;
+    color: rgb(44, 44, 44);
+    font-style: italic;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 1.5rem;
+    overflow: hidden;
+    margin-top: .5rem;
+}
+
+.filter-checked-item button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    color: rgb(44, 44, 44);
+    font-style: italic;
+    font-size: 1.2rem;
+}
+
+.filter-checked-item button:hover {
+    color: red;
+}
+
+.filter-checked-item button:focus {
+    outline: none;
+}
