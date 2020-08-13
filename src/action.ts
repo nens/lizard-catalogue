@@ -24,6 +24,7 @@ import {
     SetFetchingStateProjections,
     SetRasterExportFormFields,
     MonitoringNetworkObject,
+    TimeSeries,
 } from './interface';
 import { 
     getExportGridCellResolution, 
@@ -205,6 +206,30 @@ export const fetchMonitoringNetworks = (page: number, searchTerm: string, organi
         })
         .catch(console.error)
 };
+
+//MARK: TimeSeries for selected monitoring network
+export const REQUEST_TIMESERIES = 'REQUEST_TIMESERIES';
+export const RECEIVE_TIMESERIES = 'RECEIVE_TIMESERIES';
+
+const timeseriesRequested = () => ({
+    type: REQUEST_TIMESERIES
+});
+
+const timeseriesReceived = (timeseriesList: TimeSeries[]) => ({
+    type: RECEIVE_TIMESERIES,
+    timeseriesList
+});
+
+export const fetchTimeseries = (uuid: string, dispatch): void => {
+    dispatch(timeseriesRequested());
+
+    request
+        .get(`/api/v4/monitoringnetworks/${uuid}/timeseries/?page_size=100000`)
+        .then(response => {
+            dispatch(timeseriesReceived(response.body.results))
+        })
+        .catch(console.error)
+}
 
 //MARK: Select Item to view (Raster or WMS layer)
 export const ITEM_SELECTED = 'ITEM_SELECTED';

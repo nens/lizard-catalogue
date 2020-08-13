@@ -46,6 +46,8 @@ import {
     REMOVE_CURRENT_EXPORT_TASKS,
     REQUEST_MONITORING_NETWORKS,
     RECEIVE_MONITORING_NETWORKS,
+    REQUEST_TIMESERIES,
+    RECEIVE_TIMESERIES,
 } from "./action";
 import {
     Raster,
@@ -58,9 +60,9 @@ import {
     Message,
     RasterExportState,
     MonitoringNetwork,
-    // RasterExportStateActionType,
+    TimeSeries,
 } from './interface';
-import {areGridCelIdsEqual,haveGridCellsSameId} from './utils/rasterExportUtils'
+import { areGridCelIdsEqual, haveGridCellsSameId } from './utils/rasterExportUtils';
 
 export interface MyStore {
     bootstrap: Bootstrap,
@@ -101,6 +103,15 @@ export interface MyStore {
     allMonitoringNetworks: {
         [index: string]: MonitoringNetwork,
     } | {},
+    timeseries: {
+        isFetching: boolean,
+        timeseries: {
+            [uuid: string]: TimeSeries
+        },
+        observationTypes: {
+            [id: string]: ObservationType
+        },
+    } | null,
     selectedItem: string,
     basket: {
         rasters: string[],
@@ -460,6 +471,43 @@ const allMonitoringNetworks = (state: MyStore['allMonitoringNetworks'] = {}, act
     };
 };
 
+const timeseries = (state: MyStore['timeseries'] = null, action): MyStore['timeseries'] => {
+    switch(action.type) {
+        case REQUEST_TIMESERIES:
+            return {
+                isFetching: true,
+                timeseries: {},
+                observationTypes: {},
+            }
+        case RECEIVE_TIMESERIES:
+            const { timeseriesList } = action;
+            const timeseries: { [uuid: string]: TimeSeries } = {};
+            const observationTypes: { [id: string]: ObservationType } = {};
+            timeseriesList.forEach((ts: TimeSeries) => {
+                observationTypes[ts.observation_type.id] = ts.observation_type;
+                timeseries[ts.uuid] = ts;
+
+                // const locationUuid = ts.location.uuid;
+                // fetch(`/api/v4/locations/${locationUuid}/`)
+                //     .then(response => response.json())
+                //     .then(data => {
+                //         timeseries[ts.uuid] = {
+                //             ...ts,
+                //             location: data
+                //         };
+                //     })
+                //     .catch(console.error);
+            });
+            return {
+                isFetching: false,
+                timeseries,
+                observationTypes
+            }
+        default:
+            return state;
+    };
+};
+
 const selectedItem = (state: MyStore['selectedItem'] = '', { type, uuid }): MyStore['selectedItem'] => {
     switch (type) {
         case ITEM_SELECTED:
@@ -798,6 +846,7 @@ export default combineReducers({
     allWMS,
     currentMonitoringNetworkList,
     allMonitoringNetworks,
+    timeseries,
     filters,
     selectedItem,
     basket,

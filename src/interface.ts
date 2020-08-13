@@ -130,7 +130,7 @@ export interface TimeSeries {
     code: string,
     name: string,
     description: string,
-    observationType: ObservationType,
+    observation_type: ObservationType,
     location: Location,
 }
 
@@ -139,7 +139,7 @@ export interface Location {
     uuid: string,
     code: string,
     name: string,
-    geometry: Geometry,
+    geometry: Geometry | null,
 }
 
 //ORGANISATION

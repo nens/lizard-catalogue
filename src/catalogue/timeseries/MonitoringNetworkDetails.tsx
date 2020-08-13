@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Map, TileLayer } from 'react-leaflet';
+import { Map, TileLayer, Marker } from 'react-leaflet';
 import { MyStore, getOrganisations, getMonitoringNetwork } from '../../reducers';
 import { Organisation, MonitoringNetwork } from '../../interface';
 import {mapBoxAccesToken} from "../../mapboxConfig.js"
@@ -51,7 +51,11 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                         <span>{monitoringNetwork.uuid}</span>
                     </div>
                     <div className="details__map-box">
-                        <Map bounds={[[35, 180], [55, 190]]} zoomControl={false}>
+                        <Map
+                            center={[52.06683513154142, 5.110813411429112]}
+                            zoom={10}
+                        >
+                            <Marker position={[52.06683513154142, 5.110813411429112]} />
                             <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                         </Map>
                     </div>
