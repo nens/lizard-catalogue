@@ -93,32 +93,23 @@ class FilterBar extends React.Component<FilterBarProps, MyState> {
 
         return (
             <div className="filter-box">
-                <div className="switcher">
-                    <button
-                        className="switcher-button switcher-button-raster"
-                        title="Raster"
-                        onClick={() => onDataTypeChange('Raster')}
-                        disabled={currentDataType === "Raster" ? true : false}
-                    >
-                        <div>RASTER</div>
-                    </button>
-                    <button
-                        className="switcher-button switcher-button-wms"
-                        title="WMS layer"
-                        onClick={() => onDataTypeChange('WMS')}
-                        disabled={currentDataType === "WMS" ? true : false}
-                    >
-                        <div>FROM WEB</div>
-                    </button>
-                    <button
-                        className="switcher-button switcher-button-timeseries"
-                        title="Time series"
-                        onClick={() => onDataTypeChange('Timeseries')}
-                        disabled={currentDataType === "Timeseries" ? true : false}
-                    >
-                        <div>TIME SERIES</div>
-                    </button>
-                </div>
+                <select
+                    className="switcher"
+                    value={currentDataType}
+                    onChange={e => {
+                        if (
+                            e.target.value === "Raster" ||
+                            e.target.value === "WMS" ||
+                            e.target.value === "Timeseries"
+                        ) {
+                            onDataTypeChange(e.target.value)
+                        };
+                    }}
+                >
+                    <option value="Raster">RASTER</option>
+                    <option value="WMS">WMS LAYER</option>
+                    <option value="Timeseries">TIME SERIES</option>
+                </select>
                 <div 
                     className="filter-organisation"
                     //if there is no organisation in the filter bar then don't show this section
