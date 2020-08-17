@@ -65,7 +65,7 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                         >
                             {coordinatesArray.map((coordinates, i) => (
                                 <Marker key={i} position={[coordinates[1], coordinates[0]]} />
-                            ))}                            
+                            ))}
                             <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                         </Map>
                     </div>
