@@ -10,141 +10,14 @@
     height: 100%;
 }
 
-.filter-box h4 {
-    font-size: 1.4rem;
-    font-weight: 500;
-    white-space: nowrap;
-    margin: 0;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: .75px solid grey; 
-}
-
-.filter-observation-type {
-    height: 27%;
-    margin-bottom: 2rem;
-}
-
-.filter-organisation {
-    height: 27%;
-    margin-bottom: 2rem;
-}
-
-.filter-dataset {
-    height: 27%;
-    margin-bottom: 2rem;
-}
-
-.filter-list {
-    padding-left: 0;
-    overflow-y: scroll;
-    height: 55%;
-    margin: 1rem 0 0 0;
-}
-
-.filter-list-button {
-    font-size: 1.3rem;
-    line-height: 1.5rem;
-    bottom: 1rem;
-    border: none;
-    background-color: inherit;
-    color: #001AFF;
-    cursor: pointer;
-}
-
-.filter-list-button:focus {
-    outline: none;
-}
-
-.filter-item {
-    font-size: 1.3rem;
-    line-height: 1.5rem;
-    margin-bottom: .8rem;
-
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.filter-radiobutton {
-    vertical-align: middle;
-    margin: auto;
-    margin-right: 5px;
-}
-
-.filter-item-name {
-    vertical-align: middle;
-}
-
-.filter__checked-item {
-    font-size: .9rem;
-    color: rgb(44, 44, 44);
-    font-style: italic;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    height: 1.5rem;
-    overflow: hidden;
-    margin-top: .5rem;
-}
-
-.filter__checked-item button {
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    color: rgb(44, 44, 44);
-    font-style: italic;
-    font-size: 1.2rem;
-}
-
-.filter__checked-item button:hover {
-    color: red;
-}
-
-.filter__checked-item button:focus {
-    outline: none;
-}
-
-/*SWITCHER BETWEEN RASTERS AND WMS VIEW*/
 .switcher {
-    display: flex;
-    justify-content: space-between;
-    height: 6rem;
+    height: 3.5rem;
+    width: 100%;
+    margin-bottom: 2.5rem;
+    padding: 0 .5rem;
+    border: 1px solid #FFFFFF;
+    box-shadow: 2px 2px 4px #00000029;
 }
-
-.switcher-button {
-    font-size: 1.4rem;
-    font-weight: 550;
-    color: #fff;
-    border: none;
-    padding: 0;
-    background-color: #BFBFBF;
-    border-radius: .6rem;
-    box-shadow: .1rem .2rem .4rem rgba(12, 12, 12, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 70%;
-    width: 45%;
-    cursor: pointer;
-}
-
-.switcher-button:focus {
+.switcher:focus {
     outline: none;
-}
-
-.switcher-button:active {
-    transform: translateY(2px);
-}
-
-.switcher-button:disabled {
-    background-color: #55cbac;
-    cursor: default;
-}
-
-.switcher-button div {
-    width: 90%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
