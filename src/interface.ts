@@ -120,7 +120,6 @@ export interface MonitoringNetwork {
     supplier: string,
     num_timeseries: number,
     description: string,
-    timeseries: TimeSeries[],
 }
 
 // TIMESERIES
@@ -139,7 +138,10 @@ export interface Location {
     uuid: string,
     code: string,
     name: string,
-    geometry: Geometry | null,
+    geometry: {
+        type: string,
+        coordinates: number[],
+    } | null,
 }
 
 //ORGANISATION
@@ -176,11 +178,6 @@ export interface LatLng {
     lng: number
 };
 
-export interface Geometry {
-    type: string,
-    coordinates: number[][] | number[]
-}
-
 //EXPORT MESSAGE
 export interface Message {
     id: string,
@@ -193,7 +190,10 @@ export type ExportGridCelId = number[];
 
 export interface ExportGridCell {
     "type": string,
-    "geometry": Geometry,
+    "geometry": {
+        type: string,
+        coordinates: number[][],
+    },
     "properties": {
         "projection": string,
         "bbox": number[],

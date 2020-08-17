@@ -22,6 +22,7 @@ import {
     selectObservationType,
     fetchMonitoringNetworks,
     fetchTimeseries,
+    fetchLocations,
 } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList, getCurrentMonitoringNetworkList } from '../reducers';
 import { ObservationType, Organisation, Dataset, SwitchDataType } from '../interface';
@@ -61,6 +62,7 @@ interface PropsFromDispatch {
     fetchWMSLayers: (page: number, searchTerm: string | null, organisationName: string | null, datasetSlug: string | null, ordering: string) => void,
     fetchMonitoringNetworks: (page: number, searchTerm: string | null, organisationName: string | null, observationType: string | null, ordering: string) => void,
     fetchTimeseries: (uuid: string) => void,
+    fetchLocations: (uuid: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void,
     toggleAlert: () => void,
     requestInbox: () => void,
@@ -224,8 +226,11 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 observation,
                 this.props.filters.ordering
             );
-            // Fetch the list of timeseries by UUID of selected monitoring network
-            if (uuid) this.props.fetchTimeseries(uuid);
+            // Fetch the list of timeseries and locations by UUID of selected monitoring network
+            if (uuid) {
+                this.props.fetchTimeseries(uuid);
+                this.props.fetchLocations(uuid);
+            };
         };
 
         //Add event listener to use ESC to close a modal
@@ -295,9 +300,10 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             );
             this.updateURL(url);
 
-            //Fetch timeseries based on the selected monitoring network
+            //Fetch timeseries and locations based on the selected monitoring network
             if (currentDataType === "Timeseries") {
                 this.props.fetchTimeseries(nextProps.selectedItem);
+                this.props.fetchLocations(nextProps.selectedItem);
             };
         } else if (nextFilters.page !== filters.page) {
             //Fetch rasters/wms layers if page number changed without updating the URL
@@ -461,6 +467,7 @@ const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
         ordering: string
     ) => fetchMonitoringNetworks(page, searchTerm, organisationName, observationType, ordering, dispatch),
     fetchTimeseries: (uuid: string) => fetchTimeseries(uuid, dispatch),
+    fetchLocations: (uuid: string) => fetchLocations(uuid, dispatch),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
     toggleAlert: () => toggleAlert(dispatch),

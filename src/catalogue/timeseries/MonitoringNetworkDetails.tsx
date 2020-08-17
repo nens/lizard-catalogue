@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, Marker } from 'react-leaflet';
-import { MyStore, getOrganisations, getMonitoringNetwork } from '../../reducers';
+import { MyStore, getOrganisations, getMonitoringNetwork, getTimeseriesObject, getLocationsObject } from '../../reducers';
 import { Organisation, MonitoringNetwork } from '../../interface';
 import {mapBoxAccesToken} from "../../mapboxConfig.js"
 import '../styles/Details.css';
@@ -9,6 +9,8 @@ import '../styles/Export.css';
 
 interface PropsFromState {
     monitoringNetwork: MonitoringNetwork | null,
+    timeseriesObject: MyStore['timeseriesObject'],
+    locationsObject: MyStore['locationsObject'],
     organisations: Organisation[],
 };
 
@@ -29,10 +31,16 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
 
     render() {
         //Destructure the props
-        const { monitoringNetwork } = this.props;
+        const { monitoringNetwork, locationsObject } = this.props;
 
         //If no monitoring network is selected, display a text
-        if (!monitoringNetwork) return <div className="details details__loading">Please select a monitoring network</div>;
+        if (!monitoringNetwork || !locationsObject) return <div className="details details__loading">Please select a monitoring network</div>;
+
+        const coordinatesArray = Object.values(locationsObject.locations).filter(
+            location => location.geometry !== null
+        ).map(
+            location => location.geometry!.coordinates
+        );
 
         return (
             <div className="details">
@@ -52,10 +60,12 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                     </div>
                     <div className="details__map-box">
                         <Map
-                            center={[52.06683513154142, 5.110813411429112]}
+                            bounds={locationsObject.spatialBounds}
                             zoom={10}
                         >
-                            <Marker position={[52.06683513154142, 5.110813411429112]} />
+                            {coordinatesArray.map((coordinates, i) => (
+                                <Marker key={i} position={[coordinates[1], coordinates[0]]} />
+                            ))}                            
                             <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                         </Map>
                     </div>
@@ -91,10 +101,14 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
 const mapStateToProps = (state: MyStore): PropsFromState => {
     if (!state.selectedItem) return {
         monitoringNetwork: null,
+        timeseriesObject: null,
+        locationsObject: null,
         organisations: getOrganisations(state),
     };
     return {
         monitoringNetwork: getMonitoringNetwork(state, state.selectedItem),
+        timeseriesObject: getTimeseriesObject(state),
+        locationsObject: getLocationsObject(state),
         organisations: getOrganisations(state),
     };
 };
