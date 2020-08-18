@@ -2,15 +2,9 @@
     font-size: 1.3rem;
     line-height: 1.5rem;
     width: 30%;
-    border-radius: .4rem;
-    padding: 1.5rem;
-    margin-right: 1rem;
-    margin-bottom: 1rem;
-    background-color: #f2f2f2;
-    box-shadow: .1rem .3rem .4rem rgba(12, 12, 12, 0.4);
-
-    height: 100%;
-    
+    padding: 0 1.5rem;
+    margin: 1rem 0;
+    height: 100%;    
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -28,7 +22,6 @@
     font-weight: 570;
     line-height: 3.5rem;
     margin: 0 0 2rem 0;
-    color: #535353;
     white-space: nowrap;
     display: flex;
     justify-content: space-between;
@@ -48,7 +41,6 @@
 .details h4 {
     font-size: 1.5rem;
     margin: .5rem 0;
-    color: #535353;
 }
 
 .details__uuid {

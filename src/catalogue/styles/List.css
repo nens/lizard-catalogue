@@ -4,17 +4,13 @@ li {
 
 .list {
     width: 52%;
-    border-radius: .4rem;
-    padding: 1rem;
-    background-color: #f2f2f2;
-    box-shadow: .1rem .3rem .4rem rgba(12, 12, 12, 0.4);
-    margin: 0 1rem 1rem 1rem;
-
+    padding: 0 1rem;
+    margin: 1rem 0;
+    border-right: 1px solid #C1C1C1;
     height: 100%;
-
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 .loading-screen {
@@ -27,7 +23,6 @@ li {
 }
 
 .list__length {
-    color: #686868;
     margin: 1rem 0 0 1rem;
 }
 

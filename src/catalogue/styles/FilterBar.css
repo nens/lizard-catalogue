@@ -1,11 +1,9 @@
 .filter-box {
-    width: 15%;
+    width: 18%;
     min-width: 0;
-    margin: 0 0 1rem 1rem;
-    border-radius: .4rem;
-    padding: 1.5rem;
-    background-color: #f2f2f2;
-    box-shadow: .1rem .3rem .4rem rgba(12, 12, 12, 0.4);
+    padding: 0 1.5rem;
+    margin: 1rem 0;
+    border-right: 1px solid #C1C1C1;
     overflow: hidden;
     height: 100%;
 }
@@ -15,6 +13,7 @@
     width: 100%;
     margin-bottom: 2.5rem;
     padding: 0 .5rem;
+    color: #2E2E2E;
     border: 1px solid #FFFFFF;
     box-shadow: 2px 2px 4px #00000029;
 }
