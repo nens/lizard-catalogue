@@ -60,7 +60,7 @@ class MonitoringNetworkList extends React.Component<MonitoringNetworkListProps> 
                         onSearchSubmit={onSearchSubmit}
                         onSearchChange={onSearchChange}
                     />
-                    <div className="list__length">{count} Items</div>
+                    <div className="list__length">{count} items</div>
                 </div>
                 <div className="list__content">
                     <ul className="list__list">
