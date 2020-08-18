@@ -64,7 +64,7 @@ class MonitoringNetworkList extends React.Component<MonitoringNetworkListProps> 
                 </div>
                 <div className="list__content">
                     <ul className="list__list">
-                        <li className="list__row-title">
+                        <li className="list__row-header">
                             <div className="list__row list__row-name">
                                 Monitoring network
                                 <i className="fa fa-sort" onClick={() => onSorting('name')} />
@@ -90,11 +90,11 @@ class MonitoringNetworkList extends React.Component<MonitoringNetworkListProps> 
                             }
 
                             return (
-                                <li className="list__row-li" key={monitoringNetwork.uuid} onClick={() => selectItem(monitoringNetwork.uuid)}  title={monitoringNetwork.name}>
-                                    <div className="list__row list__row-name">{monitoringNetwork.name}</div>
-                                    <div className="list__row list__row-org">{monitoringNetwork.organisation && monitoringNetwork.organisation.name}</div>
-                                    <div className="list__row list__row-raster-description">{monitoringNetwork.description}</div>
-                                    <div className="list__row list__row-access">{renderAccessModifier()}</div>
+                                <li className="list__row-li" key={monitoringNetwork.uuid} onClick={() => selectItem(monitoringNetwork.uuid)}>
+                                    <div className="list__row list__row-normal list__row-name" title={monitoringNetwork.name}>{monitoringNetwork.name}</div>
+                                    <div className="list__row list__row-normal list__row-org" title={monitoringNetwork.organisation && monitoringNetwork.organisation.name}>{monitoringNetwork.organisation && monitoringNetwork.organisation.name}</div>
+                                    <div className="list__row list__row-normal list__row-raster-description" title={monitoringNetwork.description}>{monitoringNetwork.description}</div>
+                                    <div className="list__row list__row-normal list__row-access">{renderAccessModifier()}</div>
                                 </li>
                             )
                         })}

@@ -103,7 +103,7 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                 </div>
                 <div className="list__content">
                     <ul className="list__list">
-                        <li className="list__row-title">
+                        <li className="list__row-header">
                             <div className="list__row list__row-box" />
                             <div className="list__row list__row-name">
                                 Name
@@ -135,12 +135,12 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                             }
 
                             return (
-                                <li className="list__row-li" key={wms.uuid} onClick={() => selectItem(wms.uuid)}  title={wms.name}>
-                                    <input className="list__row list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(wms.uuid)} checked={checked} />
-                                    <div className="list__row list__row-name">{wms.name}</div>
-                                    <div className="list__row list__row-org">{wms.organisation && wms.organisation.name}</div>
-                                    <div className="list__row list__row-wms-description">{wms.description}</div>
-                                    <div className="list__row list__row-access">{renderAccessModifier()}</div>
+                                <li className="list__row-li" key={wms.uuid} onClick={() => selectItem(wms.uuid)}>
+                                    <input className="list__row list__row-normal list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(wms.uuid)} checked={checked} />
+                                    <div className="list__row list__row-normal list__row-name" title={wms.name}>{wms.name}</div>
+                                    <div className="list__row list__row-normal list__row-org" title={wms.organisation && wms.organisation.name}>{wms.organisation && wms.organisation.name}</div>
+                                    <div className="list__row list__row-normal list__row-wms-description" title={wms.description}>{wms.description}</div>
+                                    <div className="list__row list__row-normal list__row-access">{renderAccessModifier()}</div>
                                 </li>
                             )
                         })}

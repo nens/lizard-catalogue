@@ -106,7 +106,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                 </div>
                 <div className="list__content">
                     <ul className="list__list">
-                        <li className="list__row-title">
+                        <li className="list__row-header">
                             <div className="list__row list__row-box" />
                             <div className="list__row list__row-type">
                                 Type
@@ -146,17 +146,17 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             }
 
                             return (
-                                <li className="list__row-li" key={raster.uuid} onClick={() => selectItem(raster.uuid)} title={raster.name}>
-                                    <input className="list__row list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(raster.uuid)} checked={checked} />
+                                <li className="list__row-li" key={raster.uuid} onClick={() => selectItem(raster.uuid)}>
+                                    <input className="list__row list__row-normal list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(raster.uuid)} checked={checked} />
                                     {raster.temporal ?
-                                        <img className="list__row list__row-type" src="image/raster-temporal.svg" alt="raster" /> :
-                                        <img className="list__row list__row-type" src="image/raster-non-temporal.svg" alt="raster" />
+                                        <img className="list__row list__row-normal list__row-type" src="image/raster-temporal.svg" alt="raster" title="Temporal"/> :
+                                        <img className="list__row list__row-normal list__row-type" src="image/raster-non-temporal.svg" alt="raster" title="Non-temporal"/>
                                     }
-                                    <div className="list__row list__row-name">{raster.name}</div>
-                                    <div className="list__row list__row-org">{raster.organisation && raster.organisation.name}</div>
-                                    <div className="list__row list__row-raster-description">{raster.description}</div>
-                                    <div className="list__row list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
-                                    <div className="list__row list__row-access">{renderAccessModifier()}</div>
+                                    <div className="list__row list__row-normal list__row-name" title={raster.name}>{raster.name}</div>
+                                    <div className="list__row list__row-normal list__row-org"title={raster.organisation && raster.organisation.name}>{raster.organisation && raster.organisation.name}</div>
+                                    <div className="list__row list__row-normal list__row-raster-description" title={raster.description}>{raster.description}</div>
+                                    <div className="list__row list__row-normal list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
+                                    <div className="list__row list__row-normal list__row-access">{renderAccessModifier()}</div>
                                 </li>
                             )
                         })}
