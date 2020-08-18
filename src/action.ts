@@ -24,6 +24,8 @@ import {
     SetFetchingStateProjections,
     SetRasterExportFormFields,
     MonitoringNetworkObject,
+    TimeSeries,
+    Location,
 } from './interface';
 import { 
     getExportGridCellResolution, 
@@ -202,6 +204,54 @@ export const fetchMonitoringNetworks = (page: number, searchTerm: string, organi
             } else {
                 dispatch(monitoringNetworksReceived(response.body))
             }
+        })
+        .catch(console.error)
+};
+
+//MARK: TimeSeries for selected monitoring network
+export const REQUEST_TIMESERIES = 'REQUEST_TIMESERIES';
+export const RECEIVE_TIMESERIES = 'RECEIVE_TIMESERIES';
+
+const timeseriesRequested = () => ({
+    type: REQUEST_TIMESERIES
+});
+
+const timeseriesReceived = (timeseriesList: TimeSeries[]) => ({
+    type: RECEIVE_TIMESERIES,
+    timeseriesList
+});
+
+export const fetchTimeseries = (uuid: string, dispatch): void => {
+    dispatch(timeseriesRequested());
+
+    request
+        .get(`/api/v4/monitoringnetworks/${uuid}/timeseries/?page_size=100000`)
+        .then(response => {
+            dispatch(timeseriesReceived(response.body.results))
+        })
+        .catch(console.error)
+};
+
+//MARK: Locations for selected monitoring network
+export const REQUEST_LOCATIONS = 'REQUEST_LOCATIONS';
+export const RECEIVE_LOCATIONS = 'RECEIVE_LOCATIONS';
+
+const locationsRequested = () => ({
+    type: REQUEST_LOCATIONS
+});
+
+const locationsReceived = (locationsList: Location[]) => ({
+    type: RECEIVE_LOCATIONS,
+    locationsList
+});
+
+export const fetchLocations = (uuid: string, dispatch): void => {
+    dispatch(locationsRequested());
+
+    request
+        .get(`/api/v4/monitoringnetworks/${uuid}/locations/?page_size=100000`)
+        .then(response => {
+            dispatch(locationsReceived(response.body.results))
         })
         .catch(console.error)
 };

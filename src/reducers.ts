@@ -46,6 +46,10 @@ import {
     REMOVE_CURRENT_EXPORT_TASKS,
     REQUEST_MONITORING_NETWORKS,
     RECEIVE_MONITORING_NETWORKS,
+    REQUEST_TIMESERIES,
+    RECEIVE_TIMESERIES,
+    REQUEST_LOCATIONS,
+    RECEIVE_LOCATIONS,
 } from "./action";
 import {
     Raster,
@@ -58,9 +62,10 @@ import {
     Message,
     RasterExportState,
     MonitoringNetwork,
-    // RasterExportStateActionType,
+    TimeSeries,
+    Location,
 } from './interface';
-import {areGridCelIdsEqual,haveGridCellsSameId} from './utils/rasterExportUtils'
+import { areGridCelIdsEqual, haveGridCellsSameId } from './utils/rasterExportUtils';
 
 export interface MyStore {
     bootstrap: Bootstrap,
@@ -101,6 +106,22 @@ export interface MyStore {
     allMonitoringNetworks: {
         [index: string]: MonitoringNetwork,
     } | {},
+    timeseriesObject: {
+        isFetching: boolean,
+        timeseries: {
+            [uuid: string]: TimeSeries
+        },
+        observationTypes: {
+            [id: string]: ObservationType
+        },
+    } | null,
+    locationsObject: {
+        isFetching: boolean,
+        locations: {
+            [uuid: string]: Location
+        },
+        spatialBounds: number[][],
+    } | null,
     selectedItem: string,
     basket: {
         rasters: string[],
@@ -460,6 +481,79 @@ const allMonitoringNetworks = (state: MyStore['allMonitoringNetworks'] = {}, act
     };
 };
 
+const timeseriesObject = (state: MyStore['timeseriesObject'] = null, action): MyStore['timeseriesObject'] => {
+    switch(action.type) {
+        case REQUEST_TIMESERIES:
+            return {
+                isFetching: true,
+                timeseries: {},
+                observationTypes: {},
+            }
+        case RECEIVE_TIMESERIES:
+            const { timeseriesList } = action;
+            const timeseries: { [uuid: string]: TimeSeries } = {};
+            const observationTypes: { [id: string]: ObservationType } = {};
+            timeseriesList.forEach((ts: TimeSeries) => {
+                observationTypes[ts.observation_type.id] = ts.observation_type;
+                timeseries[ts.uuid] = ts;
+            });
+            return {
+                isFetching: false,
+                timeseries,
+                observationTypes
+            };
+        default:
+            return state;
+    };
+};
+
+const locationsObject = (state: MyStore['locationsObject'] = null, action): MyStore['locationsObject'] => {
+    switch(action.type) {
+        case REQUEST_LOCATIONS:
+            return {
+                isFetching: true,
+                locations: {},
+                spatialBounds: [[85, 180], [-85, -180]]
+            }
+        case RECEIVE_LOCATIONS:
+            const locationsList: Location[] = action.locationsList;
+            const locations: { [uuid: string]: Location} = {};
+            locationsList.forEach(location => {
+                locations[location.uuid] = {
+                    ...location,
+                    geometry: location.geometry ? {
+                        ...location.geometry,
+                        coordinates: [location.geometry.coordinates[0], location.geometry.coordinates[1]]
+                    } : null,
+                };
+            });
+
+            // Get spatial bounds of the selected monitoring network
+            // by retrieve max x, max y, min x, min y of all locations
+            const coordinatesArray = locationsList.filter(
+                location => location.geometry !== null
+            ).map(
+                location => location.geometry!.coordinates
+            );
+
+            const x: number[] = coordinatesArray.map(coordinates => coordinates[0]);
+            const y: number[] = coordinatesArray.map(coordinates => coordinates[1]);
+            const north = Math.max(...y);
+            const east = Math.max(...x);
+            const south = Math.min(...y);
+            const west = Math.min(...x);
+            const spatialBounds = [[north, east], [south, west]];
+
+            return {
+                isFetching: false,
+                locations,
+                spatialBounds,
+            };
+        default:
+            return state;
+    };
+};
+
 const selectedItem = (state: MyStore['selectedItem'] = '', { type, uuid }): MyStore['selectedItem'] => {
     switch (type) {
         case ITEM_SELECTED:
@@ -533,6 +627,7 @@ const observationTypes = (state: MyStore['observationTypes'] = [], { type, obser
             //Update Redux state
             return filteredObservationTypes.map(observation => {
                 return {
+                    id: observation.id,
                     url: observation.url,
                     code: observation.code,
                     parameter: observation.parameter,
@@ -771,6 +866,14 @@ export const getMonitoringNetwork = (state: MyStore, uuid: string) => {
     return state.allMonitoringNetworks[uuid];
 };
 
+export const getTimeseriesObject = (state: MyStore) => {
+    return state.timeseriesObject;
+};
+
+export const getLocationsObject = (state: MyStore) => {
+    return state.locationsObject;
+};
+
 export const getObservationTypes = (state: MyStore) => {
     return state.observationTypes;
 };
@@ -797,6 +900,8 @@ export default combineReducers({
     allWMS,
     currentMonitoringNetworkList,
     allMonitoringNetworks,
+    timeseriesObject,
+    locationsObject,
     filters,
     selectedItem,
     basket,
