@@ -16,13 +16,17 @@
 }
 
 .searchbar-input:focus {
-    outline-color: #41a086;
+    outline-color: var(--main-color-scheme);
 }
 
 .searchbar-input-filter {
     font-size: 1rem;
     padding: 1rem;
     height: 2.5rem;
+    margin-right: -2.75rem;
+    border: 1px solid var(--border-color-soft);
+    border-radius: 1px;
+    box-shadow: none;
 }
 
 .searchbar-button {
@@ -43,5 +47,11 @@
 .searchbar-icon {
     height: 1.5rem;
     width: 1.5rem;
-    fill: grey;
+    fill: var(--border-color-soft);
+    opacity: 0.36;
+}
+
+.searchbar-icon-filter {
+    height: 1.2rem;
+    width: 1.2rem;
 }

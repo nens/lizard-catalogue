@@ -55,8 +55,8 @@ class MonitoringNetworkList extends React.Component<MonitoringNetworkListProps> 
                     <SearchBar
                         name="searchBar"
                         searchTerm={searchTerm}
-                        title="Type name or UUID of raster/wms layer"
-                        placeholder="Search in Lizard or type a UUID"
+                        title="Type name or UUID"
+                        placeholder="Search for data in Lizard"
                         onSearchSubmit={onSearchSubmit}
                         onSearchChange={onSearchChange}
                     />

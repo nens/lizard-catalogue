@@ -25,7 +25,7 @@ export default class SearchBar extends React.Component<MyProps> {
                     value={searchTerm}
                 />
                 <button className="searchbar-button" type="submit">
-                    <svg className="searchbar-icon">
+                    <svg className={name === "filterSearchBar" ? "searchbar-icon searchbar-icon-filter" : "searchbar-icon"}>
                         <use xlinkHref="image/symbols.svg#icon-search" />
                     </svg>
                 </button>

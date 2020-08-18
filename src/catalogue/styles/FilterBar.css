@@ -3,7 +3,7 @@
     min-width: 0;
     padding: 0 1.5rem;
     margin: 1rem 0;
-    border-right: 1px solid #C1C1C1;
+    border-right: 1px solid var(--border-color-soft);
     overflow: hidden;
     height: 100%;
 }
@@ -11,10 +11,12 @@
 .switcher {
     height: 3.5rem;
     width: 100%;
+    font-size: 1.5rem;
     margin-bottom: 2.5rem;
     padding: 0 .5rem;
     color: var(--font-color);
-    border: 1px solid #FFFFFF;
+    border: none;
+    border-radius: 1px;
     box-shadow: 2px 2px 4px #00000029;
 }
 .switcher:focus {

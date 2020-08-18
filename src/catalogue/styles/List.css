@@ -6,7 +6,7 @@ li {
     width: 52%;
     padding: 0 1rem;
     margin: 1rem 0;
-    border-right: 1px solid #C1C1C1;
+    border-right: 1px solid var(--border-color-soft);
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -70,7 +70,7 @@ li {
 }
 
 .list__row-li:hover {
-    border: 1px solid #2FCBAB;
+    border: 1px solid var(--main-color-scheme);
 }
 
 .list__row-li img {
@@ -145,7 +145,7 @@ li {
 }
 
 .public {
-    background-color: #1ABC9C;
+    background-color: var(--main-color-scheme);
 }
 
 .private {
@@ -173,7 +173,7 @@ li {
     padding: .8rem;
     border-radius: .2rem;
     border: none;
-    background-color: #008080;
+    background-color: var(--main-color-scheme);
     color: #fff;
     box-shadow: .2rem .4rem .4rem rgba(12, 12, 12, 0.4);
     cursor: pointer;

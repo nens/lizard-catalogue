@@ -33,7 +33,7 @@ const FilterOption: React.FC<MyProps> = (props) => {
 
     const [searchInput, setSearchInput] = useState('');
     const [numberOfItems, setNumberOfItems] = useState(4);
-    const [showList, setShowList] = useState(false);
+    const [showList, setShowList] = useState(true);
 
     // Filter items using search input
     const filteredListOfItems = listOfItems.filter(item => {
@@ -109,7 +109,7 @@ const FilterOption: React.FC<MyProps> = (props) => {
                         </li>
                     ))}
                     {numberOfItems < filteredListOfItems.length ? (
-                        <button className="filter-list-button" onClick={() => setNumberOfItems(numberOfItems + 4)}>more ...</button>
+                        <button className="filter-list-button" onClick={() => setNumberOfItems(numberOfItems + 4)}>[+] {filteredListOfItems.length - numberOfItems} more</button>
                     ) : null}
                 </ul>
             </div>

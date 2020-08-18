@@ -44,7 +44,7 @@
 }
 
 .information_close:hover {
-    color: #008080;
+    color: var(--main-color-scheme);
 }
 
 .information_footer {
@@ -73,7 +73,7 @@
 
 .information_footer button:hover {
     border: 1px solid transparent;
-    background-color: #008080;
+    background-color: var(--main-color-scheme);
     color: #fff;
 }
 

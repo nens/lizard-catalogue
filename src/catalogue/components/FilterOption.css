@@ -1,6 +1,7 @@
 .filter-option {
     max-height: 24rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color-soft);
 }
 
 .filter-title {
@@ -13,28 +14,31 @@
 }
 
 .filter-title h4 {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 500;
     white-space: nowrap;
     text-transform: uppercase;
     margin: 0;
 }
 
-.filter-title button {
+.filter-title > button {
+    color: #707070;
     cursor: pointer;
     border: none;
+    background-color: transparent;
 }
 .filter-title button:focus {
     outline: none;
 }
 
 .filter-content {
-    max-height: 20rem;
+    margin-bottom: 2rem;
     display: flex;
     flex-direction: column;
 }
 
 .filter-list {
+    max-height: 13rem;
     padding-left: 0;
     overflow-y: scroll;
     height: 100%;
@@ -43,11 +47,12 @@
 
 .filter-list-button {
     font-size: 1.3rem;
+    font-weight: 500;
     line-height: 1.5rem;
     bottom: 1rem;
     border: none;
     background-color: inherit;
-    color: #001AFF;
+    color: #406CFB;
     cursor: pointer;
 }
 

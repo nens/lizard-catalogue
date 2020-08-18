@@ -149,7 +149,7 @@
 }
 
  .export_close:hover {
-    color: #008080;
+    color: var(--main-color-scheme);
 }
 
 .export_grid_cell:hover {
