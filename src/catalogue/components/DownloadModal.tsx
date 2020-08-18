@@ -33,7 +33,7 @@ class DownloadModal extends React.Component<PropsFromState> {
                         percent={progressInPercentage}
                         strokeWidth={4}
                         trailWidth={4}
-                        strokeColor="#2FCBAB"
+                        strokeColor="#008080"
                     />
                     <i>{finishedTasks} / {allTasks} export(s) finished ({Math.round(progressInPercentage)}%)</i>
                 </div>

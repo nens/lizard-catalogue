@@ -168,7 +168,7 @@
     margin: 0;
     padding: 0.5rem;
     color: #fff;
-    background-color: #2FCBAB;
+    background-color: #008080;
     border: none;
     border-radius: .2rem;
     overflow: hidden;
@@ -193,7 +193,7 @@
 .details__button {
     font-size: 1.4rem;
     line-height: 1.6rem;
-    background-color: #2FCBAB;
+    background-color: #008080;
     color: #fff;
     border: none;
     border-radius: .2rem;
