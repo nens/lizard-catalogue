@@ -135,7 +135,7 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                             }
 
                             return (
-                                <li className="list__row-li" key={wms.uuid} onClick={() => selectItem(wms.uuid)} >
+                                <li className="list__row-li" key={wms.uuid} onClick={() => selectItem(wms.uuid)}  title={wms.name}>
                                     <input className="list__row list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(wms.uuid)} checked={checked} />
                                     <div className="list__row list__row-name">{wms.name}</div>
                                     <div className="list__row list__row-org">{wms.organisation && wms.organisation.name}</div>

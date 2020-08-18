@@ -146,7 +146,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             }
 
                             return (
-                                <li className="list__row-li" key={raster.uuid} onClick={() => selectItem(raster.uuid)} >
+                                <li className="list__row-li" key={raster.uuid} onClick={() => selectItem(raster.uuid)} title={raster.name}>
                                     <input className="list__row list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(raster.uuid)} checked={checked} />
                                     {raster.temporal ?
                                         <img className="list__row list__row-type" src="image/raster-temporal.svg" alt="raster" /> :

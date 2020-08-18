@@ -90,7 +90,7 @@ class MonitoringNetworkList extends React.Component<MonitoringNetworkListProps> 
                             }
 
                             return (
-                                <li className="list__row-li" key={monitoringNetwork.uuid} onClick={() => selectItem(monitoringNetwork.uuid)} >
+                                <li className="list__row-li" key={monitoringNetwork.uuid} onClick={() => selectItem(monitoringNetwork.uuid)}  title={monitoringNetwork.name}>
                                     <div className="list__row list__row-name">{monitoringNetwork.name}</div>
                                     <div className="list__row list__row-org">{monitoringNetwork.organisation && monitoringNetwork.organisation.name}</div>
                                     <div className="list__row list__row-raster-description">{monitoringNetwork.description}</div>
