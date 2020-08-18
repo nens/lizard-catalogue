@@ -1,6 +1,11 @@
+/* CSS variables  */
+:root {
+  --font-color: #2E2E2E;
+}
+
 body {
   margin: 0;
-  color: #2E2E2E;
+  color: var(--font-color);
   font-family: 'Montserrat', sans-serif;
   font-size: 1.4rem;
   font-weight: 400;
