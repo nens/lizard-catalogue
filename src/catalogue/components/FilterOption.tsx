@@ -59,7 +59,7 @@ const FilterOption: React.FC<MyProps> = (props) => {
         <div
             className="filter-option"
             style={{
-                display: filteredListOfItems.length === 0 ? "none" : ""
+                display: listOfItems.length === 0 ? "none" : ""
             }}
         >
             <div className="filter-title">
