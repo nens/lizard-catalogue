@@ -76,6 +76,10 @@ li {
     border: 1px solid var(--main-color-scheme);
 }
 
+.list__row-li-selected {
+    border: 1px solid var(--main-color-scheme);
+}
+
 .list__row-li img {
     width: 3rem;
     height: 3rem;

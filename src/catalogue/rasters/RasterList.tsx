@@ -24,6 +24,7 @@ interface MyProps {
 
 interface PropsFromState {
     rasters: Raster[],
+    selectedItem: string,
     page: number,
 };
 
@@ -61,7 +62,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
 
     render() {
         //Destructure all props of the Raster List component
-        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentRasterList, selectItem, updateBasketWithRaster, rasters } = this.props;
+        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentRasterList, selectItem, updateBasketWithRaster, rasters, selectedItem } = this.props;
         const { checkedRasters } = this.state;
 
         //number of pages displayed in the pagination bar stored in an array with 5 pages
@@ -146,7 +147,11 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             }
 
                             return (
-                                <li className="list__row-li" key={raster.uuid} onClick={() => selectItem(raster.uuid)}>
+                                <li
+                                    className={selectedItem === raster.uuid ? "list__row-li list__row-li-selected" : "list__row-li"}
+                                    key={raster.uuid}
+                                    onClick={() => selectItem(raster.uuid)}
+                                >
                                     <input className="list__row list__row-normal list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(raster.uuid)} checked={checked} />
                                     {raster.temporal ?
                                         <img className="list__row list__row-normal list__row-type" src="image/raster-temporal.svg" alt="raster" title="Temporal"/> :
@@ -190,10 +195,12 @@ class RasterList extends React.Component<RasterListProps, MyState> {
 const mapStateToProps = (state: MyStore, ownProps: MyProps): PropsFromState => {
     if (!ownProps.currentRasterList) return {
         rasters: [],
+        selectedItem: '',
         page: 1,
     };
     return {
         rasters: ownProps.currentRasterList.rasterList.map(uuid => getRaster(state, uuid)),
+        selectedItem: state.selectedItem,
         page: state.filters.page,
     };
 };

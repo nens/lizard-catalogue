@@ -106,6 +106,7 @@ class WMSDetails extends React.Component<PropsFromState> {
                             title={wmsUrl}
                             value={wmsUrl}
                             spellCheck={false}
+                            readOnly={true}
                         />
                         <button
                             className="details__button-copy"

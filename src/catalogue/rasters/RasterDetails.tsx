@@ -173,6 +173,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                                 title={getRasterGetCapabilitesURL(raster)}
                                 value={getRasterGetCapabilitesURL(raster)}
                                 spellCheck={false}
+                                readOnly={true}
                             />
                             <button
                                 className="details__button-copy"
@@ -194,6 +195,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                                     title={getDatasetGetCapabilitesURL(dataset)}
                                     value={getDatasetGetCapabilitesURL(dataset)}
                                     spellCheck={false}
+                                    readOnly={true}
                                 />
                                 <button
                                     className="details__button-copy"
