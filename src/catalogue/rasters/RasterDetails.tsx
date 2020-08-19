@@ -10,6 +10,7 @@ import Export from '../components/Export';
 import {mapBoxAccesToken} from "../../mapboxConfig.js"
 import '../styles/Details.css';
 import '../styles/Export.css';
+import '../styles/Buttons.css';
 
 interface PropsFromState {
     raster: Raster | null,
@@ -23,12 +24,14 @@ interface MyProps {
 };
 
 interface MyState {
-    showExport: boolean
+    showExport: boolean,
+    showTableTab: string,
 };
 
 class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
     state = {
-        showExport: false
+        showExport: false,
+        showTableTab: 'Details',
     };
 
     toggleExportModal = () => {
@@ -38,7 +41,6 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
     };
 
     selectedDataset = (raster: Raster) => {
-        
         const { dataset } = this.props.filters;
         const selectedDataset = dataset && raster.datasets.find(dataSet => dataSet.slug === dataset);
         return (dataset && selectedDataset) || null;
@@ -49,7 +51,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
         const { raster, organisations, bootstrap } = this.props;
 
         //If no raster is selected, display a text
-        if (!raster) return <div className="details details__loading">Please select a raster</div>;
+        if (!raster) return <div className="details details-loading">Please select a raster</div>;
         const dataset = this.selectedDataset(raster);
 
         //Set the Map with bounds coming from spatial_bounds of the Raster
@@ -88,19 +90,19 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
 
         return (
             <div className="details">
-                <h3>
-                    <span className="details__title_text" title={raster.name}>
+                <div className="details-name">
+                    <h3 title={raster.name}>
                         {raster.name}
-                    </span>
+                    </h3>
                     <span title="To manage this raster">
-                        { authorizedToManageLayer ?
+                        {authorizedToManageLayer ?
                             <a
                                 href={`/management/#/data_management/rasters/${raster.uuid}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
                                 <img
-                                    className="details__icon"
+                                    className="details-manage-icon"
                                     src="image/manageButton.svg"
                                     alt="View in manage client"
                                 />
@@ -108,63 +110,38 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                         :null
                         }
                     </span>
-                </h3>
-                <div className="details__main-box">
-                    <div className="details__description-box">
-                        <h4>Description</h4>
-                        <span className="description">{raster.description}</span>
-                        <h4>Organisation</h4>
-                        <span>{raster.organisation && raster.organisation.name}</span>
-                        <h4>UUID</h4>
-                        <span>{raster.uuid}</span>
-                        <h4>Dataset</h4>
+                </div>
+                <div className="details-uuid">
+                    <span>{raster.uuid}</span>
+                    <i
+                        className="fa fa-clone"
+                        onClick={() => navigator.clipboard.writeText(raster.uuid)}
+                    />
+                </div>
+                <div className="details-map">
+                    <Map bounds={bounds} zoomControl={false}>
+                        <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
+                        <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
+                    </Map>
+                </div>
+                <div className="details-info">
+                    <span className="details-title">Description</span>
+                    <span className="description">{raster.description}</span>
+                </div>
+                <div className="details-info">
+                    <span className="details-title">Organisation</span>
+                    <span>{raster.organisation && raster.organisation.name}</span>
+                </div>
+                {dataset ? (
+                    <div className="details-info">
+                        <span className="details-title">Dataset</span>
                         <span>{dataset && dataset.slug}</span>
                     </div>
-                    <div className="details__map-box">
-                        <Map bounds={bounds} zoomControl={false}>
-                            <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
-                            <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
-                        </Map>
-                    </div>
-                </div>
-                <div className="details__metadata">
-                    <h4>Details</h4><hr/>
-                    <div className="row">
-                        <p className="column column-1">Temporal</p><p className="column column-2">{raster.temporal ? 'Yes' : 'No'} </p>
-                    </div>
-                    <div className="row">
-                        <p className="column column-1">Resolution</p><p className="column column-2">{resolution}</p>
-                    </div>
-                    <div className="row">
-                        <p className="column column-1">Data type</p><p className="column column-2">Raster</p>
-                    </div>
-                    <div className="row">
-                        <p className="column column-1">Observation type</p><p className="column column-2">{raster.observation_type && raster.observation_type.parameter}</p>
-                    </div>
-                    <div className="row">
-                        <p className="column column-1">Measuring unit</p><p className="column column-2">{raster.observation_type && raster.observation_type.unit}</p>
-                    </div>
-                    <div className="row">
-                        <p className="column column-1">Scale</p><p className="column column-2">{raster.observation_type && raster.observation_type.scale}</p>
-                    </div>
-                    <div className="row">
-                        <p className="column column-1">Latest update</p><p className="column column-2">{latestUpdate}</p>
-                    </div>
-                    <div className="row" style={{display: raster.temporal ? 'flex' : 'none'}}>
-                        <p className="column column-1">Interval</p><p className="column column-2">{raster.interval}</p>
-                    </div>
-                    <div className="row" style={{display: raster.temporal ? 'flex' : 'none'}}>
-                        <p className="column column-1">Start</p><p className="column column-2">{start}</p>
-                    </div>
-                    <div className="row" style={{display: raster.temporal ? 'flex' : 'none'}}>
-                        <p className="column column-1">End</p><p className="column column-2">{stop}</p>
-                    </div>
-                </div>
+                ) : null}
                 {!raster.temporal ? (
-                <div className="details__get-capabilities">
-                    <h4>Lizard WMS GetCapabilities</h4>
-                    <hr/>
-                    <div>
+                <div className="details-capabilities">
+                    <span className="details-title">Lizard WMS GetCapabilities</span>
+                    <div style={{ marginBottom: "5px" }}>
                         For this raster:
                         <div className="details__url-field">
                             <input
@@ -184,7 +161,6 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                             </button>
                         </div>
                     </div>
-                    <br/>
                     {dataset ? (
                         <div>
                             For this complete dataset:
@@ -209,28 +185,106 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                     ) : null}
                 </div>
                 ) : null}
-                <div className="details__button-container">
-                    <h4>Actions</h4><hr/>
-                    <div className="details__buttons">
-                        <button className="details__button" onClick={() => openRasterInLizard(raster, centerPoint, zoom)} title="Open in Portal">
-                            <i className="fa fa-external-link"/>
-                            &nbsp;&nbsp;OPEN IN PORTAL
-                        </button>
-                        <button className="details__button" onClick={() => openRasterInAPI(raster)} title="Open in API">
-                            <i className="fa fa-external-link"/>
-                            &nbsp;&nbsp;OPEN IN API
-                        </button>
-                        <button 
-                            className="details__button" 
-                            onClick={this.toggleExportModal} 
-                            disabled={!this.props.user.authenticated}
-                            title={!this.props.user.authenticated? "Log in to export" : "Export"}
+                <table className="details-table">
+                    <tr>
+                        <th
+                            className={this.state.showTableTab === 'Details' ? 'details-table-selected' : ''}
+                            onClick={() => this.setState({showTableTab: 'Details'})}
                         >
-                            <i className="fa fa-download"/>
-                            &nbsp;&nbsp;EXPORT RASTER
-                        </button>
-                    </div>
-                </div>
+                            Details
+                        </th>
+                        <th
+                            className={this.state.showTableTab === 'Actions' ? 'details-table-selected' : ''}
+                            onClick={() => this.setState({showTableTab: 'Actions'})}
+                        >
+                            Actions
+                        </th>
+                    </tr>
+                    <tr className="details-table-empty-row"><td /></tr>
+                    {this.state.showTableTab === 'Details' ? (
+                    <>
+                        <tr>
+                            <td>Temporal</td>
+                            <td>{raster.temporal ? 'Yes' : 'No'}</td>
+                        </tr>
+                        <tr>
+                            <td>Resolution</td>
+                            <td>{resolution}</td>
+                        </tr>
+                        <tr>
+                            <td>Data type</td>
+                            <td>Raster</td>
+                        </tr>
+                        <tr>
+                            <td>Observation type</td>
+                            <td>{raster.observation_type && raster.observation_type.parameter}</td>
+                        </tr>
+                        <tr>
+                            <td>Measuring unit</td>
+                            <td>{raster.observation_type && raster.observation_type.unit}</td>
+                        </tr>
+                        <tr>
+                            <td>Scale</td>
+                            <td>{raster.observation_type && raster.observation_type.scale}</td>
+                        </tr>
+                        <tr>
+                            <td>Latest update</td>
+                            <td>{latestUpdate}</td>
+                        </tr>
+                        {raster.temporal ? (
+                            <>
+                                <tr>
+                                    <td>Interval</td>
+                                    <td>{raster.interval}</td>
+                                </tr>
+                                <tr>
+                                    <td>Start</td>
+                                    <td>{start}</td>
+                                </tr>
+                                <tr>
+                                    <td>End</td>
+                                    <td>{stop}</td>
+                                </tr>
+                            </>
+                        ) : null}
+                    </>
+                    ) : (
+                    <>
+                        <tr>
+                            <td />
+                            <td>
+                                <button className="button-action" onClick={() => openRasterInLizard(raster, centerPoint, zoom)} title="Open in Portal">
+                                    {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
+                                    OPEN IN PORTAL
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td />
+                            <td>
+                                <button className="button-action" onClick={() => openRasterInAPI(raster)} title="Open in API">
+                                    {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
+                                    OPEN IN API
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td />
+                            <td>
+                                <button
+                                    className="button-action"
+                                    onClick={this.toggleExportModal}
+                                    disabled={!this.props.user.authenticated}
+                                    title={!this.props.user.authenticated? "Log in to export" : "Export"}
+                                >
+                                    {/* <i className="fa fa-download"/>&nbsp;&nbsp; */}
+                                    EXPORT RASTER
+                                </button>
+                            </td>
+                        </tr>
+                    </>
+                    )}
+                </table>
                 {/*This is the PopUp window for the export screen*/}
                 {this.state.showExport && (
                     <div className="raster-export">

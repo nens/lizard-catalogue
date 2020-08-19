@@ -8,6 +8,7 @@ import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL} from '../../utils/ur
 import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import {mapBoxAccesToken} from "../../mapboxConfig.js"
 import '../styles/Details.css';
+import '../styles/Buttons.css';
 
 interface PropsFromState {
     wms: WMS | null,
@@ -15,13 +16,21 @@ interface PropsFromState {
     bootstrap: Bootstrap
 };
 
-class WMSDetails extends React.Component<PropsFromState> {
+interface MyState {
+    showTableTab: string,
+}
+
+class WMSDetails extends React.Component<PropsFromState, MyState> {
+    state = {
+        showTableTab: 'Details',
+    }
+
     render() {
         //Destructure the props
         const { wms, organisations, bootstrap } = this.props;
 
         //If no WMS layer is selected, display a text
-        if (!wms) return <div className="details details__loading">Please select a WMS Layer</div>;
+        if (!wms) return <div className="details details-loading">Please select a WMS Layer</div>;
 
         //Get WMS layer's getCapabilities link based on WMS layer's URL
         const wmsUrl = wms.wms_url && `${wms.wms_url}/?request=GetCapabilities`;
@@ -47,19 +56,19 @@ class WMSDetails extends React.Component<PropsFromState> {
 
         return (
             <div className="details">
-                <h3>
-                    <span className="details__title_text" title={wms.name}>
+                <div className="details-name">
+                    <h3 title={wms.name}>
                         {wms.name}
-                    </span>
-                    <span title="To manage this WMS layer">
-                        { authorizedToManageLayer ?
+                    </h3>
+                    <span title="To manage this raster">
+                        {authorizedToManageLayer ?
                             <a
                                 href={`/management/#/data_management/wms_layers/${wms.uuid}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
                                 <img
-                                    className="details__icon"
+                                    className="details-manage-icon"
                                     src="image/manageButton.svg"
                                     alt="View in manage client"
                                 />
@@ -67,84 +76,126 @@ class WMSDetails extends React.Component<PropsFromState> {
                         :null
                         }
                     </span>
-                </h3>
-                <div className="details__main-box">
-                    <div className="details__description-box">
-                        <h4>Description</h4>
-                        <span className="description">{wms.description}</span>
-                        <h4>Organisation</h4>
-                        <span>{wms.organisation && wms.organisation.name}</span>
-                        <h4>UUID</h4>
-                        <span>{wms.uuid}</span>
-                        <h4>Dataset</h4>
+                </div>
+                <div className="details-uuid">
+                    <span>{wms.uuid}</span>
+                    <i
+                        className="fa fa-clone"
+                        onClick={() => navigator.clipboard.writeText(wms.uuid)}
+                    />
+                </div>
+                <div className="details-map">
+                    <Map bounds={bounds} zoom={wms.min_zoom} zoomControl={false}>
+                        <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
+                        {wms.wms_url ? <WMSTileLayer
+                            url={wms.wms_url}
+                            layers={wms.slug}
+                            transparent={true}
+                            format="image/png"
+                        /> : null}
+                    </Map>
+                </div>
+                <div className="details-info">
+                    <span className="details-title">Description</span>
+                    <span className="description">{wms.description}</span>
+                </div>
+                <div className="details-info">
+                    <span className="details-title">Organisation</span>
+                    <span>{wms.organisation && wms.organisation.name}</span>
+                </div>
+                {wms.datasets && wms.datasets[0] ? (
+                    <div className="details-info">
+                        <span className="details-title">Dataset</span>
                         <span>{wms.datasets && wms.datasets[0] && wms.datasets[0].slug}</span>
                     </div>
-                    <div className="details__map-box">
-                        <Map bounds={bounds} zoom={wms.min_zoom} zoomControl={false}>
-                            <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
-                            {wms.wms_url ? <WMSTileLayer
-                                url={wms.wms_url}
-                                layers={wms.slug}
-                                transparent={true}
-                                format="image/png"
-                            /> : null}
-                        </Map>
+                ) : null}
+                {wms.wms_url ? (
+                    <div className="details-info">
+                        <span className="details-title">WMS layer's URL</span>
+                        <div className="details__url-field">
+                            <input
+                                type="text"
+                                className="details__get-capabilities-url"
+                                title={wmsUrl}
+                                value={wmsUrl}
+                                spellCheck={false}
+                                readOnly={true}
+                            />
+                            <button
+                                className="details__button-copy"
+                                title="Copy link"
+                                onClick={() => navigator.clipboard.writeText(wmsUrl)}
+                            >
+                                Copy link
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div className="details__wms-info">
-                    <h4>Details</h4><hr/><br/>
-                    <h4>WMS layer's URL</h4>
-                    <div
-                        className="details__url-field"
-                        style={{
-                            visibility: wms.wms_url ? "visible" : "hidden"
-                        }}
-                    >
-                        <input
-                            type="text"
-                            className="details__get-capabilities-url"
-                            title={wmsUrl}
-                            value={wmsUrl}
-                            spellCheck={false}
-                            readOnly={true}
-                        />
-                        <button
-                            className="details__button-copy"
-                            title="Copy link"
-                            onClick={() => navigator.clipboard.writeText(wmsUrl)}
+                ) : null}
+                <table className="details-table">
+                    <tr>
+                        <th
+                            className={this.state.showTableTab === 'Details' ? 'details-table-selected' : ''}
+                            onClick={() => this.setState({showTableTab: 'Details'})}
                         >
-                            Copy link
-                        </button>
-                    </div>
-                    <br /><br />
-                    <h4>Slug</h4>
-                    <span>{wms.slug}</span>
-                </div>
-                <br />
-                <div className="details__button-container">
-                    <h4>Actions</h4><hr/>
-                    <div className="details__buttons">
-                        <button className="details__button" onClick={() => openWMSInLizard(wms, centerPoint, zoom)} title="Open in Portal">
-                            <i className="fa fa-external-link"/>
-                            &nbsp;&nbsp;OPEN IN PORTAL
-                        </button>
-                        <button className="details__button" onClick={() => openWMSInAPI(wms)} title="Open in API">
-                            <i className="fa fa-external-link"/>
-                            &nbsp;&nbsp;OPEN IN API
-                        </button>
-                        <button
-                            className="details__button"
-                            style={{
-                                visibility: wms.download_url ? "visible" : "hidden"
-                            }}
-                            onClick={() => openWMSDownloadURL(wms)}
-                            title="Download"
+                            Details
+                        </th>
+                        <th
+                            className={this.state.showTableTab === 'Actions' ? 'details-table-selected' : ''}
+                            onClick={() => this.setState({showTableTab: 'Actions'})}
                         >
-                            <i className="fa fa-download"/>
-                            &nbsp;&nbsp;DOWNLOAD
-                        </button>
-                    </div>
-                </div>
+                            Actions
+                        </th>
+                    </tr>
+                    <tr className="details-table-empty-row"><td /></tr>
+                    {this.state.showTableTab === 'Details' ? (
+                    <>
+                        <tr>
+                            <td>Data type</td>
+                            <td>WMS layer</td>
+                        </tr>
+                        <tr>
+                            <td>Slug</td>
+                            <td>{wms.slug}</td>
+                        </tr>
+                    </>
+                    ) : (
+                    <>
+                        <tr>
+                            <td />
+                            <td>
+                                <button className="button-action" onClick={() => openWMSInLizard(wms, centerPoint, zoom)} title="Open in Portal">
+                                    {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
+                                    OPEN IN PORTAL
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td />
+                            <td>
+                                <button className="button-action" onClick={() => openWMSInAPI(wms)} title="Open in API">
+                                    {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
+                                    OPEN IN API
+                                </button>
+                            </td>
+                        </tr>
+                        {wms.download_url ? (
+                            <tr>
+                                <td />
+                                <td>
+                                    <button
+                                        className="button-action"
+                                        onClick={() => openWMSDownloadURL(wms)}
+                                        title="Download"
+                                    >
+                                        {/* <i className="fa fa-download"/>&nbsp;&nbsp; */}
+                                        DOWNLOAD
+                                    </button>
+                                </td>
+                            </tr>
+                        ) : null}
+                    </>
+                    )}
+                </table>
             </div>
         );
     };
