@@ -1,4 +1,5 @@
 import * as React from 'react';
+import MDSpinner from "react-md-spinner";
 import { connect } from 'react-redux';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import { MyStore, getOrganisations, getMonitoringNetwork, getTimeseriesObject, getLocationsObject } from '../../reducers';
@@ -39,7 +40,6 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
     render() {
         //Destructure the props
         const { monitoringNetwork, timeseriesObject, locationsObject } = this.props;
-        console.log("timeseriesObject", timeseriesObject)
 
         //If no monitoring network is selected, display a text
         if (!monitoringNetwork) return <div className="details details-loading">Please select a monitoring network</div>;
@@ -96,15 +96,22 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                             </th>
                         </tr>
                         <tr className="details-table-empty-row"><td /></tr>
-                        {this.state.showTableTab === 'Details' ? (
-                        <>
+                        {this.state.showTableTab === 'Details' && timeseriesObject ? (
                             <tr>
-                                <td>Data type</td>
-                                <td>Time series</td>
+                                <td>Observation types</td>
+                                {timeseriesObject && timeseriesObject.isFetching ? (
+                                    <td style={{ textAlign: 'center' }}>
+                                        <MDSpinner />
+                                    </td>
+                                ) : (
+                                    <td>
+                                        {Object.values(timeseriesObject.observationTypes).map(observationType => (
+                                            <p key={observationType.id}>{observationType.parameter}</p>
+                                        ))}
+                                    </td>
+                                )}
                             </tr>
-                        </>
                         ) : (
-                        <>
                             <tr>
                                 <td />
                                 <td>
@@ -116,7 +123,6 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                                     </button>
                                 </td>
                             </tr>
-                        </>
                         )}
                     </tbody>
                 </table>
