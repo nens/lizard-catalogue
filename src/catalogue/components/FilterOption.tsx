@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ObservationType, Organisation, Dataset } from '../../interface';
 import SearchBar from './SearchBar';
-import './FilterOption.css';
+import './../styles/FilterOption.css';
 
 interface MyProps {
     filterOption: "observationType" | "organisation" | "dataset",

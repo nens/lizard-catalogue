@@ -107,7 +107,7 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                         {this.state.showTableTab === 'Details' && timeseriesObject ? (
                             <tr>
                                 <td>Observation types</td>
-                                {timeseriesObject && timeseriesObject.isFetching ? (
+                                {timeseriesObject.isFetching ? (
                                     <td style={{ textAlign: 'center' }}>
                                         <MDSpinner />
                                     </td>
