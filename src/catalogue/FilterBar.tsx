@@ -79,7 +79,7 @@ class FilterBar extends React.Component<MyProps & PropsFromState & PropsFromDisp
                         removeItem={removeDataset}
                     />
                 ) : null}
-                {currentDataType !== "WMS" ? (
+                {currentDataType === "Raster" ? (
                     <FilterOption
                         filterOption="observationType"
                         listOfItems={observationTypes}
