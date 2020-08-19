@@ -186,104 +186,106 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                 </div>
                 ) : null}
                 <table className="details-table">
-                    <tr>
-                        <th
-                            className={this.state.showTableTab === 'Details' ? 'details-table-selected' : ''}
-                            onClick={() => this.setState({showTableTab: 'Details'})}
-                        >
-                            Details
-                        </th>
-                        <th
-                            className={this.state.showTableTab === 'Actions' ? 'details-table-selected' : ''}
-                            onClick={() => this.setState({showTableTab: 'Actions'})}
-                        >
-                            Actions
-                        </th>
-                    </tr>
-                    <tr className="details-table-empty-row"><td /></tr>
-                    {this.state.showTableTab === 'Details' ? (
-                    <>
+                    <tbody>
                         <tr>
-                            <td>Temporal</td>
-                            <td>{raster.temporal ? 'Yes' : 'No'}</td>
+                            <th
+                                className={this.state.showTableTab === 'Details' ? 'details-table-selected' : ''}
+                                onClick={() => this.setState({showTableTab: 'Details'})}
+                            >
+                                Details
+                            </th>
+                            <th
+                                className={this.state.showTableTab === 'Actions' ? 'details-table-selected' : ''}
+                                onClick={() => this.setState({showTableTab: 'Actions'})}
+                            >
+                                Actions
+                            </th>
                         </tr>
-                        <tr>
-                            <td>Resolution</td>
-                            <td>{resolution}</td>
-                        </tr>
-                        <tr>
-                            <td>Data type</td>
-                            <td>Raster</td>
-                        </tr>
-                        <tr>
-                            <td>Observation type</td>
-                            <td>{raster.observation_type && raster.observation_type.parameter}</td>
-                        </tr>
-                        <tr>
-                            <td>Measuring unit</td>
-                            <td>{raster.observation_type && raster.observation_type.unit}</td>
-                        </tr>
-                        <tr>
-                            <td>Scale</td>
-                            <td>{raster.observation_type && raster.observation_type.scale}</td>
-                        </tr>
-                        <tr>
-                            <td>Latest update</td>
-                            <td>{latestUpdate}</td>
-                        </tr>
-                        {raster.temporal ? (
-                            <>
-                                <tr>
-                                    <td>Interval</td>
-                                    <td>{raster.interval}</td>
-                                </tr>
-                                <tr>
-                                    <td>Start</td>
-                                    <td>{start}</td>
-                                </tr>
-                                <tr>
-                                    <td>End</td>
-                                    <td>{stop}</td>
-                                </tr>
-                            </>
-                        ) : null}
-                    </>
-                    ) : (
-                    <>
-                        <tr>
-                            <td />
-                            <td>
-                                <button className="button-action" onClick={() => openRasterInLizard(raster, centerPoint, zoom)} title="Open in Portal">
-                                    {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
-                                    OPEN IN PORTAL
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td />
-                            <td>
-                                <button className="button-action" onClick={() => openRasterInAPI(raster)} title="Open in API">
-                                    {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
-                                    OPEN IN API
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td />
-                            <td>
-                                <button
-                                    className="button-action"
-                                    onClick={this.toggleExportModal}
-                                    disabled={!this.props.user.authenticated}
-                                    title={!this.props.user.authenticated? "Log in to export" : "Export"}
-                                >
-                                    {/* <i className="fa fa-download"/>&nbsp;&nbsp; */}
-                                    EXPORT RASTER
-                                </button>
-                            </td>
-                        </tr>
-                    </>
-                    )}
+                        <tr className="details-table-empty-row"><td /></tr>
+                        {this.state.showTableTab === 'Details' ? (
+                        <>
+                            <tr>
+                                <td>Temporal</td>
+                                <td>{raster.temporal ? 'Yes' : 'No'}</td>
+                            </tr>
+                            <tr>
+                                <td>Resolution</td>
+                                <td>{resolution}</td>
+                            </tr>
+                            <tr>
+                                <td>Data type</td>
+                                <td>Raster</td>
+                            </tr>
+                            <tr>
+                                <td>Observation type</td>
+                                <td>{raster.observation_type && raster.observation_type.parameter}</td>
+                            </tr>
+                            <tr>
+                                <td>Measuring unit</td>
+                                <td>{raster.observation_type && raster.observation_type.unit}</td>
+                            </tr>
+                            <tr>
+                                <td>Scale</td>
+                                <td>{raster.observation_type && raster.observation_type.scale}</td>
+                            </tr>
+                            <tr>
+                                <td>Latest update</td>
+                                <td>{latestUpdate}</td>
+                            </tr>
+                            {raster.temporal ? (
+                                <>
+                                    <tr>
+                                        <td>Interval</td>
+                                        <td>{raster.interval}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Start</td>
+                                        <td>{start}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>End</td>
+                                        <td>{stop}</td>
+                                    </tr>
+                                </>
+                            ) : null}
+                        </>
+                        ) : (
+                        <>
+                            <tr>
+                                <td />
+                                <td>
+                                    <button className="button-action" onClick={() => openRasterInLizard(raster, centerPoint, zoom)} title="Open in Portal">
+                                        {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
+                                        OPEN IN PORTAL
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td />
+                                <td>
+                                    <button className="button-action" onClick={() => openRasterInAPI(raster)} title="Open in API">
+                                        {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
+                                        OPEN IN API
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td />
+                                <td>
+                                    <button
+                                        className="button-action"
+                                        onClick={this.toggleExportModal}
+                                        disabled={!this.props.user.authenticated}
+                                        title={!this.props.user.authenticated? "Log in to export" : "Export"}
+                                    >
+                                        {/* <i className="fa fa-download"/>&nbsp;&nbsp; */}
+                                        EXPORT RASTER
+                                    </button>
+                                </td>
+                            </tr>
+                        </>
+                        )}
+                    </tbody>
                 </table>
                 {/*This is the PopUp window for the export screen*/}
                 {this.state.showExport && (

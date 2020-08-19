@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import { MyStore, getOrganisations, getMonitoringNetwork, getTimeseriesObject, getLocationsObject } from '../../reducers';
-import { Organisation, MonitoringNetwork } from '../../interface';
+import { Organisation, MonitoringNetwork, Location } from '../../interface';
 import {mapBoxAccesToken} from "../../mapboxConfig.js"
 import '../styles/Details.css';
 import '../styles/Buttons.css';
@@ -19,6 +19,11 @@ interface MyState {
     showTableTab: string,
 };
 
+// Helper function
+const getAllCoordinates = (locations: Location[]) => {
+    return locations.filter(location => location.geometry !== null).map(location => location.geometry!.coordinates);
+};
+
 class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> {
     state = {
         showTimeseriesModal: false,
@@ -33,16 +38,11 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
 
     render() {
         //Destructure the props
-        const { monitoringNetwork, locationsObject } = this.props;
+        const { monitoringNetwork, timeseriesObject, locationsObject } = this.props;
+        console.log("timeseriesObject", timeseriesObject)
 
         //If no monitoring network is selected, display a text
-        if (!monitoringNetwork || !locationsObject) return <div className="details details-loading">Please select a monitoring network</div>;
-
-        const coordinatesArray = Object.values(locationsObject.locations).filter(
-            location => location.geometry !== null
-        ).map(
-            location => location.geometry!.coordinates
-        );
+        if (!monitoringNetwork) return <div className="details details-loading">Please select a monitoring network</div>;
 
         return (
             <div className="details">
@@ -60,12 +60,14 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                 </div>
                 <div className="details-map">
                     <Map
-                        bounds={locationsObject.spatialBounds}
+                        bounds={locationsObject ? locationsObject.spatialBounds : [[85, 180], [-85, -180]]}
                         zoom={10}
                     >
-                        {coordinatesArray.map((coordinates, i) => (
-                            <Marker key={i} position={[coordinates[1], coordinates[0]]} />
-                        ))}
+                        {locationsObject ? (
+                            getAllCoordinates(Object.values(locationsObject.locations)).map((coordinates, i) => (
+                                <Marker key={i} position={[coordinates[1], coordinates[0]]} />
+                            ))
+                        ) : null}
                         <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                     </Map>
                 </div>
@@ -78,43 +80,45 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                     <span>{monitoringNetwork.organisation && monitoringNetwork.organisation.name}</span>
                 </div>
                 <table className="details-table">
-                    <tr>
-                        <th
-                            className={this.state.showTableTab === 'Details' ? 'details-table-selected' : ''}
-                            onClick={() => this.setState({showTableTab: 'Details'})}
-                        >
-                            Details
-                        </th>
-                        <th
-                            className={this.state.showTableTab === 'Actions' ? 'details-table-selected' : ''}
-                            onClick={() => this.setState({showTableTab: 'Actions'})}
-                        >
-                            Actions
-                        </th>
-                    </tr>
-                    <tr className="details-table-empty-row"><td /></tr>
-                    {this.state.showTableTab === 'Details' ? (
-                    <>
+                    <tbody>
                         <tr>
-                            <td>Data type</td>
-                            <td>Time series</td>
+                            <th
+                                className={this.state.showTableTab === 'Details' ? 'details-table-selected' : ''}
+                                onClick={() => this.setState({showTableTab: 'Details'})}
+                            >
+                                Details
+                            </th>
+                            <th
+                                className={this.state.showTableTab === 'Actions' ? 'details-table-selected' : ''}
+                                onClick={() => this.setState({showTableTab: 'Actions'})}
+                            >
+                                Actions
+                            </th>
                         </tr>
-                    </>
-                    ) : (
-                    <>
-                        <tr>
-                            <td />
-                            <td>
-                                <button
-                                    className="button-action"
-                                    onClick={this.toggleTimeseriesModal}
-                                >
-                                    SELECT TIME SERIES
-                                </button>
-                            </td>
-                        </tr>
-                    </>
-                    )}
+                        <tr className="details-table-empty-row"><td /></tr>
+                        {this.state.showTableTab === 'Details' ? (
+                        <>
+                            <tr>
+                                <td>Data type</td>
+                                <td>Time series</td>
+                            </tr>
+                        </>
+                        ) : (
+                        <>
+                            <tr>
+                                <td />
+                                <td>
+                                    <button
+                                        className="button-action"
+                                        onClick={this.toggleTimeseriesModal}
+                                    >
+                                        SELECT TIME SERIES
+                                    </button>
+                                </td>
+                            </tr>
+                        </>
+                        )}
+                    </tbody>
                 </table>
                 {/*This is the PopUp window for the time series selection screen*/}
                 {/* {this.state.showTimeseriesModal && (

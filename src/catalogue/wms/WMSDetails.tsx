@@ -132,69 +132,71 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
                     </div>
                 ) : null}
                 <table className="details-table">
-                    <tr>
-                        <th
-                            className={this.state.showTableTab === 'Details' ? 'details-table-selected' : ''}
-                            onClick={() => this.setState({showTableTab: 'Details'})}
-                        >
-                            Details
-                        </th>
-                        <th
-                            className={this.state.showTableTab === 'Actions' ? 'details-table-selected' : ''}
-                            onClick={() => this.setState({showTableTab: 'Actions'})}
-                        >
-                            Actions
-                        </th>
-                    </tr>
-                    <tr className="details-table-empty-row"><td /></tr>
-                    {this.state.showTableTab === 'Details' ? (
-                    <>
+                    <tbody>
                         <tr>
-                            <td>Data type</td>
-                            <td>WMS layer</td>
+                            <th
+                                className={this.state.showTableTab === 'Details' ? 'details-table-selected' : ''}
+                                onClick={() => this.setState({showTableTab: 'Details'})}
+                            >
+                                Details
+                            </th>
+                            <th
+                                className={this.state.showTableTab === 'Actions' ? 'details-table-selected' : ''}
+                                onClick={() => this.setState({showTableTab: 'Actions'})}
+                            >
+                                Actions
+                            </th>
                         </tr>
-                        <tr>
-                            <td>Slug</td>
-                            <td>{wms.slug}</td>
-                        </tr>
-                    </>
-                    ) : (
-                    <>
-                        <tr>
-                            <td />
-                            <td>
-                                <button className="button-action" onClick={() => openWMSInLizard(wms, centerPoint, zoom)} title="Open in Portal">
-                                    {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
-                                    OPEN IN PORTAL
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td />
-                            <td>
-                                <button className="button-action" onClick={() => openWMSInAPI(wms)} title="Open in API">
-                                    {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
-                                    OPEN IN API
-                                </button>
-                            </td>
-                        </tr>
-                        {wms.download_url ? (
+                        <tr className="details-table-empty-row"><td /></tr>
+                        {this.state.showTableTab === 'Details' ? (
+                        <>
+                            <tr>
+                                <td>Data type</td>
+                                <td>WMS layer</td>
+                            </tr>
+                            <tr>
+                                <td>Slug</td>
+                                <td>{wms.slug}</td>
+                            </tr>
+                        </>
+                        ) : (
+                        <>
                             <tr>
                                 <td />
                                 <td>
-                                    <button
-                                        className="button-action"
-                                        onClick={() => openWMSDownloadURL(wms)}
-                                        title="Download"
-                                    >
-                                        {/* <i className="fa fa-download"/>&nbsp;&nbsp; */}
-                                        DOWNLOAD
+                                    <button className="button-action" onClick={() => openWMSInLizard(wms, centerPoint, zoom)} title="Open in Portal">
+                                        {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
+                                        OPEN IN PORTAL
                                     </button>
                                 </td>
                             </tr>
-                        ) : null}
-                    </>
-                    )}
+                            <tr>
+                                <td />
+                                <td>
+                                    <button className="button-action" onClick={() => openWMSInAPI(wms)} title="Open in API">
+                                        {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
+                                        OPEN IN API
+                                    </button>
+                                </td>
+                            </tr>
+                            {wms.download_url ? (
+                                <tr>
+                                    <td />
+                                    <td>
+                                        <button
+                                            className="button-action"
+                                            onClick={() => openWMSDownloadURL(wms)}
+                                            title="Download"
+                                        >
+                                            {/* <i className="fa fa-download"/>&nbsp;&nbsp; */}
+                                            DOWNLOAD
+                                        </button>
+                                    </td>
+                                </tr>
+                            ) : null}
+                        </>
+                        )}
+                    </tbody>
                 </table>
             </div>
         );
