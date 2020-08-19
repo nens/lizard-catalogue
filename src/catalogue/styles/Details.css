@@ -53,10 +53,22 @@
 }
 
 .details-map {
+    position: relative;
     height: 20rem;
     width: 100%;
     margin-bottom: 1.5rem;
     display: flex;
+}
+.details-map-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .leaflet-container {
     width: 100%;

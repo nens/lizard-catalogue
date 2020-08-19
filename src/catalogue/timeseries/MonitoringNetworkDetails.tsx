@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import { MyStore, getOrganisations, getMonitoringNetwork, getTimeseriesObject, getLocationsObject } from '../../reducers';
 import { Organisation, MonitoringNetwork, Location } from '../../interface';
-import {mapBoxAccesToken} from "../../mapboxConfig.js"
+import {mapBoxAccesToken} from "../../mapboxConfig.js";
 import '../styles/Details.css';
 import '../styles/Buttons.css';
 
@@ -59,9 +59,17 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                     />
                 </div>
                 <div className="details-map">
+                    {locationsObject && locationsObject.isFetching ? (
+                        <div className="details-map-loading">
+                            <MDSpinner />
+                        </div>
+                    ) : null}
                     <Map
                         bounds={locationsObject ? locationsObject.spatialBounds : [[85, 180], [-85, -180]]}
                         zoom={10}
+                        style={{
+                            opacity: locationsObject && locationsObject.isFetching ? 0.4 : 1
+                        }}
                     >
                         {locationsObject ? (
                             getAllCoordinates(Object.values(locationsObject.locations)).map((coordinates, i) => (
