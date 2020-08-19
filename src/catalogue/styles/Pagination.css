@@ -39,7 +39,7 @@
 
 .pagination-current-page {
     padding: .2rem .6rem;
-    background: #009F86;
+    background: var(--main-color-scheme);
     color: #fff;
     border-radius: .3rem;
     cursor: unset;

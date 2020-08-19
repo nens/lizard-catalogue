@@ -24,6 +24,7 @@ interface MyProps {
 
 interface PropsFromState {
     rasters: Raster[],
+    selectedItem: string,
     page: number,
 };
 
@@ -61,7 +62,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
 
     render() {
         //Destructure all props of the Raster List component
-        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentRasterList, selectItem, updateBasketWithRaster, rasters } = this.props;
+        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentRasterList, selectItem, updateBasketWithRaster, rasters, selectedItem } = this.props;
         const { checkedRasters } = this.state;
 
         //number of pages displayed in the pagination bar stored in an array with 5 pages
@@ -102,11 +103,11 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                         onSearchSubmit={onSearchSubmit}
                         onSearchChange={onSearchChange}
                     />
-                    <div className="list__length">{count} Items</div>
+                    <div className="list__length">{count} items</div>
                 </div>
                 <div className="list__content">
                     <ul className="list__list">
-                        <li className="list__row-title">
+                        <li className="list__row-header">
                             <div className="list__row list__row-box" />
                             <div className="list__row list__row-type">
                                 Type
@@ -146,17 +147,21 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                             }
 
                             return (
-                                <li className="list__row-li" key={raster.uuid} onClick={() => selectItem(raster.uuid)} >
-                                    <input className="list__row list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(raster.uuid)} checked={checked} />
+                                <li
+                                    className={selectedItem === raster.uuid ? "list__row-li list__row-li-selected" : "list__row-li"}
+                                    key={raster.uuid}
+                                    onClick={() => selectItem(raster.uuid)}
+                                >
+                                    <input className="list__row list__row-normal list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(raster.uuid)} checked={checked} />
                                     {raster.temporal ?
-                                        <img className="list__row list__row-type" src="image/raster-temporal.svg" alt="raster" /> :
-                                        <img className="list__row list__row-type" src="image/raster-non-temporal.svg" alt="raster" />
+                                        <img className="list__row list__row-normal list__row-type" src="image/raster-temporal.svg" alt="raster" title="Temporal"/> :
+                                        <img className="list__row list__row-normal list__row-type" src="image/raster-non-temporal.svg" alt="raster" title="Non-temporal"/>
                                     }
-                                    <div className="list__row list__row-name">{raster.name}</div>
-                                    <div className="list__row list__row-org">{raster.organisation && raster.organisation.name}</div>
-                                    <div className="list__row list__row-raster-description">{raster.description}</div>
-                                    <div className="list__row list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
-                                    <div className="list__row list__row-access">{renderAccessModifier()}</div>
+                                    <div className="list__row list__row-normal list__row-name" title={raster.name}>{raster.name}</div>
+                                    <div className="list__row list__row-normal list__row-org"title={raster.organisation && raster.organisation.name}>{raster.organisation && raster.organisation.name}</div>
+                                    <div className="list__row list__row-normal list__row-raster-description" title={raster.description}>{raster.description}</div>
+                                    <div className="list__row list__row-normal list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
+                                    <div className="list__row list__row-normal list__row-access">{renderAccessModifier()}</div>
                                 </li>
                             )
                         })}
@@ -190,10 +195,12 @@ class RasterList extends React.Component<RasterListProps, MyState> {
 const mapStateToProps = (state: MyStore, ownProps: MyProps): PropsFromState => {
     if (!ownProps.currentRasterList) return {
         rasters: [],
+        selectedItem: '',
         page: 1,
     };
     return {
         rasters: ownProps.currentRasterList.rasterList.map(uuid => getRaster(state, uuid)),
+        selectedItem: state.selectedItem,
         page: state.filters.page,
     };
 };

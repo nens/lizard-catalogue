@@ -22,6 +22,7 @@ interface MyProps {
 
 interface PropsFromState {
     monitoringNetworks: MonitoringNetwork[],
+    selectedItem: string,
     page: number,
 };
 
@@ -34,7 +35,7 @@ class MonitoringNetworkList extends React.Component<MonitoringNetworkListProps> 
 
     render() {
         //Destructure all props of the Raster List component
-        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentMonitoringNetworkList, selectItem, monitoringNetworks } = this.props;
+        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentMonitoringNetworkList, selectItem, monitoringNetworks, selectedItem } = this.props;
 
         //number of pages displayed in the pagination bar stored in an array with 5 pages
         const paginatedPages = [page - 2, page - 1, page, page + 1, page + 2];
@@ -55,16 +56,16 @@ class MonitoringNetworkList extends React.Component<MonitoringNetworkListProps> 
                     <SearchBar
                         name="searchBar"
                         searchTerm={searchTerm}
-                        title="Type name or UUID of raster/wms layer"
-                        placeholder="Search in Lizard or type a UUID"
+                        title="Type name or UUID"
+                        placeholder="Search for data in Lizard"
                         onSearchSubmit={onSearchSubmit}
                         onSearchChange={onSearchChange}
                     />
-                    <div className="list__length">{count} Items</div>
+                    <div className="list__length">{count} items</div>
                 </div>
                 <div className="list__content">
                     <ul className="list__list">
-                        <li className="list__row-title">
+                        <li className="list__row-header">
                             <div className="list__row list__row-name">
                                 Monitoring network
                                 <i className="fa fa-sort" onClick={() => onSorting('name')} />
@@ -90,11 +91,15 @@ class MonitoringNetworkList extends React.Component<MonitoringNetworkListProps> 
                             }
 
                             return (
-                                <li className="list__row-li" key={monitoringNetwork.uuid} onClick={() => selectItem(monitoringNetwork.uuid)} >
-                                    <div className="list__row list__row-name">{monitoringNetwork.name}</div>
-                                    <div className="list__row list__row-org">{monitoringNetwork.organisation && monitoringNetwork.organisation.name}</div>
-                                    <div className="list__row list__row-raster-description">{monitoringNetwork.description}</div>
-                                    <div className="list__row list__row-access">{renderAccessModifier()}</div>
+                                <li
+                                    className={selectedItem === monitoringNetwork.uuid ? "list__row-li list__row-li-selected" : "list__row-li"}
+                                    key={monitoringNetwork.uuid}
+                                    onClick={() => selectItem(monitoringNetwork.uuid)}
+                                >
+                                    <div className="list__row list__row-normal list__row-name" title={monitoringNetwork.name}>{monitoringNetwork.name}</div>
+                                    <div className="list__row list__row-normal list__row-org" title={monitoringNetwork.organisation && monitoringNetwork.organisation.name}>{monitoringNetwork.organisation && monitoringNetwork.organisation.name}</div>
+                                    <div className="list__row list__row-normal list__row-raster-description" title={monitoringNetwork.description}>{monitoringNetwork.description}</div>
+                                    <div className="list__row list__row-normal list__row-access">{renderAccessModifier()}</div>
                                 </li>
                             )
                         })}
@@ -117,10 +122,12 @@ class MonitoringNetworkList extends React.Component<MonitoringNetworkListProps> 
 const mapStateToProps = (state: MyStore, ownProps: MyProps): PropsFromState => {
     if (!ownProps.currentMonitoringNetworkList) return {
         monitoringNetworks: [],
+        selectedItem: '',
         page: 1,
     };
     return {
         monitoringNetworks: ownProps.currentMonitoringNetworkList.monitoringNetworksList.map(uuid => getMonitoringNetwork(state, uuid)),
+        selectedItem: state.selectedItem,
         page: state.filters.page,
     };
 };

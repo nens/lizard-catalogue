@@ -1,21 +1,24 @@
 .filter-box {
-    width: 15%;
+    width: 18%;
     min-width: 0;
-    margin: 0 0 1rem 1rem;
-    border-radius: .4rem;
-    padding: 1.5rem;
-    background-color: #f2f2f2;
-    box-shadow: .1rem .3rem .4rem rgba(12, 12, 12, 0.4);
+    padding: 0 1.5rem;
+    margin: 1rem 0;
+    border-right: 1px solid var(--border-color-soft);
     overflow: hidden;
     height: 100%;
 }
 
 .switcher {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 500;
     height: 3.5rem;
     width: 100%;
     margin-bottom: 2.5rem;
     padding: 0 .5rem;
-    border: 1px solid #FFFFFF;
+    color: var(--font-color);
+    border: none;
+    border-radius: 1px;
     box-shadow: 2px 2px 4px #00000029;
 }
 .switcher:focus {

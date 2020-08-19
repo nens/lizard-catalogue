@@ -62,12 +62,12 @@
 
 .inbox-download {
     cursor: pointer;
-    color: #009F86;
+    color: var(--main-color-scheme);
 }
 
 .inbox-read:hover {
     cursor: pointer;
-    color: #009F86;
+    color: var(--main-color-scheme);
     background-color: #e5e5e5;
 }
 

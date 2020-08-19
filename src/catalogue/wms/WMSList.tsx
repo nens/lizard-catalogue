@@ -24,6 +24,7 @@ interface MyProps {
 
 interface PropsFromState {
     wmsLayers: WMS[],
+    selectedItem: string,
     page: number,
 };
 
@@ -61,7 +62,7 @@ class WMSList extends React.Component<WMSListProps, MyState> {
 
     render() {
         //Destructure all props of the WMS List component
-        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentWMSList, selectItem, updateBasketWithWMS, wmsLayers } = this.props;
+        const { searchTerm, page, onPageClick, onSearchChange, onSearchSubmit, onSorting, currentWMSList, selectItem, updateBasketWithWMS, wmsLayers, selectedItem } = this.props;
 
         //number of pages displayed in the pagination bar stored in an array with 5 pages
         const paginatedPages = [page - 2, page - 1, page, page + 1, page + 2];
@@ -99,11 +100,11 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                         onSearchSubmit={onSearchSubmit}
                         onSearchChange={onSearchChange}
                     />
-                    <div className="list__length">{count} Items</div>
+                    <div className="list__length">{count} items</div>
                 </div>
                 <div className="list__content">
                     <ul className="list__list">
-                        <li className="list__row-title">
+                        <li className="list__row-header">
                             <div className="list__row list__row-box" />
                             <div className="list__row list__row-name">
                                 Name
@@ -135,12 +136,16 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                             }
 
                             return (
-                                <li className="list__row-li" key={wms.uuid} onClick={() => selectItem(wms.uuid)} >
-                                    <input className="list__row list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(wms.uuid)} checked={checked} />
-                                    <div className="list__row list__row-name">{wms.name}</div>
-                                    <div className="list__row list__row-org">{wms.organisation && wms.organisation.name}</div>
-                                    <div className="list__row list__row-wms-description">{wms.description}</div>
-                                    <div className="list__row list__row-access">{renderAccessModifier()}</div>
+                                <li
+                                    className={selectedItem === wms.uuid ? "list__row-li list__row-li-selected" : "list__row-li"}
+                                    key={wms.uuid}
+                                    onClick={() => selectItem(wms.uuid)}
+                                >
+                                    <input className="list__row list__row-normal list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(wms.uuid)} checked={checked} />
+                                    <div className="list__row list__row-normal list__row-name" title={wms.name}>{wms.name}</div>
+                                    <div className="list__row list__row-normal list__row-org" title={wms.organisation && wms.organisation.name}>{wms.organisation && wms.organisation.name}</div>
+                                    <div className="list__row list__row-normal list__row-wms-description" title={wms.description}>{wms.description}</div>
+                                    <div className="list__row list__row-normal list__row-access">{renderAccessModifier()}</div>
                                 </li>
                             )
                         })}
@@ -174,10 +179,12 @@ class WMSList extends React.Component<WMSListProps, MyState> {
 const mapStateToProps = (state: MyStore, ownProps: MyProps): PropsFromState => {
     if (!ownProps.currentWMSList) return {
         wmsLayers: [],
+        selectedItem: '',
         page: 1,
     };
     return {
         wmsLayers: ownProps.currentWMSList.wmsList.map(uuid => getWMS(state, uuid)),
+        selectedItem: state.selectedItem,
         page: state.filters.page,
     };
 };

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ObservationType, Organisation, Dataset } from '../../interface';
 import SearchBar from './SearchBar';
-import './FilterOption.css';
+import './../styles/FilterOption.css';
 
 interface MyProps {
     filterOption: "observationType" | "organisation" | "dataset",
@@ -109,7 +109,7 @@ const FilterOption: React.FC<MyProps> = (props) => {
                         </li>
                     ))}
                     {numberOfItems < filteredListOfItems.length ? (
-                        <button className="filter-list-button" onClick={() => setNumberOfItems(numberOfItems + 4)}>more ...</button>
+                        <button className="filter-list-button" onClick={() => setNumberOfItems(numberOfItems + 4)}>[+] {filteredListOfItems.length - numberOfItems} more</button>
                     ) : null}
                 </ul>
             </div>

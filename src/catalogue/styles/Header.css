@@ -40,7 +40,7 @@
 }
 
 .header-nav *:hover {
-    background-color: #0b8b69;
+    background-color: #006d6d;
 }
 
 .header-nav__icon-box {
@@ -84,7 +84,7 @@
     border-radius: 50%;
     background-color: orangered;
     position: absolute;
-    margin: -1rem 0 0 -1.5rem;
+    margin: -2rem 0 0 -3rem;
 
     display: flex;
     justify-content: center;

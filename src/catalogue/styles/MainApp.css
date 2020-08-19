@@ -5,7 +5,7 @@
 }
 
 .main-header {
-    background-color: #009F86;
+    background-color: var(--main-color-scheme);
     color: #fff;
     margin-bottom: 1rem;
 }
