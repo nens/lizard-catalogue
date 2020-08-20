@@ -16,12 +16,12 @@
 }
 
 .timeseries-filter {
-    flex: 3;
+    width: 60%;
     padding-right: 1rem;
 }
 
 .timeseries-selection {
-    flex: 2;
+    width: 40%;
 }
 
 .timeseries-map {
@@ -48,6 +48,10 @@
 .point-icon-small {
     width: 1.6rem !important; /* to overlap leaflet default property */
     height: 1.6rem !important; /* to overlap leaflet default property */
+}
+.point-icon-selected {
+    background-color: var(--button-color-scheme);
+    border: 3px solid var(--main-color-scheme);
 }
 
 .timeseries-observation-list {

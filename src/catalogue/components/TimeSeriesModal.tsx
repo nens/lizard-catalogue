@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import MDSpinner from 'react-md-spinner';
 import Leaflet from 'leaflet';
@@ -14,10 +14,14 @@ interface MyProps {
 
 const TimeSeriesModal: React.FC<MyProps> = (props) => {
     const timeseriesObject = useSelector(getTimeseriesObject);
-    const locationsObject = useSelector(getLocationsObject);
     const observationTypes = Object.values(timeseriesObject.observationTypes);
+    const timeseries = timeseriesObject.timeseries;
+
+    const locationsObject = useSelector(getLocationsObject);
     const locations = Object.values(locationsObject.locations);
     const spatialBounds = locationsObject.spatialBounds;
+
+    const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
 
     const closeModalOnEsc = (e) => {
         if (e.key === 'Escape') {
@@ -60,11 +64,22 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                                 <Marker
                                     key={location.uuid}
                                     position={[location.geometry.coordinates[1], location.geometry.coordinates[0]]}
-                                    icon={
-                                      new Leaflet.DivIcon({
-                                        className: "point-icon point-icon-large"
-                                      })
-                                    }
+                                    icon={selectedLocations.includes(location.uuid) ? (
+                                        new Leaflet.DivIcon({
+                                            className: "point-icon point-icon-large point-icon-selected"
+                                        })
+                                    ) : (
+                                        new Leaflet.DivIcon({
+                                            className: "point-icon point-icon-large"
+                                        })
+                                    )}
+                                    onClick={() => {
+                                        if (selectedLocations.includes(location.uuid)) {
+                                            setSelectedLocations(selectedLocations.filter(uuid => uuid !== location.uuid));
+                                        } else {
+                                            setSelectedLocations([...selectedLocations, location.uuid]);
+                                        };
+                                    }}
                                 />
                             ))}
                             <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
@@ -85,8 +100,15 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                         <h3>2. SELECTED LOCATIONS</h3>
                         <span className="timeseries-helper-text">The selected locations will appear here</span>
                         <ul className="timeseries-location-list">
-                            <li>Location 1 [code] [observation]</li>
-                            <li>Location 2 [code] [observation]</li>
+                            {selectedLocations.map(uuid => {
+                                const location = locationsObject.locations[uuid];
+                                const locationTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
+                                return (
+                                    <li key={uuid}>
+                                        <span>{location.name}</span> [{location.code}] [{locationTimeseries.map(ts => ts.observation_type.parameter).join(', ')}]
+                                    </li>
+                                )
+                            })}
                         </ul>
                     </div>
                     <div className="timeseries-period">
