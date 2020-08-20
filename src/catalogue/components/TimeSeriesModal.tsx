@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-import MDSpinner from 'react-md-spinner';
 import { useSelector } from 'react-redux';
-import { Map, TileLayer, Marker } from 'react-leaflet';
+import MDSpinner from 'react-md-spinner';
+import Leaflet from 'leaflet';
+import { Map, TileLayer, Marker, ZoomControl } from 'react-leaflet';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import { getTimeseriesObject, getLocationsObject } from './../../reducers';
 import '../styles/TimeSeriesModal.css';
@@ -48,13 +49,23 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                         <Map
                             bounds={spatialBounds}
                             zoom={10}
+                            zoomControl={false}
                             style={{
                                 opacity: locationsObject.isFetching ? 0.4 : 1
                             }}
                         >
+                            <ZoomControl position="bottomleft"/>
                             {locations.map(location => (
                                 location.geometry &&
-                                <Marker key={location.uuid} position={[location.geometry.coordinates[1], location.geometry.coordinates[0]]} />
+                                <Marker
+                                    key={location.uuid}
+                                    position={[location.geometry.coordinates[1], location.geometry.coordinates[0]]}
+                                    icon={
+                                      new Leaflet.DivIcon({
+                                        className: "point-icon point-icon-large"
+                                      })
+                                    }
+                                />
                             ))}
                             <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                         </Map>

@@ -33,6 +33,22 @@
 .leaflet-container {
     height: 100%;
 }
+.point-icon {
+    margin: 0 !important; /* to overlap leaflet default property */
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    border: 2px solid #707070;
+    display: inline-block;
+}
+.point-icon-large {
+    width: 2.4rem !important; /* to overlap leaflet default property */
+    height: 2.4rem !important; /* to overlap leaflet default property */
+    border: 3px solid #707070;
+}
+.point-icon-small {
+    width: 1.6rem !important; /* to overlap leaflet default property */
+    height: 1.6rem !important; /* to overlap leaflet default property */
+}
 
 .timeseries-observation-list {
     margin: 0;

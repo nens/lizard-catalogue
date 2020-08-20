@@ -1,6 +1,7 @@
 import * as React from 'react';
 import MDSpinner from "react-md-spinner";
 import { connect } from 'react-redux';
+import Leaflet from 'leaflet';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import { MyStore, getOrganisations, getMonitoringNetwork, getTimeseriesObject, getLocationsObject } from '../../reducers';
 import { Organisation, MonitoringNetwork, Location } from '../../interface';
@@ -69,13 +70,22 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                     <Map
                         bounds={locationsObject && locationsObject.spatialBounds}
                         zoom={10}
+                        zoomControl={false}
                         style={{
                             opacity: locationsObject && locationsObject.isFetching ? 0.4 : 1
                         }}
                     >
                         {locationsObject ? (
                             getAllCoordinates(Object.values(locationsObject.locations)).map((coordinates, i) => (
-                                <Marker key={i} position={[coordinates[1], coordinates[0]]} />
+                                <Marker
+                                    key={i}
+                                    position={[coordinates[1], coordinates[0]]}
+                                    icon={
+                                      new Leaflet.DivIcon({
+                                        className: "point-icon point-icon-small"
+                                      })
+                                    }
+                                />
                             ))
                         ) : null}
                         <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
