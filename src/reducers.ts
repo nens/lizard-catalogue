@@ -867,10 +867,16 @@ export const getMonitoringNetwork = (state: MyStore, uuid: string) => {
 };
 
 export const getTimeseriesObject = (state: MyStore) => {
+    if (!state.timeseriesObject) {
+        throw new Error("getTimeseriesObject is called when timeseries object is null");
+    };
     return state.timeseriesObject;
 };
 
 export const getLocationsObject = (state: MyStore) => {
+    if (!state.locationsObject) {
+        throw new Error("getLocationsObject is called when locations object is null");
+    };
     return state.locationsObject;
 };
 

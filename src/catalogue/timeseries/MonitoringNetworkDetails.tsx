@@ -67,7 +67,7 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                         </div>
                     ) : null}
                     <Map
-                        bounds={locationsObject ? locationsObject.spatialBounds : [[85, 180], [-85, -180]]}
+                        bounds={locationsObject && locationsObject.spatialBounds}
                         zoom={10}
                         style={{
                             opacity: locationsObject && locationsObject.isFetching ? 0.4 : 1
