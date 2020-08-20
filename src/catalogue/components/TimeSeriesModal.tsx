@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
-import { Map, TileLayer } from 'react-leaflet';
+import MDSpinner from 'react-md-spinner';
+import { useSelector } from 'react-redux';
+import { Map, TileLayer, Marker } from 'react-leaflet';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
+import { getTimeseriesObject, getLocationsObject } from './../../reducers';
 import '../styles/TimeSeriesModal.css';
 import '../styles/Modal.css';
 
@@ -9,6 +12,12 @@ interface MyProps {
 };
 
 const TimeSeriesModal: React.FC<MyProps> = (props) => {
+    const timeseriesObject = useSelector(getTimeseriesObject);
+    const locationsObject = useSelector(getLocationsObject);
+    const observationTypes = Object.values(timeseriesObject.observationTypes);
+    const locations = Object.values(locationsObject.locations);
+    const spatialBounds = locationsObject.spatialBounds;
+
     const closeModalOnEsc = (e) => {
         if (e.key === 'Escape') {
             props.toggleExportModal();
@@ -31,23 +40,33 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                     <h3>1. SELECT LOCATIONS</h3>
                     <span className="timeseries-helper-text">Select locations by clicking or select all locations with the same observation type</span>
                     <div className="timeseries-map">
+                        {locationsObject.isFetching ? (
+                            <div className="details-map-loading">
+                                <MDSpinner />
+                            </div>
+                        ) : null}
                         <Map
-                            bounds={[[85, 180], [-85, -180]]}
+                            bounds={spatialBounds}
                             zoom={10}
+                            style={{
+                                opacity: locationsObject.isFetching ? 0.4 : 1
+                            }}
                         >
+                            {locations.map(location => (
+                                location.geometry &&
+                                <Marker key={location.uuid} position={[location.geometry.coordinates[1], location.geometry.coordinates[0]]} />
+                            ))}
                             <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                         </Map>
                     </div>
                     <h3>FILTER OBSERVATION TYPE</h3>
                     <ul className="timeseries-observation-list">
-                        <li>
-                            <input type="checkbox"/>
-                            Temperature
-                        </li>
-                        <li>
-                            <input type="checkbox"/>
-                            Water
-                        </li>
+                        {observationTypes && observationTypes.map(observationType => (
+                            <li key={observationType.id}>
+                                <input type="checkbox"/>
+                                {observationType.parameter}
+                            </li>
+                        ))}
                     </ul>
                 </div>
                 <div className="timeseries-selection">
