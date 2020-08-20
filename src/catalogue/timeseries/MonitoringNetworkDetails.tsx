@@ -5,8 +5,10 @@ import { Map, TileLayer, Marker } from 'react-leaflet';
 import { MyStore, getOrganisations, getMonitoringNetwork, getTimeseriesObject, getLocationsObject } from '../../reducers';
 import { Organisation, MonitoringNetwork, Location } from '../../interface';
 import {mapBoxAccesToken} from "../../mapboxConfig.js";
+import TimeSeriesModal from '../components/TimeSeriesModal';
 import '../styles/Details.css';
 import '../styles/Buttons.css';
+import '../styles/Modal.css';
 
 interface PropsFromState {
     monitoringNetwork: MonitoringNetwork | null,
@@ -135,11 +137,13 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                     </tbody>
                 </table>
                 {/*This is the PopUp window for the time series selection screen*/}
-                {/* {this.state.showTimeseriesModal && (
-                    <div className="raster-export">
-                        <div />
+                {this.state.showTimeseriesModal && (
+                    <div className="modal-background">
+                        <TimeSeriesModal
+                            toggleExportModal={this.toggleTimeseriesModal}
+                        />
                     </div>
-                )} */}
+                )}
             </div>
         );
     };

@@ -9,7 +9,7 @@ import { openRasterInAPI, openRasterInLizard, getDatasetGetCapabilitesURL, getRa
 import Export from '../components/Export';
 import {mapBoxAccesToken} from "../../mapboxConfig.js"
 import '../styles/Details.css';
-import '../styles/Export.css';
+import '../styles/Modal.css';
 import '../styles/Buttons.css';
 
 interface PropsFromState {
@@ -289,7 +289,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                 </table>
                 {/*This is the PopUp window for the export screen*/}
                 {this.state.showExport && (
-                    <div className="raster-export">
+                    <div className="modal-background">
                         <Export
                             raster={raster}
                             bounds={bounds}

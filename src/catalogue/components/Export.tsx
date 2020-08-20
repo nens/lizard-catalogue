@@ -3,6 +3,7 @@ import { Raster } from '../../interface';
 import DownloadModal from './DownloadModal';
 import ExportModal from './ExportModal';
 import '../styles/Export.css';
+import '../styles/Modal.css';
 
 interface MyProps {
     raster: Raster,
@@ -37,7 +38,7 @@ export default class Export extends React.Component<MyProps> {
 
     render() {
         return (
-            <div className="export">
+            <div className="modal-main modal-raster-export">
                 {this.state.showDownloadModal ? (
                     <DownloadModal />
                 ) : (
@@ -48,7 +49,7 @@ export default class Export extends React.Component<MyProps> {
                     />
                 )}
                 {/* eslint-disable-next-line */}
-                <a className="export_close" onClick={this.props.toggleExportModal}>&times;</a>
+                <a className="modal-close" onClick={this.props.toggleExportModal}>&times;</a>
             </div>
         );
     };
