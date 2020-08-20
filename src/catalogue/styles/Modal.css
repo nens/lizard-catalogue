@@ -14,23 +14,50 @@
 }
 
 .modal-main {
-    color: #333;
-    border: 1px solid #BEBEBE;
-    border-radius: 0.8rem;
+    border-radius: 1rem;
     background-color: #fff;
     box-shadow: 0 2rem 2rem rgba(12, 12, 12, 0.4);
     opacity: 1;
     transform: translate(0%, 0%);
     transition: all .4s .2s;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.modal-header {
+    font-size: 2.4rem;
+    font-weight: 500;
+    color: #FFFFFF;
+    height: 5rem;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--main-color-scheme);
+}
+
+.modal-header button {
+    cursor: pointer;
+    font-size: 5rem;
+    font-weight: 400;
+    color: #FFFFFF;
+    background-color: transparent;
+    border: none;
+}
+.modal-header button:focus {
+    outline: none;
+}
+.modal-header button:hover {
+    color: var(--button-color-scheme);
 }
 
 /* Time-series modal */
 .modal-timeseries {
     width: 80%;
     height: 80%;
+    justify-content: flex-start;
 }
 
 /* Raster export modal */

@@ -1,0 +1,90 @@
+.timeseries {
+    height: 100%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: row;
+}
+.timeseries h3 {
+    font-size: 1.8rem;
+    font-weight: 500;
+    margin: 0;
+    margin-bottom: 1rem;
+}
+.timeseries-helper-text {
+    font-style: italic;
+    font-weight: 300;
+}
+
+.timeseries-filter {
+    flex: 3;
+    padding-right: 1rem;
+}
+
+.timeseries-selection {
+    flex: 2;
+}
+
+.timeseries-map {
+    width: 100%;
+    height: 75%;
+    margin: 1rem 0;
+}
+.leaflet-container {
+    height: 100%;
+}
+
+.timeseries-observation-list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+}
+.timeseries-observation-list li {
+    margin-right: 1rem;
+}
+
+.timeseries-selected-locations {
+    height: 60%;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color-soft);
+    display: flex;
+    flex-direction: column;
+}
+
+.timeseries-location-list {
+    height: 100%;
+    padding: 2rem 0;
+    margin: 0;
+    overflow: scroll;
+}
+.timeseries-location-list li {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.timeseries-period {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color-soft);
+}
+.timeseries-period-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 1rem 0;
+}
+.timeseries-time-selection {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Buttons */
+.timeseries-button-container {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.timeseries-button-container button {
+    width: 80%;
+    margin-bottom: 1rem;
+}
