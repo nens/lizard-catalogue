@@ -64,15 +64,11 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                                 <Marker
                                     key={location.uuid}
                                     position={[location.geometry.coordinates[1], location.geometry.coordinates[0]]}
-                                    icon={selectedLocations.includes(location.uuid) ? (
+                                    icon={
                                         new Leaflet.DivIcon({
-                                            className: "point-icon point-icon-large point-icon-selected"
+                                            className: selectedLocations.includes(location.uuid) ? "point-icon point-icon-large point-icon-selected" : "point-icon point-icon-large"
                                         })
-                                    ) : (
-                                        new Leaflet.DivIcon({
-                                            className: "point-icon point-icon-large"
-                                        })
-                                    )}
+                                    }
                                     onClick={() => {
                                         if (selectedLocations.includes(location.uuid)) {
                                             setSelectedLocations(selectedLocations.filter(uuid => uuid !== location.uuid));
