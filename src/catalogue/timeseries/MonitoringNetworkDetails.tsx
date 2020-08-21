@@ -126,7 +126,7 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                                 ) : (
                                     <td>
                                         {Object.values(timeseriesObject.observationTypes).map(observationType => (
-                                            <p key={observationType.id}>{observationType.parameter}</p>
+                                            <p key={observationType.id}>{observationType.parameter ? observationType.parameter : observationType.code}</p>
                                         ))}
                                     </td>
                                 )}

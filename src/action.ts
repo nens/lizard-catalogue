@@ -225,7 +225,7 @@ export const fetchTimeseries = (uuid: string, dispatch): void => {
     dispatch(timeseriesRequested());
 
     request
-        .get(`/api/v4/monitoringnetworks/${uuid}/timeseries/?page_size=100000`)
+        .get(`/api/v4/monitoringnetworks/${uuid}/timeseries/?page_size=10000`)
         .then(response => {
             dispatch(timeseriesReceived(response.body.results))
         })
@@ -249,7 +249,7 @@ export const fetchLocations = (uuid: string, dispatch): void => {
     dispatch(locationsRequested());
 
     request
-        .get(`/api/v4/monitoringnetworks/${uuid}/locations/?page_size=100000`)
+        .get(`/api/v4/monitoringnetworks/${uuid}/locations/?page_size=10000`)
         .then(response => {
             dispatch(locationsReceived(response.body.results))
         })

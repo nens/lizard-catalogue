@@ -96,27 +96,30 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                         </Map>
                     </div>
                     <h3>FILTER OBSERVATION TYPE</h3>
-                    <ul className="timeseries-observation-list">
-                        {observationTypes && observationTypes.map(observationType => (
-                            <li key={observationType.id}>
-                                <input
-                                    type="checkbox"
-                                    onClick={(e) => {
-                                        const observationTypeTimeseries = Object.values(timeseries).filter(ts => ts.observation_type.id === observationType.id);
-                                        const observationTypeLocations = observationTypeTimeseries.map(ts => ts.location.uuid);
-                                        const uniqueLocationUuid = Array.from(new Set(observationTypeLocations));
-
-                                        if (e.currentTarget.checked) {
-                                            setFilteredLocations([...filterdLocations, ...uniqueLocationUuid]);
-                                        } else {
-                                            setFilteredLocations(filterdLocations.filter(uuid => observationTypeLocations.includes(uuid) === false))
-                                        }
-                                    }}
-                                />
-                                {observationType.parameter}
-                            </li>
-                        ))}
-                    </ul>
+                    {timeseriesObject.isFetching ? (
+                        <MDSpinner />
+                    ) : (
+                        <ul className="timeseries-observation-list">
+                            {observationTypes && observationTypes.map(observationType => (
+                                <li key={observationType.id}>
+                                    <input
+                                        type="checkbox"
+                                        onClick={(e) => {
+                                            const observationTypeTimeseries = Object.values(timeseries).filter(ts => ts.observation_type.id === observationType.id);
+                                            const observationTypeLocations = observationTypeTimeseries.map(ts => ts.location.uuid);
+                                            const uniqueLocationUuid = Array.from(new Set(observationTypeLocations));
+                                            if (e.currentTarget.checked) {
+                                                setFilteredLocations([...filterdLocations, ...uniqueLocationUuid]);
+                                            } else {
+                                                setFilteredLocations(filterdLocations.filter(uuid => observationTypeLocations.includes(uuid) === false))
+                                            }
+                                        }}
+                                    />
+                                    {observationType.parameter ? observationType.parameter : observationType.code}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
                 <div className="timeseries-selection">
                     <div className="timeseries-selected-locations">
