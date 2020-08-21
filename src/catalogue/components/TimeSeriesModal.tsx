@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import MDSpinner from 'react-md-spinner';
 import Leaflet from 'leaflet';
-import { Map, TileLayer, Marker, ZoomControl } from 'react-leaflet';
+import { Map, TileLayer, Marker, ZoomControl, Tooltip } from 'react-leaflet';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import { getTimeseriesObject, getLocationsObject } from './../../reducers';
 import '../styles/TimeSeriesModal.css';
@@ -71,6 +71,8 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                                             position={[coordinates[1], coordinates[0]]}
                                             icon={
                                                 new Leaflet.DivIcon({
+                                                    iconAnchor: [12, 12],
+                                                    tooltipAnchor: [0, 12],
                                                     className: selectedLocations.includes(locationUuid) ? "point-icon point-icon-large point-icon-selected" : "point-icon point-icon-large"
                                                 })
                                             }
@@ -81,7 +83,9 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                                                     setSelectedLocations([...selectedLocations, locationUuid]);
                                                 };
                                             }}
-                                        />
+                                        >
+                                            <Tooltip>{location.code}</Tooltip>
+                                        </Marker>
                                     )
                                 };
                                 return null;
