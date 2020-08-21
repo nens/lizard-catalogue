@@ -24,6 +24,7 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
 
     const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
     const [filterdLocations, setFilteredLocations] = useState<string[]>([]);
+    const [locationInView, setLocationInView] = useState<string>('');
 
     const closeModalOnEsc = (e) => {
         if (e.key === 'Escape') {
@@ -54,7 +55,8 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                         ) : null}
                         <Map
                             bounds={spatialBounds}
-                            zoom={10}
+                            center={locationInView ? [locations[locationInView].geometry!.coordinates[1], locations[locationInView].geometry!.coordinates[0]] : null}
+                            zoom={locationInView ? 14 : null}
                             zoomControl={false}
                             style={{
                                 opacity: locationsObject.isFetching ? 0.4 : 1
@@ -71,9 +73,9 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                                             position={[coordinates[1], coordinates[0]]}
                                             icon={
                                                 new Leaflet.DivIcon({
-                                                    iconAnchor: [12, 12],
-                                                    tooltipAnchor: [0, 12],
-                                                    className: selectedLocations.includes(locationUuid) ? "point-icon point-icon-large point-icon-selected" : "point-icon point-icon-large"
+                                                    iconSize: [24, 24],
+                                                    tooltipAnchor: [12, 0],
+                                                    className: selectedLocations.includes(locationUuid) ? "location-icon location-icon-selected" : "location-icon"
                                                 })
                                             }
                                             onClick={() => {
@@ -125,7 +127,7 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                                 const location = locationsObject.locations[uuid];
                                 const locationTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
                                 return (
-                                    <li key={uuid}>
+                                    <li key={uuid} onClick={() => setLocationInView(uuid)}>
                                         <span>{location.name}</span> [{location.code}] [{locationTimeseries.map(ts => ts.observation_type.parameter).join(', ')}]
                                     </li>
                                 )

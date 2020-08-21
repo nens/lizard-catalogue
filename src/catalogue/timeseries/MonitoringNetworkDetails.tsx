@@ -69,7 +69,6 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                     ) : null}
                     <Map
                         bounds={locationsObject && locationsObject.spatialBounds}
-                        zoom={10}
                         zoomControl={false}
                         style={{
                             opacity: locationsObject && locationsObject.isFetching ? 0.4 : 1
@@ -82,7 +81,8 @@ class MonitoringNetworkDetails extends React.Component<PropsFromState, MyState> 
                                     position={[coordinates[1], coordinates[0]]}
                                     icon={
                                       new Leaflet.DivIcon({
-                                        className: "point-icon point-icon-small"
+                                        iconSize: [16, 16],
+                                        className: "location-icon location-icon-small"
                                       })
                                     }
                                 />
