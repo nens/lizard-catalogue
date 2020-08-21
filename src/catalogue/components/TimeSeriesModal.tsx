@@ -18,10 +18,12 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
     const timeseries = timeseriesObject.timeseries;
 
     const locationsObject = useSelector(getLocationsObject);
-    const locations = Object.values(locationsObject.locations);
+    const locations = locationsObject.locations;
+    const locationUUIDs = Object.keys(locations);
     const spatialBounds = locationsObject.spatialBounds;
 
     const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+    const [filterdLocations, setFilteredLocations] = useState<string[]>([]);
 
     const closeModalOnEsc = (e) => {
         if (e.key === 'Escape') {
@@ -59,25 +61,31 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                             }}
                         >
                             <ZoomControl position="bottomleft"/>
-                            {locations.map(location => (
-                                location.geometry &&
-                                <Marker
-                                    key={location.uuid}
-                                    position={[location.geometry.coordinates[1], location.geometry.coordinates[0]]}
-                                    icon={
-                                        new Leaflet.DivIcon({
-                                            className: selectedLocations.includes(location.uuid) ? "point-icon point-icon-large point-icon-selected" : "point-icon point-icon-large"
-                                        })
-                                    }
-                                    onClick={() => {
-                                        if (selectedLocations.includes(location.uuid)) {
-                                            setSelectedLocations(selectedLocations.filter(uuid => uuid !== location.uuid));
-                                        } else {
-                                            setSelectedLocations([...selectedLocations, location.uuid]);
-                                        };
-                                    }}
-                                />
-                            ))}
+                            {(filterdLocations.length ? filterdLocations : locationUUIDs).map(locationUuid => {
+                                const location = locations[locationUuid];
+                                if (location.geometry) {
+                                    const { coordinates } = location.geometry;
+                                    return (
+                                        <Marker
+                                            key={location.uuid}
+                                            position={[coordinates[1], coordinates[0]]}
+                                            icon={
+                                                new Leaflet.DivIcon({
+                                                    className: selectedLocations.includes(locationUuid) ? "point-icon point-icon-large point-icon-selected" : "point-icon point-icon-large"
+                                                })
+                                            }
+                                            onClick={() => {
+                                                if (selectedLocations.includes(locationUuid)) {
+                                                    setSelectedLocations(selectedLocations.filter(uuid => uuid !== locationUuid));
+                                                } else {
+                                                    setSelectedLocations([...selectedLocations, locationUuid]);
+                                                };
+                                            }}
+                                        />
+                                    )
+                                };
+                                return null;
+                            })}
                             <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                         </Map>
                     </div>
@@ -85,7 +93,20 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                     <ul className="timeseries-observation-list">
                         {observationTypes && observationTypes.map(observationType => (
                             <li key={observationType.id}>
-                                <input type="checkbox"/>
+                                <input
+                                    type="checkbox"
+                                    onClick={(e) => {
+                                        const observationTypeTimeseries = Object.values(timeseries).filter(ts => ts.observation_type.id === observationType.id);
+                                        const observationTypeLocations = observationTypeTimeseries.map(ts => ts.location.uuid);
+                                        const uniqueLocationUuid = Array.from(new Set(observationTypeLocations));
+
+                                        if (e.currentTarget.checked) {
+                                            setFilteredLocations([...filterdLocations, ...uniqueLocationUuid]);
+                                        } else {
+                                            setFilteredLocations(filterdLocations.filter(uuid => observationTypeLocations.includes(uuid) === false))
+                                        }
+                                    }}
+                                />
                                 {observationType.parameter}
                             </li>
                         ))}

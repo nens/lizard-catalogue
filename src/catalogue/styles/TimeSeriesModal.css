@@ -63,6 +63,9 @@
 .timeseries-observation-list li {
     margin-right: 1rem;
 }
+.timeseries-observation-list li input {
+    cursor: pointer;
+}
 
 .timeseries-selected-locations {
     height: 60%;
