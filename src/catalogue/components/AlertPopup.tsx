@@ -12,11 +12,9 @@ export default class AlertPopup extends React.Component<MyProps> {
                 onClick={this.props.toggleAlert}
                 style={{ display: 'flex' }}
             >
-                No Rasters/WMS layers found!
-                Please check your search selection
+                No data found! Please check your search selection
                 <br />
-                You may need to login or might have insufficient rights to view
-                the Rasters/WMS layers
+                You may need to login or might have insufficient rights to view the data
             </div>
         );
     };
