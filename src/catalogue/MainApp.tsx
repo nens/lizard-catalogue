@@ -96,6 +96,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     toggleAlertMessage = () => {
         if (this.props.currentRasterList && this.props.currentRasterList.showAlert === true) this.props.toggleAlert();
         if (this.props.currentWMSList && this.props.currentWMSList.showAlert === true) this.props.toggleAlert();
+        if (this.props.currentMonitoringNetworkList && this.props.currentMonitoringNetworkList.showAlert === true) this.props.toggleAlert();
     };
 
     closeModalsOnEsc = (e) => {
