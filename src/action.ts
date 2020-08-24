@@ -245,11 +245,12 @@ const locationsReceived = (locationsList: Location[]) => ({
     locationsList
 });
 
-export const fetchLocations = (uuid: string, dispatch): void => {
+export const fetchLocations = (uuid: string, searchInput: string) => (dispatch) => {
     dispatch(locationsRequested());
 
+    const query = searchInput ? `page_size=10000&name__icontains=${searchInput}`: `page_size=10000`;
     request
-        .get(`/api/v4/monitoringnetworks/${uuid}/locations/?page_size=10000`)
+        .get(`/api/v4/monitoringnetworks/${uuid}/locations/?${query}`)
         .then(response => {
             dispatch(locationsReceived(response.body.results))
         })

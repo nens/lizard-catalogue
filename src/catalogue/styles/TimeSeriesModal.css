@@ -46,6 +46,14 @@
     border: 3px solid var(--main-color-scheme);
 }
 
+.timeseries-search-locations {
+    position: absolute;
+    top: 0.8rem;
+    left: 0.8rem;
+    width: 97%;
+    z-index: 1000;
+}
+
 .timeseries-observation-list {
     margin: 0;
     padding: 0;
@@ -76,6 +84,7 @@
 .timeseries-location-list li {
     font-weight: 600;
     margin-bottom: 1rem;
+    cursor: pointer;
 }
 
 .timeseries-period {

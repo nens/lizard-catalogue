@@ -30,13 +30,13 @@ import { getUrlParams, getSearch, getOrganisation, getObservationType, getDatase
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
-import MonitoringNetworkList from './timeseries/MonitoringNetworkList';
 import WMSDetails from './wms/WMSDetails';
+import MonitoringNetworkList from './timeseries/MonitoringNetworkList';
+import MonitoringNetworkDetails from './timeseries/MonitoringNetworkDetails';
 import FilterBar from './FilterBar';
 import Header from './Header';
 import AlertPopup from './components/AlertPopup';
 import './styles/MainApp.css';
-import MonitoringNetworkDetails from './timeseries/MonitoringNetworkDetails';
 
 interface PropsFromState {
     currentRasterList: MyStore['currentRasterList'] | null,
@@ -62,7 +62,7 @@ interface PropsFromDispatch {
     fetchWMSLayers: (page: number, searchTerm: string | null, organisationName: string | null, datasetSlug: string | null, ordering: string) => void,
     fetchMonitoringNetworks: (page: number, searchTerm: string | null, organisationName: string | null, observationType: string | null, ordering: string) => void,
     fetchTimeseries: (uuid: string) => void,
-    fetchLocations: (uuid: string) => void,
+    fetchLocations: (uuid: string, searchInput: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void,
     toggleAlert: () => void,
     requestInbox: () => void,
@@ -230,7 +230,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             // Fetch the list of timeseries and locations by UUID of selected monitoring network
             if (uuid) {
                 this.props.fetchTimeseries(uuid);
-                this.props.fetchLocations(uuid);
+                this.props.fetchLocations(uuid, '');
             };
         };
 
@@ -304,7 +304,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             //Fetch timeseries and locations based on the selected monitoring network
             if (currentDataType === "Timeseries") {
                 this.props.fetchTimeseries(nextProps.selectedItem);
-                this.props.fetchLocations(nextProps.selectedItem);
+                this.props.fetchLocations(nextProps.selectedItem, '');
             };
         } else if (nextFilters.page !== filters.page) {
             //Fetch rasters/wms layers if page number changed without updating the URL
@@ -468,7 +468,7 @@ const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
         ordering: string
     ) => fetchMonitoringNetworks(page, searchTerm, organisationName, observationType, ordering, dispatch),
     fetchTimeseries: (uuid: string) => fetchTimeseries(uuid, dispatch),
-    fetchLocations: (uuid: string) => fetchLocations(uuid, dispatch),
+    fetchLocations: (uuid: string, searchInput: string) => dispatch(fetchLocations(uuid, searchInput)),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
     toggleAlert: () => toggleAlert(dispatch),

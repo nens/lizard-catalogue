@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { useSelector } from 'react-redux';
 import MDSpinner from 'react-md-spinner';
 import Leaflet from 'leaflet';
 import { Map, TileLayer, Marker, ZoomControl, Tooltip } from 'react-leaflet';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
-import { getTimeseriesObject, getLocationsObject } from './../../reducers';
+import { getTimeseriesObject, getLocationsObject, getSelectedItem } from './../../reducers';
+import { fetchLocations } from './../../action';
+import SearchBar from './SearchBar';
 import '../styles/TimeSeriesModal.css';
 import '../styles/Modal.css';
 
@@ -12,7 +15,8 @@ interface MyProps {
     toggleExportModal: () => void
 };
 
-const TimeSeriesModal: React.FC<MyProps> = (props) => {
+const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
+    const selectedItem = useSelector(getSelectedItem);
     const timeseriesObject = useSelector(getTimeseriesObject);
     const observationTypes = Object.values(timeseriesObject.observationTypes);
     const timeseries = timeseriesObject.timeseries;
@@ -25,11 +29,17 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
     const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
     const [filterdLocations, setFilteredLocations] = useState<string[]>([]);
     const [locationInView, setLocationInView] = useState<string>('');
+    const [locationInput, setLocationInput] = useState<string>('');
 
     const closeModalOnEsc = (e) => {
         if (e.key === 'Escape') {
             props.toggleExportModal();
         };
+    };
+
+    const onSearchSubmit = (event) => {
+        event.preventDefault();
+        props.fetchLocations(selectedItem, locationInput);
     };
 
     useEffect(() => {
@@ -48,6 +58,16 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                     <h3>1. SELECT LOCATIONS</h3>
                     <span className="timeseries-helper-text">Select locations by clicking or select all locations with the same observation type</span>
                     <div className="timeseries-map">
+                        <div className="timeseries-search-locations">
+                            <SearchBar
+                                name="searchBar"
+                                searchTerm={locationInput}
+                                title="Type name of locations"
+                                placeholder="Search for locations"
+                                onSearchChange={e => setLocationInput(e.currentTarget.value)}
+                                onSearchSubmit={onSearchSubmit}
+                            />
+                        </div>
                         {locationsObject.isFetching ? (
                             <div className="details-map-loading">
                                 <MDSpinner />
@@ -130,7 +150,11 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
                                 const location = locationsObject.locations[uuid];
                                 const locationTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
                                 return (
-                                    <li key={uuid} onClick={() => setLocationInView(uuid)}>
+                                    <li
+                                        key={uuid}
+                                        title={"Click to zoom into this selected location"}
+                                        onClick={() => setLocationInView(uuid)}
+                                    >
                                         <span>{location.name}</span> [{location.code}] [{locationTimeseries.map(ts => ts.observation_type.parameter).join(', ')}]
                                     </li>
                                 )
@@ -173,4 +197,9 @@ const TimeSeriesModal: React.FC<MyProps> = (props) => {
     );
 };
 
-export default TimeSeriesModal;
+const mapDispatchToProps = (dispatch) => ({
+    fetchLocations: (uuid: string, searchInput: string) => dispatch(fetchLocations(uuid, searchInput)),
+});
+type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>;
+
+export default connect(null, mapDispatchToProps)(TimeSeriesModal);

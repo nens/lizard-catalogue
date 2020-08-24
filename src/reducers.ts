@@ -542,7 +542,7 @@ const locationsObject = (state: MyStore['locationsObject'] = null, action): MySt
             const east = Math.max(...x);
             const south = Math.min(...y);
             const west = Math.min(...x);
-            const spatialBounds = [[north, east], [south, west]];
+            const spatialBounds = locationsList.length ? [[north, east], [south, west]] : [[85, 180], [-85, -180]];
 
             return {
                 isFetching: false,
@@ -894,6 +894,10 @@ export const getDatasets = (state: MyStore) => {
 
 export const getInbox = (state: MyStore) => {
     return state.inbox;
+};
+
+export const getSelectedItem = (state: MyStore) => {
+    return state.selectedItem;
 };
 
 export default combineReducers({
