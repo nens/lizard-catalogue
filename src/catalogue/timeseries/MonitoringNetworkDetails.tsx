@@ -4,10 +4,10 @@ import { useSelector } from 'react-redux';
 import Leaflet from 'leaflet';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import {
-    getTimeseriesObject,
     getLocationsObject,
     getSelectedItem,
     getAllMonitoringNetworks,
+    getMonitoringNetworkObservationTypes,
 } from '../../reducers';
 import { MonitoringNetwork } from '../../interface';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
@@ -20,9 +20,8 @@ const MonitoringNetworkDetails: React.FC = () => {
     const selectedItem = useSelector(getSelectedItem);
     const allMonitoringNetworks = useSelector(getAllMonitoringNetworks);
     const monitoringNetwork = allMonitoringNetworks[selectedItem] as MonitoringNetwork;
-    const timeseriesObject = useSelector(getTimeseriesObject);
+    const observationTypeObject = useSelector(getMonitoringNetworkObservationTypes);
     const locationsObject = useSelector(getLocationsObject);
-    const { isFetching, locations, spatialBounds } = locationsObject;
 
     const [timeseriesModal, setTimeseriesModal] = useState(false);
     const [activeTab, setActiveTab] = useState<'Details' | 'Actions'>('Details');
@@ -44,25 +43,24 @@ const MonitoringNetworkDetails: React.FC = () => {
                 />
             </div>
             <div className="details-map">
-                {isFetching ? (
+                {locationsObject && locationsObject.isFetching ? (
                     <div className="details-map-loading">
                         <MDSpinner />
                     </div>
                 ) : null}
                 <Map
-                    bounds={spatialBounds}
+                    bounds={locationsObject ? locationsObject.spatialBounds : [[85, 180], [-85, -180]]}
                     zoomControl={false}
                     style={{
-                        opacity: isFetching ? 0.4 : 1
+                        opacity: locationsObject && locationsObject.isFetching ? 0.4 : 1
                     }}
                 >
-                    {Object.values(locations).map(location => {
+                    {locationsObject && Object.values(locationsObject.locations).map(location => {
                         if (location.geometry) {
-                            const { coordinates } = location.geometry;
                             return (
                                 <Marker
                                     key={location.uuid}
-                                    position={[coordinates[1], coordinates[0]]}
+                                    position={location.geometry.coordinates}
                                     icon={new Leaflet.DivIcon({
                                         iconSize: [16, 16],
                                         className: "location-icon location-icon-small"
@@ -100,16 +98,16 @@ const MonitoringNetworkDetails: React.FC = () => {
                         </th>
                     </tr>
                     <tr className="details-table-empty-row"><td /></tr>
-                    {activeTab === 'Details' && timeseriesObject ? (
+                    {activeTab === 'Details' && observationTypeObject ? (
                         <tr>
                             <td>Observation types</td>
-                            {timeseriesObject.isFetching ? (
+                            {observationTypeObject.isFetching ? (
                                 <td style={{ textAlign: 'center' }}>
                                     <MDSpinner />
                                 </td>
                             ) : (
                                 <td>
-                                    {Object.values(timeseriesObject.observationTypes).map(observationType => (
+                                    {observationTypeObject.observationTypes.map(observationType => (
                                         <p key={observationType.id}>{observationType.parameter ? observationType.parameter : observationType.code}</p>
                                     ))}
                                 </td>

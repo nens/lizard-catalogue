@@ -22,6 +22,7 @@ import {
     selectObservationType,
     fetchMonitoringNetworks,
     fetchTimeseries,
+    fetchMonitoringNetworkObservationTypes,
     fetchLocations,
 } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList, getCurrentMonitoringNetworkList } from '../reducers';
@@ -60,9 +61,10 @@ interface PropsFromDispatch {
     fetchOrganisations: () => void,
     fetchDatasets: () => void,
     fetchWMSLayers: (page: number, searchTerm: string | null, organisationName: string | null, datasetSlug: string | null, ordering: string) => void,
-    fetchMonitoringNetworks: (page: number, searchTerm: string | null, organisationName: string | null, observationType: string | null, ordering: string) => void,
+    fetchMonitoringNetworks: (page: number, searchTerm: string | null, organisationName: string | null, ordering: string) => void,
     fetchTimeseries: (uuid: string) => void,
-    fetchLocations: (uuid: string, searchInput: string) => void,
+    fetchMonitoringNetworkObservationTypes: (uuid: string) => void,
+    fetchLocations: (uuid: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void,
     toggleAlert: () => void,
     requestInbox: () => void,
@@ -224,13 +226,13 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 this.props.filters.page,
                 search,
                 organisation,
-                observation,
                 this.props.filters.ordering
             );
-            // Fetch the list of timeseries and locations by UUID of selected monitoring network
+            // Fetch the list of timeseries, observation types and locations by UUID of selected monitoring network
             if (uuid) {
                 this.props.fetchTimeseries(uuid);
-                this.props.fetchLocations(uuid, '');
+                this.props.fetchMonitoringNetworkObservationTypes(uuid);
+                this.props.fetchLocations(uuid);
             };
         };
 
@@ -285,7 +287,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                     1,
                     nextFilters.searchTerm,
                     nextFilters.organisation,
-                    nextFilters.observationType,
                     nextFilters.ordering
                 );
             };
@@ -301,10 +302,11 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             );
             this.updateURL(url);
 
-            //Fetch timeseries and locations based on the selected monitoring network
+            //Fetch timeseries, observation types and locations based on the selected monitoring network
             if (currentDataType === "Timeseries") {
                 this.props.fetchTimeseries(nextProps.selectedItem);
-                this.props.fetchLocations(nextProps.selectedItem, '');
+                this.props.fetchMonitoringNetworkObservationTypes(nextProps.selectedItem);
+                this.props.fetchLocations(nextProps.selectedItem);
             };
         } else if (nextFilters.page !== filters.page) {
             //Fetch rasters/wms layers if page number changed without updating the URL
@@ -330,7 +332,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                     nextFilters.page,
                     nextFilters.searchTerm,
                     nextFilters.organisation,
-                    nextFilters.observationType,
                     nextFilters.ordering
                 );
             };
@@ -464,11 +465,11 @@ const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
         page: number,
         searchTerm: string,
         organisationName: string,
-        observationType: string,
         ordering: string
-    ) => fetchMonitoringNetworks(page, searchTerm, organisationName, observationType, ordering, dispatch),
+    ) => fetchMonitoringNetworks(page, searchTerm, organisationName, ordering, dispatch),
     fetchTimeseries: (uuid: string) => fetchTimeseries(uuid, dispatch),
-    fetchLocations: (uuid: string, searchInput: string) => dispatch(fetchLocations(uuid, searchInput)),
+    fetchMonitoringNetworkObservationTypes: (uuid: string) => dispatch(fetchMonitoringNetworkObservationTypes(uuid)),
+    fetchLocations: (uuid: string) => dispatch(fetchLocations(uuid)),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
     toggleAlert: () => toggleAlert(dispatch),

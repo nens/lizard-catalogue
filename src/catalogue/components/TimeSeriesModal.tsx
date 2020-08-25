@@ -1,48 +1,62 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import MDSpinner from 'react-md-spinner';
 import Leaflet from 'leaflet';
 import { Map, TileLayer, Marker, ZoomControl, Tooltip } from 'react-leaflet';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
-import { getTimeseriesObject, getLocationsObject, getSelectedItem } from './../../reducers';
-import { fetchLocations } from './../../action';
+import {
+    getSelectedItem,
+    getTimeseriesObjectNotNull,
+    getLocationsObjectNotNull,
+    getMonitoringNetworkObservationTypesNotNull,
+    getFilteredLocationsObject
+} from './../../reducers';
+import { fetchFilteredLocations, removeFilteredLocations } from './../../action';
 import SearchBar from './SearchBar';
 import '../styles/TimeSeriesModal.css';
 import '../styles/Modal.css';
 
 interface MyProps {
-    toggleExportModal: () => void
+    toggleTimeseriesModal: () => void
 };
 
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const selectedItem = useSelector(getSelectedItem);
-    const timeseriesObject = useSelector(getTimeseriesObject);
-    const observationTypes = Object.values(timeseriesObject.observationTypes);
-    const timeseries = timeseriesObject.timeseries;
+    const timeseriesObject = useSelector(getTimeseriesObjectNotNull);
+    const { timeseries } = timeseriesObject;
 
-    const locationsObject = useSelector(getLocationsObject);
-    const locations = locationsObject.locations;
+    const observationTypeObject = useSelector(getMonitoringNetworkObservationTypesNotNull);
+    const { observationTypes } = observationTypeObject;
+
+    const locationsObject = useSelector(getLocationsObjectNotNull);
+    const { locations } = locationsObject;
     const locationUUIDs = Object.keys(locations);
-    const spatialBounds = locationsObject.spatialBounds;
+
+    const filteredLocationsObject = useSelector(getFilteredLocationsObject);
+    const filteredLocations = filteredLocationsObject && filteredLocationsObject.filteredLocations;
+    const filteredLocationUUIDs = filteredLocations && Object.keys(filteredLocations);
 
     const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
-    const [filterdLocations, setFilteredLocations] = useState<string[]>([]);
-    const [locationInView, setLocationInView] = useState<string>('');
-    const [locationInput, setLocationInput] = useState<string>('');
+    const [locationOnZoom, setLocationOnZoom] = useState<string>('');
+    const [searchInput, setSearchInput] = useState<string>('');
 
-    const closeModalOnEsc = (e) => {
-        if (e.key === 'Escape') {
-            props.toggleExportModal();
-        };
-    };
+    const [selectedObservationTypeCode, setSelectedObservationTypeCode] = useState<string>('');
 
     const onSearchSubmit = (event) => {
         event.preventDefault();
-        props.fetchLocations(selectedItem, locationInput);
+        props.fetchFilteredLocations(selectedItem, searchInput, selectedObservationTypeCode);
     };
 
     useEffect(() => {
+        if (filteredLocationsObject && !searchInput && !selectedObservationTypeCode) {
+            props.removeFilteredLocations();
+        };
+
+        const closeModalOnEsc = (e) => {
+            if (e.key === 'Escape') {
+                props.toggleTimeseriesModal();
+            };
+        };
         window.addEventListener('keydown', closeModalOnEsc);
         return () => window.removeEventListener('keydown', closeModalOnEsc);
     });
@@ -51,7 +65,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
         <div className="modal-main modal-timeseries">
             <div className="modal-header">
                 <span>Select Time-series</span>
-                <button onClick={props.toggleExportModal}>&times;</button>
+                <button onClick={props.toggleTimeseriesModal}>&times;</button>
             </div>
             <div className="timeseries">
                 <div className="timeseries-filter">
@@ -61,36 +75,35 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         <div className="timeseries-search-locations">
                             <SearchBar
                                 name="searchBar"
-                                searchTerm={locationInput}
+                                searchTerm={searchInput}
                                 title="Type name of locations"
                                 placeholder="Search for locations"
-                                onSearchChange={e => setLocationInput(e.currentTarget.value)}
+                                onSearchChange={e => setSearchInput(e.currentTarget.value)}
                                 onSearchSubmit={onSearchSubmit}
                             />
                         </div>
-                        {locationsObject.isFetching ? (
+                        {locationsObject.isFetching || (filteredLocationsObject && filteredLocationsObject.isFetching) ? (
                             <div className="details-map-loading">
                                 <MDSpinner />
                             </div>
                         ) : null}
                         <Map
-                            bounds={spatialBounds}
-                            center={locationInView ? [locations[locationInView].geometry!.coordinates[1], locations[locationInView].geometry!.coordinates[0]] : null}
-                            zoom={locationInView ? 14 : null}
+                            bounds={filteredLocationsObject ? filteredLocationsObject.spatialBounds : locationsObject.spatialBounds}
+                            center={locationOnZoom ? locations[locationOnZoom].geometry!.coordinates : null}
+                            zoom={locationOnZoom ? 14 : null}
                             zoomControl={false}
                             style={{
-                                opacity: locationsObject.isFetching ? 0.4 : 1
+                                opacity: locationsObject.isFetching || (filteredLocationsObject && filteredLocationsObject.isFetching) ? 0.4 : 1
                             }}
                         >
                             <ZoomControl position="bottomleft"/>
-                            {(filterdLocations.length ? filterdLocations : locationUUIDs).map(locationUuid => {
+                            {(filteredLocationUUIDs || locationUUIDs).map(locationUuid => {
                                 const location = locations[locationUuid];
                                 if (location.geometry) {
-                                    const { coordinates } = location.geometry;
                                     return (
                                         <Marker
                                             key={location.uuid}
-                                            position={[coordinates[1], coordinates[0]]}
+                                            position={location.geometry.coordinates}
                                             icon={
                                                 new Leaflet.DivIcon({
                                                     iconSize: [24, 24],
@@ -116,24 +129,24 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         </Map>
                     </div>
                     <h3>FILTER OBSERVATION TYPE</h3>
-                    {timeseriesObject.isFetching ? (
+                    {observationTypeObject.isFetching ? (
                         <MDSpinner />
                     ) : (
                         <ul className="timeseries-observation-list">
-                            {observationTypes && observationTypes.map(observationType => (
+                            {observationTypes.map(observationType => (
                                 <li key={observationType.id}>
                                     <input
                                         type="checkbox"
-                                        onClick={(e) => {
-                                            const observationTypeTimeseries = Object.values(timeseries).filter(ts => ts.observation_type.id === observationType.id);
-                                            const observationTypeLocations = observationTypeTimeseries.map(ts => ts.location.uuid);
-                                            const uniqueLocationUuid = Array.from(new Set(observationTypeLocations));
+                                        onChange={(e) => {
                                             if (e.currentTarget.checked) {
-                                                setFilteredLocations([...filterdLocations, ...uniqueLocationUuid]);
+                                                setSelectedObservationTypeCode(observationType.code);
+                                                props.fetchFilteredLocations(selectedItem, searchInput, observationType.code);
                                             } else {
-                                                setFilteredLocations(filterdLocations.filter(uuid => observationTypeLocations.includes(uuid) === false))
-                                            }
+                                                setSelectedObservationTypeCode('');
+                                                props.fetchFilteredLocations(selectedItem, searchInput, '');
+                                            };
                                         }}
+                                        checked={selectedObservationTypeCode === observationType.code}
                                     />
                                     {observationType.parameter ? observationType.parameter : observationType.code}
                                 </li>
@@ -147,13 +160,13 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         <span className="timeseries-helper-text">The selected locations will appear here</span>
                         <ul className="timeseries-location-list">
                             {selectedLocations.map(uuid => {
-                                const location = locationsObject.locations[uuid];
+                                const location = locations[uuid];
                                 const locationTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
                                 return (
                                     <li
                                         key={uuid}
                                         title={"Click to zoom into this selected location"}
-                                        onClick={() => setLocationInView(uuid)}
+                                        onClick={() => setLocationOnZoom(uuid)}
                                     >
                                         <span>{location.name}</span> [{location.code}] [{locationTimeseries.map(ts => ts.observation_type.parameter).join(', ')}]
                                     </li>
@@ -198,7 +211,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    fetchLocations: (uuid: string, searchInput: string) => dispatch(fetchLocations(uuid, searchInput)),
+    fetchFilteredLocations: (uuid: string, searchInput?: string, observationTypeCode?: string) => dispatch(fetchFilteredLocations(uuid, searchInput, observationTypeCode)),
+    removeFilteredLocations: () => dispatch(removeFilteredLocations()),
 });
 type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>;
 
