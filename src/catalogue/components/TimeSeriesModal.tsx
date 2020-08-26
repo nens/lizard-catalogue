@@ -15,6 +15,7 @@ import { fetchFilteredLocations, removeFilteredLocations } from './../../action'
 import SearchBar from './SearchBar';
 import '../styles/TimeSeriesModal.css';
 import '../styles/Modal.css';
+import './../styles/Buttons.css';
 
 interface MyProps {
     toggleTimeseriesModal: () => void
@@ -168,7 +169,16 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                 </div>
                 <div className="timeseries-selection">
                     <div className="timeseries-selected-locations">
-                        <h3>2. SELECTED LOCATIONS</h3>
+                        <div className="timeseries-selected-locations-header">
+                            <h3>2. SELECTED LOCATIONS</h3>
+                            <button
+                                className="button-action timeseries-button-clear-selection"
+                                onClick={() => setSelectedLocations([])}
+                                disabled={!selectedLocations.length}
+                            >
+                                CLEAR SELECTION
+                            </button>
+                        </div>
                         <span className="timeseries-helper-text">The selected locations will appear here</span>
                         <ul className="timeseries-location-list">
                             {selectedLocations.map(uuid => {
