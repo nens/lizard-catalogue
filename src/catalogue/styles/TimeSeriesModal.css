@@ -101,7 +101,12 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     margin: 1rem 0;
+}
+.timeseries-period-arrow {
+    font-size: 4rem;
+    color: #707070;
 }
 .timeseries-time-selection {
     display: flex;
