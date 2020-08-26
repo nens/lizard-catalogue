@@ -177,7 +177,10 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                 <div className="timeseries-selection">
                     <div className="timeseries-selected-locations">
                         <div className="timeseries-selected-locations-header">
-                            <h3>2. SELECTED LOCATIONS</h3>
+                            <div>
+                                <h3>2. SELECTED LOCATIONS</h3>
+                                <span className="timeseries-helper-text">The selected locations will appear here</span>
+                            </div>
                             <button
                                 className="button-action timeseries-button-clear-selection"
                                 onClick={() => setSelectedLocations([])}
@@ -187,7 +190,6 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 CLEAR SELECTION
                             </button>
                         </div>
-                        <span className="timeseries-helper-text">The selected locations will appear here</span>
                         <ul className="timeseries-location-list">
                             {selectedLocations.map(uuid => {
                                 const location = locations[uuid];

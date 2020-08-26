@@ -80,6 +80,9 @@
     align-items: center;
     white-space: nowrap;
 }
+.timeseries-selected-locations-header > div {
+    margin-right: 1rem;
+}
 
 .timeseries-location-list {
     height: 100%;
