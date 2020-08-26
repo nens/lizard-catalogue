@@ -215,6 +215,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     onChange={(e) => setStart(e.toString())}
                                 />
                             </div>
+                            <span className="timeseries-period-arrow">&#8594;</span>
                             <div className="timeseries-time-selection">
                                 <span>End</span>
                                 <Datetime
