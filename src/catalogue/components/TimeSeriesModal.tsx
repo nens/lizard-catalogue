@@ -218,6 +218,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 <Datetime
                                     value={moment(defaultStartValue)}
                                     dateFormat={'DD/MM/YYYY'}
+                                    timeFormat={'H:mm'}
+                                    inputProps={{className: 'timeseries-datetime'}}
                                     onChange={(e) => setStart(moment(e).valueOf())}
                                 />
                             </div>
@@ -227,6 +229,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 <Datetime
                                     value={moment(defaultEndValue)}
                                     dateFormat={'DD/MM/YYYY'}
+                                    timeFormat={'H:mm'}
+                                    inputProps={{className: 'timeseries-datetime'}}
                                     onChange={(e) => setEnd(moment(e).valueOf())}
                                 />
                             </div>
@@ -247,7 +251,12 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                             >
                                 OPEN IN API
                             </button>
-                            <button className="button-action" title="Open in Portal">
+                            <button
+                                className="button-action"
+                                title="Open in Portal"
+                                onClick={() => null}
+                                disabled={!selectedLocations}
+                            >
                                 OPEN IN PORTAL
                             </button>
                         </div>

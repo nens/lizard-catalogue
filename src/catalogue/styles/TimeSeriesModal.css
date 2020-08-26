@@ -119,6 +119,11 @@
     margin-bottom: 0.5rem;
 }
 
+/* Datetime picker */
+.timeseries-datetime {
+    color: var(--font-color);
+}
+
 /* Buttons */
 .timeseries-button-container {
     margin-top: 2rem;
