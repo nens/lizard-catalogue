@@ -20,10 +20,8 @@
     opacity: 1;
     transform: translate(0%, 0%);
     transition: all .4s .2s;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: center;
 }
 
 .modal-header {
@@ -36,6 +34,7 @@
     justify-content: space-between;
     align-items: center;
     background-color: var(--main-color-scheme);
+    border-radius: 1rem 1rem 0 0;
 }
 
 .modal-header button {
