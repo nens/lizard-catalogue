@@ -107,6 +107,9 @@
     display: flex;
     flex-direction: column;
 }
+.timeseries-time-selection span {
+    margin-bottom: 0.5rem;
+}
 
 /* Buttons */
 .timeseries-button-container {

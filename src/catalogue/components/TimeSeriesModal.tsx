@@ -13,6 +13,8 @@ import {
 } from './../../reducers';
 import { fetchFilteredLocations, removeFilteredLocations } from './../../action';
 import SearchBar from './SearchBar';
+import Datetime from 'react-datetime';
+import 'react-datetime/css/react-datetime.css';
 import '../styles/TimeSeriesModal.css';
 import '../styles/Modal.css';
 import './../styles/Buttons.css';
@@ -42,6 +44,11 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const [searchInput, setSearchInput] = useState<string>('');
 
     const [selectedObservationTypeCode, setSelectedObservationTypeCode] = useState<string>('');
+
+    // start and end for selected period
+    const [start, setStart] = useState<string>('');
+    const [end, setEnd] = useState<string>('');
+    console.log('time', start, end);
 
     const onSearchSubmit = (event) => {
         event.preventDefault();
@@ -175,6 +182,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 className="button-action timeseries-button-clear-selection"
                                 onClick={() => setSelectedLocations([])}
                                 disabled={!selectedLocations.length}
+                                title="Clear selection"
                             >
                                 CLEAR SELECTION
                             </button>
@@ -202,11 +210,17 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         <div className="timeseries-period-container">
                             <div className="timeseries-time-selection">
                                 <span>Start</span>
-                                <input type="text"/>
+                                <Datetime
+                                    dateFormat={'DD/MM/YYYY'}
+                                    onChange={(e) => setStart(e.toString())}
+                                />
                             </div>
                             <div className="timeseries-time-selection">
                                 <span>End</span>
-                                <input type="text"/>
+                                <Datetime
+                                    dateFormat={'DD/MM/YYYY'}
+                                    onChange={(e) => setEnd(e.toString())}
+                                />
                             </div>
                         </div>
                     </div>
