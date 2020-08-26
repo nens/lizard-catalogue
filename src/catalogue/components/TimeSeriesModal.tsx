@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import MDSpinner from 'react-md-spinner';
 import Leaflet from 'leaflet';
+import moment from 'moment';
 import { Map, TileLayer, Marker, ZoomControl, Tooltip } from 'react-leaflet';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import {
@@ -12,6 +13,7 @@ import {
     getFilteredLocationsObject
 } from './../../reducers';
 import { fetchFilteredLocations, removeFilteredLocations } from './../../action';
+import { requestTimeseriesExport } from './../../utils/url';
 import SearchBar from './SearchBar';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
@@ -45,10 +47,11 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
     const [selectedObservationTypeCode, setSelectedObservationTypeCode] = useState<string>('');
 
-    // start and end for selected period
-    const [start, setStart] = useState<string>('');
-    const [end, setEnd] = useState<string>('');
-    console.log('time', start, end);
+    // start and end for selected period in milliseconds
+    const defaultEndValue = new Date().valueOf();
+    const defaultStartValue = defaultEndValue - 1000 * 60 * 60 * 24 * 1; // default start value is 1 day before current date
+    const [start, setStart] = useState<number>(defaultStartValue);
+    const [end, setEnd] = useState<number>(defaultEndValue);
 
     const onSearchSubmit = (event) => {
         event.preventDefault();
@@ -213,16 +216,18 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                             <div className="timeseries-time-selection">
                                 <span>Start</span>
                                 <Datetime
+                                    value={moment(defaultStartValue)}
                                     dateFormat={'DD/MM/YYYY'}
-                                    onChange={(e) => setStart(e.toString())}
+                                    onChange={(e) => setStart(moment(e).valueOf())}
                                 />
                             </div>
                             <span className="timeseries-period-arrow">&#8594;</span>
                             <div className="timeseries-time-selection">
                                 <span>End</span>
                                 <Datetime
+                                    value={moment(defaultEndValue)}
                                     dateFormat={'DD/MM/YYYY'}
-                                    onChange={(e) => setEnd(e.toString())}
+                                    onChange={(e) => setEnd(moment(e).valueOf())}
                                 />
                             </div>
                         </div>
@@ -238,7 +243,17 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         </div>
                         <div className="timeseries-buttons">
                             <button className="button-action" style={{visibility: "hidden"}} />
-                            <button className="button-action" title="Export Time-series">
+                            <button
+                                className="button-action"
+                                title="Export Time-series"
+                                onClick={() => {
+                                    selectedLocations.map(uuid => {
+                                        const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
+                                        return selectedTimeseries.map(ts => requestTimeseriesExport(ts.uuid, start, end));
+                                    });
+                                }}
+                                disabled={!selectedLocations.length}
+                            >
                                 EXPORT TIME-SERIES
                             </button>
                         </div>
