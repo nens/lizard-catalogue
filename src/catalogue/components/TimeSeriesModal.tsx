@@ -13,7 +13,7 @@ import {
     getFilteredLocationsObject
 } from './../../reducers';
 import { fetchFilteredLocations, removeFilteredLocations } from './../../action';
-import { requestTimeseriesExport } from './../../utils/url';
+import { requestTimeseriesExport, openTimeseriesInAPI } from './../../utils/url';
 import SearchBar from './SearchBar';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
@@ -234,7 +234,17 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                     </div>
                     <div className="timeseries-button-container">
                         <div className="timeseries-buttons">
-                            <button className="button-action" title="Open in API">
+                            <button
+                                className="button-action"
+                                title="Open in API"
+                                onClick={() => {
+                                    selectedLocations.map(uuid => {
+                                        const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
+                                        return selectedTimeseries.map(ts => openTimeseriesInAPI(ts.uuid));
+                                    });
+                                }}
+                                disabled={!selectedLocations.length}
+                            >
                                 OPEN IN API
                             </button>
                             <button className="button-action" title="Open in Portal">

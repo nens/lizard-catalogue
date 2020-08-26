@@ -9,6 +9,10 @@ export const openWMSInAPI = (wms: WMS) => {
     window.open(`/api/v4/wmslayers/${wms.uuid}`)
 };
 
+export const openTimeseriesInAPI = (uuid: string) => {
+    window.open(`/api/v4/timeseries/${uuid}`, uuid)
+};
+
 export const openRasterInLizard = (raster: Raster, centerPoint: LatLng, zoom: number) => {
     //create short UUID of the raster
     const rasterShortUUID = raster.uuid.substr(0, 7);
