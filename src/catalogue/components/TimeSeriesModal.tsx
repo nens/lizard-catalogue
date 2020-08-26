@@ -44,14 +44,15 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
     const onSearchSubmit = (event) => {
         event.preventDefault();
-        props.fetchFilteredLocations(selectedItem, searchInput, selectedObservationTypeCode);
+        if (searchInput || selectedObservationTypeCode) {
+            props.fetchFilteredLocations(selectedItem, searchInput, selectedObservationTypeCode);
+        } else {
+            // no filter option selected
+            props.removeFilteredLocations();
+        };
     };
 
     useEffect(() => {
-        if (filteredLocationsObject && !searchInput && !selectedObservationTypeCode) {
-            props.removeFilteredLocations();
-        };
-
         const closeModalOnEsc = (e) => {
             if (e.key === 'Escape') {
                 props.toggleTimeseriesModal();
@@ -60,6 +61,11 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
         window.addEventListener('keydown', closeModalOnEsc);
         return () => window.removeEventListener('keydown', closeModalOnEsc);
     });
+
+    // useEffect to call removeFilteredLocations() when component unmounts
+    useEffect(() => {
+        return () => props.removeFilteredLocations();
+    }, [props]);
 
     return (
         <div className="modal-main modal-timeseries">
@@ -142,8 +148,14 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                                 setSelectedObservationTypeCode(observationType.code);
                                                 props.fetchFilteredLocations(selectedItem, searchInput, observationType.code);
                                             } else {
+                                                // uncheck checkbox
                                                 setSelectedObservationTypeCode('');
-                                                props.fetchFilteredLocations(selectedItem, searchInput, '');
+                                                if (searchInput) {
+                                                    props.fetchFilteredLocations(selectedItem, searchInput, '')
+                                                } else {
+                                                    // no filter options selected
+                                                    props.removeFilteredLocations();
+                                                };
                                             };
                                         }}
                                         checked={selectedObservationTypeCode === observationType.code}
