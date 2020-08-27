@@ -1,5 +1,6 @@
 import { Raster, WMS, LatLng, Dataset, Location } from "../interface";
 import { baseUrl } from "../api";
+import moment from "moment";
 
 export const openRasterInAPI = (raster: Raster) => {
     window.open(`/api/v4/rasters/${raster.uuid}`)
@@ -13,13 +14,18 @@ export const openTimeseriesInAPI = (uuid: string) => {
     window.open(`/api/v4/timeseries/${uuid}`, uuid)
 };
 
-export const openLocationInLizard = (location: Location) => {
+export const openLocationInLizard = (location: Location, start: number, end: number) => {
+    const startDate = moment(start).format("MMM,DD,YYYY");
+    const endDate = moment(end).format("MMM,DD,YYYY");
+    const duration = `${startDate}-${endDate}`;
+
     const { geometry } = location;
     const url = geometry ? (
-        `https://nxt3.staging.lizard.net/nl/map/topography/point/${location.object.type}$${location.object.id}/@${geometry.coordinates.join(',')},20`
+        `https://nxt3.staging.lizard.net/nl/map/topography/point/${location.object.type}$${location.object.id}/@${geometry.coordinates.join(',')},20/${duration}`
     ) : (
-        `https://nxt3.staging.lizard.net/nl/map/topography/point/${location.object.type}$${location.object.id}`
+        `https://nxt3.staging.lizard.net/nl/map/topography/point/${location.object.type}$${location.object.id}/${duration}`
     );
+
     window.open(url);
 };
 

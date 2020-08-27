@@ -216,10 +216,12 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                             <div className="timeseries-time-selection">
                                 <span>Start</span>
                                 <Datetime
-                                    value={moment(defaultStartValue)}
                                     dateFormat={'DD/MM/YYYY'}
-                                    timeFormat={'H:mm'}
-                                    inputProps={{className: 'timeseries-datetime'}}
+                                    timeFormat={'HH:mm'}
+                                    inputProps={{
+                                        className: 'timeseries-datetime',
+                                        placeholder: moment(defaultStartValue).format('DD/MM/YYYY HH:mm')
+                                    }}
                                     onChange={(e) => setStart(moment(e).valueOf())}
                                 />
                             </div>
@@ -227,10 +229,12 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                             <div className="timeseries-time-selection">
                                 <span>End</span>
                                 <Datetime
-                                    value={moment(defaultEndValue)}
                                     dateFormat={'DD/MM/YYYY'}
-                                    timeFormat={'H:mm'}
-                                    inputProps={{className: 'timeseries-datetime'}}
+                                    timeFormat={'HH:mm'}
+                                    inputProps={{
+                                        className: 'timeseries-datetime',
+                                        placeholder: moment(defaultEndValue).format('DD/MM/YYYY HH:mm')
+                                    }}
                                     onChange={(e) => setEnd(moment(e).valueOf())}
                                 />
                             </div>
@@ -257,7 +261,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 onClick={() => {
                                     selectedLocations.map(uuid => {
                                         const location = locations[uuid];
-                                        return openLocationInLizard(location);
+                                        return openLocationInLizard(location, start, end);
                                     });
                                 }}
                                 disabled={!selectedLocations.length}
