@@ -21,9 +21,9 @@ export const openLocationInLizard = (location: Location, start: number, end: num
 
     const { geometry } = location;
     const url = geometry ? (
-        `https://nxt3.staging.lizard.net/nl/map/topography/point/${location.object.type}$${location.object.id}/@${geometry.coordinates.join(',')},20/${duration}`
+        `/nl/map/topography/point/${location.object.type}$${location.object.id}/@${geometry.coordinates.join(',')},20/${duration}`
     ) : (
-        `https://nxt3.staging.lizard.net/nl/map/topography/point/${location.object.type}$${location.object.id}/${duration}`
+        `/nl/map/topography/point/${location.object.type}$${location.object.id}/${duration}`
     );
 
     window.open(url);
