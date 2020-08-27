@@ -1,4 +1,4 @@
-import { Raster, WMS, LatLng, Dataset } from "../interface";
+import { Raster, WMS, LatLng, Dataset, Location } from "../interface";
 import { baseUrl } from "../api";
 
 export const openRasterInAPI = (raster: Raster) => {
@@ -11,6 +11,16 @@ export const openWMSInAPI = (wms: WMS) => {
 
 export const openTimeseriesInAPI = (uuid: string) => {
     window.open(`/api/v4/timeseries/${uuid}`, uuid)
+};
+
+export const openLocationInLizard = (location: Location) => {
+    const { geometry } = location;
+    const url = geometry ? (
+        `https://nxt3.staging.lizard.net/nl/map/topography/point/${location.object.type}$${location.object.id}/@${geometry.coordinates.join(',')},20`
+    ) : (
+        `https://nxt3.staging.lizard.net/nl/map/topography/point/${location.object.type}$${location.object.id}`
+    );
+    window.open(url);
 };
 
 export const openRasterInLizard = (raster: Raster, centerPoint: LatLng, zoom: number) => {

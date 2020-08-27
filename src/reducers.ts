@@ -557,6 +557,7 @@ const locationsObject = (state: MyStore['locationsObject'] = null, action): MySt
                     ...location,
                     geometry: location.geometry ? {
                         ...location.geometry,
+                        // re-order the coordinates to [lat, lng] to easily show on map
                         coordinates: [location.geometry.coordinates[1], location.geometry.coordinates[0]]
                     } : null,
                 };
@@ -587,6 +588,7 @@ const filteredLocationsObject = (state: MyStore['filteredLocationsObject'] = nul
                     ...location,
                     geometry: location.geometry ? {
                         ...location.geometry,
+                        // re-order the coordinates to [lat, lng] to easily show on map
                         coordinates: [location.geometry.coordinates[1], location.geometry.coordinates[0]]
                     } : null,
                 };
