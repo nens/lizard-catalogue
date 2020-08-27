@@ -107,7 +107,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         <Map
                             bounds={filteredLocationsObject ? filteredLocationsObject.spatialBounds : locationsObject.spatialBounds}
                             center={locationOnZoom ? locations[locationOnZoom].geometry!.coordinates : null}
-                            zoom={locationOnZoom ? 14 : null}
+                            zoom={locationOnZoom ? 18 : null}
                             zoomControl={false}
                             style={{
                                 opacity: locationsObject.isFetching || (filteredLocationsObject && filteredLocationsObject.isFetching) ? 0.4 : 1
