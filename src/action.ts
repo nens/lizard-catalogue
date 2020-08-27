@@ -266,9 +266,6 @@ export const fetchMonitoringNetworkObservationTypes = (uuid: string) => (dispatc
 //MARK: Locations for selected monitoring network
 export const REQUEST_LOCATIONS = 'REQUEST_LOCATIONS';
 export const RECEIVE_LOCATIONS = 'RECEIVE_LOCATIONS';
-export const REQUEST_FILTERED_LOCATIONS = 'REQUEST_FILTERED_LOCATIONS';
-export const RECEIVE_FILTERED_LOCATIONS = 'RECEIVE_FILTERED_LOCATIONS';
-export const REMOVE_FILTERED_LOCATIONS = 'REMOVE_FILTERED_LOCATIONS';
 
 const locationsRequested = () => ({
     type: REQUEST_LOCATIONS
@@ -276,15 +273,6 @@ const locationsRequested = () => ({
 
 const locationsReceived = (locationsList: Location[]) => ({
     type: RECEIVE_LOCATIONS,
-    locationsList
-});
-
-const filteredLocationsRequested = () => ({
-    type: REQUEST_FILTERED_LOCATIONS
-});
-
-const filteredLocationsReceived = (locationsList: Location[]) => ({
-    type: RECEIVE_FILTERED_LOCATIONS,
     locationsList
 });
 
@@ -296,30 +284,6 @@ export const fetchLocations = (uuid: string) => (dispatch) => {
             dispatch(locationsReceived(response.body.results))
         })
         .catch(console.error)
-};
-
-export const fetchFilteredLocations = (uuid: string, searchInput?: string, observationTypeCode?: string) => (dispatch) => {
-    dispatch(filteredLocationsRequested());
-
-    const params: string[] = [`page_size=10000`];
-
-    if (searchInput) params.push(`name__icontains=${encodeURIComponent(searchInput)}`);
-    if (observationTypeCode) params.push(`timeseries__observation_type__code=${encodeURIComponent(observationTypeCode)}`);
-
-    const queries = params.join('&');
-
-    request
-        .get(`/api/v4/monitoringnetworks/${uuid}/locations/?${queries}`)
-        .then(response => {
-            dispatch(filteredLocationsReceived(response.body.results))
-        })
-        .catch(console.error)
-};
-
-export const removeFilteredLocations = () => (dispatch) => {
-    dispatch({
-        type: REMOVE_FILTERED_LOCATIONS
-    });
 };
 
 //MARK: Select Item to view (Raster or WMS layer)

@@ -52,9 +52,6 @@ import {
     RECEIVE_LOCATIONS,
     REQUEST_NETWORK_OBSERVATION_TYPES,
     RECEIVE_NETWORK_OBSERVATION_TYPES,
-    REQUEST_FILTERED_LOCATIONS,
-    RECEIVE_FILTERED_LOCATIONS,
-    REMOVE_FILTERED_LOCATIONS,
     REMOVE_TIMESERIES,
 } from "./action";
 import {
@@ -129,13 +126,6 @@ export interface MyStore {
     locationsObject: {
         isFetching: boolean,
         locations: {
-            [uuid: string]: Location
-        },
-        spatialBounds: number[][],
-    } | null,
-    filteredLocationsObject: {
-        isFetching: boolean,
-        filteredLocations: {
             [uuid: string]: Location
         },
         spatialBounds: number[][],
@@ -575,39 +565,6 @@ const locationsObject = (state: MyStore['locationsObject'] = null, action): MySt
     };
 };
 
-const filteredLocationsObject = (state: MyStore['filteredLocationsObject'] = null, action): MyStore['filteredLocationsObject'] => {
-    switch(action.type) {
-        case REQUEST_FILTERED_LOCATIONS:
-            return {
-                isFetching: true,
-                filteredLocations: {},
-                spatialBounds: [[85, 180], [-85, -180]],
-            };
-        case RECEIVE_FILTERED_LOCATIONS:
-            const locationsList: Location[] = action.locationsList;
-            const filteredLocations: { [uuid: string]: Location} = {};
-            locationsList.forEach(location => {
-                filteredLocations[location.uuid] = {
-                    ...location,
-                    geometry: location.geometry ? {
-                        ...location.geometry,
-                        // re-order the coordinates to [lat, lng] to easily show on map
-                        coordinates: [location.geometry.coordinates[1], location.geometry.coordinates[0]]
-                    } : null,
-                };
-            });
-            return {
-                isFetching: false,
-                filteredLocations,
-                spatialBounds: getSpatialBounds(locationsList),
-            };
-        case REMOVE_FILTERED_LOCATIONS:
-            return null;
-        default:
-            return state;
-    };
-};
-
 const selectedItem = (state: MyStore['selectedItem'] = '', { type, uuid }): MyStore['selectedItem'] => {
     switch (type) {
         case ITEM_SELECTED:
@@ -952,10 +909,6 @@ export const getLocationsObjectNotNull = (state: MyStore) => {
     return state.locationsObject;
 };
 
-export const getFilteredLocationsObject = (state: MyStore) => {
-    return state.filteredLocationsObject;
-};
-
 export const getObservationTypes = (state: MyStore) => {
     return state.observationTypes;
 };
@@ -989,7 +942,6 @@ export default combineReducers({
     timeseriesObject,
     observationTypeObject,
     locationsObject,
-    filteredLocationsObject,
     filters,
     selectedItem,
     basket,

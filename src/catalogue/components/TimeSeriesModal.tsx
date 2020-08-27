@@ -10,10 +10,11 @@ import {
     getTimeseriesObject,
     getLocationsObjectNotNull,
     getMonitoringNetworkObservationTypesNotNull,
-    getFilteredLocationsObject
 } from './../../reducers';
-import { fetchFilteredLocations, removeFilteredLocations, fetchTimeseries, removeTimeseries } from './../../action';
+import { fetchTimeseries, removeTimeseries } from './../../action';
 import { requestTimeseriesExport, openTimeseriesInAPI, openLocationInLizard } from './../../utils/url';
+import { getSpatialBounds } from '../../utils/getSpatialBounds';
+import { Location } from '../../interface';
 import SearchBar from './SearchBar';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
@@ -23,6 +24,14 @@ import './../styles/Buttons.css';
 
 interface MyProps {
     toggleTimeseriesModal: () => void
+};
+
+interface filteredLocationObject {
+    isFetching: boolean,
+    filteredLocations: {
+        [uuid: string]: Location
+    },
+    spatialBounds: number[][]
 };
 
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
@@ -36,13 +45,10 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const { locations } = locationsObject;
     const locationUUIDs = Object.keys(locations);
 
-    const filteredLocationsObject = useSelector(getFilteredLocationsObject);
-    const filteredLocations = filteredLocationsObject && filteredLocationsObject.filteredLocations;
-    const filteredLocationUUIDs = filteredLocations && Object.keys(filteredLocations);
-
     const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
     const [locationOnZoom, setLocationOnZoom] = useState<string>('');
     const [searchInput, setSearchInput] = useState<string>('');
+    const [finalSearchInput, setFinalSearchInput] = useState<string>('');
 
     const [selectedObservationTypeCode, setSelectedObservationTypeCode] = useState<string>('');
 
@@ -52,15 +58,58 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const [start, setStart] = useState<number>(defaultStartValue);
     const [end, setEnd] = useState<number>(defaultEndValue);
 
-    const onSearchSubmit = (event) => {
-        event.preventDefault();
-        if (searchInput || selectedObservationTypeCode) {
-            props.fetchFilteredLocations(selectedItem, searchInput, selectedObservationTypeCode);
+    // filter state for locations
+    const [filteredLocationObject, setFilteredLocationObject] = useState<filteredLocationObject | null>(null);
+    const filteredLocations = filteredLocationObject && filteredLocationObject.filteredLocations;
+    const filteredLocationUUIDs = filteredLocations && Object.keys(filteredLocations);
+
+    // useEffect to fetch new state of locations based on filter inputs
+    useEffect(() => {
+        if (finalSearchInput || selectedObservationTypeCode) {
+            // Set to loading state
+            setFilteredLocationObject({
+                isFetching: true,
+                filteredLocations: {},
+                spatialBounds: [[85, 180], [-85, -180]]
+            });
+
+            // Building queries based on filter inputs
+            const params: string[] = [`page_size=10000`];
+
+            if (finalSearchInput) params.push(`name__icontains=${encodeURIComponent(finalSearchInput)}`);
+            if (selectedObservationTypeCode) params.push(`timeseries__observation_type__code=${encodeURIComponent(selectedObservationTypeCode)}`);
+
+            const queries = params.join('&');
+
+            // Fetching action
+            fetch(`/api/v4/monitoringnetworks/${selectedItem}/locations/?${queries}`)
+                .then(response => response.json())
+                .then(data => {
+                    const locationList = data.results as Location[];
+                    const filteredLocations = {} as {[uuid: string]: Location};
+                    locationList.forEach(location => {
+                        filteredLocations[location.uuid] = {
+                            ...location,
+                            geometry: location.geometry ? {
+                                ...location.geometry,
+                                // re-order the coordinates to [lat, lng] to easily show on map
+                                coordinates: [location.geometry.coordinates[1], location.geometry.coordinates[0]]
+                            } : null
+                        };
+                    });
+                    // Update state of filtered locations
+                    setFilteredLocationObject({
+                        isFetching: false,
+                        filteredLocations,
+                        spatialBounds: getSpatialBounds(locationList)
+                    });
+                })
+                .catch(console.error);
         } else {
-            // no filter option selected
-            props.removeFilteredLocations();
+            // Remove state of filtered locations
+            setFilteredLocationObject(null);
         };
-    };
+    }, [selectedItem, finalSearchInput, selectedObservationTypeCode])
 
     // Add event listener to close modal on ESCAPE
     useEffect(() => {
@@ -72,11 +121,6 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
         window.addEventListener('keydown', closeModalOnEsc);
         return () => window.removeEventListener('keydown', closeModalOnEsc);
     });
-
-    // useEffect to call removeFilteredLocations() when component unmounts
-    useEffect(() => {
-        return () => props.removeFilteredLocations();
-    }, [props]);
 
     // useEffect to fetch timeseries when component first mounted
     // and remove timeseries when component unmounts
@@ -112,21 +156,24 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 title="Type name of locations"
                                 placeholder="Search for locations"
                                 onSearchChange={e => setSearchInput(e.currentTarget.value)}
-                                onSearchSubmit={onSearchSubmit}
+                                onSearchSubmit={e => {
+                                    e.preventDefault();
+                                    setFinalSearchInput(searchInput);
+                                }}
                             />
                         </div>
-                        {locationsObject.isFetching || (filteredLocationsObject && filteredLocationsObject.isFetching) ? (
+                        {locationsObject.isFetching || (filteredLocationObject && filteredLocationObject.isFetching) ? (
                             <div className="details-map-loading">
                                 <MDSpinner />
                             </div>
                         ) : null}
                         <Map
-                            bounds={filteredLocationsObject ? filteredLocationsObject.spatialBounds : locationsObject.spatialBounds}
+                            bounds={filteredLocationObject ? filteredLocationObject.spatialBounds : locationsObject.spatialBounds}
                             center={locationOnZoom ? locations[locationOnZoom].geometry!.coordinates : null}
                             zoom={locationOnZoom ? 18 : null}
                             zoomControl={false}
                             style={{
-                                opacity: locationsObject.isFetching || (filteredLocationsObject && filteredLocationsObject.isFetching) ? 0.4 : 1
+                                opacity: locationsObject.isFetching || (filteredLocationObject && filteredLocationObject.isFetching) ? 0.4 : 1
                             }}
                         >
                             <ZoomControl position="bottomleft"/>
@@ -173,16 +220,9 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                         onChange={(e) => {
                                             if (e.currentTarget.checked) {
                                                 setSelectedObservationTypeCode(observationType.code);
-                                                props.fetchFilteredLocations(selectedItem, searchInput, observationType.code);
                                             } else {
                                                 // uncheck checkbox
                                                 setSelectedObservationTypeCode('');
-                                                if (searchInput) {
-                                                    props.fetchFilteredLocations(selectedItem, searchInput, '')
-                                                } else {
-                                                    // no filter options selected
-                                                    props.removeFilteredLocations();
-                                                };
                                             };
                                         }}
                                         checked={selectedObservationTypeCode === observationType.code}
@@ -309,8 +349,6 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    fetchFilteredLocations: (uuid: string, searchInput?: string, observationTypeCode?: string) => dispatch(fetchFilteredLocations(uuid, searchInput, observationTypeCode)),
-    removeFilteredLocations: () => dispatch(removeFilteredLocations()),
     fetchTimeseries: (uuid: string) => dispatch(fetchTimeseries(uuid)),
     removeTimeseries: () => dispatch(removeTimeseries()),
 });
