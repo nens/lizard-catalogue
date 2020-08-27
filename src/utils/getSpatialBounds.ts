@@ -17,3 +17,16 @@ export const getSpatialBounds = (locations: Location[]) => {
 
     return spatialBounds;
 };
+
+export const getGeometry = (location: Location): Location['geometry'] => {
+    const { geometry } = location;
+    if (geometry) {
+        return {
+            ...geometry,
+            // re-order the coordinates to [lat, lng] instead of [lng, lat] from the API to easily show on map
+            coordinates: [geometry.coordinates[1], geometry.coordinates[0]]
+        };
+    } else {
+        return null;
+    };
+};

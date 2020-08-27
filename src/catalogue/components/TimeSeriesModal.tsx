@@ -13,7 +13,7 @@ import {
 } from './../../reducers';
 import { fetchTimeseries, removeTimeseries } from './../../action';
 import { requestTimeseriesExport, openTimeseriesInAPI, openLocationInLizard } from './../../utils/url';
-import { getSpatialBounds } from '../../utils/getSpatialBounds';
+import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
 import { Location } from '../../interface';
 import SearchBar from './SearchBar';
 import Datetime from 'react-datetime';
@@ -90,11 +90,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                     locationList.forEach(location => {
                         filteredLocations[location.uuid] = {
                             ...location,
-                            geometry: location.geometry ? {
-                                ...location.geometry,
-                                // re-order the coordinates to [lat, lng] to easily show on map
-                                coordinates: [location.geometry.coordinates[1], location.geometry.coordinates[0]]
-                            } : null
+                            geometry: getGeometry(location)
                         };
                     });
                     // Update state of filtered locations
