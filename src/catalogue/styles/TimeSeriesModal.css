@@ -123,6 +123,9 @@
 .timeseries-datetime {
     color: var(--font-color);
 }
+.timeseries-datetime::placeholder {
+    color: var(--font-color);
+}
 
 /* Buttons */
 .timeseries-button-container {
