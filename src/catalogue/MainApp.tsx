@@ -21,7 +21,6 @@ import {
     selectDataset,
     selectObservationType,
     fetchMonitoringNetworks,
-    fetchTimeseries,
     fetchMonitoringNetworkObservationTypes,
     fetchLocations,
 } from '../action';
@@ -62,7 +61,6 @@ interface PropsFromDispatch {
     fetchDatasets: () => void,
     fetchWMSLayers: (page: number, searchTerm: string | null, organisationName: string | null, datasetSlug: string | null, ordering: string) => void,
     fetchMonitoringNetworks: (page: number, searchTerm: string | null, organisationName: string | null, ordering: string) => void,
-    fetchTimeseries: (uuid: string) => void,
     fetchMonitoringNetworkObservationTypes: (uuid: string) => void,
     fetchLocations: (uuid: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void,
@@ -230,7 +228,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             );
             // Fetch the list of timeseries, observation types and locations by UUID of selected monitoring network
             if (uuid) {
-                this.props.fetchTimeseries(uuid);
                 this.props.fetchMonitoringNetworkObservationTypes(uuid);
                 this.props.fetchLocations(uuid);
             };
@@ -304,7 +301,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
 
             //Fetch timeseries, observation types and locations based on the selected monitoring network
             if (currentDataType === "Timeseries") {
-                this.props.fetchTimeseries(nextProps.selectedItem);
                 this.props.fetchMonitoringNetworkObservationTypes(nextProps.selectedItem);
                 this.props.fetchLocations(nextProps.selectedItem);
             };
@@ -467,7 +463,6 @@ const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
         organisationName: string,
         ordering: string
     ) => fetchMonitoringNetworks(page, searchTerm, organisationName, ordering, dispatch),
-    fetchTimeseries: (uuid: string) => fetchTimeseries(uuid, dispatch),
     fetchMonitoringNetworkObservationTypes: (uuid: string) => dispatch(fetchMonitoringNetworkObservationTypes(uuid)),
     fetchLocations: (uuid: string) => dispatch(fetchLocations(uuid)),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),

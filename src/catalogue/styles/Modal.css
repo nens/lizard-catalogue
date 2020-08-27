@@ -58,6 +58,11 @@
     height: 80%;
     justify-content: flex-start;
 }
+.modal-timeseries-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 /* Raster export modal */
 .modal-raster-export {
