@@ -55,6 +55,7 @@ import {
     REQUEST_FILTERED_LOCATIONS,
     RECEIVE_FILTERED_LOCATIONS,
     REMOVE_FILTERED_LOCATIONS,
+    REMOVE_TIMESERIES,
 } from "./action";
 import {
     Raster,
@@ -519,6 +520,8 @@ const timeseriesObject = (state: MyStore['timeseriesObject'] = null, action): My
                 timeseries,
                 observationTypes
             };
+        case REMOVE_TIMESERIES:
+            return null;
         default:
             return state;
     };

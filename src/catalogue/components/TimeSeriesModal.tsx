@@ -7,12 +7,12 @@ import { Map, TileLayer, Marker, ZoomControl, Tooltip } from 'react-leaflet';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import {
     getSelectedItem,
-    getTimeseriesObjectNotNull,
+    getTimeseriesObject,
     getLocationsObjectNotNull,
     getMonitoringNetworkObservationTypesNotNull,
     getFilteredLocationsObject
 } from './../../reducers';
-import { fetchFilteredLocations, removeFilteredLocations } from './../../action';
+import { fetchFilteredLocations, removeFilteredLocations, fetchTimeseries, removeTimeseries } from './../../action';
 import { requestTimeseriesExport, openTimeseriesInAPI, openLocationInLizard } from './../../utils/url';
 import SearchBar from './SearchBar';
 import Datetime from 'react-datetime';
@@ -27,8 +27,7 @@ interface MyProps {
 
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const selectedItem = useSelector(getSelectedItem);
-    const timeseriesObject = useSelector(getTimeseriesObjectNotNull);
-    const { timeseries } = timeseriesObject;
+    const timeseriesObject = useSelector(getTimeseriesObject);
 
     const observationTypeObject = useSelector(getMonitoringNetworkObservationTypesNotNull);
     const { observationTypes } = observationTypeObject;
@@ -63,6 +62,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
         };
     };
 
+    // Add event listener to close modal on ESCAPE
     useEffect(() => {
         const closeModalOnEsc = (e) => {
             if (e.key === 'Escape') {
@@ -77,6 +77,22 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     useEffect(() => {
         return () => props.removeFilteredLocations();
     }, [props]);
+
+    // useEffect to fetch timeseries when component first mounted
+    // and remove timeseries when component unmounts
+    useEffect(() => {
+        props.fetchTimeseries(selectedItem);
+        return () => props.removeTimeseries();
+    }, [selectedItem, props]);
+
+    if (!timeseriesObject || timeseriesObject.isFetching) return (
+        <div className="modal-main modal-timeseries modal-timeseries-loading">
+            <MDSpinner size={100}  style={{ marginBottom: "20px" }}/>
+            Loading Time-Series for this Monitoring Network ...
+        </div>
+    );
+
+    const { timeseries } = timeseriesObject;
 
     return (
         <div className="modal-main modal-timeseries">
@@ -295,6 +311,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 const mapDispatchToProps = (dispatch) => ({
     fetchFilteredLocations: (uuid: string, searchInput?: string, observationTypeCode?: string) => dispatch(fetchFilteredLocations(uuid, searchInput, observationTypeCode)),
     removeFilteredLocations: () => dispatch(removeFilteredLocations()),
+    fetchTimeseries: (uuid: string) => dispatch(fetchTimeseries(uuid)),
+    removeTimeseries: () => dispatch(removeTimeseries()),
 });
 type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>;
 
