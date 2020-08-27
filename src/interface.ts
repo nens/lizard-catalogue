@@ -142,6 +142,10 @@ export interface Location {
         type: string,
         coordinates: number[],
     } | null,
+    object: {
+        id: number,
+        type: string
+    },
 }
 
 //ORGANISATION
