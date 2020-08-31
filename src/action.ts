@@ -26,6 +26,7 @@ import {
     MonitoringNetworkObject,
     TimeSeries,
     Location,
+    ObservationType,
 } from './interface';
 import { 
     getExportGridCellResolution, 
@@ -176,7 +177,7 @@ const monitoringNetworksReceived = (monitoringNetwork: MonitoringNetworkObject) 
     payload: monitoringNetwork
 });
 
-export const fetchMonitoringNetworks = (page: number, searchTerm: string, organisationName: string, observationType: string, ordering: string, dispatch): void => {
+export const fetchMonitoringNetworks = (page: number, searchTerm: string, organisationName: string, ordering: string, dispatch): void => {
     dispatch(monitoringNetworksRequested());
 
     const params: string[] = [];
@@ -184,7 +185,6 @@ export const fetchMonitoringNetworks = (page: number, searchTerm: string, organi
     if (page) params.push(`page=${page}`);
     if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
     if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
-    if (observationType) params.push(`observation_type__parameter__icontains=${encodeURIComponent(observationType)}`);
     if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
 
     const queries = params.join('&');
@@ -211,6 +211,7 @@ export const fetchMonitoringNetworks = (page: number, searchTerm: string, organi
 //MARK: TimeSeries for selected monitoring network
 export const REQUEST_TIMESERIES = 'REQUEST_TIMESERIES';
 export const RECEIVE_TIMESERIES = 'RECEIVE_TIMESERIES';
+export const REMOVE_TIMESERIES = 'REMOVE_TIMESERIES';
 
 const timeseriesRequested = () => ({
     type: REQUEST_TIMESERIES
@@ -221,13 +222,43 @@ const timeseriesReceived = (timeseriesList: TimeSeries[]) => ({
     timeseriesList
 });
 
-export const fetchTimeseries = (uuid: string, dispatch): void => {
+export const fetchTimeseries = (uuid: string) => (dispatch) => {
     dispatch(timeseriesRequested());
 
     request
-        .get(`/api/v4/monitoringnetworks/${uuid}/timeseries/?page_size=100000`)
+        .get(`/api/v4/monitoringnetworks/${uuid}/timeseries/?page_size=10000`)
         .then(response => {
             dispatch(timeseriesReceived(response.body.results))
+        })
+        .catch(console.error)
+};
+
+export const removeTimeseries = () => (dispatch) => {
+    dispatch({
+        type: REMOVE_TIMESERIES
+    });
+};
+
+//MARK: Observation types for selected monitoring network
+export const REQUEST_NETWORK_OBSERVATION_TYPES = 'REQUEST_NETWORK_OBSERVATION_TYPES';
+export const RECEIVE_NETWORK_OBSERVATION_TYPES = 'RECEIVE_NETWORK_OBSERVATION_TYPES';
+
+const observationTypesRequested = () => ({
+    type: REQUEST_NETWORK_OBSERVATION_TYPES
+});
+
+const observationTypesReceived = (observationTypeList: ObservationType[]) => ({
+    type: RECEIVE_NETWORK_OBSERVATION_TYPES,
+    observationTypeList
+});
+
+export const fetchMonitoringNetworkObservationTypes = (uuid: string) => (dispatch) => {
+    dispatch(observationTypesRequested());
+
+    request
+        .get(`/api/v4/monitoringnetworks/${uuid}/observationtypes/?page_size=1000`)
+        .then(response => {
+            dispatch(observationTypesReceived(response.body.results))
         })
         .catch(console.error)
 };
@@ -245,11 +276,10 @@ const locationsReceived = (locationsList: Location[]) => ({
     locationsList
 });
 
-export const fetchLocations = (uuid: string, dispatch): void => {
+export const fetchLocations = (uuid: string) => (dispatch) => {
     dispatch(locationsRequested());
-
     request
-        .get(`/api/v4/monitoringnetworks/${uuid}/locations/?page_size=100000`)
+        .get(`/api/v4/monitoringnetworks/${uuid}/locations/?page_size=10000`)
         .then(response => {
             dispatch(locationsReceived(response.body.results))
         })

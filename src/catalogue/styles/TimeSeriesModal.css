@@ -1,0 +1,145 @@
+.timeseries {
+    height: 100%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: row;
+}
+.timeseries h3 {
+    font-size: 1.8rem;
+    font-weight: 500;
+    margin: 0;
+    margin-bottom: 1rem;
+}
+.timeseries-helper-text {
+    font-style: italic;
+    font-weight: 300;
+}
+
+.timeseries-filter {
+    width: 60%;
+    padding-right: 1rem;
+}
+
+.timeseries-selection {
+    width: 40%;
+}
+
+.timeseries-map {
+    width: 100%;
+    height: 75%;
+    margin: 1rem 0;
+    position: relative;
+}
+.leaflet-container {
+    height: 100%;
+}
+.location-icon {
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    border: 3px solid #707070;
+}
+.location-icon-small {
+    border: 2px solid #707070;
+}
+.location-icon-selected {
+    background-color: var(--button-color-scheme);
+    border: 3px solid var(--main-color-scheme);
+}
+
+.timeseries-search-locations {
+    position: absolute;
+    top: 0.8rem;
+    left: 0.8rem;
+    width: 97%;
+    z-index: 1000;
+}
+
+.timeseries-observation-list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+}
+.timeseries-observation-list li {
+    margin-right: 1rem;
+}
+.timeseries-observation-list li input {
+    cursor: pointer;
+}
+
+.timeseries-selected-locations {
+    height: 60%;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color-soft);
+    display: flex;
+    flex-direction: column;
+}
+.timeseries-selected-locations-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    white-space: nowrap;
+}
+.timeseries-selected-locations-header > div {
+    margin-right: 1rem;
+}
+
+.timeseries-location-list {
+    height: 100%;
+    padding: 2rem 0;
+    margin: 0;
+    overflow: scroll;
+}
+.timeseries-location-list li {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.timeseries-period {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color-soft);
+}
+.timeseries-period-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+}
+.timeseries-period-arrow {
+    font-size: 4rem;
+    color: #707070;
+}
+.timeseries-time-selection {
+    display: flex;
+    flex-direction: column;
+}
+.timeseries-time-selection span {
+    margin-bottom: 0.5rem;
+}
+
+/* Datetime picker */
+.timeseries-datetime {
+    color: var(--font-color);
+}
+.timeseries-datetime::placeholder {
+    color: var(--font-color);
+}
+
+/* Buttons */
+.timeseries-button-container {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.timeseries-button-container button {
+    width: 80%;
+    margin-bottom: 1rem;
+}
+
+.timeseries-button-clear-selection {
+    font-size: 1.6rem;
+    width: auto;
+}

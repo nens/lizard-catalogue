@@ -83,7 +83,7 @@ class ExportModal extends React.Component<MyProps> {
         const selectedGridIds = this.props.selectedGridCellIds; 
 
         return (
-            <div className="export_main">
+            <div className="export">
                 <div className="export_map-selection">
                     <h3>Export Selection</h3>
                     <div className="export_map-box">

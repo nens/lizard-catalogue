@@ -1,5 +1,7 @@
-import { Raster, WMS, LatLng, Dataset } from "../interface";
+import * as L from 'leaflet';
+import { Raster, WMS, LatLng, Dataset, Location } from "../interface";
 import { baseUrl } from "../api";
+import moment from "moment";
 
 export const openRasterInAPI = (raster: Raster) => {
     window.open(`/api/v4/rasters/${raster.uuid}`)
@@ -7,6 +9,38 @@ export const openRasterInAPI = (raster: Raster) => {
 
 export const openWMSInAPI = (wms: WMS) => {
     window.open(`/api/v4/wmslayers/${wms.uuid}`)
+};
+
+export const openTimeseriesInAPI = (timeseriesUUIDs: string[][]) => {
+    // Temporarily open the collection of timeseries in API v3 as it is
+    // for now not possible to open multiple selected timeseries in API v4
+    window.open(`/api/v3/timeseries/?uuid=${timeseriesUUIDs.join(',')}`)
+};
+
+export const openLocationsInLizard = (locations: Location[], start: number, end: number) => {
+    const startDate = moment(start).format("MMM,DD,YYYY");
+    const endDate = moment(end).format("MMM,DD,YYYY");
+    const duration = `${startDate}-${endDate}`;
+
+    // Filter out locations with no geometry information
+    const locationsWithCoordinates = locations.filter(location => location.geometry !== null);
+
+    // Get center point of all selected locations
+    const arrayOfCoordinates = locationsWithCoordinates.map(location => location.geometry!.coordinates);
+    const bounds = new L.LatLngBounds(arrayOfCoordinates);
+    const centerPoint = bounds.getCenter();
+
+    // Construct url for multi-point selection
+    const objectUrl = locations.map(location => `${location.object.type}$${location.object.id}`).join('+');
+
+    // Open locations in chart mode to view the time-series
+    const url = locationsWithCoordinates.length ? (
+        `/nl/charts/topography/multi-point/${objectUrl}/@${centerPoint.lat},${centerPoint.lng},14/${duration}`
+    ) : (
+        `/nl/charts/topography/multi-point/${objectUrl}/${duration}`
+    );
+
+    window.open(url);
 };
 
 export const openRasterInLizard = (raster: Raster, centerPoint: LatLng, zoom: number) => {
@@ -46,4 +80,11 @@ export const getRasterGetCapabilitesURL = (raster: Raster) => {
 
 export const getDatasetGetCapabilitesURL = (dataset: Dataset) => {
     return dataset && `${baseUrl}/wms/${dataset.slug}/?request=GetCapabilities`;
+};
+
+export const requestTimeseriesExport = (uuid: string, start: number, end: number) => {
+    const url = `/api/v3/timeseries/?async=true&format=xlsx&uuid=${uuid}&start=${start}&end=${end}&interactive=true`;
+
+    // Send GET request to timeseries endpoint for exporting task
+    fetch(url).catch(console.error);
 };

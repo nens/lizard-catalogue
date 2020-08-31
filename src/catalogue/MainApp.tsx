@@ -21,7 +21,7 @@ import {
     selectDataset,
     selectObservationType,
     fetchMonitoringNetworks,
-    fetchTimeseries,
+    fetchMonitoringNetworkObservationTypes,
     fetchLocations,
 } from '../action';
 import { MyStore, getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList, getCurrentMonitoringNetworkList } from '../reducers';
@@ -30,13 +30,13 @@ import { getUrlParams, getSearch, getOrganisation, getObservationType, getDatase
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
-import MonitoringNetworkList from './timeseries/MonitoringNetworkList';
 import WMSDetails from './wms/WMSDetails';
+import MonitoringNetworkList from './timeseries/MonitoringNetworkList';
+import MonitoringNetworkDetails from './timeseries/MonitoringNetworkDetails';
 import FilterBar from './FilterBar';
 import Header from './Header';
 import AlertPopup from './components/AlertPopup';
 import './styles/MainApp.css';
-import MonitoringNetworkDetails from './timeseries/MonitoringNetworkDetails';
 
 interface PropsFromState {
     currentRasterList: MyStore['currentRasterList'] | null,
@@ -60,8 +60,8 @@ interface PropsFromDispatch {
     fetchOrganisations: () => void,
     fetchDatasets: () => void,
     fetchWMSLayers: (page: number, searchTerm: string | null, organisationName: string | null, datasetSlug: string | null, ordering: string) => void,
-    fetchMonitoringNetworks: (page: number, searchTerm: string | null, organisationName: string | null, observationType: string | null, ordering: string) => void,
-    fetchTimeseries: (uuid: string) => void,
+    fetchMonitoringNetworks: (page: number, searchTerm: string | null, organisationName: string | null, ordering: string) => void,
+    fetchMonitoringNetworkObservationTypes: (uuid: string) => void,
     fetchLocations: (uuid: string) => void,
     switchDataType: (dataType: SwitchDataType['payload']) => void,
     toggleAlert: () => void,
@@ -96,6 +96,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
     toggleAlertMessage = () => {
         if (this.props.currentRasterList && this.props.currentRasterList.showAlert === true) this.props.toggleAlert();
         if (this.props.currentWMSList && this.props.currentWMSList.showAlert === true) this.props.toggleAlert();
+        if (this.props.currentMonitoringNetworkList && this.props.currentMonitoringNetworkList.showAlert === true) this.props.toggleAlert();
     };
 
     closeModalsOnEsc = (e) => {
@@ -223,12 +224,11 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 this.props.filters.page,
                 search,
                 organisation,
-                observation,
                 this.props.filters.ordering
             );
-            // Fetch the list of timeseries and locations by UUID of selected monitoring network
+            // Fetch the list of observation types and locations by UUID of selected monitoring network
             if (uuid) {
-                this.props.fetchTimeseries(uuid);
+                this.props.fetchMonitoringNetworkObservationTypes(uuid);
                 this.props.fetchLocations(uuid);
             };
         };
@@ -284,7 +284,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                     1,
                     nextFilters.searchTerm,
                     nextFilters.organisation,
-                    nextFilters.observationType,
                     nextFilters.ordering
                 );
             };
@@ -300,9 +299,9 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             );
             this.updateURL(url);
 
-            //Fetch timeseries and locations based on the selected monitoring network
+            //Fetch observation types and locations based on the selected monitoring network
             if (currentDataType === "Timeseries") {
-                this.props.fetchTimeseries(nextProps.selectedItem);
+                this.props.fetchMonitoringNetworkObservationTypes(nextProps.selectedItem);
                 this.props.fetchLocations(nextProps.selectedItem);
             };
         } else if (nextFilters.page !== filters.page) {
@@ -329,7 +328,6 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                     nextFilters.page,
                     nextFilters.searchTerm,
                     nextFilters.organisation,
-                    nextFilters.observationType,
                     nextFilters.ordering
                 );
             };
@@ -463,11 +461,10 @@ const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
         page: number,
         searchTerm: string,
         organisationName: string,
-        observationType: string,
         ordering: string
-    ) => fetchMonitoringNetworks(page, searchTerm, organisationName, observationType, ordering, dispatch),
-    fetchTimeseries: (uuid: string) => fetchTimeseries(uuid, dispatch),
-    fetchLocations: (uuid: string) => fetchLocations(uuid, dispatch),
+    ) => fetchMonitoringNetworks(page, searchTerm, organisationName, ordering, dispatch),
+    fetchMonitoringNetworkObservationTypes: (uuid: string) => dispatch(fetchMonitoringNetworkObservationTypes(uuid)),
+    fetchLocations: (uuid: string) => dispatch(fetchLocations(uuid)),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
     toggleAlert: () => toggleAlert(dispatch),

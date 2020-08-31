@@ -50,6 +50,9 @@ import {
     RECEIVE_TIMESERIES,
     REQUEST_LOCATIONS,
     RECEIVE_LOCATIONS,
+    REQUEST_NETWORK_OBSERVATION_TYPES,
+    RECEIVE_NETWORK_OBSERVATION_TYPES,
+    REMOVE_TIMESERIES,
 } from "./action";
 import {
     Raster,
@@ -66,6 +69,7 @@ import {
     Location,
 } from './interface';
 import { areGridCelIdsEqual, haveGridCellsSameId } from './utils/rasterExportUtils';
+import { getSpatialBounds, getGeometry } from './utils/getSpatialBounds';
 
 export interface MyStore {
     bootstrap: Bootstrap,
@@ -114,6 +118,10 @@ export interface MyStore {
         observationTypes: {
             [id: string]: ObservationType
         },
+    } | null,
+    observationTypeObject: {
+        isFetching: boolean,
+        observationTypes: ObservationType[],
     } | null,
     locationsObject: {
         isFetching: boolean,
@@ -502,6 +510,25 @@ const timeseriesObject = (state: MyStore['timeseriesObject'] = null, action): My
                 timeseries,
                 observationTypes
             };
+        case REMOVE_TIMESERIES:
+            return null;
+        default:
+            return state;
+    };
+};
+
+const observationTypeObject = (state: MyStore['observationTypeObject'] = null, action): MyStore['observationTypeObject'] => {
+    switch(action.type) {
+        case REQUEST_NETWORK_OBSERVATION_TYPES:
+            return {
+                isFetching: true,
+                observationTypes: [],
+            }
+        case RECEIVE_NETWORK_OBSERVATION_TYPES:
+            return {
+                isFetching: false,
+                observationTypes: action.observationTypeList,
+            }
         default:
             return state;
     };
@@ -521,33 +548,13 @@ const locationsObject = (state: MyStore['locationsObject'] = null, action): MySt
             locationsList.forEach(location => {
                 locations[location.uuid] = {
                     ...location,
-                    geometry: location.geometry ? {
-                        ...location.geometry,
-                        coordinates: [location.geometry.coordinates[0], location.geometry.coordinates[1]]
-                    } : null,
+                    geometry: getGeometry(location)
                 };
             });
-
-            // Get spatial bounds of the selected monitoring network
-            // by retrieve max x, max y, min x, min y of all locations
-            const coordinatesArray = locationsList.filter(
-                location => location.geometry !== null
-            ).map(
-                location => location.geometry!.coordinates
-            );
-
-            const x: number[] = coordinatesArray.map(coordinates => coordinates[0]);
-            const y: number[] = coordinatesArray.map(coordinates => coordinates[1]);
-            const north = Math.max(...y);
-            const east = Math.max(...x);
-            const south = Math.min(...y);
-            const west = Math.min(...x);
-            const spatialBounds = [[north, east], [south, west]];
-
             return {
                 isFetching: false,
                 locations,
-                spatialBounds,
+                spatialBounds: getSpatialBounds(locationsList),
             };
         default:
             return state;
@@ -861,16 +868,40 @@ export const getWMS = (state: MyStore, uuid: string) => {
 export const getCurrentMonitoringNetworkList = (state: MyStore) => {
     return state.currentMonitoringNetworkList;
 };
-
+export const getAllMonitoringNetworks = (state: MyStore) => {
+    return state.allMonitoringNetworks;
+};
 export const getMonitoringNetwork = (state: MyStore, uuid: string) => {
     return state.allMonitoringNetworks[uuid];
+};
+
+export const getMonitoringNetworkObservationTypes = (state: MyStore) => {
+    return state.observationTypeObject;
+};
+export const getMonitoringNetworkObservationTypesNotNull = (state: MyStore) => {
+    if (!state.observationTypeObject) {
+        throw new Error("getMonitoringNetworkObservationTypesNotNull is called when observation type object is null");
+    };
+    return state.observationTypeObject;
 };
 
 export const getTimeseriesObject = (state: MyStore) => {
     return state.timeseriesObject;
 };
+export const getTimeseriesObjectNotNull = (state: MyStore) => {
+    if (!state.timeseriesObject) {
+        throw new Error("getTimeseriesObject is called when timeseries object is null");
+    };
+    return state.timeseriesObject;
+};
 
 export const getLocationsObject = (state: MyStore) => {
+    return state.locationsObject;
+};
+export const getLocationsObjectNotNull = (state: MyStore) => {
+    if (!state.locationsObject) {
+        throw new Error("getLocationsObject is called when locations object is null");
+    };
     return state.locationsObject;
 };
 
@@ -890,6 +921,10 @@ export const getInbox = (state: MyStore) => {
     return state.inbox;
 };
 
+export const getSelectedItem = (state: MyStore) => {
+    return state.selectedItem;
+};
+
 export default combineReducers({
     rasterExportState,
     bootstrap,
@@ -901,6 +936,7 @@ export default combineReducers({
     currentMonitoringNetworkList,
     allMonitoringNetworks,
     timeseriesObject,
+    observationTypeObject,
     locationsObject,
     filters,
     selectedItem,

@@ -21,3 +21,8 @@
 .button-action:active {
     transform: translateY(1px);
 }
+.button-action:disabled {
+    cursor: not-allowed;
+    color: #FFFFFF;
+    background-color: var(--border-color-soft);
+}
