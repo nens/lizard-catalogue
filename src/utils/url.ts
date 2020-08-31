@@ -11,8 +11,10 @@ export const openWMSInAPI = (wms: WMS) => {
     window.open(`/api/v4/wmslayers/${wms.uuid}`)
 };
 
-export const openTimeseriesInAPI = (uuid: string) => {
-    window.open(`/api/v4/timeseries/${uuid}`, uuid)
+export const openTimeseriesInAPI = (timeseriesUUIDs: string[][]) => {
+    // Temporarily open the collection of timeseries in API v3 as it is
+    // for now not possible to open multiple selected timeseries in API v4
+    window.open(`/api/v3/timeseries/?uuid=${timeseriesUUIDs.join(',')}`)
 };
 
 export const openLocationsInLizard = (locations: Location[], start: number, end: number) => {

@@ -298,10 +298,11 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 className="button-action"
                                 title="Open in API"
                                 onClick={() => {
-                                    selectedLocations.map(uuid => {
+                                    const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
                                         const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
-                                        return selectedTimeseries.map(ts => openTimeseriesInAPI(ts.uuid));
+                                        return selectedTimeseries.map(ts => ts.uuid);
                                     });
+                                    return openTimeseriesInAPI(arrayOfTimeseriesUUIDs);
                                 }}
                                 disabled={!selectedLocations.length}
                             >
