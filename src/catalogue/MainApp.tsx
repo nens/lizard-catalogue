@@ -226,7 +226,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
                 organisation,
                 this.props.filters.ordering
             );
-            // Fetch the list of timeseries, observation types and locations by UUID of selected monitoring network
+            // Fetch the list of observation types and locations by UUID of selected monitoring network
             if (uuid) {
                 this.props.fetchMonitoringNetworkObservationTypes(uuid);
                 this.props.fetchLocations(uuid);
@@ -299,7 +299,7 @@ class MainApp extends React.Component<MainAppProps, MyState> {
             );
             this.updateURL(url);
 
-            //Fetch timeseries, observation types and locations based on the selected monitoring network
+            //Fetch observation types and locations based on the selected monitoring network
             if (currentDataType === "Timeseries") {
                 this.props.fetchMonitoringNetworkObservationTypes(nextProps.selectedItem);
                 this.props.fetchLocations(nextProps.selectedItem);

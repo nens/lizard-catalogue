@@ -12,7 +12,7 @@ import {
     getMonitoringNetworkObservationTypesNotNull,
 } from './../../reducers';
 import { fetchTimeseries, removeTimeseries } from './../../action';
-import { requestTimeseriesExport, openTimeseriesInAPI, openLocationInLizard } from './../../utils/url';
+import { requestTimeseriesExport, openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
 import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
 import { Location } from '../../interface';
 import SearchBar from './SearchBar';
@@ -311,10 +311,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 className="button-action"
                                 title="Open in Portal"
                                 onClick={() => {
-                                    selectedLocations.map(uuid => {
-                                        const location = locations[uuid];
-                                        return openLocationInLizard(location, start, end);
-                                    });
+                                    const arrayOfLocations = selectedLocations.map(uuid => locations[uuid]);
+                                    return openLocationsInLizard(arrayOfLocations, start, end);
                                 }}
                                 disabled={!selectedLocations.length}
                             >

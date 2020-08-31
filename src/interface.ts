@@ -140,7 +140,7 @@ export interface Location {
     name: string,
     geometry: {
         type: string,
-        coordinates: number[],
+        coordinates: [number, number],
     } | null,
     object: {
         id: number,

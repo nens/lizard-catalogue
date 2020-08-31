@@ -1,3 +1,4 @@
+import * as L from 'leaflet';
 import { Raster, WMS, LatLng, Dataset, Location } from "../interface";
 import { baseUrl } from "../api";
 import moment from "moment";
@@ -14,16 +15,27 @@ export const openTimeseriesInAPI = (uuid: string) => {
     window.open(`/api/v4/timeseries/${uuid}`, uuid)
 };
 
-export const openLocationInLizard = (location: Location, start: number, end: number) => {
+export const openLocationsInLizard = (locations: Location[], start: number, end: number) => {
     const startDate = moment(start).format("MMM,DD,YYYY");
     const endDate = moment(end).format("MMM,DD,YYYY");
     const duration = `${startDate}-${endDate}`;
 
-    const { geometry } = location;
-    const url = geometry ? (
-        `/nl/map/topography/point/${location.object.type}$${location.object.id}/@${geometry.coordinates.join(',')},20/${duration}`
+    // Filter out locations with no geometry information
+    const locationsWithCoordinates = locations.filter(location => location.geometry !== null);
+
+    // Get center point of all selected locations
+    const arrayOfCoordinates = locationsWithCoordinates.map(location => location.geometry!.coordinates);
+    const bounds = new L.LatLngBounds(arrayOfCoordinates);
+    const centerPoint = bounds.getCenter();
+
+    // Construct url for multi-point selection
+    const objectUrl = locations.map(location => `${location.object.type}$${location.object.id}`).join('+');
+
+    // Open locations in chart mode to view the time-series
+    const url = locationsWithCoordinates.length ? (
+        `/nl/charts/topography/multi-point/${objectUrl}/@${centerPoint.lat},${centerPoint.lng},14/${duration}`
     ) : (
-        `/nl/map/topography/point/${location.object.type}$${location.object.id}/${duration}`
+        `/nl/charts/topography/multi-point/${objectUrl}/${duration}`
     );
 
     window.open(url);
