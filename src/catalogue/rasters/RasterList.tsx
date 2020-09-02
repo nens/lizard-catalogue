@@ -103,7 +103,7 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                         onSearchSubmit={onSearchSubmit}
                         onSearchChange={onSearchChange}
                     />
-                    <div className="list__length">{count} items</div>
+                    <div className="list__length">{count} rasters</div>
                 </div>
                 <div className="list__content">
                     <ul className="list__list">
