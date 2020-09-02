@@ -81,7 +81,7 @@
     flex-direction: column;
 }
 .description {
-    overflow: scroll;
+    overflow-y: auto;
 }
 .details-title {
     font-weight: 500;
