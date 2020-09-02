@@ -326,10 +326,11 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 className="button-action"
                                 title="Export Time-series"
                                 onClick={() => {
-                                    selectedLocations.map(uuid => {
+                                    const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
                                         const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
-                                        return selectedTimeseries.map(ts => requestTimeseriesExport(ts.uuid, start, end));
+                                        return selectedTimeseries.map(ts => ts.uuid);
                                     });
+                                    return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end);
                                 }}
                                 disabled={!selectedLocations.length}
                             >

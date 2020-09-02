@@ -82,8 +82,8 @@ export const getDatasetGetCapabilitesURL = (dataset: Dataset) => {
     return dataset && `${baseUrl}/wms/${dataset.slug}/?request=GetCapabilities`;
 };
 
-export const requestTimeseriesExport = (uuid: string, start: number, end: number) => {
-    const url = `/api/v3/timeseries/?async=true&format=xlsx&uuid=${uuid}&start=${start}&end=${end}&interactive=true`;
+export const requestTimeseriesExport = (timeseriesUUIDs: string[][], start: number, end: number) => {
+    const url = `/api/v3/timeseries/?async=true&format=xlsx&start=${start}&end=${end}&interactive=true&uuid=${timeseriesUUIDs.join(',')}`;
 
     // Send GET request to timeseries endpoint for exporting task
     fetch(url).catch(console.error);
