@@ -185,7 +185,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                     ) : null}
                 </div>
                 ) : null}
-                <table className="details-table">
+                <table className="details-table" cellSpacing={0}>
                     <tbody>
                         <tr>
                             <th
