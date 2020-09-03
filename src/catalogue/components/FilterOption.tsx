@@ -33,7 +33,10 @@ const FilterOption: React.FC<MyProps> = (props) => {
 
     const [searchInput, setSearchInput] = useState('');
     const [numberOfItems, setNumberOfItems] = useState(4);
-    const [showList, setShowList] = useState(false);
+    const [showList, setShowList] = useState(
+        // First filter option (organisation) is open by default
+        filterOption === 'organisation' ? true : false
+    );
 
     // Filter items using search input
     const filteredListOfItems = listOfItems.filter(item => {

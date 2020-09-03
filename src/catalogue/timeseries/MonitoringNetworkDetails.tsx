@@ -81,7 +81,7 @@ const MonitoringNetworkDetails: React.FC = () => {
                 <span className="details-title">Organisation</span>
                 <span>{monitoringNetwork.organisation && monitoringNetwork.organisation.name}</span>
             </div>
-            <table className="details-table">
+            <table className="details-table" cellSpacing={0}>
                 <tbody>
                     <tr>
                         <th

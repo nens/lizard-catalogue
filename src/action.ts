@@ -192,7 +192,11 @@ export const fetchMonitoringNetworks = (page: number, searchTerm: string, organi
     request
         .get(`/api/v4/monitoringnetworks/?${queries}`)
         .then(response => {
-            if(response.body.count === 0 && searchTerm) {
+            if (
+                response.body.count === 0 &&
+                // Check if search input is an UUID
+                searchTerm && searchTerm.includes('-') && searchTerm.length === 36
+            ) {
                 //If could not find any monitoring network with the search term by monitoring network's name then look for its uuid
                 const newQueries = queries.replace('name__icontains', 'uuid');
                 request

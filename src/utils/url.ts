@@ -14,7 +14,7 @@ export const openWMSInAPI = (wms: WMS) => {
 export const openTimeseriesInAPI = (timeseriesUUIDs: string[][]) => {
     // Temporarily open the collection of timeseries in API v3 as it is
     // for now not possible to open multiple selected timeseries in API v4
-    window.open(`/api/v3/timeseries/?uuid=${timeseriesUUIDs.join(',')}`)
+    window.open(`/api/v4/timeseries/?uuid__in=${timeseriesUUIDs.join(',')}`)
 };
 
 export const openLocationsInLizard = (locations: Location[], start: number, end: number) => {
@@ -82,8 +82,8 @@ export const getDatasetGetCapabilitesURL = (dataset: Dataset) => {
     return dataset && `${baseUrl}/wms/${dataset.slug}/?request=GetCapabilities`;
 };
 
-export const requestTimeseriesExport = (uuid: string, start: number, end: number) => {
-    const url = `/api/v3/timeseries/?async=true&format=xlsx&uuid=${uuid}&start=${start}&end=${end}&interactive=true`;
+export const requestTimeseriesExport = (timeseriesUUIDs: string[][], start: number, end: number) => {
+    const url = `/api/v3/timeseries/?async=true&format=xlsx&start=${start}&end=${end}&interactive=true&uuid=${timeseriesUUIDs.join(',')}`;
 
     // Send GET request to timeseries endpoint for exporting task
     fetch(url).catch(console.error);
