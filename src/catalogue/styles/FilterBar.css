@@ -19,7 +19,7 @@
     color: var(--font-color);
     border: none;
     border-radius: 1px;
-    box-shadow: 4px 4px 4px #00000029;
+    box-shadow: 2px 2px 4px #00000029;
 }
 .switcher:focus {
     outline: none;
