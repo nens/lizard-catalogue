@@ -39,7 +39,7 @@ li {
     justify-content: flex-start;
 
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
 
     margin: 0;
     padding: 0;
