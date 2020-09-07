@@ -10,9 +10,9 @@
 
 .switcher {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1.8rem;
+    font-size: 1.9rem;
     font-weight: 500;
-    height: 3.5rem;
+    height: 6rem;
     width: 100%;
     margin-bottom: 2.5rem;
     padding: 0 .5rem;
@@ -20,6 +20,8 @@
     border: none;
     border-radius: 1px;
     box-shadow: 2px 2px 4px #00000029;
+    background-color: var(--second-color-scheme);
+    cursor: pointer;
 }
 .switcher:focus {
     outline: none;

@@ -71,9 +71,7 @@ li {
 }
 
 .list__row-li:hover {
-    color: #FFFFFF;
-    background-color: var(--main-color-scheme);
-    border: 1px solid var(--main-color-scheme);
+    background-color: var(--second-color-scheme);
 }
 
 .list__row-li-selected {
