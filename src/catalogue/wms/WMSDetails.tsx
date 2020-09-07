@@ -79,10 +79,12 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
                 </div>
                 <div className="details-uuid">
                     <span>{wms.uuid}</span>
-                    <i
-                        className="fa fa-clone"
+                    <button
+                        className="button-tooltip"
                         onClick={() => navigator.clipboard.writeText(wms.uuid)}
-                    />
+                    >
+                        <i className="fa fa-clone" />
+                    </button>
                 </div>
                 <div className="details-map">
                     <Map bounds={bounds} zoom={wms.min_zoom} zoomControl={false}>

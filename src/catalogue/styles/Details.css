@@ -42,8 +42,10 @@
     font-size: 1.6rem;
     margin-bottom: 1.5rem;
 }
+.details-uuid span {
+    margin-right: 1rem;
+}
 .details-uuid i {
-    margin-left: 1rem;
     cursor: pointer;
     color: grey;
     font-size: 1.6rem;

@@ -113,10 +113,12 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                 </div>
                 <div className="details-uuid">
                     <span>{raster.uuid}</span>
-                    <i
-                        className="fa fa-clone"
+                    <button
+                        className="button-tooltip"
                         onClick={() => navigator.clipboard.writeText(raster.uuid)}
-                    />
+                    >
+                        <i className="fa fa-clone" />
+                    </button>
                 </div>
                 <div className="details-map">
                     <Map bounds={bounds} zoomControl={false}>

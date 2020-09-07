@@ -40,13 +40,15 @@ const MonitoringNetworkDetails: React.FC = () => {
                     {monitoringNetwork.name}
                 </h3>
             </div>
-            <div className="details-uuid">
-                <span>{monitoringNetwork.uuid}</span>
-                <i
-                    className="fa fa-clone"
-                    onClick={() => navigator.clipboard.writeText(monitoringNetwork.uuid)}
-                />
-            </div>
+                <div className="details-uuid">
+                    <span>{monitoringNetwork.uuid}</span>
+                    <button
+                        className="button-tooltip"
+                        onClick={() => navigator.clipboard.writeText(monitoringNetwork.uuid)}
+                    >
+                        <i className="fa fa-clone" />
+                    </button>
+                </div>
             <div className="details-map">
                 {locationsObject && locationsObject.isFetching ? (
                     <div className="details-map-loading">
