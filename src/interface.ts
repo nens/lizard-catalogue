@@ -165,6 +165,7 @@ export interface ObservationType {
     unit: string,
     scale: string,
     description: string,
+    reference_frame: string | null,
 };
 
 //DATASET

@@ -9,12 +9,17 @@ import {
     getAllMonitoringNetworks,
     getMonitoringNetworkObservationTypes,
 } from '../../reducers';
-import { MonitoringNetwork } from '../../interface';
+import { MonitoringNetwork, ObservationType } from '../../interface';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import TimeSeriesModal from '../components/TimeSeriesModal';
 import '../styles/Details.css';
 import '../styles/Buttons.css';
 import '../styles/Modal.css';
+
+// Helper function to add reference frame to unit of observation type
+const addRefToUnit = (observationType: ObservationType) => {
+    return observationType.reference_frame ? observationType.unit + observationType.reference_frame : observationType.unit;
+};
 
 const MonitoringNetworkDetails: React.FC = () => {
     const selectedItem = useSelector(getSelectedItem);
@@ -108,7 +113,7 @@ const MonitoringNetworkDetails: React.FC = () => {
                             ) : (
                                 <td>
                                     {observationTypeObject.observationTypes.map(observationType => (
-                                        <p key={observationType.id}>{observationType.parameter ? observationType.parameter : observationType.code}</p>
+                                        <p key={observationType.id}>{observationType.parameter ? observationType.parameter : observationType.code} ({addRefToUnit(observationType)})</p>
                                     ))}
                                 </td>
                             )}
