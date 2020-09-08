@@ -114,7 +114,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                 <div className="details-uuid">
                     <span>{raster.uuid}</span>
                     <button
-                        className="button-tooltip"
+                        className="button-copy"
                         onClick={() => navigator.clipboard.writeText(raster.uuid)}
                     >
                         <i className="fa fa-clone" />

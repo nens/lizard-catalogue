@@ -43,7 +43,7 @@ const MonitoringNetworkDetails: React.FC = () => {
                 <div className="details-uuid">
                     <span>{monitoringNetwork.uuid}</span>
                     <button
-                        className="button-tooltip"
+                        className="button-copy"
                         onClick={() => navigator.clipboard.writeText(monitoringNetwork.uuid)}
                     >
                         <i className="fa fa-clone" />

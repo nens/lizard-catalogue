@@ -80,7 +80,7 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
                 <div className="details-uuid">
                     <span>{wms.uuid}</span>
                     <button
-                        className="button-tooltip"
+                        className="button-copy"
                         onClick={() => navigator.clipboard.writeText(wms.uuid)}
                     >
                         <i className="fa fa-clone" />

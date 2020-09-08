@@ -28,13 +28,13 @@
 }
 
 /* CSS for Button with tooltip for copy to clipboard */
-.button-tooltip {
+.button-copy {
     position: relative;
     border: none;
     background-color: transparent;
     padding: 0;
 }
-.button-tooltip:before {
+.button-copy:before {
     content: '';
     display: none;
     position: absolute;
@@ -49,7 +49,7 @@
     border-right: 5px solid transparent;
     border-bottom: 5px solid #009F86;
 }
-.button-tooltip:after {
+.button-copy:after {
     content: 'Copy UUID';
     display: none;
     position: absolute;
@@ -68,18 +68,18 @@
     background: #009F86;
     border-radius: 3px;
 }
-.button-tooltip:hover:before {
+.button-copy:hover:before {
     display: block;
 }
-.button-tooltip:hover:after {
+.button-copy:hover:after {
     display: block;
 }
-.button-tooltip:focus {
+.button-copy:focus {
     outline: none;
 }
-.button-tooltip:focus:after {
+.button-copy:focus:after {
     content: 'Copied!'
 }
-.button-tooltip:active:after {
+.button-copy:active:after {
     content: 'Copied!'
 }
