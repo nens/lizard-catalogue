@@ -142,153 +142,159 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
             </div>
             <div className="timeseries">
                 <div className="timeseries-filter">
-                    <h3>1. SELECT LOCATIONS</h3>
-                    <span className="timeseries-helper-text">Select locations by clicking or select all locations with the same observation type</span>
-                    <div className="timeseries-map">
-                        <div className="timeseries-search-locations">
-                            <SearchBar
-                                name="searchBar"
-                                searchTerm={searchInput}
-                                title="Type name of locations"
-                                placeholder="Search for locations"
-                                onSearchChange={e => setSearchInput(e.currentTarget.value)}
-                                onSearchSubmit={e => {
-                                    e.preventDefault();
-                                    setFinalSearchInput(searchInput);
-                                }}
-                            />
-                        </div>
-                        {locationsObject.isFetching || (filteredLocationObject && filteredLocationObject.isFetching) ? (
-                            <div className="details-map-loading">
-                                <MDSpinner />
+                    <div className="timeseries-top">
+                        <h3>1. SELECT LOCATIONS</h3>
+                        <span className="timeseries-helper-text">Select locations by clicking or select all locations with the same observation type</span>
+                        <div className="timeseries-map">
+                            <div className="timeseries-search-locations">
+                                <SearchBar
+                                    name="searchBar"
+                                    searchTerm={searchInput}
+                                    title="Type name of locations"
+                                    placeholder="Search for locations"
+                                    onSearchChange={e => setSearchInput(e.currentTarget.value)}
+                                    onSearchSubmit={e => {
+                                        e.preventDefault();
+                                        setFinalSearchInput(searchInput);
+                                    }}
+                                />
                             </div>
-                        ) : null}
-                        <Map
-                            bounds={filteredLocationObject ? filteredLocationObject.spatialBounds : locationsObject.spatialBounds}
-                            center={locationOnZoom ? locations[locationOnZoom].geometry!.coordinates : null}
-                            zoom={locationOnZoom ? 18 : null}
-                            zoomControl={false}
-                            style={{
-                                opacity: locationsObject.isFetching || (filteredLocationObject && filteredLocationObject.isFetching) ? 0.4 : 1
-                            }}
-                        >
-                            <ZoomControl position="bottomleft"/>
-                            {(filteredLocationUUIDs || locationUUIDs).map(locationUuid => {
-                                const location = locations[locationUuid];
-                                if (location.geometry) {
-                                    return (
-                                        <Marker
-                                            key={location.uuid}
-                                            position={location.geometry.coordinates}
-                                            icon={
-                                                new Leaflet.DivIcon({
-                                                    iconSize: [24, 24],
-                                                    tooltipAnchor: [12, 0],
-                                                    className: selectedLocations.includes(locationUuid) ? "location-icon location-icon-selected" : "location-icon"
-                                                })
-                                            }
-                                            onClick={() => {
-                                                if (selectedLocations.includes(locationUuid)) {
-                                                    setSelectedLocations(selectedLocations.filter(uuid => uuid !== locationUuid));
+                            {locationsObject.isFetching || (filteredLocationObject && filteredLocationObject.isFetching) ? (
+                                <div className="details-map-loading">
+                                    <MDSpinner />
+                                </div>
+                            ) : null}
+                            <Map
+                                bounds={filteredLocationObject ? filteredLocationObject.spatialBounds : locationsObject.spatialBounds}
+                                center={locationOnZoom ? locations[locationOnZoom].geometry!.coordinates : null}
+                                zoom={locationOnZoom ? 18 : null}
+                                zoomControl={false}
+                                style={{
+                                    opacity: locationsObject.isFetching || (filteredLocationObject && filteredLocationObject.isFetching) ? 0.4 : 1
+                                }}
+                            >
+                                <ZoomControl position="bottomleft"/>
+                                {(filteredLocationUUIDs || locationUUIDs).map(locationUuid => {
+                                    const location = locations[locationUuid];
+                                    if (location.geometry) {
+                                        return (
+                                            <Marker
+                                                key={location.uuid}
+                                                position={location.geometry.coordinates}
+                                                icon={
+                                                    new Leaflet.DivIcon({
+                                                        iconSize: [24, 24],
+                                                        tooltipAnchor: [12, 0],
+                                                        className: selectedLocations.includes(locationUuid) ? "location-icon location-icon-selected" : "location-icon"
+                                                    })
+                                                }
+                                                onClick={() => {
+                                                    if (selectedLocations.includes(locationUuid)) {
+                                                        setSelectedLocations(selectedLocations.filter(uuid => uuid !== locationUuid));
+                                                    } else {
+                                                        setSelectedLocations([...selectedLocations, locationUuid]);
+                                                    };
+                                                }}
+                                            >
+                                                <Tooltip>{location.code}</Tooltip>
+                                            </Marker>
+                                        )
+                                    };
+                                    return null;
+                                })}
+                                <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
+                            </Map>
+                        </div>
+                    </div>
+                    <div className="timeseries-filter-bar">
+                        <h3>FILTER OBSERVATION TYPE</h3>
+                        {observationTypeObject.isFetching ? (
+                            <MDSpinner />
+                        ) : (
+                            <ul className="timeseries-observation-list">
+                                {observationTypes.map(observationType => (
+                                    <li key={observationType.id}>
+                                        <input
+                                            type="checkbox"
+                                            onChange={(e) => {
+                                                if (e.currentTarget.checked) {
+                                                    setSelectedObservationTypeCode(observationType.code);
                                                 } else {
-                                                    setSelectedLocations([...selectedLocations, locationUuid]);
+                                                    // uncheck checkbox
+                                                    setSelectedObservationTypeCode('');
                                                 };
                                             }}
-                                        >
-                                            <Tooltip>{location.code}</Tooltip>
-                                        </Marker>
-                                    )
-                                };
-                                return null;
-                            })}
-                            <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
-                        </Map>
+                                            checked={selectedObservationTypeCode === observationType.code}
+                                        />
+                                        {observationType.parameter ? observationType.parameter : observationType.code}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
-                    <h3>FILTER OBSERVATION TYPE</h3>
-                    {observationTypeObject.isFetching ? (
-                        <MDSpinner />
-                    ) : (
-                        <ul className="timeseries-observation-list">
-                            {observationTypes.map(observationType => (
-                                <li key={observationType.id}>
-                                    <input
-                                        type="checkbox"
-                                        onChange={(e) => {
-                                            if (e.currentTarget.checked) {
-                                                setSelectedObservationTypeCode(observationType.code);
-                                            } else {
-                                                // uncheck checkbox
-                                                setSelectedObservationTypeCode('');
-                                            };
-                                        }}
-                                        checked={selectedObservationTypeCode === observationType.code}
-                                    />
-                                    {observationType.parameter ? observationType.parameter : observationType.code}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
                 </div>
                 <div className="timeseries-selection">
-                    <div className="timeseries-selected-locations">
-                        <div className="timeseries-selected-locations-header">
-                            <div>
-                                <h3>2. SELECTED LOCATIONS</h3>
-                                <span className="timeseries-helper-text">The selected locations will appear here</span>
+                    <div className="timeseries-top">
+                        <div className="timeseries-selected-locations">
+                            <div className="timeseries-selected-locations-header">
+                                <div>
+                                    <h3>2. SELECTED LOCATIONS</h3>
+                                    <span className="timeseries-helper-text">The selected locations will appear here</span>
+                                </div>
+                                <button
+                                    className="button-action timeseries-button-clear-selection"
+                                    onClick={() => setSelectedLocations([])}
+                                    disabled={!selectedLocations.length}
+                                    title="Clear selection"
+                                >
+                                    CLEAR SELECTION
+                                </button>
                             </div>
-                            <button
-                                className="button-action timeseries-button-clear-selection"
-                                onClick={() => setSelectedLocations([])}
-                                disabled={!selectedLocations.length}
-                                title="Clear selection"
-                            >
-                                CLEAR SELECTION
-                            </button>
+                            <ul className="timeseries-location-list">
+                                {selectedLocations.map(uuid => {
+                                    const location = locations[uuid];
+                                    const locationTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
+                                    return (
+                                        <li
+                                            key={uuid}
+                                            title={"Click to zoom into this selected location"}
+                                            onClick={() => setLocationOnZoom(uuid)}
+                                        >
+                                            <span>{location.name}</span> [{location.code}] [{locationTimeseries.map(ts => ts.observation_type.parameter).join(', ')}]
+                                        </li>
+                                    )
+                                })}
+                            </ul>
                         </div>
-                        <ul className="timeseries-location-list">
-                            {selectedLocations.map(uuid => {
-                                const location = locations[uuid];
-                                const locationTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
-                                return (
-                                    <li
-                                        key={uuid}
-                                        title={"Click to zoom into this selected location"}
-                                        onClick={() => setLocationOnZoom(uuid)}
-                                    >
-                                        <span>{location.name}</span> [{location.code}] [{locationTimeseries.map(ts => ts.observation_type.parameter).join(', ')}]
-                                    </li>
-                                )
-                            })}
-                        </ul>
-                    </div>
-                    <div className="timeseries-period">
-                        <h3>3. SELECT PERIOD</h3>
-                        <span className="timeseries-helper-text">Define a time period for your time-series</span>
-                        <div className="timeseries-period-container">
-                            <div className="timeseries-time-selection">
-                                <span>Start</span>
-                                <Datetime
-                                    dateFormat={'DD/MM/YYYY'}
-                                    timeFormat={'HH:mm'}
-                                    inputProps={{
-                                        className: 'timeseries-datetime',
-                                        placeholder: moment(defaultStartValue).format('DD/MM/YYYY HH:mm')
-                                    }}
-                                    onChange={(e) => setStart(moment(e).valueOf())}
-                                />
-                            </div>
-                            <span className="timeseries-period-arrow">&#8594;</span>
-                            <div className="timeseries-time-selection">
-                                <span>End</span>
-                                <Datetime
-                                    dateFormat={'DD/MM/YYYY'}
-                                    timeFormat={'HH:mm'}
-                                    inputProps={{
-                                        className: 'timeseries-datetime',
-                                        placeholder: moment(defaultEndValue).format('DD/MM/YYYY HH:mm')
-                                    }}
-                                    onChange={(e) => setEnd(moment(e).valueOf())}
-                                />
+                        <div className="timeseries-period">
+                            <h3>3. SELECT PERIOD</h3>
+                            <span className="timeseries-helper-text">Define a time period for your time-series</span>
+                            <div className="timeseries-period-container">
+                                <div className="timeseries-time-selection">
+                                    <span>Start</span>
+                                    <Datetime
+                                        dateFormat={'DD/MM/YYYY'}
+                                        timeFormat={'HH:mm'}
+                                        inputProps={{
+                                            className: 'timeseries-datetime',
+                                            placeholder: moment(defaultStartValue).format('DD/MM/YYYY HH:mm')
+                                        }}
+                                        onChange={(e) => setStart(moment(e).valueOf())}
+                                    />
+                                </div>
+                                <span className="timeseries-period-arrow">&#8594;</span>
+                                <div className="timeseries-time-selection">
+                                    <span>End</span>
+                                    <Datetime
+                                        dateFormat={'DD/MM/YYYY'}
+                                        timeFormat={'HH:mm'}
+                                        inputProps={{
+                                            className: 'timeseries-datetime',
+                                            placeholder: moment(defaultEndValue).format('DD/MM/YYYY HH:mm')
+                                        }}
+                                        onChange={(e) => setEnd(moment(e).valueOf())}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
