@@ -9,12 +9,17 @@ import {
     getAllMonitoringNetworks,
     getMonitoringNetworkObservationTypes,
 } from '../../reducers';
-import { MonitoringNetwork } from '../../interface';
+import { MonitoringNetwork, ObservationType } from '../../interface';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import TimeSeriesModal from '../components/TimeSeriesModal';
 import '../styles/Details.css';
 import '../styles/Buttons.css';
 import '../styles/Modal.css';
+
+// Helper function to add reference frame to unit of observation type
+const addRefToUnit = (observationType: ObservationType) => {
+    return observationType.reference_frame ? observationType.unit + observationType.reference_frame : observationType.unit;
+};
 
 const MonitoringNetworkDetails: React.FC = () => {
     const selectedItem = useSelector(getSelectedItem);
@@ -35,13 +40,15 @@ const MonitoringNetworkDetails: React.FC = () => {
                     {monitoringNetwork.name}
                 </h3>
             </div>
-            <div className="details-uuid">
-                <span>{monitoringNetwork.uuid}</span>
-                <i
-                    className="fa fa-clone"
-                    onClick={() => navigator.clipboard.writeText(monitoringNetwork.uuid)}
-                />
-            </div>
+                <div className="details-uuid">
+                    <span>{monitoringNetwork.uuid}</span>
+                    <button
+                        className="button-copy"
+                        onClick={() => navigator.clipboard.writeText(monitoringNetwork.uuid)}
+                    >
+                        <i className="fa fa-clone" />
+                    </button>
+                </div>
             <div className="details-map">
                 {locationsObject && locationsObject.isFetching ? (
                     <div className="details-map-loading">
@@ -83,7 +90,7 @@ const MonitoringNetworkDetails: React.FC = () => {
             </div>
             <table className="details-table" cellSpacing={0}>
                 <tbody>
-                    <tr>
+                    <tr className="details-table-header">
                         <th
                             className={activeTab === 'Details' ? 'details-table-selected' : ''}
                             onClick={() => setActiveTab('Details')}
@@ -97,26 +104,34 @@ const MonitoringNetworkDetails: React.FC = () => {
                             Actions
                         </th>
                     </tr>
-                    <tr className="details-table-empty-row"><td /></tr>
                     {activeTab === 'Details' && observationTypeObject ? (
-                        <tr>
-                            <td>Observation types</td>
-                            {observationTypeObject.isFetching ? (
+                        observationTypeObject.isFetching ? (
+                            <tr>
+                                <td>Observation types</td>
                                 <td style={{ textAlign: 'center' }}>
-                                    <MDSpinner />
+                                    <MDSpinner size={24} />
                                 </td>
+                            </tr>
+                        ) : (
+                            observationTypeObject.observationTypes.length === 0 ? (
+                                <tr>
+                                    <td>Observation types</td>
+                                    <td />
+                                </tr>
                             ) : (
-                                <td>
-                                    {observationTypeObject.observationTypes.map(observationType => (
-                                        <p key={observationType.id}>{observationType.parameter ? observationType.parameter : observationType.code}</p>
-                                    ))}
-                                </td>
-                            )}
-                        </tr>
+                                observationTypeObject.observationTypes.map((observationType, i) => (
+                                        <tr key={observationType.id}>
+                                            <td>{i === 0 ? 'Observation types': null}</td>
+                                            <td>{observationType.parameter ? observationType.parameter : observationType.code} ({addRefToUnit(observationType)})</td>
+                                        </tr>
+                                    )
+                                )
+                            )
+                        )
                     ) : (
-                        <tr>
+                        <tr className="details-table-actions">
                             <td />
-                            <td>
+                            <td className="details-table-buttons">
                                 <button
                                     className="button-action"
                                     onClick={() => setTimeseriesModal(!timeseriesModal)}

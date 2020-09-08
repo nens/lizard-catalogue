@@ -79,10 +79,12 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
                 </div>
                 <div className="details-uuid">
                     <span>{wms.uuid}</span>
-                    <i
-                        className="fa fa-clone"
+                    <button
+                        className="button-copy"
                         onClick={() => navigator.clipboard.writeText(wms.uuid)}
-                    />
+                    >
+                        <i className="fa fa-clone" />
+                    </button>
                 </div>
                 <div className="details-map">
                     <Map bounds={bounds} zoom={wms.min_zoom} zoomControl={false}>
@@ -133,7 +135,7 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
                 ) : null}
                 <table className="details-table"  cellSpacing={0}>
                     <tbody>
-                        <tr>
+                        <tr className="details-table-header">
                             <th
                                 className={this.state.showTableTab === 'Details' ? 'details-table-selected' : ''}
                                 onClick={() => this.setState({showTableTab: 'Details'})}
@@ -147,7 +149,6 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
                                 Actions
                             </th>
                         </tr>
-                        <tr className="details-table-empty-row"><td /></tr>
                         {this.state.showTableTab === 'Details' ? (
                         <>
                             <tr>
@@ -161,28 +162,18 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
                         </>
                         ) : (
                         <>
-                            <tr>
+                            <tr className="details-table-actions">
                                 <td />
-                                <td>
+                                <td className="details-table-buttons">
                                     <button className="button-action" onClick={() => openWMSInLizard(wms, centerPoint, zoom)} title="Open in Portal">
                                         {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
                                         OPEN IN PORTAL
                                     </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td />
-                                <td>
                                     <button className="button-action" onClick={() => openWMSInAPI(wms)} title="Open in API">
                                         {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
                                         OPEN IN API
                                     </button>
-                                </td>
-                            </tr>
-                            {wms.download_url ? (
-                                <tr>
-                                    <td />
-                                    <td>
+                                    {wms.download_url ? (
                                         <button
                                             className="button-action"
                                             onClick={() => openWMSDownloadURL(wms)}
@@ -191,9 +182,9 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
                                             {/* <i className="fa fa-download"/>&nbsp;&nbsp; */}
                                             DOWNLOAD
                                         </button>
-                                    </td>
-                                </tr>
-                            ) : null}
+                                    ) : null}
+                                </td>
+                            </tr>
                         </>
                         )}
                     </tbody>
