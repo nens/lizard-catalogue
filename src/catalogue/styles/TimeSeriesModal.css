@@ -148,8 +148,11 @@
     flex-direction: row;
     justify-content: space-between;
 }
+.timeseries-buttons {
+    flex: 1;
+}
 .timeseries-button-container button {
-    width: 80%;
+    width: 90%;
     margin-bottom: 1rem;
 }
 
