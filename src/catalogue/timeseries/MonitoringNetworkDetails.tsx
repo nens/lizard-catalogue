@@ -90,7 +90,7 @@ const MonitoringNetworkDetails: React.FC = () => {
             </div>
             <table className="details-table" cellSpacing={0}>
                 <tbody>
-                    <tr>
+                    <tr className="details-table-header">
                         <th
                             className={activeTab === 'Details' ? 'details-table-selected' : ''}
                             onClick={() => setActiveTab('Details')}
@@ -104,7 +104,6 @@ const MonitoringNetworkDetails: React.FC = () => {
                             Actions
                         </th>
                     </tr>
-                    <tr className="details-table-empty-row"><td /></tr>
                     {activeTab === 'Details' && observationTypeObject ? (
                         <tr>
                             <td>Observation types</td>
@@ -121,9 +120,9 @@ const MonitoringNetworkDetails: React.FC = () => {
                             )}
                         </tr>
                     ) : (
-                        <tr>
+                        <tr className="details-table-actions">
                             <td />
-                            <td>
+                            <td className="details-table-buttons">
                                 <button
                                     className="button-action"
                                     onClick={() => setTimeseriesModal(!timeseriesModal)}

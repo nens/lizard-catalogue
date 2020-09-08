@@ -189,7 +189,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                 ) : null}
                 <table className="details-table" cellSpacing={0}>
                     <tbody>
-                        <tr>
+                        <tr className="details-table-header">
                             <th
                                 className={this.state.showTableTab === 'Details' ? 'details-table-selected' : ''}
                                 onClick={() => this.setState({showTableTab: 'Details'})}
@@ -203,7 +203,6 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                                 Actions
                             </th>
                         </tr>
-                        <tr className="details-table-empty-row"><td /></tr>
                         {this.state.showTableTab === 'Details' ? (
                         <>
                             <tr>
@@ -253,27 +252,17 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                         </>
                         ) : (
                         <>
-                            <tr>
-                                <td />
-                                <td>
+                            <tr className="details-table-actions">
+                                <td/>
+                                <td className="details-table-buttons">
                                     <button className="button-action" onClick={() => openRasterInLizard(raster, centerPoint, zoom)} title="Open in Portal">
                                         {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
                                         OPEN IN PORTAL
                                     </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td />
-                                <td>
                                     <button className="button-action" onClick={() => openRasterInAPI(raster)} title="Open in API">
                                         {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
                                         OPEN IN API
                                     </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td />
-                                <td>
                                     <button
                                         className="button-action"
                                         onClick={this.toggleExportModal}
