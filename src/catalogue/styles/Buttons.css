@@ -27,6 +27,21 @@
     background-color: var(--border-color-soft);
 }
 
+/* Delete button with trash icon */
+.button-delete {
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    height: 100%;
+    padding: 0;
+}
+.button-delete:focus {
+    outline: none;
+}
+.button-delete:active {
+    transform: translateY(1px);
+}
+
 /* CSS for Button with tooltip for copy to clipboard */
 .button-copy {
     position: relative;

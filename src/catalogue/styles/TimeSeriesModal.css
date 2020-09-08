@@ -100,7 +100,13 @@
 .timeseries-location-list li {
     font-weight: 600;
     margin-bottom: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.timeseries-location-name {
     cursor: pointer;
+    margin-right: 1rem;
 }
 
 .timeseries-period {

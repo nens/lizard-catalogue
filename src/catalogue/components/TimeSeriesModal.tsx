@@ -21,6 +21,7 @@ import 'react-datetime/css/react-datetime.css';
 import '../styles/TimeSeriesModal.css';
 import '../styles/Modal.css';
 import './../styles/Buttons.css';
+import './../styles/Icons.css';
 
 interface MyProps {
     toggleTimeseriesModal: () => void
@@ -255,12 +256,20 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     const location = locations[uuid];
                                     const locationTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
                                     return (
-                                        <li
-                                            key={uuid}
-                                            title={"Click to zoom into this selected location"}
-                                            onClick={() => setLocationOnZoom(uuid)}
-                                        >
-                                            <span>{location.name}</span> [{location.code}] [{locationTimeseries.map(ts => ts.observation_type.parameter).join(', ')}]
+                                        <li key={uuid}>
+                                            <span
+                                                className="timeseries-location-name"
+                                                title={"Click to zoom into this selected location"}
+                                                onClick={() => setLocationOnZoom(uuid)}
+                                            >
+                                                {location.name} [{location.code}] [{locationTimeseries.map(ts => ts.observation_type.parameter).join(', ')}]
+                                            </span>
+                                            <button
+                                                className="button-delete"
+                                                onClick={() => setSelectedLocations(selectedLocations.filter(locationUuid => locationUuid !== uuid))}
+                                            >
+                                                <i className="fa fa-trash icon-delete" />
+                                            </button>
                                         </li>
                                     )
                                 })}
