@@ -108,7 +108,9 @@ const MonitoringNetworkDetails: React.FC = () => {
                         observationTypeObject.isFetching ? (
                             <tr>
                                 <td>Observation types</td>
-                                <td style={{textAlign: 'center'}}><MDSpinner size={24} /></td>
+                                <td style={{ textAlign: 'center' }}>
+                                    <MDSpinner size={24} />
+                                </td>
                             </tr>
                         ) : (
                             observationTypeObject.observationTypes.length === 0 ? (
