@@ -96,7 +96,7 @@
     width: 100%;
     table-layout: fixed;
 }
-.details-table, td {
+.details-table, .details-table td {
     border: 1px solid #D1D1D1;
     border-collapse: collapse;
 }
