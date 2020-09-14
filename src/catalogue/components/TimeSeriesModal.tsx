@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import MDSpinner from 'react-md-spinner';
 import Leaflet from 'leaflet';
+import * as L from 'leaflet';
 import moment from 'moment';
-import { Map, TileLayer, Marker, ZoomControl, Tooltip } from 'react-leaflet';
+import { Map, TileLayer, Marker, ZoomControl, Tooltip, Polygon } from 'react-leaflet';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import {
     getSelectedItem,
@@ -63,6 +64,38 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const [filteredLocationObject, setFilteredLocationObject] = useState<filteredLocationObject | null>(null);
     const filteredLocations = filteredLocationObject && filteredLocationObject.filteredLocations;
     const filteredLocationUUIDs = filteredLocations && Object.keys(filteredLocations);
+
+    // polygon
+    const [drawingMode, setDrawingMode] = useState(false);
+    const [polygon, setPolygon] = useState<{lat: number,lng: number}[]>([]);
+    // const point = L.latLng([52.12213099354643, 4.998645251708004]);
+    // console.log("point", point)
+    // const polygonBounds = L.latLngBounds(polygon)
+    // Object.keys(polygonBounds).length !== 0 && console.log(polygonBounds.contains(point))
+
+    // useEffect to select/deselect locations by polygon tool
+    useEffect(() => {
+        const polygonBounds = L.latLngBounds(polygon);
+        if (drawingMode && polygon.length) {
+            Object.values(locations).filter(
+                location => location.geometry !== null
+            ).map(location => {
+                return {
+                    ...location,
+                    geometry: {
+                        ...location.geometry,
+                        coordinates: L.latLng(location.geometry!.coordinates)
+                    }
+                }
+            }).map(location => {
+                if (polygonBounds.contains(location.geometry!.coordinates) && !selectedLocations.includes(location.uuid)) {
+                    console.log('location', location.uuid)
+                    setSelectedLocations([...selectedLocations, location.uuid])
+                }
+                return null;
+            });
+        };
+    }, [polygon, drawingMode, locations, selectedLocations])
 
     // useEffect to fetch new state of locations based on filter inputs
     useEffect(() => {
@@ -173,8 +206,15 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 style={{
                                     opacity: locationsObject.isFetching || (filteredLocationObject && filteredLocationObject.isFetching) ? 0.4 : 1
                                 }}
+                                onClick={(e) => {
+                                    if (drawingMode) setPolygon([...polygon, e.latlng]);
+                                }}
                             >
                                 <ZoomControl position="bottomleft"/>
+                                <Polygon
+                                    positions={polygon}
+                                    color={"red"}
+                                />
                                 {(filteredLocationUUIDs || locationUUIDs).map(locationUuid => {
                                     const location = locations[locationUuid];
                                     if (location.geometry) {
@@ -205,6 +245,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 })}
                                 <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                             </Map>
+                            <button onClick={() => setDrawingMode(!drawingMode)}>DRAW</button>
                         </div>
                     </div>
                     <div className="timeseries-filter-bar">
