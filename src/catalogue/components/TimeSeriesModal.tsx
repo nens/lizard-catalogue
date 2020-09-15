@@ -140,6 +140,23 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
     const { timeseries } = timeseriesObject;
 
+    // Helper function to select locations in polygon
+    const selectLocationsInPolygon = (locations: Location[]) => {
+        locations.filter(
+            location => location.geometry !== null
+        ).forEach(location => {
+            if (
+                !selectedLocations.includes(location.uuid) &&
+                inside(location.geometry!.coordinates, polygon)
+            ) {
+                // mutate selectedLocations directly as spread operator
+                // does not work correctly (selectedLocations not being
+                // updated in sync with the forEach call)
+                selectedLocations.push(location.uuid);
+            };
+        });
+    };
+
     return (
         <div className="modal-main modal-timeseries">
             <div className="modal-header">
@@ -175,6 +192,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 center={locationOnZoom ? locations[locationOnZoom].geometry!.coordinates : null}
                                 zoom={locationOnZoom ? 18 : null}
                                 zoomControl={false}
+                                attributionControl={false}
                                 style={{
                                     opacity: locationsObject.isFetching || (filteredLocationObject && filteredLocationObject.isFetching) ? 0.4 : 1,
                                     cursor: drawingMode ? "default" : "pointer"
@@ -186,7 +204,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 <ZoomControl position="bottomleft"/>
                                 <Polygon
                                     positions={polygon}
-                                    color={"red"}
+                                    color={"var(--main-color-scheme)"}
                                 />
                                 {(filteredLocationUUIDs || locationUUIDs).map(locationUuid => {
                                     const location = locations[locationUuid];
@@ -218,28 +236,63 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 })}
                                 <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                             </Map>
-                            <button onClick={() => setDrawingMode(!drawingMode)}>DRAW</button>
-                            <button onClick={() => setPolygon([])}>CANCEL</button>
-                            <button onClick={() => setPolygon(polygon.slice(0, -1))}>RESET</button>
-                            <button
-                                onClick={() => {
-                                    if (drawingMode && polygon.length) {
-                                        Object.values(locations).filter(
-                                            location => location.geometry !== null
-                                        ).forEach(location => {
-                                            if (
-                                                !selectedLocations.includes(location.uuid) &&
-                                                inside(location.geometry!.coordinates, polygon)
-                                            ) {
-                                                selectedLocations.push(location.uuid);
+                            {drawingMode ? (
+                                <div className="polygon-button-container">
+                                    {/* Cancel polygon button */}
+                                    <button
+                                        className="button-action button-polygon"
+                                        onClick={() => {
+                                            setPolygon([]);
+                                            setDrawingMode(false);
+                                        }}
+                                        title="Cancel"
+                                    >
+                                        <i className="fa fa-times" />
+                                    </button>
+                                    {/* Re-draw last step button */}
+                                    <button
+                                        className="button-action button-polygon"
+                                        onClick={() => setPolygon(polygon.slice(0, -1))}
+                                        title="Re-draw"
+                                        disabled={!polygon.length}
+                                    >
+                                        <i className="fa fa-repeat" />
+                                    </button>
+                                    {/* Confirm polygon button */}
+                                    <button
+                                        className="button-action button-polygon"
+                                        onClick={() => {
+                                            if (filteredLocations) {
+                                                selectLocationsInPolygon(Object.values(filteredLocations));
+                                            } else {
+                                                selectLocationsInPolygon(Object.values(locations));
                                             };
-                                        });
-                                        setDrawingMode(false);
-                                    };
-                                }}
-                            >
-                                CONFIRM
-                            </button>
+                                            setDrawingMode(false);
+                                        }}
+                                        title="Confirm"
+                                        disabled={polygon.length < 3}
+                                    >
+                                        <i className="fa fa-check" />
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="polygon-button-container">
+                                    {/* Start drawing polygon button */}
+                                    <button
+                                        className="button-action button-polygon"
+                                        onClick={() => {
+                                            setPolygon([]);
+                                            setDrawingMode(true);
+                                        }}
+                                        title="Draw"
+                                    >
+                                        <img
+                                            src="image/polygon.svg"
+                                            alt="polygon"
+                                        />
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div className="timeseries-filter-bar">
