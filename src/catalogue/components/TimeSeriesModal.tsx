@@ -142,19 +142,19 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
     // Helper function to select locations in polygon
     const selectLocationsInPolygon = (locations: Location[]) => {
-        locations.filter(
+        const locationsInPolygon = locations.filter(
             location => location.geometry !== null
-        ).forEach(location => {
-            if (
-                !selectedLocations.includes(location.uuid) &&
-                inside(location.geometry!.coordinates, polygon)
-            ) {
-                // mutate selectedLocations directly as spread operator
-                // does not work correctly (selectedLocations not being
-                // updated in sync with the forEach call)
-                selectedLocations.push(location.uuid);
-            };
-        });
+        ).filter(location =>
+            // location with coordinates inside the polygon
+            inside(location.geometry!.coordinates, polygon)
+        ).map(location =>
+            location.uuid
+        ).filter(uuid =>
+            // remove duplicates
+            selectedLocations.indexOf(uuid) < 0
+        );
+        // Update the list of selected locations
+        setSelectedLocations(selectedLocations.concat(locationsInPolygon));
     };
 
     return (
@@ -198,7 +198,11 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     cursor: drawingMode ? "default" : "pointer"
                                 }}
                                 onClick={(e) => {
-                                    if (drawingMode) setPolygon([...polygon, [e.latlng.lat, e.latlng.lng]]);
+                                    if (drawingMode) {
+                                        setPolygon([...polygon, [e.latlng.lat, e.latlng.lng]]);
+                                    } else {
+                                        polygon.length && setPolygon([]);
+                                    };
                                 }}
                             >
                                 <ZoomControl position="bottomleft"/>
