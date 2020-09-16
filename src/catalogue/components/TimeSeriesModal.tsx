@@ -129,7 +129,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     if (!timeseriesObject || timeseriesObject.isFetching) return (
         <div className="modal-main modal-timeseries modal-timeseries-loading">
             <MDSpinner size={100}  style={{ marginBottom: "20px" }}/>
-            Loading Time-Series for this Monitoring Network ...
+            Loading Time Series for this Monitoring Network ...
         </div>
     );
 
@@ -138,7 +138,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     return (
         <div className="modal-main modal-timeseries">
             <div className="modal-header">
-                <span>Select Time-series</span>
+                <span>Select Time Series</span>
                 <button onClick={props.toggleTimeseriesModal}>&times;</button>
             </div>
             <div className="timeseries">
@@ -277,7 +277,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         </div>
                         <div className="timeseries-period">
                             <h3>3. SELECT PERIOD</h3>
-                            <span className="timeseries-helper-text">Define a time period for your time-series</span>
+                            <span className="timeseries-helper-text">Define a time period for your time series</span>
                             <div className="timeseries-period-container">
                                 <div className="timeseries-time-selection">
                                     <span>Start</span>
@@ -339,7 +339,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                             <button className="button-action" style={{visibility: "hidden"}} />
                             <button
                                 className="button-action"
-                                title="Export Time-series"
+                                title="Export Time Series"
                                 onClick={() => {
                                     const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
                                         const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
@@ -349,7 +349,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 }}
                                 disabled={!selectedLocations.length}
                             >
-                                EXPORT TIME-SERIES
+                                EXPORT TIME SERIES
                             </button>
                         </div>
                     </div>

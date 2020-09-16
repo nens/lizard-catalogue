@@ -33,7 +33,7 @@ export const openLocationsInLizard = (locations: Location[], start: number, end:
     // Construct url for multi-point selection
     const objectUrl = locations.map(location => `${location.object.type}$${location.object.id}`).join('+');
 
-    // Open locations in chart mode to view the time-series
+    // Open locations in chart mode to view the timeseries
     const url = locationsWithCoordinates.length ? (
         `/nl/charts/topography/multi-point/${objectUrl}/@${centerPoint.lat},${centerPoint.lng},14/${duration}`
     ) : (
