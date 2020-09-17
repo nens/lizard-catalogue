@@ -146,10 +146,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
         if (filteredLocationObject && filteredLocationObject.spatialBounds) {
             return filteredLocationObject.spatialBounds;
         };
-        if (locationsObject && locationsObject.spatialBounds) {
-            return locationsObject.spatialBounds;
-        };
-        return [[85, 180], [-85, -180]];
+        return locationsObject.spatialBounds;
     };
 
     const getMapCenterPoint = () => {
