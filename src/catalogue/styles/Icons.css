@@ -1,4 +1,7 @@
-.icon-delete {
+.icon-deselect {
     color: #D50000;
-    font-size: 1.6rem;
+    font-size: 2rem;
+}
+.icon-deselect-on-hover {
+    display: none;
 }

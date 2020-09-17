@@ -39,19 +39,25 @@
     background-color: #008080;
 }
 
-/* Delete button with trash icon */
-.button-delete {
+/* Deselect button with deselecting (minus) icon */
+.button-deselect {
     cursor: pointer;
     border: none;
     background-color: transparent;
     height: 100%;
     padding: 0;
 }
-.button-delete:focus {
+.button-deselect:focus {
     outline: none;
 }
-.button-delete:active {
+.button-deselect:active {
     transform: translateY(1px);
+}
+.button-deselect:hover > i.icon-deselect {
+    display: none;
+}
+.button-deselect:hover > i.icon-deselect-on-hover {
+    display: block;
 }
 
 /* CSS for Button with tooltip for copy to clipboard */

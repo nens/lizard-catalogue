@@ -357,10 +357,11 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                                 {location.name} [{location.code}] [{locationTimeseries.map(ts => ts.observation_type.parameter).join(', ')}]
                                             </span>
                                             <button
-                                                className="button-delete"
+                                                className="button-deselect"
                                                 onClick={() => setSelectedLocations(selectedLocations.filter(locationUuid => locationUuid !== uuid))}
                                             >
-                                                <i className="fa fa-trash icon-delete" />
+                                                <i className="fa fa-minus-square-o icon-deselect" />
+                                                <i className="fa fa-minus-square icon-deselect icon-deselect-on-hover" />
                                             </button>
                                         </li>
                                     )
