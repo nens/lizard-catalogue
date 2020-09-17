@@ -58,7 +58,7 @@
     padding: 0 2rem;
     min-height: 30%;
     max-height: 66%;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .basket_item {
