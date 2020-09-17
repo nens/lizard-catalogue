@@ -13,7 +13,7 @@ export const getSpatialBounds = (locations: Location[]) => {
     const east = Math.max(...x);
     const south = Math.min(...y);
     const west = Math.min(...x);
-    const spatialBounds = locations.length && coordinatesArray.length ? [[north, east], [south, west]] : [[85, 180], [-85, -180]];
+    const spatialBounds = locations.length > 1 && coordinatesArray.length > 1 ? [[north, east], [south, west]] : null;
 
     return spatialBounds;
 };
