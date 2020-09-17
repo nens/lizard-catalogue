@@ -140,6 +140,9 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
     // Helper functions to get map bounds or center point
     const getMapBounds = () => {
+        if (locationOnZoom || (filteredLocationObject && filteredLocationObject.centerPoint)) {
+            return null;
+        };
         if (filteredLocationObject && filteredLocationObject.spatialBounds) {
             return filteredLocationObject.spatialBounds;
         };
