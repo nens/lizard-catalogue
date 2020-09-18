@@ -554,7 +554,7 @@ const locationsObject = (state: MyStore['locationsObject'] = null, action): MySt
             return {
                 isFetching: false,
                 locations,
-                spatialBounds: getSpatialBounds(locationsList),
+                spatialBounds: getSpatialBounds(locationsList) || [[85, 180], [-85, -180]],
             };
         default:
             return state;

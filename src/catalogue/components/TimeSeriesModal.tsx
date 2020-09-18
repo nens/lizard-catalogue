@@ -32,7 +32,8 @@ interface filteredLocationObject {
     filteredLocations: {
         [uuid: string]: Location
     },
-    spatialBounds: number[][]
+    spatialBounds: number[][] | null,
+    centerPoint: number[] | null,
 };
 
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
@@ -71,7 +72,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
             setFilteredLocationObject({
                 isFetching: true,
                 filteredLocations: {},
-                spatialBounds: [[85, 180], [-85, -180]]
+                spatialBounds: null,
+                centerPoint: null
             });
 
             // Building queries based on filter inputs
@@ -98,7 +100,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                     setFilteredLocationObject({
                         isFetching: false,
                         filteredLocations,
-                        spatialBounds: getSpatialBounds(locationList)
+                        spatialBounds: getSpatialBounds(locationList),
+                        centerPoint: locationList.length && !getSpatialBounds(locationList) ? getGeometry(locationList[0])!.coordinates : null,
                     });
                 })
                 .catch(console.error);
@@ -135,6 +138,27 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
     const { timeseries } = timeseriesObject;
 
+    // Helper functions to get map bounds or center point
+    const getMapBounds = () => {
+        if (locationOnZoom || (filteredLocationObject && filteredLocationObject.centerPoint)) {
+            return null;
+        };
+        if (filteredLocationObject && filteredLocationObject.spatialBounds) {
+            return filteredLocationObject.spatialBounds;
+        };
+        return locationsObject.spatialBounds;
+    };
+
+    const getMapCenterPoint = () => {
+        if (locationOnZoom) {
+            return locations[locationOnZoom].geometry!.coordinates;
+        };
+        if (filteredLocationObject && filteredLocationObject.centerPoint) {
+            return filteredLocationObject.centerPoint;
+        };
+        return null;
+    };
+
     return (
         <div className="modal-main modal-timeseries">
             <div className="modal-header">
@@ -157,6 +181,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     onSearchSubmit={e => {
                                         e.preventDefault();
                                         setFinalSearchInput(searchInput);
+                                        setLocationOnZoom('');
                                     }}
                                 />
                             </div>
@@ -166,9 +191,9 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 </div>
                             ) : null}
                             <Map
-                                bounds={filteredLocationObject ? filteredLocationObject.spatialBounds : locationsObject.spatialBounds}
-                                center={locationOnZoom ? locations[locationOnZoom].geometry!.coordinates : null}
-                                zoom={locationOnZoom ? 18 : null}
+                                bounds={getMapBounds()}
+                                center={getMapCenterPoint()}
+                                zoom={getMapCenterPoint() ? 18 : null}
                                 zoomControl={false}
                                 style={{
                                     opacity: locationsObject.isFetching || (filteredLocationObject && filteredLocationObject.isFetching) ? 0.4 : 1
