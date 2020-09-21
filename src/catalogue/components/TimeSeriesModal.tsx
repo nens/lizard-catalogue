@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import MDSpinner from 'react-md-spinner';
 import Leaflet from 'leaflet';
+import inside from 'point-in-polygon'
 import moment from 'moment';
-import { Map, TileLayer, Marker, ZoomControl, Tooltip } from 'react-leaflet';
+import { Map, TileLayer, Marker, ZoomControl, Tooltip, Polygon } from 'react-leaflet';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import {
     getSelectedItem,
@@ -64,6 +65,10 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const [filteredLocationObject, setFilteredLocationObject] = useState<filteredLocationObject | null>(null);
     const filteredLocations = filteredLocationObject && filteredLocationObject.filteredLocations;
     const filteredLocationUUIDs = filteredLocations && Object.keys(filteredLocations);
+
+    // drawing polygon
+    const [drawingMode, setDrawingMode] = useState(false);
+    const [polygon, setPolygon] = useState<number[][]>([]);
 
     // useEffect to fetch new state of locations based on filter inputs
     useEffect(() => {
@@ -138,6 +143,23 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
     const { timeseries } = timeseriesObject;
 
+    // Helper function to select locations in polygon
+    const selectLocationsInPolygon = (locations: Location[]) => {
+        const locationsInPolygon = locations.filter(
+            location => location.geometry !== null
+        ).filter(location =>
+            // location with coordinates inside the polygon
+            inside(location.geometry!.coordinates, polygon)
+        ).map(location =>
+            location.uuid
+        ).filter(uuid =>
+            // remove duplicates
+            selectedLocations.indexOf(uuid) < 0
+        );
+        // Update the list of selected locations
+        setSelectedLocations(selectedLocations.concat(locationsInPolygon));
+    };
+
     // Helper functions to get map bounds or center point
     const getMapBounds = () => {
         if (locationOnZoom || (filteredLocationObject && filteredLocationObject.centerPoint)) {
@@ -195,11 +217,24 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 center={getMapCenterPoint()}
                                 zoom={getMapCenterPoint() ? 18 : null}
                                 zoomControl={false}
+                                attributionControl={false}
                                 style={{
-                                    opacity: locationsObject.isFetching || (filteredLocationObject && filteredLocationObject.isFetching) ? 0.4 : 1
+                                    opacity: locationsObject.isFetching || (filteredLocationObject && filteredLocationObject.isFetching) ? 0.4 : 1,
+                                    cursor: drawingMode ? "default" : "pointer"
+                                }}
+                                onClick={(e) => {
+                                    if (drawingMode) {
+                                        setPolygon([...polygon, [e.latlng.lat, e.latlng.lng]]);
+                                    } else {
+                                        polygon.length && setPolygon([]);
+                                    };
                                 }}
                             >
                                 <ZoomControl position="bottomleft"/>
+                                <Polygon
+                                    positions={polygon}
+                                    color={"var(--main-color-scheme)"}
+                                />
                                 {(filteredLocationUUIDs || locationUUIDs).map(locationUuid => {
                                     const location = locations[locationUuid];
                                     if (location.geometry) {
@@ -230,6 +265,63 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 })}
                                 <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                             </Map>
+                            {drawingMode ? (
+                                <div className="polygon-button-container">
+                                    {/* Cancel polygon button */}
+                                    <button
+                                        className="button-action button-polygon"
+                                        onClick={() => {
+                                            setPolygon([]);
+                                            setDrawingMode(false);
+                                        }}
+                                        title="Cancel"
+                                    >
+                                        <i className="fa fa-times" />
+                                    </button>
+                                    {/* Re-draw last step button */}
+                                    <button
+                                        className="button-action button-polygon"
+                                        onClick={() => setPolygon(polygon.slice(0, -1))}
+                                        title="Re-draw"
+                                        disabled={!polygon.length}
+                                    >
+                                        <i className="fa fa-repeat" />
+                                    </button>
+                                    {/* Confirm polygon button */}
+                                    <button
+                                        className="button-action button-polygon"
+                                        onClick={() => {
+                                            if (filteredLocations) {
+                                                selectLocationsInPolygon(Object.values(filteredLocations));
+                                            } else {
+                                                selectLocationsInPolygon(Object.values(locations));
+                                            };
+                                            setDrawingMode(false);
+                                        }}
+                                        title="Confirm"
+                                        disabled={polygon.length < 3}
+                                    >
+                                        <i className="fa fa-check" />
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="polygon-button-container">
+                                    {/* Start drawing polygon button */}
+                                    <button
+                                        className="button-action button-polygon"
+                                        onClick={() => {
+                                            setPolygon([]);
+                                            setDrawingMode(true);
+                                        }}
+                                        title="Draw"
+                                    >
+                                        <img
+                                            src="image/polygon.svg"
+                                            alt="polygon"
+                                        />
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div className="timeseries-filter-bar">
@@ -290,10 +382,11 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                                 {location.name} [{location.code}] [{locationTimeseries.map(ts => ts.observation_type.parameter).join(', ')}]
                                             </span>
                                             <button
-                                                className="button-delete"
+                                                className="button-deselect"
                                                 onClick={() => setSelectedLocations(selectedLocations.filter(locationUuid => locationUuid !== uuid))}
                                             >
-                                                <i className="fa fa-trash icon-delete" />
+                                                <i className="fa fa-minus-square-o icon-deselect" />
+                                                <i className="fa fa-minus-square icon-deselect icon-deselect-on-hover" />
                                             </button>
                                         </li>
                                     )

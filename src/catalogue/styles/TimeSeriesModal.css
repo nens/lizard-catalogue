@@ -160,3 +160,12 @@
     font-size: 1.6rem;
     width: auto;
 }
+
+/* Polygon button container */
+.polygon-button-container {
+    display: flex;
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    z-index: 1000;
+}
