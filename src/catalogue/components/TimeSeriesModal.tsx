@@ -33,7 +33,8 @@ interface filteredLocationObject {
     filteredLocations: {
         [uuid: string]: Location
     },
-    spatialBounds: number[][]
+    spatialBounds: number[][] | null,
+    centerPoint: number[] | null,
 };
 
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
@@ -76,7 +77,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
             setFilteredLocationObject({
                 isFetching: true,
                 filteredLocations: {},
-                spatialBounds: [[85, 180], [-85, -180]]
+                spatialBounds: null,
+                centerPoint: null
             });
 
             // Building queries based on filter inputs
@@ -103,7 +105,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                     setFilteredLocationObject({
                         isFetching: false,
                         filteredLocations,
-                        spatialBounds: getSpatialBounds(locationList)
+                        spatialBounds: getSpatialBounds(locationList),
+                        centerPoint: locationList.length && !getSpatialBounds(locationList) ? getGeometry(locationList[0])!.coordinates : null,
                     });
                 })
                 .catch(console.error);
@@ -134,7 +137,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     if (!timeseriesObject || timeseriesObject.isFetching) return (
         <div className="modal-main modal-timeseries modal-timeseries-loading">
             <MDSpinner size={100}  style={{ marginBottom: "20px" }}/>
-            Loading Time-Series for this Monitoring Network ...
+            Loading Time Series for this Monitoring Network ...
         </div>
     );
 
@@ -157,10 +160,31 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
         setSelectedLocations(selectedLocations.concat(locationsInPolygon));
     };
 
+    // Helper functions to get map bounds or center point
+    const getMapBounds = () => {
+        if (locationOnZoom || (filteredLocationObject && filteredLocationObject.centerPoint)) {
+            return null;
+        };
+        if (filteredLocationObject && filteredLocationObject.spatialBounds) {
+            return filteredLocationObject.spatialBounds;
+        };
+        return locationsObject.spatialBounds;
+    };
+
+    const getMapCenterPoint = () => {
+        if (locationOnZoom) {
+            return locations[locationOnZoom].geometry!.coordinates;
+        };
+        if (filteredLocationObject && filteredLocationObject.centerPoint) {
+            return filteredLocationObject.centerPoint;
+        };
+        return null;
+    };
+
     return (
         <div className="modal-main modal-timeseries">
             <div className="modal-header">
-                <span>Select Time-series</span>
+                <span>Select Time Series</span>
                 <button onClick={props.toggleTimeseriesModal}>&times;</button>
             </div>
             <div className="timeseries">
@@ -179,6 +203,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     onSearchSubmit={e => {
                                         e.preventDefault();
                                         setFinalSearchInput(searchInput);
+                                        setLocationOnZoom('');
                                     }}
                                 />
                             </div>
@@ -188,9 +213,9 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 </div>
                             ) : null}
                             <Map
-                                bounds={filteredLocationObject ? filteredLocationObject.spatialBounds : locationsObject.spatialBounds}
-                                center={locationOnZoom ? locations[locationOnZoom].geometry!.coordinates : null}
-                                zoom={locationOnZoom ? 18 : null}
+                                bounds={getMapBounds()}
+                                center={getMapCenterPoint()}
+                                zoom={getMapCenterPoint() ? 18 : null}
                                 zoomControl={false}
                                 attributionControl={false}
                                 style={{
@@ -370,7 +395,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         </div>
                         <div className="timeseries-period">
                             <h3>3. SELECT PERIOD</h3>
-                            <span className="timeseries-helper-text">Define a time period for your time-series</span>
+                            <span className="timeseries-helper-text">Define a time period for your time series</span>
                             <div className="timeseries-period-container">
                                 <div className="timeseries-time-selection">
                                     <span>Start</span>
@@ -432,7 +457,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                             <button className="button-action" style={{visibility: "hidden"}} />
                             <button
                                 className="button-action"
-                                title="Export Time-series"
+                                title="Export Time Series"
                                 onClick={() => {
                                     const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
                                         const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
@@ -442,7 +467,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 }}
                                 disabled={!selectedLocations.length}
                             >
-                                EXPORT TIME-SERIES
+                                EXPORT TIME SERIES
                             </button>
                         </div>
                     </div>

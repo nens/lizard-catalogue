@@ -13,9 +13,18 @@ export const getSpatialBounds = (locations: Location[]) => {
     const east = Math.max(...x);
     const south = Math.min(...y);
     const west = Math.min(...x);
-    const spatialBounds = locations.length && coordinatesArray.length ? [[north, east], [south, west]] : [[85, 180], [-85, -180]];
+    const spatialBounds = [[north, east], [south, west]];
 
-    return spatialBounds;
+    if (
+        locations.length > 1 &&
+        coordinatesArray.length > 1 &&
+        north !== south &&
+        east !== west
+    ) {
+        return spatialBounds;
+    } else {
+        return null;
+    };    
 };
 
 export const getGeometry = (location: Location): Location['geometry'] => {
