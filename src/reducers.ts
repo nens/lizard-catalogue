@@ -502,6 +502,7 @@ const timeseriesObject = (state: MyStore['timeseriesObject'] = null, action): My
             const timeseries: { [uuid: string]: TimeSeries } = {};
             const observationTypes: { [id: string]: ObservationType } = {};
             timeseriesList.forEach((ts: TimeSeries) => {
+                if (!ts.observation_type) return;
                 observationTypes[ts.observation_type.id] = ts.observation_type;
                 timeseries[ts.uuid] = ts;
             });
