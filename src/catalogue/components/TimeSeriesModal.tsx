@@ -106,7 +106,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         isFetching: false,
                         filteredLocations,
                         spatialBounds: getSpatialBounds(locationList),
-                        centerPoint: locationList.length && !getSpatialBounds(locationList) ? getGeometry(locationList[0])!.coordinates : null,
+                        centerPoint: locationList.length && !getSpatialBounds(locationList) && getGeometry(locationList[0]) ? getGeometry(locationList[0])!.coordinates : null,
                     });
                 })
                 .catch(console.error);
