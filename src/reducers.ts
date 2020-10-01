@@ -121,6 +121,7 @@ export interface MyStore {
     } | null,
     observationTypeObject: {
         isFetching: boolean,
+        count: number,
         observationTypes: ObservationType[],
     } | null,
     locationsObject: {
@@ -524,11 +525,13 @@ const observationTypeObject = (state: MyStore['observationTypeObject'] = null, a
             return {
                 isFetching: true,
                 observationTypes: [],
+                count: 0,
             }
         case RECEIVE_NETWORK_OBSERVATION_TYPES:
             return {
                 isFetching: false,
                 observationTypes: action.observationTypeList,
+                count: action.count,
             }
         default:
             return state;

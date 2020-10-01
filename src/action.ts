@@ -251,18 +251,19 @@ const observationTypesRequested = () => ({
     type: REQUEST_NETWORK_OBSERVATION_TYPES
 });
 
-const observationTypesReceived = (observationTypeList: ObservationType[]) => ({
+const observationTypesReceived = (observationTypeList: ObservationType[], count: number) => ({
     type: RECEIVE_NETWORK_OBSERVATION_TYPES,
-    observationTypeList
+    observationTypeList,
+    count
 });
 
 export const fetchMonitoringNetworkObservationTypes = (uuid: string) => (dispatch) => {
     dispatch(observationTypesRequested());
 
     request
-        .get(`/api/v4/monitoringnetworks/${uuid}/observationtypes/?page_size=1000`)
+        .get(`/api/v4/monitoringnetworks/${uuid}/observationtypes/`)
         .then(response => {
-            dispatch(observationTypesReceived(response.body.results))
+            dispatch(observationTypesReceived(response.body.results, response.body.count))
         })
         .catch(console.error)
 };
