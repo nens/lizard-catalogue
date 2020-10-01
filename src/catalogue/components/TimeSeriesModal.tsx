@@ -12,7 +12,7 @@ import {
     getLocationsObjectNotNull,
     getMonitoringNetworkObservationTypesNotNull,
 } from './../../reducers';
-import { fetchTimeseries, removeTimeseries } from './../../action';
+import { fetchMonitoringNetworkObservationTypes, fetchTimeseries, removeTimeseries } from './../../action';
 import { requestTimeseriesExport, openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
 import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
 import { Location } from '../../interface';
@@ -38,6 +38,8 @@ interface filteredLocationObject {
 };
 
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
+    const { fetchTimeseries, removeTimeseries } = props;
+
     const selectedItem = useSelector(getSelectedItem);
     const timeseriesObject = useSelector(getTimeseriesObject);
 
@@ -65,6 +67,9 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const [filteredLocationObject, setFilteredLocationObject] = useState<filteredLocationObject | null>(null);
     const filteredLocations = filteredLocationObject && filteredLocationObject.filteredLocations;
     const filteredLocationUUIDs = filteredLocations && Object.keys(filteredLocations);
+
+    // filter state for observation types by parameter
+    const [observationType, setObservationType] = useState<string>('');
 
     // drawing polygon
     const [drawingMode, setDrawingMode] = useState(false);
@@ -130,9 +135,9 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     // useEffect to fetch timeseries when component first mounted
     // and remove timeseries when component unmounts
     useEffect(() => {
-        props.fetchTimeseries(selectedItem);
-        return () => props.removeTimeseries();
-    }, [selectedItem, props]);
+        fetchTimeseries(selectedItem);
+        return () => removeTimeseries();
+    }, [selectedItem, fetchTimeseries, removeTimeseries]);
 
     if (!timeseriesObject || timeseriesObject.isFetching) return (
         <div className="modal-main modal-timeseries modal-timeseries-loading">
@@ -325,7 +330,21 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         </div>
                     </div>
                     <div className="timeseries-filter-bar">
-                        <h3>FILTER OBSERVATION TYPE</h3>
+                        <div className="timeseries-filter-observation-type">
+                            <h3>FILTER OBSERVATION TYPE</h3>
+                            <SearchBar
+                                name={'filterSearchBar'}
+                                searchTerm={observationType}
+                                title={'Type parameter name in'}
+                                placeholder={'Search for observation type'}
+                                onSearchChange={e => setObservationType(e.currentTarget.value)}
+                                onSearchSubmit={e => {
+                                    e.preventDefault();
+                                    console.log('submitted', observationType);
+                                    props.fetchMonitoringNetworkObservationTypes(selectedItem, observationType);
+                                }}
+                            />
+                        </div>
                         {observationTypeObject.isFetching ? (
                             <MDSpinner />
                         ) : (
@@ -480,6 +499,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 const mapDispatchToProps = (dispatch) => ({
     fetchTimeseries: (uuid: string) => dispatch(fetchTimeseries(uuid)),
     removeTimeseries: () => dispatch(removeTimeseries()),
+    fetchMonitoringNetworkObservationTypes: (uuid: string, parameter?: string) => dispatch(fetchMonitoringNetworkObservationTypes(uuid, parameter))
 });
 type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>;
 
