@@ -119,13 +119,28 @@ const MonitoringNetworkDetails: React.FC = () => {
                                     <td />
                                 </tr>
                             ) : (
-                                observationTypeObject.observationTypes.map((observationType, i) => (
-                                        <tr key={observationType.id}>
-                                            <td>{i === 0 ? 'Observation types': null}</td>
-                                            <td>{observationType.parameter ? observationType.parameter : observationType.code} ({addRefToUnit(observationType)})</td>
+                                <>
+                                    {observationTypeObject.observationTypes.map((observationType, i) => (
+                                            <tr key={observationType.id}>
+                                                <td>{i === 0 ? 'Observation types': null}</td>
+                                                <td>{observationType.parameter ? observationType.parameter : observationType.code} ({addRefToUnit(observationType)})</td>
+                                            </tr>
+                                        )
+                                    )}
+                                    {observationTypeObject.count > 10 ? (
+                                        <tr>
+                                            <td />
+                                            <td>
+                                                <button
+                                                    className="filter-list-button"
+                                                    onClick={() => setTimeseriesModal(!timeseriesModal)}
+                                                >
+                                                    {observationTypeObject.count - 10} more
+                                                </button>
+                                            </td>
                                         </tr>
-                                    )
-                                )
+                                    ) : null}
+                                </>
                             )
                         )
                     ) : (
