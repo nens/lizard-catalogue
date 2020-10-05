@@ -131,12 +131,12 @@ const MonitoringNetworkDetails: React.FC = () => {
                                         <tr>
                                             <td />
                                             <td>
-                                                <button
+                                                <span
                                                     className="filter-list-button"
-                                                    onClick={() => setTimeseriesModal(!timeseriesModal)}
+                                                    style={{ cursor: 'default' }}
                                                 >
                                                     {observationTypeObject.count - 10} more
-                                                </button>
+                                                </span>
                                             </td>
                                         </tr>
                                     ) : null}
