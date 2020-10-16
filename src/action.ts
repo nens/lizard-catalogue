@@ -257,12 +257,11 @@ const observationTypesReceived = (observationTypeList: ObservationType[], count:
     count
 });
 
-export const fetchMonitoringNetworkObservationTypes = (uuid: string, parameter?: string) => (dispatch) => {
+export const fetchMonitoringNetworkObservationTypes = (uuid: string) => (dispatch) => {
     dispatch(observationTypesRequested());
-    const query = parameter ? `?page_size=10000&parameter__icontains=${parameter}` : '?page_size=10000';
 
     request
-        .get(`/api/v4/monitoringnetworks/${uuid}/observationtypes/${query}`)
+        .get(`/api/v4/monitoringnetworks/${uuid}/observationtypes/?page_size=10000`)
         .then(response => {
             dispatch(observationTypesReceived(response.body.results, response.body.count))
         })

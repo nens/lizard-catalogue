@@ -12,7 +12,7 @@ import {
     getLocationsObjectNotNull,
     getMonitoringNetworkObservationTypesNotNull,
 } from './../../reducers';
-import { fetchMonitoringNetworkObservationTypes, fetchTimeseries, removeTimeseries } from './../../action';
+import { fetchTimeseries, removeTimeseries } from './../../action';
 import { requestTimeseriesExport, openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
 import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
 import { Location } from '../../interface';
@@ -486,7 +486,6 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 const mapDispatchToProps = (dispatch) => ({
     fetchTimeseries: (uuid: string) => dispatch(fetchTimeseries(uuid)),
     removeTimeseries: () => dispatch(removeTimeseries()),
-    fetchMonitoringNetworkObservationTypes: (uuid: string, parameter?: string) => dispatch(fetchMonitoringNetworkObservationTypes(uuid, parameter)),
 });
 type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>;
 
