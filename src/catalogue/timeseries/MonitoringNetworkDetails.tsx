@@ -120,13 +120,19 @@ const MonitoringNetworkDetails: React.FC = () => {
                                 </tr>
                             ) : (
                                 <>
-                                    {observationTypeObject.observationTypes.map((observationType, i) => (
-                                            <tr key={observationType.id}>
-                                                <td>{i === 0 ? 'Observation types': null}</td>
-                                                <td>{observationType.parameter ? observationType.parameter : observationType.code} ({addRefToUnit(observationType)})</td>
-                                            </tr>
-                                        )
-                                    )}
+                                    {observationTypeObject.observationTypes.map((observationType, i) => {
+                                        // Only show first 10 observation types in the table
+                                        if (i < 10) {
+                                            return (
+                                                <tr key={observationType.id}>
+                                                    <td>{i === 0 ? 'Observation types' : null}</td>
+                                                    <td>{observationType.parameter ? observationType.parameter : observationType.code} {observationType.unit ? `(${addRefToUnit(observationType)})` : null}</td>
+                                                </tr>
+                                            )
+                                        } else {
+                                            return null;
+                                        }
+                                    })}
                                     {observationTypeObject.count > 10 ? (
                                         <tr>
                                             <td />

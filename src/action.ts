@@ -261,7 +261,7 @@ export const fetchMonitoringNetworkObservationTypes = (uuid: string) => (dispatc
     dispatch(observationTypesRequested());
 
     request
-        .get(`/api/v4/monitoringnetworks/${uuid}/observationtypes/`)
+        .get(`/api/v4/monitoringnetworks/${uuid}/observationtypes/?page_size=10000`)
         .then(response => {
             dispatch(observationTypesReceived(response.body.results, response.body.count))
         })

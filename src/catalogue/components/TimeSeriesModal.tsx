@@ -38,6 +38,8 @@ interface filteredLocationObject {
 };
 
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
+    const { fetchTimeseries, removeTimeseries } = props;
+
     const selectedItem = useSelector(getSelectedItem);
     const timeseriesObject = useSelector(getTimeseriesObject);
 
@@ -130,9 +132,9 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     // useEffect to fetch timeseries when component first mounted
     // and remove timeseries when component unmounts
     useEffect(() => {
-        props.fetchTimeseries(selectedItem);
-        return () => props.removeTimeseries();
-    }, [selectedItem, props]);
+        fetchTimeseries(selectedItem);
+        return () => removeTimeseries();
+    }, [selectedItem, fetchTimeseries, removeTimeseries]);
 
     if (!timeseriesObject || timeseriesObject.isFetching) return (
         <div className="modal-main modal-timeseries modal-timeseries-loading">
@@ -325,30 +327,34 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         </div>
                     </div>
                     <div className="timeseries-filter-bar">
-                        <h3>FILTER OBSERVATION TYPE</h3>
-                        {observationTypeObject.isFetching ? (
-                            <MDSpinner />
-                        ) : (
-                            <ul className="timeseries-observation-list">
-                                {observationTypes.map(observationType => (
-                                    <li key={observationType.id}>
-                                        <input
-                                            type="checkbox"
-                                            onChange={(e) => {
-                                                if (e.currentTarget.checked) {
-                                                    setSelectedObservationTypeCode(observationType.code);
-                                                } else {
-                                                    // uncheck checkbox
-                                                    setSelectedObservationTypeCode('');
-                                                };
-                                            }}
-                                            checked={selectedObservationTypeCode === observationType.code}
+                        <div className="timeseries-filter-observation-type">
+                            <h3>FILTER OBSERVATION TYPE</h3>
+                            <form
+                                autoComplete='off'
+                                onSubmit={e => e.preventDefault()}
+                            >
+                                <input
+                                    className={'searchbar-input searchbar-input-filter'}
+                                    list={'observation-types'}
+                                    placeholder={'- Search and select -'}
+                                    onChange={e => {
+                                        const value = e.target.value;
+                                        if (!value) setSelectedObservationTypeCode('');
+                                        const selectedObservationType = observationTypes.find(observationType => value === (observationType.parameter || observationType.code));
+                                        if (selectedObservationType) setSelectedObservationTypeCode(selectedObservationType.code);
+                                    }}
+                                />
+                                <datalist id={'observation-types'}>
+                                    {observationTypes.map(observationType => (
+                                        <option
+                                            key={observationType.id}
+                                            value={observationType.parameter || observationType.code}
+                                            label={observationType.parameter || observationType.code}
                                         />
-                                        {observationType.parameter ? observationType.parameter : observationType.code}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
+                                    ))}
+                                </datalist>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 <div className="timeseries-selection">
