@@ -341,8 +341,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     onChange={e => {
                                         const value = e.target.value;
                                         if (!value) setSelectedObservationType(null);
-                                        const selectedObservationType = observationTypes.find(observationType => value === (observationType.parameter || observationType.code));
-                                        if (selectedObservationType) setSelectedObservationType(selectedObservationType);
+                                        const selectedObsType = observationTypes.find(observationType => value === (observationType.parameter || observationType.code));
+                                        if (selectedObsType) setSelectedObservationType(selectedObsType);
                                     }}
                                     onMouseOver={e => {
                                         setOldInputValue(e.currentTarget.value);
