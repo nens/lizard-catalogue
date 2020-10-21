@@ -1,0 +1,45 @@
+.select-box {
+    position: relative;
+    display: flex;
+}
+.select-box-input {
+    flex: 1;
+}
+.results {
+    position: absolute;
+    bottom: calc(100% + 5px);
+    background-color: #fff;
+    width: 100%;
+    max-height: 20rem;
+    box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 9px -1px;
+    z-index: 10000;
+    overflow: scroll;
+}
+.result-row {
+    height: 3rem;
+    padding: 1rem;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.result-row:hover {
+    background-color: #00cdab;
+    color: #fff;
+}
+
+.result-row-inactive:hover a,
+.result-row-active a {
+    color: #fff;
+    text-decoration: none;
+}
+.result-row-inactive a {
+    color: #00cdab;
+    text-decoration: none;
+}
+
+.result-row-active {
+    background-color: #00cdab;
+    color: #fff;
+}
+
+
