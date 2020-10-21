@@ -15,7 +15,7 @@ import {
 import { fetchTimeseries, removeTimeseries } from './../../action';
 import { requestTimeseriesExport, openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
 import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
-import { Location } from '../../interface';
+import { Location, ObservationType } from '../../interface';
 import SearchBar from './SearchBar';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
@@ -55,7 +55,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const [searchInput, setSearchInput] = useState<string>('');
     const [finalSearchInput, setFinalSearchInput] = useState<string>('');
 
-    const [selectedObservationTypeCode, setSelectedObservationTypeCode] = useState<string>('');
+    const [selectedObservationType, setSelectedObservationType] = useState<ObservationType | null>(null);
+    const [oldInputValue, setOldInputValue] = useState('');
 
     // start and end for selected period in milliseconds
     const defaultEndValue = new Date().valueOf();
@@ -74,7 +75,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
     // useEffect to fetch new state of locations based on filter inputs
     useEffect(() => {
-        if (finalSearchInput || selectedObservationTypeCode) {
+        if (finalSearchInput || selectedObservationType) {
             // Set to loading state
             setFilteredLocationObject({
                 isFetching: true,
@@ -87,7 +88,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
             const params: string[] = [`page_size=10000`];
 
             if (finalSearchInput) params.push(`name__icontains=${encodeURIComponent(finalSearchInput)}`);
-            if (selectedObservationTypeCode) params.push(`timeseries__observation_type__code=${encodeURIComponent(selectedObservationTypeCode)}`);
+            if (selectedObservationType) params.push(`timeseries__observation_type__code=${encodeURIComponent(selectedObservationType.code)}`);
 
             const queries = params.join('&');
 
@@ -116,7 +117,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
             // Remove state of filtered locations
             setFilteredLocationObject(null);
         };
-    }, [selectedItem, finalSearchInput, selectedObservationTypeCode])
+    }, [selectedItem, finalSearchInput, selectedObservationType])
 
     // Add event listener to close modal on ESCAPE
     useEffect(() => {
@@ -339,17 +340,21 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     placeholder={'- Search and select -'}
                                     onChange={e => {
                                         const value = e.target.value;
-                                        if (!value) setSelectedObservationTypeCode('');
+                                        if (!value) setSelectedObservationType(null);
                                         const selectedObservationType = observationTypes.find(observationType => value === (observationType.parameter || observationType.code));
-                                        if (selectedObservationType) setSelectedObservationTypeCode(selectedObservationType.code);
+                                        if (selectedObservationType) setSelectedObservationType(selectedObservationType);
                                     }}
+                                    onMouseOver={e => {
+                                        setOldInputValue(e.currentTarget.value);
+                                        e.currentTarget.value = '';
+                                    }}
+                                    onMouseOut={e => e.currentTarget.value = oldInputValue}
                                 />
                                 <datalist id={'observation-types'}>
                                     {observationTypes.map(observationType => (
                                         <option
                                             key={observationType.id}
                                             value={observationType.parameter || observationType.code}
-                                            label={observationType.parameter || observationType.code}
                                         />
                                     ))}
                                 </datalist>
