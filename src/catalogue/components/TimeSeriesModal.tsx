@@ -15,7 +15,7 @@ import {
 import { fetchTimeseries, removeTimeseries } from './../../action';
 import { requestTimeseriesExport, openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
 import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
-import { Location, ObservationType } from '../../interface';
+import { Location } from '../../interface';
 import SearchBar from './SearchBar';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
@@ -55,7 +55,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const [searchInput, setSearchInput] = useState<string>('');
     const [finalSearchInput, setFinalSearchInput] = useState<string>('');
 
-    const [selectedObservationType, setSelectedObservationType] = useState<ObservationType | null>(null);
+    const [selectedObservationTypeCode, setSelectedObservationTypeCode] = useState<string>('');
     const [oldInputValue, setOldInputValue] = useState('');
 
     // start and end for selected period in milliseconds
@@ -75,7 +75,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
     // useEffect to fetch new state of locations based on filter inputs
     useEffect(() => {
-        if (finalSearchInput || selectedObservationType) {
+        if (finalSearchInput || selectedObservationTypeCode) {
             // Set to loading state
             setFilteredLocationObject({
                 isFetching: true,
@@ -88,7 +88,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
             const params: string[] = [`page_size=10000`];
 
             if (finalSearchInput) params.push(`name__icontains=${encodeURIComponent(finalSearchInput)}`);
-            if (selectedObservationType) params.push(`timeseries__observation_type__code=${encodeURIComponent(selectedObservationType.code)}`);
+            if (selectedObservationTypeCode) params.push(`timeseries__observation_type__code=${encodeURIComponent(selectedObservationTypeCode)}`);
 
             const queries = params.join('&');
 
@@ -117,7 +117,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
             // Remove state of filtered locations
             setFilteredLocationObject(null);
         };
-    }, [selectedItem, finalSearchInput, selectedObservationType])
+    }, [selectedItem, finalSearchInput, selectedObservationTypeCode])
 
     // Add event listener to close modal on ESCAPE
     useEffect(() => {
@@ -340,9 +340,9 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     placeholder={'- Search and select -'}
                                     onChange={e => {
                                         const value = e.target.value;
-                                        if (!value) setSelectedObservationType(null);
-                                        const selectedObsType = observationTypes.find(observationType => value === (observationType.parameter || observationType.code));
-                                        if (selectedObsType) setSelectedObservationType(selectedObsType);
+                                        if (!value) setSelectedObservationTypeCode('');
+                                        const selectedObservationType = observationTypes.find(observationType => value === (observationType.parameter || observationType.code));
+                                        if (selectedObservationType) setSelectedObservationTypeCode(selectedObservationType.code);
                                     }}
                                     onMouseOver={e => {
                                         setOldInputValue(e.currentTarget.value);
