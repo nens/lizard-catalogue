@@ -56,6 +56,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const [finalSearchInput, setFinalSearchInput] = useState<string>('');
 
     const [selectedObservationTypeCode, setSelectedObservationTypeCode] = useState<string>('');
+    const [oldInputValue, setOldInputValue] = useState('');
 
     // start and end for selected period in milliseconds
     const defaultEndValue = new Date().valueOf();
@@ -343,13 +344,17 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                         const selectedObservationType = observationTypes.find(observationType => value === (observationType.parameter || observationType.code));
                                         if (selectedObservationType) setSelectedObservationTypeCode(selectedObservationType.code);
                                     }}
+                                    onMouseOver={e => {
+                                        setOldInputValue(e.currentTarget.value);
+                                        e.currentTarget.value = '';
+                                    }}
+                                    onMouseOut={e => e.currentTarget.value = oldInputValue}
                                 />
                                 <datalist id={'observation-types'}>
                                     {observationTypes.map(observationType => (
                                         <option
                                             key={observationType.id}
                                             value={observationType.parameter || observationType.code}
-                                            label={observationType.parameter || observationType.code}
                                         />
                                     ))}
                                 </datalist>
