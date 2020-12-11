@@ -140,7 +140,6 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                         <span>{dataset && dataset.slug}</span>
                     </div>
                 ) : null}
-                {!raster.temporal ? (
                 <div className="details-capabilities">
                     <span className="details-title">Lizard WMS GetCapabilities</span>
                     <div style={{ marginBottom: "5px" }}>
@@ -186,7 +185,6 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                         </div>
                     ) : null}
                 </div>
-                ) : null}
                 <table className="details-table" cellSpacing={0}>
                     <tbody>
                         <tr className="details-table-header">
