@@ -19,10 +19,11 @@ import { Location } from '../../interface';
 import SearchBar from './SearchBar';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
+import '../styles/DatetimePicker.css'; // this css file is to customize the position of the datetime picker
 import '../styles/TimeSeriesModal.css';
 import '../styles/Modal.css';
-import './../styles/Buttons.css';
-import './../styles/Icons.css';
+import '../styles/Buttons.css';
+import '../styles/Icons.css';
 
 interface MyProps {
     toggleTimeseriesModal: () => void
@@ -367,6 +368,37 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 </datalist>
                             </form>
                         </div>
+                        <div className="timeseries-filter-period">
+                            <h3>FILTER PERIOD</h3>
+                            <div className="timeseries-period-container">
+                                <div className="timeseries-time-selection">
+                                    <span>Start</span>
+                                    <Datetime
+                                        dateFormat={'DD/MM/YYYY'}
+                                        timeFormat={'HH:mm'}
+                                        inputProps={{
+                                            className: 'timeseries-datetime',
+                                            placeholder: '---'
+                                        }}
+                                        onChange={(e) => setStart(moment(e).valueOf())}
+                                    />
+                                </div>
+                                <span className="timeseries-period-arrow">&#8594;</span>
+                                <div className="timeseries-time-selection">
+                                    <span>End</span>
+                                    <Datetime
+                                        dateFormat={'DD/MM/YYYY'}
+                                        timeFormat={'HH:mm'}
+                                        inputProps={{
+                                            className: !timeValidator(start, end) ? 'timeseries-datetime' : 'timeseries-datetime timeseries-datetime-error',
+                                            placeholder: '---'
+                                        }}
+                                        onChange={(e) => setEnd(moment(e).valueOf())}
+                                    />
+                                </div>
+                            </div>
+                            <div style={{color: 'red'}}>{timeValidator(start, end)}</div>
+                        </div>
                     </div>
                 </div>
                 <div className="timeseries-selection">
@@ -411,40 +443,9 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 })}
                             </ul>
                         </div>
-                        <div className="timeseries-period">
-                            <h3>3. SELECT PERIOD</h3>
-                            <span className="timeseries-helper-text">Define a time period for your time series</span>
-                            <div className="timeseries-period-container">
-                                <div className="timeseries-time-selection">
-                                    <span>Start</span>
-                                    <Datetime
-                                        dateFormat={'DD/MM/YYYY'}
-                                        timeFormat={'HH:mm'}
-                                        inputProps={{
-                                            className: 'timeseries-datetime',
-                                            placeholder: '---'
-                                        }}
-                                        onChange={(e) => setStart(moment(e).valueOf())}
-                                    />
-                                </div>
-                                <span className="timeseries-period-arrow">&#8594;</span>
-                                <div className="timeseries-time-selection">
-                                    <span>End</span>
-                                    <Datetime
-                                        dateFormat={'DD/MM/YYYY'}
-                                        timeFormat={'HH:mm'}
-                                        inputProps={{
-                                            className: !timeValidator(start, end) ? 'timeseries-datetime' : 'timeseries-datetime timeseries-datetime-error',
-                                            placeholder: '---'
-                                        }}
-                                        onChange={(e) => setEnd(moment(e).valueOf())}
-                                    />
-                                </div>
-                            </div>
-                            <span style={{color: 'red'}}>{timeValidator(start, end)}</span>
-                        </div>
                     </div>
                     <div className="timeseries-button-container">
+                        <h3>3. ACTIONS FOR YOUR SELECTIONS</h3>
                         <div className="timeseries-buttons">
                             <button
                                 className="button-action"
@@ -460,6 +461,9 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                             >
                                 OPEN IN API
                             </button>
+                            <button className="button-action" style={{visibility: "hidden"}} />
+                        </div>
+                        <div className="timeseries-buttons">
                             <button
                                 className="button-action"
                                 title="Open in Portal"
@@ -471,9 +475,6 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                             >
                                 OPEN IN PORTAL
                             </button>
-                        </div>
-                        <div className="timeseries-buttons">
-                            <button className="button-action" style={{visibility: "hidden"}} />
                             <button
                                 className="button-action"
                                 title="Export Time Series"
