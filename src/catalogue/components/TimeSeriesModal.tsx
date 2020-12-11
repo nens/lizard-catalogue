@@ -446,49 +446,51 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                     </div>
                     <div className="timeseries-button-container">
                         <h3>3. ACTIONS FOR YOUR SELECTIONS</h3>
-                        <div className="timeseries-buttons">
-                            <button
-                                className="button-action"
-                                title="Open in API"
-                                onClick={() => {
-                                    const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
-                                        const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
-                                        return selectedTimeseries.map(ts => ts.uuid);
-                                    });
-                                    return openTimeseriesInAPI(arrayOfTimeseriesUUIDs);
-                                }}
-                                disabled={!selectedLocations.length}
-                            >
-                                OPEN IN API
-                            </button>
-                            <button className="button-action" style={{visibility: "hidden"}} />
-                        </div>
-                        <div className="timeseries-buttons">
-                            <button
-                                className="button-action"
-                                title="Open in Portal"
-                                onClick={() => {
-                                    const arrayOfLocations = selectedLocations.map(uuid => locations[uuid]);
-                                    return openLocationsInLizard(arrayOfLocations, start, end);
-                                }}
-                                disabled={!selectedLocations.length}
-                            >
-                                OPEN IN PORTAL
-                            </button>
-                            <button
-                                className="button-action"
-                                title="Export Time Series"
-                                onClick={() => {
-                                    const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
-                                        const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
-                                        return selectedTimeseries.map(ts => ts.uuid);
-                                    });
-                                    return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end);
-                                }}
-                                disabled={!selectedLocations.length || !start}
-                            >
-                                EXPORT TIME SERIES
-                            </button>
+                        <div>
+                            <div className="timeseries-buttons">
+                                <button
+                                    className="button-action"
+                                    title="Open in API"
+                                    onClick={() => {
+                                        const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
+                                            const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
+                                            return selectedTimeseries.map(ts => ts.uuid);
+                                        });
+                                        return openTimeseriesInAPI(arrayOfTimeseriesUUIDs);
+                                    }}
+                                    disabled={!selectedLocations.length}
+                                >
+                                    OPEN IN API
+                                </button>
+                                <button className="button-action" style={{visibility: "hidden"}} />
+                            </div>
+                            <div className="timeseries-buttons">
+                                <button
+                                    className="button-action"
+                                    title="Open in Portal"
+                                    onClick={() => {
+                                        const arrayOfLocations = selectedLocations.map(uuid => locations[uuid]);
+                                        return openLocationsInLizard(arrayOfLocations, start, end);
+                                    }}
+                                    disabled={!selectedLocations.length}
+                                >
+                                    OPEN IN PORTAL
+                                </button>
+                                <button
+                                    className="button-action"
+                                    title="Export Time Series"
+                                    onClick={() => {
+                                        const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
+                                            const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
+                                            return selectedTimeseries.map(ts => ts.uuid);
+                                        });
+                                        return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end);
+                                    }}
+                                    disabled={!selectedLocations.length || !start}
+                                >
+                                    EXPORT TIME SERIES
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

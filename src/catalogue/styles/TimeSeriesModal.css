@@ -5,7 +5,8 @@
     flex-direction: row;
 }
 .timeseries-top {
-    flex: 3;
+    height: 75%;
+    margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
 }
@@ -42,7 +43,7 @@
 
 .timeseries-map {
     flex: 1;
-    margin: 1rem 0;
+    margin-top: 1rem;
     position: relative;
 }
 .leaflet-container {
@@ -85,7 +86,7 @@
 }
 
 .timeseries-selected-locations {
-    flex: 1;
+    height: 100%;
     display: flex;
     flex-direction: column;
     border-bottom: 1px solid var(--border-color-soft);
@@ -119,7 +120,7 @@
 }
 
 .timeseries-filter-observation-type {
-    margin-bottom: 1rem;
+    margin: 1rem 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -132,12 +133,11 @@
     flex: 1;
 }
 
-.timeseries-period {
-    flex: 1;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color-soft);
+.timeseries-filter-period {
+    margin: 1rem 0;
 }
 .timeseries-period-container {
+    margin-top: 1.5rem;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -169,6 +169,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
 }
 .timeseries-buttons {
     display: flex;
