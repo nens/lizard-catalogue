@@ -151,8 +151,8 @@
 .timeseries-datetime {
     color: var(--font-color);
 }
-.timeseries-datetime::placeholder {
-    color: var(--font-color);
+.timeseries-datetime-error {
+    border: 1px solid red;
 }
 
 /* Buttons */

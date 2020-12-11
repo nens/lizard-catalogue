@@ -37,6 +37,13 @@ interface filteredLocationObject {
     centerPoint: number[] | null,
 };
 
+const timeValidator = (start: number | null, end: number | null) => {
+    if (start && end && start > end) {
+        return 'End date must be after start date';
+    };
+    return false;
+};
+
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const { fetchTimeseries, removeTimeseries } = props;
 
@@ -59,10 +66,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const [oldInputValue, setOldInputValue] = useState('');
 
     // start and end for selected period in milliseconds
-    const defaultEndValue = new Date().valueOf();
-    const defaultStartValue = defaultEndValue - 1000 * 60 * 60 * 24 * 1; // default start value is 1 day before current date
-    const [start, setStart] = useState<number>(defaultStartValue);
-    const [end, setEnd] = useState<number>(defaultEndValue);
+    const [start, setStart] = useState<number | null>(null);
+    const [end, setEnd] = useState<number | null>(null);
 
     // filter state for locations
     const [filteredLocationObject, setFilteredLocationObject] = useState<filteredLocationObject | null>(null);
@@ -75,7 +80,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
     // useEffect to fetch new state of locations based on filter inputs
     useEffect(() => {
-        if (finalSearchInput || selectedObservationTypeCode) {
+        if (finalSearchInput || selectedObservationTypeCode || start || end) {
             // Set to loading state
             setFilteredLocationObject({
                 isFetching: true,
@@ -89,6 +94,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
             if (finalSearchInput) params.push(`name__icontains=${encodeURIComponent(finalSearchInput)}`);
             if (selectedObservationTypeCode) params.push(`timeseries__observation_type__code=${encodeURIComponent(selectedObservationTypeCode)}`);
+            if (start) params.push(`timeseries__start__gte=${moment(start).format("YYYY-MM-DDThh:mm:ss")}Z`);
+            if (end && !timeValidator(start, end)) params.push(`timeseries__end__lt=${moment(end).format("YYYY-MM-DDThh:mm:ss")}Z`);
 
             const queries = params.join('&');
 
@@ -117,7 +124,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
             // Remove state of filtered locations
             setFilteredLocationObject(null);
         };
-    }, [selectedItem, finalSearchInput, selectedObservationTypeCode])
+    }, [selectedItem, finalSearchInput, selectedObservationTypeCode, start, end])
 
     // Add event listener to close modal on ESCAPE
     useEffect(() => {
@@ -415,7 +422,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                         timeFormat={'HH:mm'}
                                         inputProps={{
                                             className: 'timeseries-datetime',
-                                            placeholder: moment(defaultStartValue).format('DD/MM/YYYY HH:mm')
+                                            placeholder: 'DD/MM/YYYY hh:mm'
                                         }}
                                         onChange={(e) => setStart(moment(e).valueOf())}
                                     />
@@ -427,13 +434,14 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                         dateFormat={'DD/MM/YYYY'}
                                         timeFormat={'HH:mm'}
                                         inputProps={{
-                                            className: 'timeseries-datetime',
-                                            placeholder: moment(defaultEndValue).format('DD/MM/YYYY HH:mm')
+                                            className: !timeValidator(start, end) ? 'timeseries-datetime' : 'timeseries-datetime timeseries-datetime-error',
+                                            placeholder: 'DD/MM/YYYY hh:mm'
                                         }}
                                         onChange={(e) => setEnd(moment(e).valueOf())}
                                     />
                                 </div>
                             </div>
+                            <span style={{color: 'red'}}>{timeValidator(start, end)}</span>
                         </div>
                     </div>
                     <div className="timeseries-button-container">
