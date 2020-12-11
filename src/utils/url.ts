@@ -33,13 +33,13 @@ export const openLocationsInLizard = (locations: Location[], start: number | nul
     ) : (
         `/nl/charts/topography/multi-point/${objectUrl}/`
     );
-    if (!start || !end) {
+    if (!start) {
         // Open locations in chart mode to view the timeseries without duration
         return window.open(url);
     };
 
     const startDate = moment(start).format("MMM,DD,YYYY");
-    const endDate = moment(end).format("MMM,DD,YYYY");
+    const endDate = end ? moment(end).format("MMM,DD,YYYY") : moment().format("MMM,DD,YYYY");
     const duration = `${startDate}-${endDate}`;
 
     // Open locations in chart mode to view the timeseries with duration
@@ -86,10 +86,15 @@ export const getDatasetGetCapabilitesURL = (dataset: Dataset) => {
 };
 
 export const requestTimeseriesExport = (timeseriesUUIDs: string[][], start: number | null, end: number | null) => {
-    const params: string[] = ['async=true', 'format=xlsx', 'interactive=true', `uuid=${timeseriesUUIDs.join(',')}`];
+    if (!start) return; // export cannot happen if no start date is selected
 
-    if (start) params.push(`start=${start}`);
-    if (end) params.push(`end=${end}`);
+    const params: string[] = ['async=true', 'format=xlsx', 'interactive=true', `uuid=${timeseriesUUIDs.join(',')}`, `start=${start}`];
+
+    if (end) {
+        params.push(`end=${end}`);
+    } else {
+        params.push(`end=${moment().valueOf()}`);
+    };
 
     const queries = params.join('&');
 

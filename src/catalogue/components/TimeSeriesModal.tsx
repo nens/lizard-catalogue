@@ -422,7 +422,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                         timeFormat={'HH:mm'}
                                         inputProps={{
                                             className: 'timeseries-datetime',
-                                            placeholder: 'DD/MM/YYYY hh:mm'
+                                            placeholder: '---'
                                         }}
                                         onChange={(e) => setStart(moment(e).valueOf())}
                                     />
@@ -435,7 +435,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                         timeFormat={'HH:mm'}
                                         inputProps={{
                                             className: !timeValidator(start, end) ? 'timeseries-datetime' : 'timeseries-datetime timeseries-datetime-error',
-                                            placeholder: 'DD/MM/YYYY hh:mm'
+                                            placeholder: '---'
                                         }}
                                         onChange={(e) => setEnd(moment(e).valueOf())}
                                     />
@@ -484,7 +484,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     });
                                     return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end);
                                 }}
-                                disabled={!selectedLocations.length}
+                                disabled={!selectedLocations.length || !start}
                             >
                                 EXPORT TIME SERIES
                             </button>
