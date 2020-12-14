@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import MDSpinner from 'react-md-spinner';
 import Leaflet from 'leaflet';
@@ -39,6 +39,7 @@ interface filteredLocationObject {
 
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const { fetchTimeseries, removeTimeseries } = props;
+    const mapRef = useRef<Map>(null);
 
     const selectedItem = useSelector(getSelectedItem);
     const timeseriesObject = useSelector(getTimeseriesObject);
@@ -216,6 +217,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 </div>
                             ) : null}
                             <Map
+                                ref={mapRef}
                                 bounds={getMapBounds()}
                                 center={getMapCenterPoint()}
                                 zoom={getMapCenterPoint() ? 18 : null}
@@ -268,6 +270,19 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 })}
                                 <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                             </Map>
+                            <button
+                                className="button-action button-home-zoom"
+                                onClick={() => {
+                                    // Remove location currently on zoom if any
+                                    if (locationOnZoom) setLocationOnZoom('');
+                                    // Set map to the original bounds
+                                    mapRef.current.leafletElement.fitBounds(
+                                        filteredLocationObject ? filteredLocationObject.spatialBounds : locationsObject.spatialBounds
+                                    );
+                                }}
+                            >
+                                <i className="fa fa-expand" />
+                            </button>
                             {drawingMode ? (
                                 <div className="polygon-button-container">
                                     {/* Cancel polygon button */}
