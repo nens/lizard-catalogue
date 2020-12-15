@@ -39,6 +39,25 @@
     background-color: #008080;
 }
 
+/* Home zoom button */
+.button-home-zoom {
+    font-size: 2rem;
+    width: 4rem;
+    height: 4rem;
+    color: var(--font-color);
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-color-soft);
+    z-index: 1000;
+
+    position: absolute;
+    top: 4rem;
+    left: 0.8rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 /* Deselect button with deselecting (minus) icon */
 .button-deselect {
     cursor: pointer;
