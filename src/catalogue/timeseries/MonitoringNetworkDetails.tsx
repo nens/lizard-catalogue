@@ -117,10 +117,10 @@ const MonitoringNetworkDetails: React.FC = () => {
                             // Only show first 10 observation types in the table
                             if (i < 10) {
                                 return (
-                                    <>
+                                    <React.Fragment key={i}>
                                     <div>{observationType.parameter ? observationType.parameter : observationType.code} {observationType.unit ? `(${addRefToUnit(observationType)})` : null}</div>
                                     <div />
-                                    </>
+                                    </React.Fragment>
                                 )
                             } else {
                                 return null;
