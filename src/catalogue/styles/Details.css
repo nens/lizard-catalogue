@@ -6,6 +6,7 @@
     height: 100%;    
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 }
 
 .details-loading {
@@ -92,59 +93,60 @@
     margin: .5rem 0;
 }
 
-/* Table */
-.details-table {
+/* Grid */
+.details-grid {
+    flex: 1;
     width: 100%;
-    table-layout: fixed;
-}
-.details-table, .details-table td {
-    border: 1px solid #D1D1D1;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-auto-rows: minmax(30px, 30px);
     border-collapse: collapse;
 }
-.details-table tr {
-    line-height: 3rem;
+.details-grid-header {
+    flex: 0;
+    grid-auto-rows: minmax(40px, 40px);
 }
-.details-table-header {
-    border: 1px solid var(--main-color-scheme);
+.details-grid-body {
+    padding-top: 1rem;
+    border: 2.5px solid var(--main-color-scheme);
 }
-.details-table th {
-    height: 3.8rem;
-    font-size: 2rem;
+.details-grid-actions {
+    grid-auto-rows: minmax(60px, 60px);
+}
+.details-grid-header > div {
+    opacity: 0.34;
+    font-size: 20px;
     font-weight: 500;
     text-transform: uppercase;
-    margin-bottom: 2rem;
-    color: var(--border-color-soft);
-    border-bottom: 6px solid var(--main-color-scheme);
+    color: #FFFFFF;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: var(--main-color-scheme);
+    border-radius: 4px 4px 0 0;
+    box-shadow: 6px 0px 5px #00000029;
     cursor: pointer;
 }
-.details-table .details-table-selected {
-    color: #FFFFFF;
-    border-bottom: 6px solid var(--button-color-scheme);
+.details-grid-header > div:nth-child(2) {
+    box-shadow: none;
+    border-radius: 4px 4px 0 0;
 }
-.details-table td {
-    padding: 0 1rem;
+.details-grid-header-selected {
+    opacity: 1 !important;
+}
+.details-grid-body div {
+    padding: 0.5rem;
+    padding-left: 1rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.details-table tr > td:nth-child(2) {
+.details-grid-body div:nth-child(2n) {
     font-weight: 500;
 }
-
-/* Table ACTIONS tab */
-.details-table-actions > td {
-    border: none;
-}
-.details-table-buttons {
-    display: flex;
-    flex-direction: column;
-}
-.details-table-buttons > button {
-    margin-top: 2rem;
-}
-.details-table-buttons > button:last-child {
-    margin-bottom: 2rem;
+.details-grid-actions div {
+    padding: 1rem;
 }
 
 /* Get capabilities */
@@ -195,48 +197,4 @@
 }
 .details__button-copy:active {
     transform: translateY(2px);
-}
-
-.details__button-container {
-    max-height: 10%;
-    margin-bottom: 1rem;
-}
-
-.details__button {
-    font-size: 1.4rem;
-    line-height: 1.6rem;
-    background-color: var(--main-color-scheme);
-    color: #fff;
-    border: none;
-    border-radius: .2rem;
-    border-bottom: 1px solid grey;
-    padding: .6rem .8rem;
-    margin-right: .2rem;
-    cursor: pointer;
-    box-shadow: .1rem .2rem .4rem rgba(12, 12, 12, 0.5);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-transform: uppercase;
-}
-
-.details__button-danger {
-    background-color: #ff7070;
-}
-
-.details__button:last-child {
-    margin-right: 0;
-}
-
-.details__button:focus {
-    outline: none;
-}
-
-.details__button:active {
-    transform: translateY(1px)
-}
-
-.details__buttons {
-    display: flex;
-    justify-content: space-between;
 }
