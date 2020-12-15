@@ -133,62 +133,65 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
                         </div>
                     </div>
                 ) : null}
-                <table className="details-table"  cellSpacing={0}>
-                    <tbody>
-                        <tr className="details-table-header">
-                            <th
-                                className={this.state.showTableTab === 'Details' ? 'details-table-selected' : ''}
-                                onClick={() => this.setState({showTableTab: 'Details'})}
+                <div className="details-grid details-grid-header">
+                    <div
+                        className={this.state.showTableTab === 'Details' ? 'details-grid-header-selected' : ''}
+                        onClick={() => this.setState({showTableTab: 'Details'})}
+                    >
+                        Details
+                    </div>
+                    <div
+                        className={this.state.showTableTab === 'Actions' ? 'details-grid-header-selected' : ''}
+                        onClick={() => this.setState({showTableTab: 'Actions'})}
+                    >
+                        Actions
+                    </div>
+                </div>
+                {this.state.showTableTab === 'Details' ? (
+                    <div className="details-grid details-grid-body">
+                        <div>Data type</div>
+                        <div>WMS layer</div>
+                        <div>Slug</div>
+                        <div>{wms.slug}</div>
+                    </div>
+                ) : (
+                    <div className="details-grid details-grid-body details-grid-actions">
+                        <div />
+                        <div>
+                            <button
+                                className="button-action"
+                                onClick={() => openWMSInLizard(wms, centerPoint, zoom)}
+                                title="Open in Portal"
                             >
-                                Details
-                            </th>
-                            <th
-                                className={this.state.showTableTab === 'Actions' ? 'details-table-selected' : ''}
-                                onClick={() => this.setState({showTableTab: 'Actions'})}
+                                OPEN IN PORTAL
+                            </button>
+                        </div>
+                        <div />
+                        <div>
+                            <button
+                                className="button-action"
+                                onClick={() => openWMSInAPI(wms)}
+                                title="Open in API"
                             >
-                                Actions
-                            </th>
-                        </tr>
-                        {this.state.showTableTab === 'Details' ? (
-                        <>
-                            <tr>
-                                <td>Data type</td>
-                                <td>WMS layer</td>
-                            </tr>
-                            <tr>
-                                <td>Slug</td>
-                                <td>{wms.slug}</td>
-                            </tr>
-                        </>
-                        ) : (
-                        <>
-                            <tr className="details-table-actions">
-                                <td />
-                                <td className="details-table-buttons">
-                                    <button className="button-action" onClick={() => openWMSInLizard(wms, centerPoint, zoom)} title="Open in Portal">
-                                        {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
-                                        OPEN IN PORTAL
-                                    </button>
-                                    <button className="button-action" onClick={() => openWMSInAPI(wms)} title="Open in API">
-                                        {/* <i className="fa fa-external-link"/>&nbsp;&nbsp; */}
-                                        OPEN IN API
-                                    </button>
-                                    {wms.download_url ? (
-                                        <button
-                                            className="button-action"
-                                            onClick={() => openWMSDownloadURL(wms)}
-                                            title="Download"
-                                        >
-                                            {/* <i className="fa fa-download"/>&nbsp;&nbsp; */}
-                                            DOWNLOAD
-                                        </button>
-                                    ) : null}
-                                </td>
-                            </tr>
-                        </>
-                        )}
-                    </tbody>
-                </table>
+                                OPEN IN API
+                            </button>
+                        </div>
+                        {wms.download_url ? (
+                            <>
+                            <div />
+                            <div>
+                                <button
+                                    className="button-action"
+                                    onClick={() => openWMSDownloadURL(wms)}
+                                    title="Download"
+                                >
+                                    DOWNLOAD
+                                </button>
+                            </div>
+                            </>
+                        ) : null}
+                    </div>
+                )}
             </div>
         );
     };

@@ -88,83 +88,68 @@ const MonitoringNetworkDetails: React.FC = () => {
                 <span className="details-title">Organisation</span>
                 <span>{monitoringNetwork.organisation && monitoringNetwork.organisation.name}</span>
             </div>
-            <table className="details-table" cellSpacing={0}>
-                <tbody>
-                    <tr className="details-table-header">
-                        <th
-                            className={activeTab === 'Details' ? 'details-table-selected' : ''}
-                            onClick={() => setActiveTab('Details')}
+            <div className="details-grid details-grid-header">
+                <div
+                    className={activeTab === 'Details' ? 'details-grid-header-selected' : ''}
+                    onClick={() => setActiveTab('Details')}
+                >
+                    Details
+                </div>
+                <div
+                    className={activeTab === 'Actions' ? 'details-grid-header-selected' : ''}
+                    onClick={() => setActiveTab('Actions')}
+                >
+                    Actions
+                </div>
+            </div>
+            {activeTab === 'Details' && observationTypeObject ? (
+                observationTypeObject.isFetching ? (
+                    <div className="details-grid details-grid-body">
+                        <div>Observation types</div>
+                        <div style={{ textAlign: 'center' }}>
+                            <MDSpinner size={24} />
+                        </div>
+                    </div>
+                ): (
+                    <div className="details-grid details-grid-body">
+                        <div>Observation types</div>
+                        {observationTypeObject.observationTypes.map((observationType, i) => {
+                            // Only show first 10 observation types in the table
+                            if (i < 10) {
+                                return (
+                                    <>
+                                    <div>{observationType.parameter ? observationType.parameter : observationType.code} {observationType.unit ? `(${addRefToUnit(observationType)})` : null}</div>
+                                    <div />
+                                    </>
+                                )
+                            } else {
+                                return null;
+                            }
+                        })}
+                        {observationTypeObject.count > 10 ? (
+                            <div
+                                className="filter-list-button"
+                                style={{ cursor: 'default' }}
+                            >
+                                {observationTypeObject.count - 10} more
+                            </div>
+                        ) : null}
+                    </div>
+                )
+            ) : (
+                <div className="details-grid details-grid-body details-grid-actions">
+                    <div />
+                    <div>
+                        <button
+                            className="button-action"
+                            onClick={() => setTimeseriesModal(!timeseriesModal)}
                         >
-                            Details
-                        </th>
-                        <th
-                            className={activeTab === 'Actions' ? 'details-table-selected' : ''}
-                            onClick={() => setActiveTab('Actions')}
-                        >
-                            Actions
-                        </th>
-                    </tr>
-                    {activeTab === 'Details' && observationTypeObject ? (
-                        observationTypeObject.isFetching ? (
-                            <tr>
-                                <td>Observation types</td>
-                                <td style={{ textAlign: 'center' }}>
-                                    <MDSpinner size={24} />
-                                </td>
-                            </tr>
-                        ) : (
-                            observationTypeObject.observationTypes.length === 0 ? (
-                                <tr>
-                                    <td>Observation types</td>
-                                    <td />
-                                </tr>
-                            ) : (
-                                <>
-                                    {observationTypeObject.observationTypes.map((observationType, i) => {
-                                        // Only show first 10 observation types in the table
-                                        if (i < 10) {
-                                            return (
-                                                <tr key={observationType.id}>
-                                                    <td>{i === 0 ? 'Observation types' : null}</td>
-                                                    <td>{observationType.parameter ? observationType.parameter : observationType.code} {observationType.unit ? `(${addRefToUnit(observationType)})` : null}</td>
-                                                </tr>
-                                            )
-                                        } else {
-                                            return null;
-                                        }
-                                    })}
-                                    {observationTypeObject.count > 10 ? (
-                                        <tr>
-                                            <td />
-                                            <td>
-                                                <span
-                                                    className="filter-list-button"
-                                                    style={{ cursor: 'default' }}
-                                                >
-                                                    {observationTypeObject.count - 10} more
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ) : null}
-                                </>
-                            )
-                        )
-                    ) : (
-                        <tr className="details-table-actions">
-                            <td />
-                            <td className="details-table-buttons">
-                                <button
-                                    className="button-action"
-                                    onClick={() => setTimeseriesModal(!timeseriesModal)}
-                                >
-                                    SELECT TIME SERIES
-                                </button>
-                            </td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-            {/*This is the PopUp window for the time series selection screen*/}
+                            SELECT TIME SERIES
+                        </button>
+                    </div>
+                </div>
+            )}
+            {/*This is the PopUp window for the time-series selection screen*/}
             {timeseriesModal && (
                 <div className="modal-background">
                     <TimeSeriesModal
