@@ -433,7 +433,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     CLEAR SELECTION
                                 </button>
                             </div>
-                            <ul className="timeseries-location-list">
+                            <ul className="timeseries-location-list" id="scrollbar">
                                 {selectedLocations.map(uuid => {
                                     const location = locations[uuid];
                                     const locationTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);

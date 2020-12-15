@@ -40,3 +40,19 @@ html {
   box-sizing: border-box;
   font-size: 62.5%; /* 1rem = 10px */
 }
+
+/* Custom styling for scrollbars */
+#scrollbar::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: transparent;
+}
+
+#scrollbar::-webkit-scrollbar {
+  width: 6px;
+  background-color: transparent;
+}
+
+#scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: var(--border-color-soft);
+}
