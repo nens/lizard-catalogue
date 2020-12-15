@@ -5,10 +5,10 @@
     flex-direction: row;
 }
 .timeseries-top {
-    height: 85%;
+    height: 75%;
+    margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
-    margin-bottom: 1rem;
 }
 .timeseries h3 {
     font-size: 1.8rem;
@@ -24,15 +24,26 @@
 .timeseries-filter {
     width: 60%;
     padding-right: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.timeseries-filter-bar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-evenly; */
 }
 
 .timeseries-selection {
     width: 40%;
+    display: flex;
+    flex-direction: column;
 }
 
 .timeseries-map {
     flex: 1;
-    margin: 1rem 0;
+    margin-top: 1rem;
     position: relative;
 }
 .leaflet-container {
@@ -75,11 +86,10 @@
 }
 
 .timeseries-selected-locations {
-    height: 70%;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color-soft);
+    height: 100%;
     display: flex;
     flex-direction: column;
+    border-bottom: 1px solid var(--border-color-soft);
 }
 .timeseries-selected-locations-header {
     display: flex;
@@ -110,7 +120,7 @@
 }
 
 .timeseries-filter-observation-type {
-    margin-bottom: 1rem;
+    margin: 1rem 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -123,21 +133,19 @@
     flex: 1;
 }
 
-.timeseries-period {
-    flex: 1;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color-soft);
+.timeseries-filter-period {
+    margin: 1rem 0;
 }
 .timeseries-period-container {
+    margin-top: 1.5rem;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
-    margin: 1rem 0;
 }
 .timeseries-period-arrow {
     font-size: 4rem;
     color: #707070;
+    margin: 0 4rem;
 }
 .timeseries-time-selection {
     display: flex;
@@ -151,23 +159,27 @@
 .timeseries-datetime {
     color: var(--font-color);
 }
-.timeseries-datetime::placeholder {
-    color: var(--font-color);
+.timeseries-datetime-error {
+    border: 1px solid red;
 }
 
 /* Buttons */
 .timeseries-button-container {
     margin-top: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.timeseries-buttons {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
-.timeseries-buttons {
-    flex: 1;
-}
 .timeseries-button-container button {
     width: 90%;
-    margin-bottom: 1rem;
+    margin-top: 1rem;
+    margin-right: 1rem;
 }
 
 .timeseries-button-clear-selection {

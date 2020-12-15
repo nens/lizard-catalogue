@@ -19,10 +19,11 @@ import { Location } from '../../interface';
 import SearchBar from './SearchBar';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
+import '../styles/DatetimePicker.css'; // this css file is to customize the position of the datetime picker
 import '../styles/TimeSeriesModal.css';
 import '../styles/Modal.css';
-import './../styles/Buttons.css';
-import './../styles/Icons.css';
+import '../styles/Buttons.css';
+import '../styles/Icons.css';
 
 interface MyProps {
     toggleTimeseriesModal: () => void
@@ -35,6 +36,13 @@ interface filteredLocationObject {
     },
     spatialBounds: number[][] | null,
     centerPoint: number[] | null,
+};
+
+const timeValidator = (start: number | null, end: number | null) => {
+    if (start && end && start > end) {
+        return 'End date must be after start date';
+    };
+    return false;
 };
 
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
@@ -60,10 +68,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const [oldInputValue, setOldInputValue] = useState('');
 
     // start and end for selected period in milliseconds
-    const defaultEndValue = new Date().valueOf();
-    const defaultStartValue = defaultEndValue - 1000 * 60 * 60 * 24 * 1; // default start value is 1 day before current date
-    const [start, setStart] = useState<number>(defaultStartValue);
-    const [end, setEnd] = useState<number>(defaultEndValue);
+    const [start, setStart] = useState<number | null>(null);
+    const [end, setEnd] = useState<number | null>(null);
 
     // filter state for locations
     const [filteredLocationObject, setFilteredLocationObject] = useState<filteredLocationObject | null>(null);
@@ -76,7 +82,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
     // useEffect to fetch new state of locations based on filter inputs
     useEffect(() => {
-        if (finalSearchInput || selectedObservationTypeCode) {
+        if (finalSearchInput || selectedObservationTypeCode || start || end) {
             // Set to loading state
             setFilteredLocationObject({
                 isFetching: true,
@@ -90,6 +96,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
             if (finalSearchInput) params.push(`name__icontains=${encodeURIComponent(finalSearchInput)}`);
             if (selectedObservationTypeCode) params.push(`timeseries__observation_type__code=${encodeURIComponent(selectedObservationTypeCode)}`);
+            if (start) params.push(`timeseries__start__gte=${moment(start).format("YYYY-MM-DDThh:mm:ss")}Z`);
+            if (end && !timeValidator(start, end)) params.push(`timeseries__end__lt=${moment(end).format("YYYY-MM-DDThh:mm:ss")}Z`);
 
             const queries = params.join('&');
 
@@ -118,7 +126,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
             // Remove state of filtered locations
             setFilteredLocationObject(null);
         };
-    }, [selectedItem, finalSearchInput, selectedObservationTypeCode])
+    }, [selectedItem, finalSearchInput, selectedObservationTypeCode, start, end])
 
     // Add event listener to close modal on ESCAPE
     useEffect(() => {
@@ -375,6 +383,37 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 </datalist>
                             </form>
                         </div>
+                        <div className="timeseries-filter-period">
+                            <h3>FILTER PERIOD</h3>
+                            <div className="timeseries-period-container">
+                                <div className="timeseries-time-selection">
+                                    <span>Start</span>
+                                    <Datetime
+                                        dateFormat={'DD/MM/YYYY'}
+                                        timeFormat={'HH:mm'}
+                                        inputProps={{
+                                            className: 'timeseries-datetime',
+                                            placeholder: '---'
+                                        }}
+                                        onChange={(e) => setStart(moment(e).valueOf())}
+                                    />
+                                </div>
+                                <span className="timeseries-period-arrow">&#8594;</span>
+                                <div className="timeseries-time-selection">
+                                    <span>End</span>
+                                    <Datetime
+                                        dateFormat={'DD/MM/YYYY'}
+                                        timeFormat={'HH:mm'}
+                                        inputProps={{
+                                            className: !timeValidator(start, end) ? 'timeseries-datetime' : 'timeseries-datetime timeseries-datetime-error',
+                                            placeholder: '---'
+                                        }}
+                                        onChange={(e) => setEnd(moment(e).valueOf())}
+                                    />
+                                </div>
+                            </div>
+                            <div style={{color: 'red'}}>{timeValidator(start, end)}</div>
+                        </div>
                     </div>
                 </div>
                 <div className="timeseries-selection">
@@ -419,82 +458,54 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 })}
                             </ul>
                         </div>
-                        <div className="timeseries-period">
-                            <h3>3. SELECT PERIOD</h3>
-                            <span className="timeseries-helper-text">Define a time period for your time series</span>
-                            <div className="timeseries-period-container">
-                                <div className="timeseries-time-selection">
-                                    <span>Start</span>
-                                    <Datetime
-                                        dateFormat={'DD/MM/YYYY'}
-                                        timeFormat={'HH:mm'}
-                                        inputProps={{
-                                            className: 'timeseries-datetime',
-                                            placeholder: moment(defaultStartValue).format('DD/MM/YYYY HH:mm')
-                                        }}
-                                        onChange={(e) => setStart(moment(e).valueOf())}
-                                    />
-                                </div>
-                                <span className="timeseries-period-arrow">&#8594;</span>
-                                <div className="timeseries-time-selection">
-                                    <span>End</span>
-                                    <Datetime
-                                        dateFormat={'DD/MM/YYYY'}
-                                        timeFormat={'HH:mm'}
-                                        inputProps={{
-                                            className: 'timeseries-datetime',
-                                            placeholder: moment(defaultEndValue).format('DD/MM/YYYY HH:mm')
-                                        }}
-                                        onChange={(e) => setEnd(moment(e).valueOf())}
-                                    />
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div className="timeseries-button-container">
-                        <div className="timeseries-buttons">
-                            <button
-                                className="button-action"
-                                title="Open in API"
-                                onClick={() => {
-                                    const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
-                                        const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
-                                        return selectedTimeseries.map(ts => ts.uuid);
-                                    });
-                                    return openTimeseriesInAPI(arrayOfTimeseriesUUIDs);
-                                }}
-                                disabled={!selectedLocations.length}
-                            >
-                                OPEN IN API
-                            </button>
-                            <button
-                                className="button-action"
-                                title="Open in Portal"
-                                onClick={() => {
-                                    const arrayOfLocations = selectedLocations.map(uuid => locations[uuid]);
-                                    return openLocationsInLizard(arrayOfLocations, start, end);
-                                }}
-                                disabled={!selectedLocations.length}
-                            >
-                                OPEN IN PORTAL
-                            </button>
-                        </div>
-                        <div className="timeseries-buttons">
-                            <button className="button-action" style={{visibility: "hidden"}} />
-                            <button
-                                className="button-action"
-                                title="Export Time Series"
-                                onClick={() => {
-                                    const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
-                                        const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
-                                        return selectedTimeseries.map(ts => ts.uuid);
-                                    });
-                                    return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end);
-                                }}
-                                disabled={!selectedLocations.length}
-                            >
-                                EXPORT TIME SERIES
-                            </button>
+                        <h3>3. ACTIONS FOR YOUR SELECTIONS</h3>
+                        <div>
+                            <div className="timeseries-buttons">
+                                <button
+                                    className="button-action"
+                                    title="Open in API"
+                                    onClick={() => {
+                                        const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
+                                            const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
+                                            return selectedTimeseries.map(ts => ts.uuid);
+                                        });
+                                        return openTimeseriesInAPI(arrayOfTimeseriesUUIDs);
+                                    }}
+                                    disabled={!selectedLocations.length}
+                                >
+                                    OPEN IN API
+                                </button>
+                                <button className="button-action" style={{visibility: "hidden"}} />
+                            </div>
+                            <div className="timeseries-buttons">
+                                <button
+                                    className="button-action"
+                                    title="Open in Portal"
+                                    onClick={() => {
+                                        const arrayOfLocations = selectedLocations.map(uuid => locations[uuid]);
+                                        return openLocationsInLizard(arrayOfLocations, start, end);
+                                    }}
+                                    disabled={!selectedLocations.length}
+                                >
+                                    OPEN IN PORTAL
+                                </button>
+                                <button
+                                    className="button-action"
+                                    title="Export Time Series"
+                                    onClick={() => {
+                                        const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
+                                            const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
+                                            return selectedTimeseries.map(ts => ts.uuid);
+                                        });
+                                        return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end);
+                                    }}
+                                    disabled={!selectedLocations.length || !start}
+                                >
+                                    EXPORT TIME SERIES
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
