@@ -56,3 +56,8 @@ html {
   border-radius: 10px;
   background-color: var(--border-color-soft);
 }
+
+#scrollbar {
+  scrollbar-color: var(--border-color-soft) transparent;
+  scrollbar-width: thin;
+}
