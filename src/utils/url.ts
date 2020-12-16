@@ -17,11 +17,7 @@ export const openTimeseriesInAPI = (timeseriesUUIDs: string[][]) => {
     window.open(`/api/v4/timeseries/?uuid__in=${timeseriesUUIDs.join(',')}`)
 };
 
-export const openLocationsInLizard = (locations: Location[], start: number, end: number) => {
-    const startDate = moment(start).format("MMM,DD,YYYY");
-    const endDate = moment(end).format("MMM,DD,YYYY");
-    const duration = `${startDate}-${endDate}`;
-
+export const openLocationsInLizard = (locations: Location[], start: number | null, end: number | null) => {
     // Filter out locations with no geometry information
     const locationsWithCoordinates = locations.filter(location => location.geometry !== null);
 
@@ -32,15 +28,22 @@ export const openLocationsInLizard = (locations: Location[], start: number, end:
 
     // Construct url for multi-point selection
     const objectUrl = locations.map(location => `${location.object.type}$${location.object.id}`).join('+');
-
-    // Open locations in chart mode to view the timeseries
     const url = locationsWithCoordinates.length ? (
-        `/nl/charts/topography/multi-point/${objectUrl}/@${centerPoint.lat},${centerPoint.lng},14/${duration}`
+        `/nl/charts/topography/multi-point/${objectUrl}/@${centerPoint.lat},${centerPoint.lng},14/`
     ) : (
-        `/nl/charts/topography/multi-point/${objectUrl}/${duration}`
+        `/nl/charts/topography/multi-point/${objectUrl}/`
     );
+    if (!start) {
+        // Open locations in chart mode to view the timeseries without duration
+        return window.open(url);
+    };
 
-    window.open(url);
+    const startDate = moment(start).format("MMM,DD,YYYY");
+    const endDate = end ? moment(end).format("MMM,DD,YYYY") : moment().format("MMM,DD,YYYY");
+    const duration = `${startDate}-${endDate}`;
+
+    // Open locations in chart mode to view the timeseries with duration
+    return window.open(url + duration);
 };
 
 export const openRasterInLizard = (raster: Raster, centerPoint: LatLng, zoom: number) => {
@@ -82,9 +85,21 @@ export const getDatasetGetCapabilitesURL = (dataset: Dataset) => {
     return dataset && `${baseUrl}/wms/${dataset.slug}/?request=GetCapabilities`;
 };
 
-export const requestTimeseriesExport = (timeseriesUUIDs: string[][], start: number, end: number) => {
-    const url = `/api/v3/timeseries/?async=true&format=xlsx&start=${start}&end=${end}&interactive=true&uuid=${timeseriesUUIDs.join(',')}`;
+export const requestTimeseriesExport = (timeseriesUUIDs: string[][], start: number | null, end: number | null) => {
+    if (!start) return; // export cannot happen if no start date is selected
+
+    const params: string[] = ['async=true', 'format=xlsx', 'interactive=true', `uuid=${timeseriesUUIDs.join(',')}`, `start=${start}`];
+
+    if (end) {
+        params.push(`end=${end}`);
+    } else {
+        params.push(`end=${moment().valueOf()}`);
+    };
+
+    const queries = params.join('&');
+
+    const url = `/api/v3/timeseries/?${queries}`;
 
     // Send GET request to timeseries endpoint for exporting task
-    fetch(url).catch(console.error);
+    return fetch(url).catch(console.error);
 };
