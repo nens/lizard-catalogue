@@ -140,7 +140,6 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                         <span>{dataset && dataset.slug}</span>
                     </div>
                 ) : null}
-                {!raster.temporal ? (
                 <div className="details-capabilities">
                     <span className="details-title">Lizard WMS GetCapabilities</span>
                     <div style={{ marginBottom: "5px" }}>
@@ -186,7 +185,6 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                         </div>
                     ) : null}
                 </div>
-                ) : null}
                 <div className="details-grid details-grid-header">
                     <div
                         className={this.state.showTableTab === 'Details' ? 'details-grid-header-selected' : ''}
