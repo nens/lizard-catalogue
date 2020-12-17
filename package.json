@@ -1,6 +1,6 @@
 {
   "name": "lizard-catalogue",
-  "version": "0.2.8",
+  "version": "0.2.10",
   "main": "target/index.js",
   "homepage": "/catalogue",
   "private": true,
@@ -68,8 +68,8 @@
     "react-leaflet": "^2.3.0",
     "react-md-spinner": "^1.0.0",
     "react-redux": "^7.2.1",
-    "react-router": "^5.0.0",
-    "react-router-dom": "^5.0.0",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "resolve": "1.10.0",
@@ -77,7 +77,7 @@
     "semver": "6.0.0",
     "style-loader": "0.23.1",
     "superagent": "^5.0.5",
-    "terser-webpack-plugin": "1.2.3",
+    "terser-webpack-plugin": "^1.4.5",
     "ts-pnp": "1.1.2",
     "tslint": "^5.16.0",
     "tslint-react": "^4.0.0",
@@ -85,7 +85,7 @@
     "typescript-tslint-plugin": "^0.3.1",
     "url-loader": "1.1.2",
     "webpack": "4.29.6",
-    "webpack-dev-server": "3.2.1",
+    "webpack-dev-server": "^3.11.0",
     "webpack-manifest-plugin": "2.0.4",
     "workbox-webpack-plugin": "4.2.0"
   },
@@ -162,6 +162,6 @@
     ]
   },
   "devDependencies": {
-    "release-it": "^10.4.2"
+    "release-it": "^14.2.2"
   }
 }
