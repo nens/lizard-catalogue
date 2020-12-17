@@ -57,7 +57,7 @@ class Basket extends React.Component<PropsFromDispatch & MyProps> {
                     <span className="basket_number-of-items">{basket.length} items</span>
                     <span className="basket_layer-title">Upper layer</span>
                 </div>
-                <ul className="basket_items">
+                <ul className="basket_items" id="scrollbar">
                     {rasters.map(raster => (
                         <li className="basket_item" key={raster.uuid}>
                             {raster.temporal ?

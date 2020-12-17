@@ -55,7 +55,7 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
         }
 
         return (
-            <div className="details">
+            <div className="details" id="scrollbar">
                 <div className="details-name">
                     <h3 title={wms.name}>
                         {wms.name}
@@ -99,7 +99,7 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
                 </div>
                 <div className="details-info">
                     <span className="details-title">Description</span>
-                    <span className="description">{wms.description}</span>
+                    <span className="description" id="scrollbar">{wms.description}</span>
                 </div>
                 <div className="details-info">
                     <span className="details-title">Organisation</span>

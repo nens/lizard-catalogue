@@ -34,7 +34,7 @@ const MonitoringNetworkDetails: React.FC = () => {
     if (!monitoringNetwork) return <div className="details details-loading">Please select a monitoring network</div>;
 
     return (
-        <div className="details">
+        <div className="details" id="scrollbar">
             <div className="details-name">
                 <h3 title={monitoringNetwork.name}>
                     {monitoringNetwork.name}
@@ -82,7 +82,7 @@ const MonitoringNetworkDetails: React.FC = () => {
             </div>
             <div className="details-info">
                 <span className="details-title">Description</span>
-                <span className="description">{monitoringNetwork.description}</span>
+                <span className="description" id="scrollbar">{monitoringNetwork.description}</span>
             </div>
             <div className="details-info">
                 <span className="details-title">Organisation</span>

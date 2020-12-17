@@ -89,7 +89,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
         }
 
         return (
-            <div className="details">
+            <div className="details" id="scrollbar">
                 <div className="details-name">
                     <h3 title={raster.name}>
                         {raster.name}
@@ -128,7 +128,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                 </div>
                 <div className="details-info">
                     <span className="details-title">Description</span>
-                    <span className="description">{raster.description}</span>
+                    <span className="description" id="scrollbar">{raster.description}</span>
                 </div>
                 <div className="details-info">
                     <span className="details-title">Organisation</span>

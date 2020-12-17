@@ -99,7 +99,7 @@ const FilterOption: React.FC<MyProps> = (props) => {
                 ) : (
                     <div className="filter-checked-item" />
                 )}
-                <ul className="filter-list">
+                <ul className="filter-list" id="scrollbar">
                     {filteredListOfItems.slice(0, numberOfItems).map((item, i) => (
                         <li className="filter-item" key={i}>
                             <input
