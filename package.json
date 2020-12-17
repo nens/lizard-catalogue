@@ -162,6 +162,6 @@
     ]
   },
   "devDependencies": {
-    "release-it": "^10.4.2"
+    "release-it": "^14.2.2"
   }
 }
