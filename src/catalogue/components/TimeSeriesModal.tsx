@@ -412,7 +412,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     />
                                 </div>
                             </div>
-                            <div style={{color: 'red'}}>{timeValidator(start, end)}</div>
+                            <div style={{ color: 'red', marginTop: 5 }}>{timeValidator(start, end)}</div>
                         </div>
                     </div>
                 </div>
@@ -493,7 +493,12 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 </button>
                                 <button
                                     className="button-action"
-                                    title="Export Time Series"
+                                    title={
+                                        !selectedLocations.length ? 'Please select Time Series to export' :
+                                        !start ? 'Please select a start date to export the Time Series' :
+                                        timeValidator(start, end) ? 'Please select end date after start date to export' :
+                                        'Export Time Series'
+                                    }
                                     onClick={() => {
                                         const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
                                             const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
@@ -501,7 +506,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                         });
                                         return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end);
                                     }}
-                                    disabled={!selectedLocations.length || !start}
+                                    disabled={!selectedLocations.length || !start || !!timeValidator(start, end)}
                                 >
                                     EXPORT TIME SERIES
                                 </button>
