@@ -78,11 +78,11 @@ export const openWMSDownloadURL = (wms: WMS) => {
 };
 
 export const getRasterGetCapabilitesURL = (raster: Raster) => {
-    return `${baseUrl}/wms/raster_${raster.uuid}/?request=GetCapabilities`;
+    return `${baseUrl}/wms/raster_${raster.uuid}/?request=GetCapabilities&service=wms&version=1.3.0`;
 };
 
 export const getDatasetGetCapabilitesURL = (dataset: Dataset) => {
-    return dataset && `${baseUrl}/wms/${dataset.slug}/?request=GetCapabilities`;
+    return dataset && `${baseUrl}/wms/${dataset.slug}/?request=GetCapabilities&service=wms&version=1.3.0`;
 };
 
 export const requestTimeseriesExport = (timeseriesUUIDs: string[][], start: number | null, end: number | null) => {
