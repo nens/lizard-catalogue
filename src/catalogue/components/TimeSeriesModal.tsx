@@ -39,6 +39,12 @@ interface filteredLocationObject {
 };
 
 const timeValidator = (start: number | null, end: number | null) => {
+    if (start !== null && isNaN(start)) {
+        return 'Invalid start date';
+    };
+    if (end !== null && isNaN(end)) {
+        return 'Invalid end date';
+    };
     if (start && end && start > end) {
         return 'End date must be after start date';
     };
@@ -496,7 +502,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     title={
                                         !selectedLocations.length ? 'Please select Time Series to export' :
                                         !start ? 'Please select a start date to export the Time Series' :
-                                        timeValidator(start, end) ? 'Please select end date after start date to export' :
+                                        timeValidator(start, end) ? timeValidator(start, end) as string :
                                         'Export Time Series'
                                     }
                                     onClick={() => {
