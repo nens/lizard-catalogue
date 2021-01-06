@@ -39,6 +39,12 @@ interface filteredLocationObject {
 };
 
 const timeValidator = (start: number | null, end: number | null) => {
+    if (start !== null && isNaN(start)) {
+        return 'Invalid start date';
+    };
+    if (end !== null && isNaN(end)) {
+        return 'Invalid end date';
+    };
     if (start && end && start > end) {
         return 'End date must be after start date';
     };
@@ -412,7 +418,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     />
                                 </div>
                             </div>
-                            <div style={{color: 'red'}}>{timeValidator(start, end)}</div>
+                            <div style={{ color: 'red', marginTop: 5 }}>{timeValidator(start, end)}</div>
                         </div>
                     </div>
                 </div>
@@ -493,7 +499,12 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 </button>
                                 <button
                                     className="button-action"
-                                    title="Export Time Series"
+                                    title={
+                                        !selectedLocations.length ? 'Please select Time Series to export' :
+                                        !start ? 'Please select a start date to export the Time Series' :
+                                        timeValidator(start, end) ? timeValidator(start, end) as string :
+                                        'Export Time Series'
+                                    }
                                     onClick={() => {
                                         const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
                                             const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
@@ -501,7 +512,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                         });
                                         return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end);
                                     }}
-                                    disabled={!selectedLocations.length || !start}
+                                    disabled={!selectedLocations.length || !start || !!timeValidator(start, end)}
                                 >
                                     EXPORT TIME SERIES
                                 </button>
