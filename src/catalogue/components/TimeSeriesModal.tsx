@@ -489,9 +489,9 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 <button
                                     className="button-action"
                                     title="Open in Portal"
-                                    onClick={() => {
+                                    onClick={async () => {
                                         const arrayOfLocations = selectedLocations.map(uuid => locations[uuid]);
-                                        return openLocationsInLizard(arrayOfLocations, start, end);
+                                        return await openLocationsInLizard(arrayOfLocations, start, end);
                                     }}
                                     disabled={!selectedLocations.length}
                                 >
