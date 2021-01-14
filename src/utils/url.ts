@@ -1,6 +1,7 @@
 import * as L from 'leaflet';
 import { Raster, WMS, LatLng, Dataset, Location } from "../interface";
 import { baseUrl } from "../api";
+import { getIdFromUrl } from './getUuidFromUrl';
 import moment from "moment";
 
 export const openRasterInAPI = (raster: Raster) => {
@@ -17,7 +18,56 @@ export const openTimeseriesInAPI = (timeseriesUUIDs: string[][]) => {
     window.open(`/api/v4/timeseries/?uuid__in=${timeseriesUUIDs.join(',')}`)
 };
 
-export const openLocationsInLizard = (locations: Location[], start: number | null, end: number | null) => {
+// Helper function to construct URL for multi-point selection
+const constructObjectUrl = async (locations: Location[]) => {
+    const urls = await Promise.all(locations.map(async location => {
+        const objectType = location.object.type;
+        const objectId = location.object.id;
+
+        // check if object is nested asset
+        // currently, we know there are 2 cases of nested asset
+        // case 1 is filter with parent asset of groundwater_station
+        // case 2 is pump with parent asset of pump_station
+        let parentAssetType: string | null = null;
+        let parentAssetId: number | null = null;
+
+        if (objectType === 'filter') {
+            parentAssetType = 'groundwaterstation'; // parent asset of filter is groundwater_station
+            const parentAssetUrl = await fetch(`/api/v3/filters/${objectId}/`, {
+                credentials: "same-origin",
+                method: "GET",
+                headers: {"Content-Type": "application/json"}
+            }).then(
+                res => res.json()
+            ).then(
+                asset => asset.groundwater_station
+            );
+            parentAssetId = getIdFromUrl(parentAssetUrl);
+        } else if (objectType === 'pump') {
+            parentAssetType = 'pumpstation'; // parent asset of pump is pump_station
+            const parentAssetUrl = await fetch(`/api/v3/pumps/${objectId}/`, {
+                credentials: "same-origin",
+                method: "GET",
+                headers: {"Content-Type": "application/json"}
+            }).then(
+                res => res.json()
+            ).then(
+                asset => asset.pump_station
+            );
+            parentAssetId = getIdFromUrl(parentAssetUrl);
+        };
+
+        if (parentAssetType && parentAssetId) {
+            return `${parentAssetType}$${parentAssetId}`;
+        } else {
+            return `${objectType}$${objectId}`;
+        };
+    }));
+
+    return urls.join('+');
+};
+
+export const openLocationsInLizard = async (locations: Location[], start: number | null, end: number | null) => {
     // Filter out locations with no geometry information
     const locationsWithCoordinates = locations.filter(location => location.geometry !== null);
 
@@ -27,7 +77,8 @@ export const openLocationsInLizard = (locations: Location[], start: number | nul
     const centerPoint = bounds.getCenter();
 
     // Construct url for multi-point selection
-    const objectUrl = locations.map(location => `${location.object.type}$${location.object.id}`).join('+');
+    const objectUrl = await constructObjectUrl(locationsWithCoordinates);
+
     const url = locationsWithCoordinates.length ? (
         `/nl/charts/topography/multi-point/${objectUrl}/@${centerPoint.lat},${centerPoint.lng},14/`
     ) : (
