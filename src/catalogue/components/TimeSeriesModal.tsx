@@ -102,8 +102,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
             if (finalSearchInput) params.push(`name__icontains=${encodeURIComponent(finalSearchInput)}`);
             if (selectedObservationTypeCode) params.push(`timeseries__observation_type__code=${encodeURIComponent(selectedObservationTypeCode)}`);
-            if (start) params.push(`timeseries__start__gte=${moment(start).format("YYYY-MM-DDThh:mm:ss")}Z`);
-            if (end && !timeValidator(start, end)) params.push(`timeseries__end__lt=${moment(end).format("YYYY-MM-DDThh:mm:ss")}Z`);
+            if (start) params.push(`timeseries__start__gte=${moment(start).format("YYYY-MM-DDTHH:mm:ss")}Z`);
+            if (end && !timeValidator(start, end)) params.push(`timeseries__end__lt=${moment(end).format("YYYY-MM-DDTHH:mm:ss")}Z`);
 
             const queries = params.join('&');
 
