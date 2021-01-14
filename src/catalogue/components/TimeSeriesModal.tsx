@@ -506,6 +506,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                         'Export Time Series'
                                     }
                                     onClick={() => {
+                                        if (!start) return;
                                         const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
                                             const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
                                             return selectedTimeseries.map(ts => ts.uuid);
