@@ -87,7 +87,7 @@ export const getDatasetGetCapabilitesURL = (dataset: Dataset) => {
 
 export const requestTimeseriesExport = (timeseriesUUIDs: string[][], start: number, end: number | null) => {
     const startDateTimeInUTC = moment(start).utc().format("YYYY-MM-DDTHH:mm");
-    const params: string[] = [`start=${startDateTimeInUTC}Z`];
+    const params: string[] = ['notify_user=true', `start=${startDateTimeInUTC}Z`];
 
     if (end) {
         const endDateTimeInUTC = moment(end).utc().format("YYYY-MM-DDTHH:mm");
