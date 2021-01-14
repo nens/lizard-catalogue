@@ -98,7 +98,10 @@ export const requestTimeseriesExport = (timeseriesUUIDs: string[][], start: numb
     };
 
     // Add UUIDs of timeseries to params
-    timeseriesUUIDs.map(uuid => params.push(`uuid=${uuid}`));
+    // since timeseries UUIDs is a 2 dimension array, we first need to flatten it and then remove duplicates if any
+    const newTimeseriesUUIDs: string[] = Array.prototype.concat.apply([], timeseriesUUIDs);
+    const uniqueTimeseriesUUIDs = [...new Set(newTimeseriesUUIDs)];
+    uniqueTimeseriesUUIDs.map(uuid => params.push(`uuid=${uuid}`));
 
     const queries = params.join('&');
 
