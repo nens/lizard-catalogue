@@ -497,7 +497,7 @@ export const downloadFile = (dispatch, id: string) => {
     });
 };
 
-
+// MARK: Raster export
 export const ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS = 'ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS';
 export const REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS = 'REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS';
 export const REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS = 'REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS';
@@ -691,6 +691,23 @@ export const requestProjections = (rasterUuid: string) => (dispatch: Dispatch<Se
         dispatch(setFetchingStateProjections("FAILED"));
     })
 
+};
+
+// MARK: Timeseries export
+export const REQUEST_TIMESERIES_EXPORT = 'REQUEST_TIMESERIES_EXPORT';
+export const ADD_TIMESERIES_EXPORT_TASK = 'ADD_TIMESERIES_EXPORT_TASK';
+
+export const requestTimeseriesExport = (numberOfInboxMessages: number) => ({
+    type: REQUEST_TIMESERIES_EXPORT,
+    numberOfInboxMessages
+});
+
+export const addTimeseriesExportTask = (numberOfInboxMessages: number, taskUuid: string) => (dispatch) => {
+    dispatch(requestTimeseriesExport(numberOfInboxMessages));
+    dispatch({
+        type: ADD_TIMESERIES_EXPORT_TASK,
+        taskUuid
+    });
 };
 
 // MARK: Notification center

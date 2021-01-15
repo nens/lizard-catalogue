@@ -55,6 +55,8 @@ import {
     REMOVE_TIMESERIES,
     SHOW_NOTIFICATION,
     DISMISS_NOTIFICATION,
+    ADD_TIMESERIES_EXPORT_TASK,
+    REQUEST_TIMESERIES_EXPORT,
 } from "./action";
 import {
     Raster,
@@ -149,6 +151,9 @@ export interface MyStore {
         page: number,
     },
     notification: string,
+    timeseriesExport: {
+        [task_uuid: string]: string
+    }
 };
 
 const rasterExportState = (state: MyStore["rasterExportState"]=
@@ -243,6 +248,11 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                         tileHeight: state.tileHeight,
                     }
                 }),
+                numberOfinboxMessagesBeforeRequest: action.numberOfInboxMessages,
+            }
+        case REQUEST_TIMESERIES_EXPORT:
+            return {
+                ...state,
                 numberOfinboxMessagesBeforeRequest: action.numberOfInboxMessages,
             }
         case RECEIVED_TASK_RASTER_EXPORT:
@@ -818,6 +828,20 @@ const notification = (state: MyStore['notification'] = '', { type, message }) =>
     };
 };
 
+const timeseriesExport = (state: MyStore['timeseriesExport'] = {}, { type, taskUuid }) => {
+    switch (type) {
+        case ADD_TIMESERIES_EXPORT_TASK:
+            return {
+                ...state,
+                [taskUuid]: taskUuid
+            };
+        case REMOVE_CURRENT_EXPORT_TASKS:
+            return {};
+        default:
+            return state;
+    };
+};
+
 export const getExportAvailableGridCells = (state: MyStore) => {
     return state.rasterExportState.availableGridCells;
 }
@@ -968,4 +992,5 @@ export default combineReducers({
     datasets,
     inbox,
     notification,
+    timeseriesExport
 });

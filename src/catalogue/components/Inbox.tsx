@@ -13,12 +13,7 @@ interface MyProps {
 interface PropsFromState {
     numberOfinboxMessagesBeforeRequest: number,
     rasterExportRequests: RasterExportRequest[],
-};
-
-interface PropsFromDispatch {
-    removeMessage: (id: string) => void,
-    downloadFile: (id: string) => void,
-    removeCurrentExportTasks: () => void,
+    timeseriesExportTasks: string[],
 };
 
 type InboxProps = MyProps & PropsFromState & PropsFromDispatch;
@@ -37,17 +32,20 @@ class Inbox extends React.Component<InboxProps> {
             inbox,
             numberOfinboxMessagesBeforeRequest,
             rasterExportRequests,
+            timeseriesExportTasks
         } = this.props;
+        const totalExportRequests = rasterExportRequests.length + timeseriesExportTasks.length;
         // Return the number of pending export tasks that are not ready yet
-        return rasterExportRequests.length && (
-            rasterExportRequests.length - (inbox.length - numberOfinboxMessagesBeforeRequest)
+        return totalExportRequests && (
+            totalExportRequests - (inbox.length - numberOfinboxMessagesBeforeRequest)
         );
     };
 
     componentDidUpdate() {
         // Remove all current export tasks and set number of inbox messages before request
         // back to 0 if all export tasks have been finished
-        if (this.props.rasterExportRequests.length && this.getNumberOfPendingExportTasks() === 0) {
+        const totalExportRequests = this.props.rasterExportRequests.length + this.props.timeseriesExportTasks.length;
+        if (totalExportRequests && this.getNumberOfPendingExportTasks() === 0) {
             this.props.removeCurrentExportTasks();
         };
     };
@@ -121,12 +119,14 @@ class Inbox extends React.Component<InboxProps> {
 const mapStateToProps = (state: MyStore): PropsFromState => ({
     numberOfinboxMessagesBeforeRequest: state.rasterExportState.numberOfinboxMessagesBeforeRequest,
     rasterExportRequests: state.rasterExportState.rasterExportRequests,
+    timeseriesExportTasks: Object.keys(state.timeseriesExport),
 });
 
-const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch) => ({
     removeMessage: (id: string) => removeMessage(dispatch, id),
     downloadFile: (id: string) => downloadFile(dispatch, id),
     removeCurrentExportTasks: () => removeCurrentExportTasks(dispatch),
 });
+type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>;
 
 export default connect(mapStateToProps, mapDispatchToProps)(Inbox);
