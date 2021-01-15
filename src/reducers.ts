@@ -53,6 +53,8 @@ import {
     REQUEST_NETWORK_OBSERVATION_TYPES,
     RECEIVE_NETWORK_OBSERVATION_TYPES,
     REMOVE_TIMESERIES,
+    SHOW_NOTIFICATION,
+    DISMISS_NOTIFICATION,
     ADD_TIMESERIES_EXPORT_TASK,
     REQUEST_TIMESERIES_EXPORT,
 } from "./action";
@@ -148,6 +150,7 @@ export interface MyStore {
         ordering: string,
         page: number,
     },
+    notification: string,
     timeseriesExport: {
         [task_uuid: string]: string
     }
@@ -814,6 +817,17 @@ const inbox = (state: MyStore['inbox'] = [], { type, messages, id }) => {
     };
 };
 
+const notification = (state: MyStore['notification'] = '', { type, message }) => {
+    switch (type) {
+        case SHOW_NOTIFICATION:
+            return message;
+        case DISMISS_NOTIFICATION:
+            return '';
+        default:
+            return state;
+    };
+};
+
 const timeseriesExport = (state: MyStore['timeseriesExport'] = {}, { type, taskUuid }) => {
     switch (type) {
         case ADD_TIMESERIES_EXPORT_TASK:
@@ -953,6 +967,10 @@ export const getSelectedItem = (state: MyStore) => {
     return state.selectedItem;
 };
 
+export const getNotification = (state: MyStore) => {
+    return state.notification;
+};
+
 export default combineReducers({
     rasterExportState,
     bootstrap,
@@ -973,5 +991,6 @@ export default combineReducers({
     organisations,
     datasets,
     inbox,
+    notification,
     timeseriesExport
 });

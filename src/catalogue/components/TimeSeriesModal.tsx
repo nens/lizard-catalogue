@@ -13,7 +13,7 @@ import {
     getMonitoringNetworkObservationTypesNotNull,
     getInbox,
 } from './../../reducers';
-import { addTimeseriesExportTask, fetchTimeseries, removeTimeseries } from './../../action';
+import { addNotification, addTimeseriesExportTask, fetchTimeseries, removeTimeseries } from './../../action';
 import { requestTimeseriesExport, openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
 import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
 import { Location } from '../../interface';
@@ -515,7 +515,14 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                             return selectedTimeseries.map(ts => ts.uuid);
                                         });
                                         return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end).then(
-                                            res => res.json()
+                                            res => {
+                                                if (res.status === 200) {
+                                                    props.addNotification('Success! Time Series exported successfully. Please check your inbox!', 3000);
+                                                    return res.json();
+                                                } else {
+                                                    props.addNotification('Error! Time Series export failed.', 3000);
+                                                };
+                                            }
                                         ).then(
                                             task => props.addTimeseriesExportTask(inbox.length, task.task_id)
                                         ).catch(console.error);
@@ -536,6 +543,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 const mapDispatchToProps = (dispatch) => ({
     fetchTimeseries: (uuid: string) => dispatch(fetchTimeseries(uuid)),
     removeTimeseries: () => dispatch(removeTimeseries()),
+    addNotification: (message: string, timeout: number) => dispatch(addNotification(message, timeout)),
     addTimeseriesExportTask: (numberOfInboxMessages: number, taskUuid: string) => dispatch(addTimeseriesExportTask(numberOfInboxMessages, taskUuid)),
 });
 type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>;

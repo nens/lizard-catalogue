@@ -709,3 +709,25 @@ export const addTimeseriesExportTask = (numberOfInboxMessages: number, taskUuid:
         taskUuid
     });
 };
+
+// MARK: Notification center
+export const DISMISS_NOTIFICATION = "DISMISS_NOTIFICATION";
+export const SHOW_NOTIFICATION = "SHOW_NOTIFICATION";
+
+const  showNotification = (message: string) => ({
+    type: SHOW_NOTIFICATION,
+    message
+});
+
+export const dismissNotification = () => ({
+    type: DISMISS_NOTIFICATION
+});
+
+export const addNotification = (message: string, timeout: number) => (dispatch) => {
+    if (timeout) {
+        setTimeout(() => {
+            dispatch(dismissNotification());
+        }, timeout);
+    };
+    dispatch(showNotification(message));
+};
