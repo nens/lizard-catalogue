@@ -53,6 +53,8 @@ import {
     REQUEST_NETWORK_OBSERVATION_TYPES,
     RECEIVE_NETWORK_OBSERVATION_TYPES,
     REMOVE_TIMESERIES,
+    SHOW_NOTIFICATION,
+    DISMISS_NOTIFICATION,
 } from "./action";
 import {
     Raster,
@@ -146,6 +148,7 @@ export interface MyStore {
         ordering: string,
         page: number,
     },
+    notification: string,
 };
 
 const rasterExportState = (state: MyStore["rasterExportState"]=
@@ -804,6 +807,17 @@ const inbox = (state: MyStore['inbox'] = [], { type, messages, id }) => {
     };
 };
 
+const notification = (state: MyStore['notification'] = '', { type, message }) => {
+    switch (type) {
+        case SHOW_NOTIFICATION:
+            return message;
+        case DISMISS_NOTIFICATION:
+            return '';
+        default:
+            return state;
+    };
+};
+
 export const getExportAvailableGridCells = (state: MyStore) => {
     return state.rasterExportState.availableGridCells;
 }
@@ -929,6 +943,10 @@ export const getSelectedItem = (state: MyStore) => {
     return state.selectedItem;
 };
 
+export const getNotification = (state: MyStore) => {
+    return state.notification;
+};
+
 export default combineReducers({
     rasterExportState,
     bootstrap,
@@ -949,4 +967,5 @@ export default combineReducers({
     organisations,
     datasets,
     inbox,
+    notification,
 });

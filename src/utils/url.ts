@@ -136,9 +136,7 @@ export const getDatasetGetCapabilitesURL = (dataset: Dataset) => {
     return dataset && `${baseUrl}/wms/${dataset.slug}/?request=GetCapabilities`;
 };
 
-export const requestTimeseriesExport = (timeseriesUUIDs: string[][], start: number | null, end: number | null) => {
-    if (!start) return; // export cannot happen if no start date is selected
-
+export const requestTimeseriesExport = (timeseriesUUIDs: string[][], start: number, end: number | null) => {
     const params: string[] = ['async=true', 'format=xlsx', 'interactive=true', `uuid=${timeseriesUUIDs.join(',')}`, `start=${start}`];
 
     if (end) {
@@ -152,5 +150,5 @@ export const requestTimeseriesExport = (timeseriesUUIDs: string[][], start: numb
     const url = `/api/v3/timeseries/?${queries}`;
 
     // Send GET request to timeseries endpoint for exporting task
-    return fetch(url).catch(console.error);
+    return fetch(url);
 };

@@ -12,7 +12,7 @@ import {
     getLocationsObjectNotNull,
     getMonitoringNetworkObservationTypesNotNull,
 } from './../../reducers';
-import { fetchTimeseries, removeTimeseries } from './../../action';
+import { addNotification, fetchTimeseries, removeTimeseries } from './../../action';
 import { requestTimeseriesExport, openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
 import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
 import { Location } from '../../interface';
@@ -506,11 +506,21 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                         'Export Time Series'
                                     }
                                     onClick={() => {
+                                        if (!start) return;
                                         const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
                                             const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
                                             return selectedTimeseries.map(ts => ts.uuid);
                                         });
-                                        return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end);
+                                        return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end).then(
+                                            res => {
+                                                if (res.status === 200) {
+                                                    props.addNotification('Success! Time Series exported successfully. Please check your inbox!', 3000);
+                                                    res.json();
+                                                } else {
+                                                    props.addNotification('Error! Time Series export failed.', 3000);
+                                                };
+                                            }
+                                        ).catch(console.error);
                                     }}
                                     disabled={!selectedLocations.length || !start || !!timeValidator(start, end)}
                                 >
@@ -528,6 +538,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 const mapDispatchToProps = (dispatch) => ({
     fetchTimeseries: (uuid: string) => dispatch(fetchTimeseries(uuid)),
     removeTimeseries: () => dispatch(removeTimeseries()),
+    addNotification: (message: string, timeout: number) => dispatch(addNotification(message, timeout)),
 });
 type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>;
 
