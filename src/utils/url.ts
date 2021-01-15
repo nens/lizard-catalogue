@@ -136,21 +136,28 @@ export const getDatasetGetCapabilitesURL = (dataset: Dataset) => {
     return dataset && `${baseUrl}/wms/${dataset.slug}/?request=GetCapabilities`;
 };
 
-export const requestTimeseriesExport = (timeseriesUUIDs: string[][], start: number | null, end: number | null) => {
-    if (!start) return; // export cannot happen if no start date is selected
-
-    const params: string[] = ['async=true', 'format=xlsx', 'interactive=true', `uuid=${timeseriesUUIDs.join(',')}`, `start=${start}`];
+export const requestTimeseriesExport = (timeseriesUUIDs: string[][], start: number, end: number | null) => {
+    const startDateTimeInUTC = moment(start).utc().format("YYYY-MM-DDTHH:mm");
+    const params: string[] = ['notify_user=true', `start=${startDateTimeInUTC}Z`];
 
     if (end) {
-        params.push(`end=${end}`);
+        const endDateTimeInUTC = moment(end).utc().format("YYYY-MM-DDTHH:mm");
+        params.push(`end=${endDateTimeInUTC}Z`);
     } else {
-        params.push(`end=${moment().valueOf()}`);
+        // get current time in UTC as end time
+        params.push(`end=${moment().utc().format("YYYY-MM-DDTHH:mm")}Z`);
     };
+
+    // Add UUIDs of timeseries to params
+    // since timeseries UUIDs is a 2 dimension array, we first need to flatten it and then remove duplicates if any
+    const newTimeseriesUUIDs: string[] = Array.prototype.concat.apply([], timeseriesUUIDs);
+    const uniqueTimeseriesUUIDs = [...new Set(newTimeseriesUUIDs)];
+    uniqueTimeseriesUUIDs.map(uuid => params.push(`uuid=${uuid}`));
 
     const queries = params.join('&');
 
-    const url = `/api/v3/timeseries/?${queries}`;
+    const url = `/api/v4/timeseries/export/?${queries}`;
 
     // Send GET request to timeseries endpoint for exporting task
-    return fetch(url).catch(console.error);
+    return fetch(url);
 };

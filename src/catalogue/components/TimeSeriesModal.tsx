@@ -11,8 +11,9 @@ import {
     getTimeseriesObject,
     getLocationsObjectNotNull,
     getMonitoringNetworkObservationTypesNotNull,
+    getInbox,
 } from './../../reducers';
-import { fetchTimeseries, removeTimeseries } from './../../action';
+import { addTimeseriesExportTask, fetchTimeseries, removeTimeseries } from './../../action';
 import { requestTimeseriesExport, openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
 import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
 import { Location } from '../../interface';
@@ -54,6 +55,8 @@ const timeValidator = (start: number | null, end: number | null) => {
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const { fetchTimeseries, removeTimeseries } = props;
     const mapRef = useRef<Map>(null);
+
+    const inbox = useSelector(getInbox);
 
     const selectedItem = useSelector(getSelectedItem);
     const timeseriesObject = useSelector(getTimeseriesObject);
@@ -506,11 +509,16 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                         'Export Time Series'
                                     }
                                     onClick={() => {
+                                        if (!start) return;
                                         const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
                                             const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
                                             return selectedTimeseries.map(ts => ts.uuid);
                                         });
-                                        return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end);
+                                        return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end).then(
+                                            res => res.json()
+                                        ).then(
+                                            task => props.addTimeseriesExportTask(inbox.length, task.task_id)
+                                        ).catch(console.error);
                                     }}
                                     disabled={!selectedLocations.length || !start || !!timeValidator(start, end)}
                                 >
@@ -528,6 +536,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 const mapDispatchToProps = (dispatch) => ({
     fetchTimeseries: (uuid: string) => dispatch(fetchTimeseries(uuid)),
     removeTimeseries: () => dispatch(removeTimeseries()),
+    addTimeseriesExportTask: (numberOfInboxMessages: number, taskUuid: string) => dispatch(addTimeseriesExportTask(numberOfInboxMessages, taskUuid)),
 });
 type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>;
 
