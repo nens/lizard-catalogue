@@ -105,8 +105,11 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
             if (finalSearchInput) params.push(`name__icontains=${encodeURIComponent(finalSearchInput)}`);
             if (selectedObservationTypeCode) params.push(`timeseries__observation_type__code=${encodeURIComponent(selectedObservationTypeCode)}`);
-            if (start) params.push(`timeseries__start__gte=${moment(start).format("YYYY-MM-DDTHH:mm:ss")}Z`);
-            if (end && !timeValidator(start, end)) params.push(`timeseries__end__lt=${moment(end).format("YYYY-MM-DDTHH:mm:ss")}Z`);
+
+            // We flip the query for start and end to make sure that all cases of timeseries
+            // with data are presented as discussed and agreed under this issue: "https://github.com/nens/lizard-catalogue/issues/220"
+            if (start) params.push(`timeseries__end__gte=${moment(start).utc().format("YYYY-MM-DDTHH:mm:ss")}Z`);
+            if (end && !timeValidator(start, end)) params.push(`timeseries__start__lte=${moment(end).utc().format("YYYY-MM-DDTHH:mm:ss")}Z`);
 
             const queries = params.join('&');
 
