@@ -27,14 +27,18 @@ class Header extends React.Component<MyProps & PropsFromState> {
     renderProfileDropdown(routeCurrentLocationInCatalog) {
         return (
             <div className="user-profile_dropdown" onMouseLeave={this.props.closeAllDropdowns}>
-                <a
+                {/* 
+                comment this out for ticket:
+                https://github.com/nens/lizard-catalogue/issues/252
+                */}
+                {/* <a
                     href="https://sso.lizard.net/accounts/profile/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
                     <i className="fa fa-pencil" style={{ paddingRight: "2rem" }} />
                     Edit Profile
-                </a>
+                </a> */}
                 <a href={`/accounts/logout/?next=/catalogue/${encodeURIComponent(routeCurrentLocationInCatalog)}`}>
                     <i className="fa fa-power-off" style={{ paddingRight: "2rem" }} />
                     Logout
