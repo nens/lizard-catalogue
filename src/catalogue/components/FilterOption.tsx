@@ -53,7 +53,7 @@ const FilterOption: React.FC<MyProps> = (props) => {
     if (filterOption === "observationType") {
         title = "Observation Type";
     } else if (filterOption === "organisation") {
-        title = "Organisation";
+        title = "Organisation (owner)";
     } else { // filterOption = "dataset"
         title = "Dataset";
     };
@@ -66,7 +66,7 @@ const FilterOption: React.FC<MyProps> = (props) => {
             }}
         >
             <div className="filter-title">
-                <h4>{title}</h4>
+                <h4 title={title}>{title}</h4>
                 {showList ? (
                     <button onClick={() => setShowList(false)}>
                         <i className="fa fa-minus" />

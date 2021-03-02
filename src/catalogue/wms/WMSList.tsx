@@ -111,7 +111,7 @@ class WMSList extends React.Component<WMSListProps, MyState> {
                                 <i className="fa fa-sort" onClick={() => onSorting('name')} />
                             </div>
                             <div className="list__row list__row-org">
-                                Organisation
+                                Organisation (owner)
                                 <i className="fa fa-sort" onClick={() => onSorting('organisation__name')} />
                             </div>
                             <div className="list__row list__row-wms-description">

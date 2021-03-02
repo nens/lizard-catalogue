@@ -71,7 +71,7 @@ class MonitoringNetworkList extends React.Component<MonitoringNetworkListProps> 
                                 <i className="fa fa-sort" onClick={() => onSorting('name')} />
                             </div>
                             <div className="list__row list__row-org">
-                                Organisation
+                                Organisation (owner)
                                 <i className="fa fa-sort" onClick={() => onSorting('organisation__name')} />
                             </div>
                             <div className="list__row list__row-raster-description">
