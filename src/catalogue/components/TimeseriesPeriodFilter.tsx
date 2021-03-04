@@ -48,7 +48,7 @@ export const TimeseriesPeriodFilter: React.FC<MyProps> = ({
                     />
                 </div>
             </div>
-            <div style={{ color: 'red', marginTop: 5 }}>{timeValidator(start, end)}</div>
+            <div style={{ color: 'red', marginTop: 5 }}>{timeValidator(startDateRequired ? (start || NaN) : start, end)}</div>
         </div>
     );
 };

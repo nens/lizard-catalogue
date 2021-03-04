@@ -31,7 +31,7 @@ const TimeSeriesExportModal: React.FC<MyProps & PropsFromDispatch> = (props) => 
 
     const currentDateTimeInMilliseconds = (new Date()).valueOf();
 
-    const [start, setStart] = useState<number | null>(defaultStart || (currentDateTimeInMilliseconds - 3 * 24 * 60 * 60 * 1000)); // 3 days ago
+    const [start, setStart] = useState<number | null>(defaultStart);
     const [end, setEnd] = useState<number | null>(defaultEnd || currentDateTimeInMilliseconds);
 
     // Add event listener to close modal on ESCAPE
