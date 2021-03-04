@@ -11,16 +11,15 @@ import {
     getTimeseriesObject,
     getLocationsObjectNotNull,
     getMonitoringNetworkObservationTypesNotNull,
-    getInbox,
 } from './../../reducers';
-import { addNotification, addTimeseriesExportTask, fetchTimeseries, removeTimeseries } from './../../action';
-import { requestTimeseriesExport, openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
+import { fetchTimeseries, removeTimeseries } from './../../action';
+import { openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
+import { timeValidator } from '../../utils/timeValidator';
 import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
 import { Location } from '../../interface';
+import { TimeseriesPeriodFilter } from './TimeseriesPeriodFilter';
+import TimeSeriesExportModal from './TimeseriesExportModal';
 import SearchBar from './SearchBar';
-import Datetime from 'react-datetime';
-import 'react-datetime/css/react-datetime.css';
-import '../styles/DatetimePicker.css'; // this css file is to customize the position of the datetime picker
 import '../styles/TimeSeriesModal.css';
 import '../styles/Modal.css';
 import '../styles/Buttons.css';
@@ -39,24 +38,9 @@ interface filteredLocationObject {
     centerPoint: number[] | null,
 };
 
-const timeValidator = (start: number | null, end: number | null) => {
-    if (start !== null && isNaN(start)) {
-        return 'Invalid start date';
-    };
-    if (end !== null && isNaN(end)) {
-        return 'Invalid end date';
-    };
-    if (start && end && start > end) {
-        return 'End date must be after start date';
-    };
-    return false;
-};
-
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const { fetchTimeseries, removeTimeseries } = props;
     const mapRef = useRef<Map>(null);
-
-    const inbox = useSelector(getInbox);
 
     const selectedItem = useSelector(getSelectedItem);
     const timeseriesObject = useSelector(getTimeseriesObject);
@@ -88,6 +72,9 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     // drawing polygon
     const [drawingMode, setDrawingMode] = useState(false);
     const [polygon, setPolygon] = useState<number[][]>([]);
+
+    // timeseries export modal
+    const [exportModal, setExportModal] = useState<boolean>(false);
 
     // useEffect to fetch new state of locations based on filter inputs
     useEffect(() => {
@@ -147,7 +134,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                 props.toggleTimeseriesModal();
             };
         };
-        window.addEventListener('keydown', closeModalOnEsc);
+        if (!exportModal) window.addEventListener('keydown', closeModalOnEsc);
         return () => window.removeEventListener('keydown', closeModalOnEsc);
     });
 
@@ -397,34 +384,12 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         </div>
                         <div className="timeseries-filter-period">
                             <h3>FILTER PERIOD</h3>
-                            <div className="timeseries-period-container">
-                                <div className="timeseries-time-selection">
-                                    <span>Start</span>
-                                    <Datetime
-                                        dateFormat={'DD/MM/YYYY'}
-                                        timeFormat={'HH:mm'}
-                                        inputProps={{
-                                            className: 'timeseries-datetime',
-                                            placeholder: '---'
-                                        }}
-                                        onChange={(e) => setStart(moment(e).valueOf())}
-                                    />
-                                </div>
-                                <span className="timeseries-period-arrow">&#8594;</span>
-                                <div className="timeseries-time-selection">
-                                    <span>End</span>
-                                    <Datetime
-                                        dateFormat={'DD/MM/YYYY'}
-                                        timeFormat={'HH:mm'}
-                                        inputProps={{
-                                            className: !timeValidator(start, end) ? 'timeseries-datetime' : 'timeseries-datetime timeseries-datetime-error',
-                                            placeholder: '---'
-                                        }}
-                                        onChange={(e) => setEnd(moment(e).valueOf())}
-                                    />
-                                </div>
-                            </div>
-                            <div style={{ color: 'red', marginTop: 5 }}>{timeValidator(start, end)}</div>
+                            <TimeseriesPeriodFilter
+                                start={start}
+                                end={end}
+                                setStart={setStart}
+                                setEnd={setEnd}
+                            />
                         </div>
                     </div>
                 </div>
@@ -507,30 +472,11 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     className="button-action"
                                     title={
                                         !selectedLocations.length ? 'Please select Time Series to export' :
-                                        !start ? 'Please select a start date to export the Time Series' :
                                         timeValidator(start, end) ? timeValidator(start, end) as string :
                                         'Export Time Series'
                                     }
-                                    onClick={() => {
-                                        if (!start) return;
-                                        const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
-                                            const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
-                                            return selectedTimeseries.map(ts => ts.uuid);
-                                        });
-                                        return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end).then(
-                                            res => {
-                                                if (res.status === 200) {
-                                                    props.addNotification('Success! Time Series exported successfully. Please check your inbox!', 3000);
-                                                    return res.json();
-                                                } else {
-                                                    props.addNotification('Error! Time Series export failed.', 3000);
-                                                };
-                                            }
-                                        ).then(
-                                            task => props.addTimeseriesExportTask(inbox.length, task.task_id)
-                                        ).catch(console.error);
-                                    }}
-                                    disabled={!selectedLocations.length || !start || !!timeValidator(start, end)}
+                                    onClick={() => setExportModal(true)}
+                                    disabled={!selectedLocations.length || !!timeValidator(start, end)}
                                 >
                                     EXPORT TIME SERIES
                                 </button>
@@ -539,6 +485,17 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                     </div>
                 </div>
             </div>
+            {/*This is the PopUp window for the time-series export modal*/}
+            {exportModal && (
+                <div className="modal-background">
+                    <TimeSeriesExportModal
+                        defaultStart={start}
+                        defaultEnd={end}
+                        selectedLocations={selectedLocations}
+                        toggleModal={() => setExportModal(!exportModal)}
+                    />
+                </div>
+            )}
         </div>
     );
 };
@@ -546,8 +503,6 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 const mapDispatchToProps = (dispatch) => ({
     fetchTimeseries: (uuid: string) => dispatch(fetchTimeseries(uuid)),
     removeTimeseries: () => dispatch(removeTimeseries()),
-    addNotification: (message: string, timeout: number) => dispatch(addNotification(message, timeout)),
-    addTimeseriesExportTask: (numberOfInboxMessages: number, taskUuid: string) => dispatch(addTimeseriesExportTask(numberOfInboxMessages, taskUuid)),
 });
 type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>;
 

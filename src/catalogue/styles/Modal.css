@@ -1,5 +1,5 @@
 .modal-background {
-    height: 100vh;
+    height: 100%;
     width: 100%;
     position: fixed;
     top: 0;
@@ -62,6 +62,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* Time Series export modal */
+.modal-timeseries-export {
+    width: 60%;
+    height: 60%;
 }
 
 /* Raster export modal */
