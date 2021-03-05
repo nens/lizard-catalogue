@@ -12,7 +12,7 @@ export const openWMSInAPI = (wms: WMS) => {
     window.open(`/api/v4/wmslayers/${wms.uuid}`)
 };
 
-export const openTimeseriesInAPI = (timeseriesUUIDs: string[][]) => {
+export const openTimeseriesInAPI = (timeseriesUUIDs: string[]) => {
     // Temporarily open the collection of timeseries in API v3 as it is
     // for now not possible to open multiple selected timeseries in API v4
     window.open(`/api/v4/timeseries/?uuid__in=${timeseriesUUIDs.join(',')}`)
@@ -136,7 +136,7 @@ export const getDatasetGetCapabilitesURL = (dataset: Dataset) => {
     return dataset && `${baseUrl}/wms/${dataset.slug}/?request=GetCapabilities`;
 };
 
-export const requestTimeseriesExport = (timeseriesUUIDs: string[][], start: number, end: number | null) => {
+export const requestTimeseriesExport = (timeseriesUUIDs: string[], start: number, end: number | null) => {
     const startDateTimeInUTC = moment(start).utc().format("YYYY-MM-DDTHH:mm");
     const params: string[] = ['notify_user=true', `start=${startDateTimeInUTC}Z`];
 
