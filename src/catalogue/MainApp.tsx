@@ -215,7 +215,6 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         );
 
         const updateURL = (url: string) => {
-            console.log('test')
             props.history.push(`${url}`);
         };
 
