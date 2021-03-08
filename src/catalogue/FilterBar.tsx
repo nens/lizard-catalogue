@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { connect, useSelector } from 'react-redux';
 import { ObservationType, Organisation, Dataset, SwitchDataType } from '../interface';
-import { MyStore } from '../reducers';
+import { getFilters, MyStore } from '../reducers';
 import { selectOrganisation, removeOrganisation, selectDataset, selectObservationType, removeObservationType, removeDataset } from '../action';
 import FilterOption from './components/FilterOption';
 import './styles/FilterBar.css';
@@ -14,90 +14,72 @@ interface MyProps {
     onDataTypeChange: (dataType: SwitchDataType['payload']) => void,
 };
 
-interface PropsFromState {
-    filters: MyStore['filters'],
-};
+const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
+    const {
+        observationTypes,
+        organisations,
+        datasets,
+        currentDataType,
+        onDataTypeChange,
+        selectOrganisation,
+        removeOrganisation,
+        selectDataset,
+        removeDataset,
+        selectObservationType,
+        removeObservationType,
+    } = props;
 
-interface PropsFromDispatch {
-    selectOrganisation: (organisationName: string) => void,
-    removeOrganisation: () => void,
-    selectDataset: (datasetSlug: string) => void,
-    removeDataset: () => void,
-    selectObservationType: (observationTypeParameter: string) => void,
-    removeObservationType: () => void,
-};
+    const filters = useSelector(getFilters);
 
-class FilterBar extends React.Component<MyProps & PropsFromState & PropsFromDispatch> {
-    render() {
-        const {
-            observationTypes,
-            organisations,
-            datasets,
-            currentDataType,
-            onDataTypeChange,
-            filters,
-            selectOrganisation,
-            removeOrganisation,
-            selectDataset,
-            removeDataset,
-            selectObservationType,
-            removeObservationType,
-        } = this.props;
-
-        return (
-            <div className="filter-box">
-                <select
-                    className="switcher"
-                    value={currentDataType}
-                    onChange={e => {
-                        if (
-                            e.target.value === "Raster" ||
-                            e.target.value === "WMS" ||
-                            e.target.value === "Timeseries"
-                        ) {
-                            onDataTypeChange(e.target.value)
-                        };
-                    }}
-                >
-                    <option value="Raster">RASTER</option>
-                    <option value="WMS">WMS LAYER</option>
-                    <option value="Timeseries">TIME SERIES</option>
-                </select>
+    return (
+        <div className="filter-box">
+            <select
+                className="switcher"
+                value={currentDataType}
+                onChange={e => {
+                    if (
+                        e.target.value === "Raster" ||
+                        e.target.value === "WMS" ||
+                        e.target.value === "Timeseries"
+                    ) {
+                        onDataTypeChange(e.target.value)
+                    };
+                }}
+            >
+                <option value="Raster">RASTER</option>
+                <option value="WMS">WMS LAYER</option>
+                <option value="Timeseries">TIME SERIES</option>
+            </select>
+            <FilterOption
+                filterOption="organisation"
+                listOfItems={organisations}
+                filterValue={filters.organisation}
+                selectItem={selectOrganisation}
+                removeItem={removeOrganisation}
+            />
+            {currentDataType !== "Timeseries" ? (
                 <FilterOption
-                    filterOption="organisation"
-                    listOfItems={organisations}
-                    filterValue={filters.organisation}
-                    selectItem={selectOrganisation}
-                    removeItem={removeOrganisation}
+                    filterOption="dataset"
+                    listOfItems={datasets}
+                    filterValue={filters.dataset}
+                    selectItem={selectDataset}
+                    removeItem={removeDataset}
                 />
-                {currentDataType !== "Timeseries" ? (
-                    <FilterOption
-                        filterOption="dataset"
-                        listOfItems={datasets}
-                        filterValue={filters.dataset}
-                        selectItem={selectDataset}
-                        removeItem={removeDataset}
-                    />
-                ) : null}
-                {currentDataType === "Raster" ? (
-                    <FilterOption
-                        filterOption="observationType"
-                        listOfItems={observationTypes}
-                        filterValue={filters.observationType}
-                        selectItem={selectObservationType}
-                        removeItem={removeObservationType}
-                    />
-                ) : null}
-            </div>
-        );
-    };
+            ) : null}
+            {currentDataType === "Raster" ? (
+                <FilterOption
+                    filterOption="observationType"
+                    listOfItems={observationTypes}
+                    filterValue={filters.observationType}
+                    selectItem={selectObservationType}
+                    removeItem={removeObservationType}
+                />
+            ) : null}
+        </div>
+    );
 };
 
-const mapStateToProps = (state: MyStore): PropsFromState => ({
-    filters: state.filters,
-});
-
-const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
+const mapDispatchToProps = (dispatch: any) => ({
     selectOrganisation: (organisationName: string) => selectOrganisation(dispatch, organisationName),
     removeOrganisation: () => removeOrganisation(dispatch),
     selectDataset: (datasetSlug: string) => selectDataset(dispatch, datasetSlug),
@@ -105,5 +87,6 @@ const mapDispatchToProps = (dispatch): PropsFromDispatch => ({
     selectObservationType: (observationTypeParameter: string) => selectObservationType(dispatch, observationTypeParameter),
     removeObservationType: () => removeObservationType(dispatch),
 });
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 
-export default connect(mapStateToProps, mapDispatchToProps)(FilterBar);
+export default connect(null, mapDispatchToProps)(FilterBar);

@@ -971,6 +971,10 @@ export const getNotification = (state: MyStore) => {
     return state.notification;
 };
 
+export const getFilters = (state: MyStore) => {
+    return state.filters;
+};
+
 export default combineReducers({
     rasterExportState,
     bootstrap,
