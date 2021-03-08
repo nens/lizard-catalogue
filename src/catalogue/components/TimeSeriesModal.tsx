@@ -16,7 +16,7 @@ import { fetchTimeseries, removeTimeseries } from './../../action';
 import { openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
 import { timeValidator } from '../../utils/timeValidator';
 import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
-import { Location } from '../../interface';
+import { Location, TimeSeries } from '../../interface';
 import { TimeseriesPeriodFilter } from './TimeseriesPeriodFilter';
 import TimeSeriesExportModal from './TimeseriesExportModal';
 import SearchBar from './SearchBar';
@@ -59,6 +59,9 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
     const [selectedObservationTypeCode, setSelectedObservationTypeCode] = useState<string>('');
     const [oldInputValue, setOldInputValue] = useState('');
+
+    // list of selected timeseries
+    const [selectedTimeseries, setSelectedTimeseries] = useState<TimeSeries[]>([]);
 
     // start and end for selected period in milliseconds
     const [start, setStart] = useState<number | null>(null);
@@ -262,10 +265,26 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                                     })
                                                 }
                                                 onClick={() => {
-                                                    if (selectedLocations.includes(locationUuid)) {
+                                                    // list of timeseries nested in the location
+                                                    const locationTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === locationUuid);
+
+                                                    // list of timeseries nested in the location with observation type filter
+                                                    const locationTimeseriesWithObservationTypeFilter = locationTimeseries.filter(ts => {
+                                                        if (selectedObservationTypeCode) {
+                                                            return ts.observation_type.code === selectedObservationTypeCode;
+                                                        } else {
+                                                            return true;
+                                                        };
+                                                    });
+
+                                                    if (selectedLocations.includes(locationUuid)) { // to deselect location and all timeseries belong to the location
                                                         setSelectedLocations(selectedLocations.filter(uuid => uuid !== locationUuid));
-                                                    } else {
+                                                        setSelectedTimeseries(selectedTimeseries.filter(ts => {
+                                                            return !locationTimeseries.find(locationTs => locationTs.uuid === ts.uuid);
+                                                        }));
+                                                    } else { // to select new location and timeseries with observation type filter
                                                         setSelectedLocations([...selectedLocations, locationUuid]);
+                                                        setSelectedTimeseries([...selectedTimeseries, ...locationTimeseriesWithObservationTypeFilter]);
                                                     };
                                                 }}
                                             >
@@ -398,34 +417,43 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         <div className="timeseries-selected-locations">
                             <div className="timeseries-selected-locations-header">
                                 <div>
-                                    <h3>2. SELECTED LOCATIONS</h3>
-                                    <span className="timeseries-helper-text">The selected locations will appear here</span>
+                                    <h3>2. SELECTED TIME SERIES</h3>
+                                    <span className="timeseries-helper-text">The selected time-series will appear here</span>
                                 </div>
                                 <button
                                     className="button-action timeseries-button-clear-selection"
-                                    onClick={() => setSelectedLocations([])}
-                                    disabled={!selectedLocations.length}
+                                    onClick={() => {
+                                        setSelectedLocations([]);
+                                        setSelectedTimeseries([]);
+                                    }}
+                                    disabled={!selectedTimeseries.length}
                                     title="Clear selection"
                                 >
                                     CLEAR SELECTION
                                 </button>
                             </div>
                             <ul className="timeseries-location-list" id="scrollbar">
-                                {selectedLocations.map(uuid => {
-                                    const location = locations[uuid];
-                                    const locationTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
+                                {selectedTimeseries.map(ts => {
                                     return (
-                                        <li key={uuid}>
+                                        <li key={ts.uuid}>
                                             <span
                                                 className="timeseries-location-name"
-                                                title={"Click to zoom into this selected location"}
-                                                onClick={() => setLocationOnZoom(uuid)}
+                                                title={"Click to zoom into the location"}
+                                                onClick={() => setLocationOnZoom(ts.location.uuid)}
                                             >
-                                                {location.name} [{location.code}] [{locationTimeseries.map(ts => ts.observation_type.parameter).join(', ')}]
+                                                {ts.location.name} ({ts.location.code}) [{ts.name}] [{ts.observation_type.parameter}]
                                             </span>
                                             <button
                                                 className="button-deselect"
-                                                onClick={() => setSelectedLocations(selectedLocations.filter(locationUuid => locationUuid !== uuid))}
+                                                onClick={() => {
+                                                    const locationOfTheTimeseries = ts.location.uuid;
+                                                    const selectedTimeseriesInThisLocation = selectedTimeseries.filter(ts => ts.location.uuid === locationOfTheTimeseries);
+                                                    if (selectedTimeseriesInThisLocation.length === 1) {
+                                                        // also remove the currently selected location if this is the last timeseries to be removed
+                                                        setSelectedLocations(selectedLocations.filter(locationUuid => ts.location.uuid !== locationUuid))
+                                                    };
+                                                    setSelectedTimeseries(selectedTimeseries.filter(t => t.uuid !== ts.uuid));
+                                                }}
                                             >
                                                 <i className="fa fa-minus-square-o icon-deselect" />
                                                 <i className="fa fa-minus-square icon-deselect icon-deselect-on-hover" />
@@ -443,14 +471,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 <button
                                     className="button-action"
                                     title="Open in API"
-                                    onClick={() => {
-                                        const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
-                                            const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
-                                            return selectedTimeseries.map(ts => ts.uuid);
-                                        });
-                                        return openTimeseriesInAPI(arrayOfTimeseriesUUIDs);
-                                    }}
-                                    disabled={!selectedLocations.length}
+                                    onClick={() => openTimeseriesInAPI(selectedTimeseries.map(ts => ts.uuid))}
+                                    disabled={!selectedTimeseries.length}
                                 >
                                     OPEN IN API
                                 </button>
@@ -471,12 +493,12 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                 <button
                                     className="button-action"
                                     title={
-                                        !selectedLocations.length ? 'Please select Time Series to export' :
+                                        !selectedTimeseries.length ? 'Please select Time Series to export' :
                                         timeValidator(start, end) ? timeValidator(start, end) as string :
                                         'Export Time Series'
                                     }
                                     onClick={() => setExportModal(true)}
-                                    disabled={!selectedLocations.length || !!timeValidator(start, end)}
+                                    disabled={!selectedTimeseries.length || !!timeValidator(start, end)}
                                 >
                                     EXPORT TIME SERIES
                                 </button>
@@ -491,7 +513,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                     <TimeSeriesExportModal
                         defaultStart={start}
                         defaultEnd={end}
-                        selectedLocations={selectedLocations}
+                        selectedTimeseries={selectedTimeseries.map(ts => ts.uuid)}
                         toggleModal={() => setExportModal(!exportModal)}
                     />
                 </div>

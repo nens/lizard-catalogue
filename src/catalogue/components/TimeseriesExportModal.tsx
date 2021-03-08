@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
-import { getInbox, getTimeseriesObject } from '../../reducers';
+import { getInbox } from '../../reducers';
 import { addNotification, addTimeseriesExportTask } from '../../action';
 import { timeValidator } from '../../utils/timeValidator';
 import { requestTimeseriesExport } from '../../utils/url';
@@ -13,7 +13,7 @@ import '../styles/Icons.css';
 interface MyProps {
     defaultStart: number | null,
     defaultEnd: number | null,
-    selectedLocations: string[],
+    selectedTimeseries: string[],
     toggleModal: () => void,
 };
 
@@ -21,13 +21,10 @@ const TimeSeriesExportModal: React.FC<MyProps & PropsFromDispatch> = (props) => 
     const {
         defaultStart,
         defaultEnd,
-        selectedLocations
+        selectedTimeseries
     } = props;
 
     const inbox = useSelector(getInbox);
-
-    const timeseriesObject = useSelector(getTimeseriesObject);
-    const timeseries = timeseriesObject ? timeseriesObject.timeseries : {};
 
     const currentDateTimeInMilliseconds = (new Date()).valueOf();
 
@@ -70,14 +67,11 @@ const TimeSeriesExportModal: React.FC<MyProps & PropsFromDispatch> = (props) => 
                     }
                     onClick={() => {
                         if (!start) return;
-                        const arrayOfTimeseriesUUIDs = selectedLocations.map(uuid => {
-                            const selectedTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === uuid);
-                            return selectedTimeseries.map(ts => ts.uuid);
-                        });
-                        return requestTimeseriesExport(arrayOfTimeseriesUUIDs, start, end).then(
+                        return requestTimeseriesExport(selectedTimeseries, start, end).then(
                             res => {
                                 if (res.status === 200) {
                                     props.addNotification('Success! Time Series exported successfully. Please check your inbox!', 3000);
+                                    props.toggleModal(); // close the modal
                                     return res.json();
                                 } else {
                                     props.addNotification('Error! Time Series export failed.', 3000);
@@ -87,7 +81,7 @@ const TimeSeriesExportModal: React.FC<MyProps & PropsFromDispatch> = (props) => 
                             task => props.addTimeseriesExportTask(inbox.length, task.task_id)
                         ).catch(console.error);
                     }}
-                    disabled={!selectedLocations.length || !start || !!timeValidator(start, end)}
+                    disabled={!selectedTimeseries.length || !start || !!timeValidator(start, end)}
                     style={{
                         width: 200,
                         position: 'absolute',
