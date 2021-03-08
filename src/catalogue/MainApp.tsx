@@ -249,7 +249,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                 filters.dataset,
                 filters.ordering
             );
-        } else { //dataType === "Timeseries"
+        } else if (currentDataType === 'Timeseries') {
             fetchMonitoringNetworks(
                 filters.page,
                 filters.searchTerm,
