@@ -9,7 +9,7 @@
 // Firslty, some useEffects are only called when the component first mounted,
 // these useEffects are called inside the useMountEffect callback to do the following works:
 // 1- fetch static lizard data: bootstrap, organisations, observation types and datasets
-// 2- look up additional params in the URL to update the Redux store
+// 2- look up queries in the URL to update the filters state of the Redux store
 // 3- poll the inbox endpoint frequently to check if any tasks are in progress
 // 4- event listener to close modals on ESC
 
@@ -151,7 +151,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     // useMountEffect to call useEffect only once when component first mounted
     const useMountEffect = (func: EffectCallback) => useEffect(func, []);
 
-    // Event listener to use ESC to close a modal
+    // useMountEffect for event listener to use ESC to close a modal
     useMountEffect(() => {
         const closeModalsOnEsc = (e) => {
             if (e.key === "Escape") {
@@ -162,8 +162,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         return () => window.removeEventListener("keydown", closeModalsOnEsc);
     });
 
-    // useEffect to fetch bootstrap, organisations, observation types and datasets
-    // when component first mounted
+    // useMountEffect to fetch bootstrap, organisations, observation types and datasets
     useMountEffect(() => {
         // Fetch Lizard Bootstrap
         fetchLizardBootstrap();
@@ -174,9 +173,9 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         fetchDatasets();
     });
 
-    // useEffect to update Redux store with URL params when component first mounted
+    // useMountEffect to update Redux store with URL params
     useMountEffect(() => {
-        // When component first mount, capture the search params in the URL
+        // Capture the search params in the URL
         const urlSearchParams = getUrlParams(location.search);
         const dataType = getDataType(urlSearchParams);
         const search = getSearch(urlSearchParams);
@@ -197,7 +196,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         setSearchTerm(search);
     });
 
-    // useEffect to request the inbox which then poll the inbox
+    // useMountEffect to request the inbox which then poll the inbox
     // regularly with timer set inside the requestInbox action
     useMountEffect(() => {
         requestInbox();
