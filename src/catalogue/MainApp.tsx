@@ -128,24 +128,13 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         setSearchTerm('');
     };
 
+    // destructure some dispatch props to use as dependencies in useEffect
     const {
-        fetchLizardBootstrap,
-        fetchObservationTypes,
-        fetchOrganisations,
-        fetchDatasets,
         fetchLocations,
         fetchMonitoringNetworkObservationTypes,
         fetchMonitoringNetworks,
         fetchRasters,
         fetchWMSLayers,
-        location,
-        requestInbox,
-        selectDataset,
-        selectItem,
-        selectObservationType,
-        selectOrganisation,
-        switchDataType,
-        updateSearch,
     } = props;
 
     // useMountEffect to call useEffect only once when component first mounted
@@ -165,18 +154,18 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     // useMountEffect to fetch bootstrap, organisations, observation types and datasets
     useMountEffect(() => {
         // Fetch Lizard Bootstrap
-        fetchLizardBootstrap();
+        props.fetchLizardBootstrap();
 
         // Fetch all organisations, datasets and observation types
-        fetchObservationTypes();
-        fetchOrganisations();
-        fetchDatasets();
+        props.fetchObservationTypes();
+        props.fetchOrganisations();
+        props.fetchDatasets();
     });
 
     // useMountEffect to update Redux store with URL params
     useMountEffect(() => {
         // Capture the search params in the URL
-        const urlSearchParams = getUrlParams(location.search);
+        const urlSearchParams = getUrlParams(props.location.search);
         const dataType = getDataType(urlSearchParams);
         const search = getSearch(urlSearchParams);
         const organisation = getOrganisation(urlSearchParams);
@@ -185,12 +174,12 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         const uuid = getUUID(urlSearchParams);
 
         // Update Redux filters with URL parameters
-        updateSearch(search);
-        selectOrganisation(organisation);
-        selectDataset(dataset);
-        selectObservationType(observation);
-        switchDataType(dataType);
-        selectItem(uuid);
+        props.updateSearch(search);
+        props.selectOrganisation(organisation);
+        props.selectDataset(dataset);
+        props.selectObservationType(observation);
+        props.switchDataType(dataType);
+        props.selectItem(uuid);
 
         // Update the search term in MainApp's state to show the search input
         setSearchTerm(search);
@@ -199,7 +188,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     // useMountEffect to request the inbox which then poll the inbox
     // regularly with timer set inside the requestInbox action
     useMountEffect(() => {
-        requestInbox();
+        props.requestInbox();
     });
 
     // useEffect to update URL based on filters state of the Redux store
@@ -258,8 +247,6 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         };
     }, [
         currentDataType,
-        fetchLocations,
-        fetchMonitoringNetworkObservationTypes,
         fetchMonitoringNetworks,
         fetchRasters,
         fetchWMSLayers,
