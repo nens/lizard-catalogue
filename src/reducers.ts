@@ -80,7 +80,7 @@ export interface MyStore {
     observationTypes: ObservationType[],
     organisations: Organisation[],
     datasets: Dataset[],
-    currentDataType: 'Raster' | 'WMS' | 'Timeseries',
+    currentDataType: 'Raster' | 'WMS' | 'Timeseries' | '',
     currentRasterList: {
         count: number,
         previous: string | null,
@@ -327,7 +327,7 @@ const bootstrap = (
     }
 };
 
-const currentDataType = (state: MyStore['currentDataType'] = "Raster", action: SwitchDataType): MyStore['currentDataType'] => {
+const currentDataType = (state: MyStore['currentDataType'] = '', action: SwitchDataType): MyStore['currentDataType'] => {
     switch (action.type) {
         case SWITCH_DATA_TYPE:
             return action.payload;
@@ -969,6 +969,10 @@ export const getSelectedItem = (state: MyStore) => {
 
 export const getNotification = (state: MyStore) => {
     return state.notification;
+};
+
+export const getFilters = (state: MyStore) => {
+    return state.filters;
 };
 
 export default combineReducers({
