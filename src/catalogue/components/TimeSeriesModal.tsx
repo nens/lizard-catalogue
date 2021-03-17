@@ -157,21 +157,50 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
     const { timeseries } = timeseriesObject;
 
-    // Helper function to select locations in polygon
-    const selectLocationsInPolygon = (locations: Location[]) => {
+    // Get list of timeseries nested in selected locations with observation type filter
+    const getTimeseriesWithObservationTypeFilter = (timeseries: TimeSeries[]) => {
+        return timeseries.filter(ts => {
+            if (selectedObservationTypeCode) {
+                return ts.observation_type.code === selectedObservationTypeCode;
+            } else {
+                return true;
+            };
+        });
+    };
+
+    // Helper function to select locations and timeseries in polygon
+    const selectLocationsTimeseriesInPolygon = (locations: Location[]) => {
         const locationsInPolygon = locations.filter(
             location => location.geometry !== null
         ).filter(location =>
             // location with coordinates inside the polygon
             inside(location.geometry!.coordinates, polygon)
-        ).map(location =>
-            location.uuid
-        ).filter(uuid =>
+        ).map(
+            location => location.uuid
+        );
+
+        const locationsInPolygonWithoutDuplicates = locationsInPolygon.filter(uuid =>
             // remove duplicates
             selectedLocations.indexOf(uuid) < 0
         );
         // Update the list of selected locations
-        setSelectedLocations(selectedLocations.concat(locationsInPolygon));
+        setSelectedLocations(selectedLocations.concat(locationsInPolygonWithoutDuplicates));
+
+        // list of timeseries nested in the selected location
+        const locationTimeseries = Object.values(timeseries).filter(ts => locationsInPolygon.includes(ts.location.uuid));
+
+        // list of timeseries nested in the location with observation type filter
+        const locationTimeseriesWithObservationTypeFilter = getTimeseriesWithObservationTypeFilter(locationTimeseries);
+
+        const locationTimeseriesWithoutDuplicates = locationTimeseriesWithObservationTypeFilter.filter(ts => {
+            const uuid = ts.uuid;
+            const selectedTimeseriesUuid = selectedTimeseries.map(ts => ts.uuid);
+
+            // remove duplicates from the selected timeseries list
+            return !selectedTimeseriesUuid.includes(uuid);
+        });
+        // Update the list of selected timeseries
+        setSelectedTimeseries((selectedTimeseries.concat(locationTimeseriesWithoutDuplicates)));
     };
 
     // Helper functions to get map bounds or center point
@@ -269,13 +298,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                                     const locationTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === locationUuid);
 
                                                     // list of timeseries nested in the location with observation type filter
-                                                    const locationTimeseriesWithObservationTypeFilter = locationTimeseries.filter(ts => {
-                                                        if (selectedObservationTypeCode) {
-                                                            return ts.observation_type.code === selectedObservationTypeCode;
-                                                        } else {
-                                                            return true;
-                                                        };
-                                                    });
+                                                    const locationTimeseriesWithObservationTypeFilter = getTimeseriesWithObservationTypeFilter(locationTimeseries);
 
                                                     if (selectedLocations.includes(locationUuid)) { // to deselect location and all timeseries belong to the location
                                                         setSelectedLocations(selectedLocations.filter(uuid => uuid !== locationUuid));
@@ -336,9 +359,9 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                         className="button-action button-polygon"
                                         onClick={() => {
                                             if (filteredLocations) {
-                                                selectLocationsInPolygon(Object.values(filteredLocations));
+                                                selectLocationsTimeseriesInPolygon(Object.values(filteredLocations));
                                             } else {
-                                                selectLocationsInPolygon(Object.values(locations));
+                                                selectLocationsTimeseriesInPolygon(Object.values(locations));
                                             };
                                             setDrawingMode(false);
                                         }}
