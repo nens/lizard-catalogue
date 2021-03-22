@@ -457,6 +457,10 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                             </div>
                             <ul className="timeseries-location-list" id="scrollbar">
                                 {selectedTimeseries.map(ts => {
+                                    // location name and location code are not available in the timeseries endpoint on production
+                                    // so we cannot retrieve these infos directly from the ts.location.code and ts.location.name
+                                    // but to look for the location that we stored in the Redux store by its UUID
+                                    const location = locations[ts.location.uuid];
                                     return (
                                         <li key={ts.uuid}>
                                             <span
@@ -464,7 +468,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                                 title={"Click to zoom into the location"}
                                                 onClick={() => setLocationOnZoom(ts.location.uuid)}
                                             >
-                                                {ts.location.name} ({ts.location.code}) [{ts.name}] [{ts.observation_type.parameter}]
+                                                {location.name} ({location.code}) [{ts.name}] [{ts.observation_type.parameter}]
                                             </span>
                                             <button
                                                 className="button-deselect"
