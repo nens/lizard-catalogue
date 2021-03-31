@@ -35,6 +35,7 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
         removeDataset,
         selectObservationType,
         removeObservationType,
+        updatePage
     } = props;
 
     const filters = useSelector(getFilters);
@@ -63,7 +64,7 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
                 listOfItems={organisations}
                 filterValue={filters.organisation}
                 selectItem={value => {
-                    props.updatePage(1);
+                    updatePage(1);
                     selectOrganisation(value);
                 }}
                 removeItem={removeOrganisation}
@@ -74,7 +75,7 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
                     listOfItems={datasets}
                     filterValue={filters.dataset}
                     selectItem={value => {
-                        props.updatePage(1);
+                        updatePage(1);
                         selectDataset(value);
                     }}
                     removeItem={removeDataset}
@@ -86,7 +87,7 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
                     listOfItems={observationTypes}
                     filterValue={filters.observationType}
                     selectItem={value => {
-                        props.updatePage(1);
+                        updatePage(1);
                         selectObservationType(value);
                     }}
                     removeItem={removeObservationType}
