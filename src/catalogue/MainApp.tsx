@@ -115,6 +115,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     const onSearchSubmit = (event) => {
         event.preventDefault();
         props.updateSearch(searchTerm);
+        props.updatePage(1); // Go back to page 1 in the result list
     };
 
     //When switch the view from Rasters to WMS layers and vice versa, set the state of this main container back to initial state
