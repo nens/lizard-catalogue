@@ -2,7 +2,15 @@ import React from 'react';
 import { connect, useSelector } from 'react-redux';
 import { ObservationType, Organisation, Dataset, SwitchDataType } from '../interface';
 import { getFilters, MyStore } from '../reducers';
-import { selectOrganisation, removeOrganisation, selectDataset, selectObservationType, removeObservationType, removeDataset } from '../action';
+import {
+    selectOrganisation,
+    removeOrganisation,
+    selectDataset,
+    selectObservationType,
+    removeObservationType,
+    removeDataset,
+    updatePage
+} from '../action';
 import FilterOption from './components/FilterOption';
 import './styles/FilterBar.css';
 
@@ -27,6 +35,7 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
         removeDataset,
         selectObservationType,
         removeObservationType,
+        updatePage
     } = props;
 
     const filters = useSelector(getFilters);
@@ -54,7 +63,10 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
                 filterOption="organisation"
                 listOfItems={organisations}
                 filterValue={filters.organisation}
-                selectItem={selectOrganisation}
+                selectItem={value => {
+                    updatePage(1);
+                    selectOrganisation(value);
+                }}
                 removeItem={removeOrganisation}
             />
             {currentDataType !== "Timeseries" ? (
@@ -62,7 +74,10 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
                     filterOption="dataset"
                     listOfItems={datasets}
                     filterValue={filters.dataset}
-                    selectItem={selectDataset}
+                    selectItem={value => {
+                        updatePage(1);
+                        selectDataset(value);
+                    }}
                     removeItem={removeDataset}
                 />
             ) : null}
@@ -71,7 +86,10 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
                     filterOption="observationType"
                     listOfItems={observationTypes}
                     filterValue={filters.observationType}
-                    selectItem={selectObservationType}
+                    selectItem={value => {
+                        updatePage(1);
+                        selectObservationType(value);
+                    }}
                     removeItem={removeObservationType}
                 />
             ) : null}
@@ -86,6 +104,7 @@ const mapDispatchToProps = (dispatch: any) => ({
     removeDataset: () => removeDataset(dispatch),
     selectObservationType: (observationTypeParameter: string) => selectObservationType(dispatch, observationTypeParameter),
     removeObservationType: () => removeObservationType(dispatch),
+    updatePage: (page: number) => updatePage(dispatch, page),
 });
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 
