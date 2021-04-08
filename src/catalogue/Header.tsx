@@ -6,6 +6,7 @@ import Basket from './components/Basket';
 import Information from './components/Information';
 import './styles/Header.css';
 import Inbox from './components/Inbox';
+import packageJson from '../../package.json';
 
 interface MyProps {
     showProfileDropdown: boolean,
@@ -54,7 +55,7 @@ const Header: React.FC<MyProps & PropsFromState> = (props) => {
 
     return (
         <nav className="header">
-            <div className="header-logo">
+            <div className="header-logo" title={"client-version: " +packageJson.version}>
                 <img src="image/lizard-logo-white.svg" alt="logo" className="header-logo__logo" onClick={() => window.location.href = "/"} />
                 <h3 className="header-logo__text">Catalogue</h3>
             </div>
