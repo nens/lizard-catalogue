@@ -14,7 +14,6 @@
         "emitDecoratorMetadata": true,
         "target": "es2017",
         "outDir": "target/",
-        "rootDir": "src/",
         "jsx": "react",
         "esModuleInterop": true,
         "plugins": [
@@ -25,7 +24,8 @@
                 "configFile": "../tslint.json",
                 "suppressWhileTypeErrorsPresent": false
             }
-        ]
+        ],
+        "resolveJsonModule": true
     },
     "include": [
         "src/**/*"
