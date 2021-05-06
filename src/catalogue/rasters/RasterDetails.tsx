@@ -97,7 +97,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                     <span title="To manage this raster">
                         {authorizedToManageLayer ?
                             <a
-                                href={`/management/#/data_management/rasters/${raster.uuid}`}
+                                href={`/management/#/data_management/rasters/layers/${raster.uuid}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
