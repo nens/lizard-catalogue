@@ -144,11 +144,13 @@
     margin: 0 1rem;
     cursor: pointer;
     box-shadow: .1rem .2rem .4rem rgba(12, 12, 12, 0.4);
-
     background-color: #FF7070;
 }
+.li-basket__icon-box:active {
+    transform: translateY(2px);
+}
 
-.li-basket__icon {
+.li-basket__icon-box img {
     height: 2.5rem;
     width: 2rem;
     fill: #fff;
