@@ -61,7 +61,7 @@ const Header: React.FC<MyProps & PropsFromState> = (props) => {
     return (
         <nav className="header">
             <div className="header-logo" title={"client-version: " +packageJson.version}>
-                <img src={lizardLogo} alt="logo" className="header-logo__logo" onClick={() => window.location.href = "/"} />
+                <img src={lizardLogo} alt="logo" className="header-logo__logo" onClick={() => window.location.href = "/catalogue"} />
                 <h3 className="header-logo__text">Catalogue</h3>
             </div>
             <div className="header-nav">
