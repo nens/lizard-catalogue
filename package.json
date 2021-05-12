@@ -5,20 +5,6 @@
   "homepage": "/catalogue",
   "private": true,
   "dependencies": {
-    "@babel/core": "7.4.3",
-    "@babel/runtime": "^7.7.7",
-    "@svgr/webpack": "4.1.0",
-    "@types/jest": "^24.0.13",
-    "@types/leaflet": "^1.4.4",
-    "@types/node": "^12.0.2",
-    "@types/point-in-polygon": "^1.0.0",
-    "@types/react": "^16.8.18",
-    "@types/react-dom": "^16.8.4",
-    "@types/react-redux": "^7.1.9",
-    "@types/react-router": "^5.0.1",
-    "@types/react-router-dom": "^4.3.3",
-    "@typescript-eslint/eslint-plugin": "1.6.0",
-    "@typescript-eslint/parser": "^4.23.0",
     "babel-eslint": "10.0.1",
     "babel-jest": "^24.8.0",
     "babel-loader": "8.0.5",
@@ -33,7 +19,7 @@
     "eslint-config-react-app": "^6.0.0",
     "eslint-loader": "2.1.2",
     "eslint-plugin-flowtype": "2.50.1",
-    "eslint-plugin-import": "2.16.0",
+    "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "6.2.1",
     "eslint-plugin-react": "7.12.4",
     "eslint-plugin-react-hooks": "^1.5.0",
@@ -94,7 +80,7 @@
   "scripts": {
     "startauth": "./startauth.sh",
     "start": "react-scripts start",
-    "build": "rm -rf dist/*.zip && node scripts/build.js && scripts/makedist.sh",
+    "build": "mkdir -p dist/ && rm -rf dist/*.zip && react-scripts build && scripts/makedist.sh",
     "test": "node scripts/test.js",
     "release": "release-it --verbose --npm.skipChecks",
     "tsc": "tsc"
@@ -165,6 +151,20 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "7.4.3",
+    "@babel/runtime": "^7.7.7",
+    "@svgr/webpack": "4.1.0",
+    "@types/jest": "^24.0.13",
+    "@types/leaflet": "^1.4.4",
+    "@types/node": "^12.0.2",
+    "@types/point-in-polygon": "^1.0.0",
+    "@types/react": "^17.0.5",
+    "@types/react-dom": "^16.8.4",
+    "@types/react-redux": "^7.1.9",
+    "@types/react-router": "^5.0.1",
+    "@types/react-router-dom": "^4.3.3",
+    "@typescript-eslint/eslint-plugin": "^4.23.0",
+    "@typescript-eslint/parser": "^4.23.0",
     "release-it": "^14.5.0"
   }
 }
