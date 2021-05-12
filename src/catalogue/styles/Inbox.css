@@ -7,8 +7,8 @@
     top: 100%;
     left: 0;
     width: 200%;
-    height:auto;
-    max-height: 90vh;
+    height:auto !important;
+    max-height: 90vh !important;
     overflow-y: auto;
     box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
 }
@@ -34,15 +34,15 @@
 }
 
 .inbox-filename:hover {
-    background-color: #e5e5e5;
+    background-color: #e5e5e5 !important;
 }
 
 .inbox-file:hover {
-    background-color: #e5e5e5;
+    background-color: #e5e5e5 !important;
 }
 
 .inbox-file i:hover {
-    background-color: #e5e5e5;
+    background-color: #e5e5e5 !important;
 }
 
 .inbox-info {
@@ -57,7 +57,7 @@
 }
 
 .inbox-info:hover {
-    background-color: #fafafa;
+    background-color: #fafafa !important;
 }
 
 .inbox-download {
@@ -68,13 +68,13 @@
 .inbox-read:hover {
     cursor: pointer;
     color: var(--main-color-scheme);
-    background-color: #e5e5e5;
+    background-color: #e5e5e5 !important;
 }
 
 .inbox-pending-exports {
     cursor: wait;
     color: #AAAAAA;
-    background-color: #e5e5e5;
+    background-color: #e5e5e5 !important;
     font-style: italic;
 }
 

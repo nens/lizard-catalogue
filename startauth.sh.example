@@ -1,0 +1,10 @@
+# at all times have only one line uncommented
+
+# example to proxy to staging
+PROXY_URL=https://nxt3.staging.lizard.net/ PROXY_API_KEY=123456789STAGINGKEY yarn start
+
+# example to proxy to production
+# PROXY_URL=https://demo.lizard.net/ PROXY_API_KEY=123456789PRODUCTIONKEY yarn start
+
+# example to proxy to other production domain
+# PROXY_URL=https://utrecht.lizard.net/ PROXY_API_KEY=123456789PRODUCTIONKEY yarn start

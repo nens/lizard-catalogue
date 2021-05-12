@@ -20,6 +20,7 @@ import { Location, TimeSeries } from '../../interface';
 import { TimeseriesPeriodFilter } from './TimeseriesPeriodFilter';
 import TimeSeriesExportModal from './TimeseriesExportModal';
 import SearchBar from './SearchBar';
+import polygonIcon from '../../images/polygon.svg';
 import '../styles/TimeSeriesModal.css';
 import '../styles/Modal.css';
 import '../styles/Buttons.css';
@@ -383,7 +384,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                         title="Draw"
                                     >
                                         <img
-                                            src="image/polygon.svg"
+                                            src={polygonIcon}
                                             alt="polygon"
                                         />
                                     </button>

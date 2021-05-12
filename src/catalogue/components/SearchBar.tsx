@@ -1,4 +1,5 @@
 import * as React from 'react';
+import searchIcon from '../../images/search.svg';
 import '../styles/SearchBar.css';
 
 interface MyProps {
@@ -25,9 +26,7 @@ export default class SearchBar extends React.Component<MyProps> {
                     value={searchTerm}
                 />
                 <button className="searchbar-button" type="submit">
-                    <svg className={name === "filterSearchBar" ? "searchbar-icon searchbar-icon-filter" : "searchbar-icon"}>
-                        <use xlinkHref="image/symbols.svg#icon-search" />
-                    </svg>
+                    <img src={searchIcon} alt="user" className={name === "filterSearchBar" ? "searchbar-icon searchbar-icon-filter" : "searchbar-icon"} />
                 </button>
             </form>
         );

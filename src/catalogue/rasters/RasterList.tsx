@@ -6,6 +6,8 @@ import { MyStore, getRaster } from '../../reducers';
 import BasketNotification from '../components/BasketNotification';
 import SearchBar from '../components/SearchBar';
 import Pagination from '../components/Pagination';
+import rasterTemporalIcon from '../../images/raster-temporal.svg';
+import rasterNonTemporalIcon from '../../images/raster-non-temporal.svg';
 import '../styles/List.css';
 
 interface MyProps {
@@ -154,8 +156,8 @@ class RasterList extends React.Component<RasterListProps, MyState> {
                                 >
                                     <input className="list__row list__row-normal list__row-box" type="checkbox" onChange={() => this.onCheckboxSelect(raster.uuid)} checked={checked} />
                                     {raster.temporal ?
-                                        <img className="list__row list__row-normal list__row-type" src="image/raster-temporal.svg" alt="raster" title="Temporal"/> :
-                                        <img className="list__row list__row-normal list__row-type" src="image/raster-non-temporal.svg" alt="raster" title="Non-temporal"/>
+                                        <img className="list__row list__row-normal list__row-type" src={rasterTemporalIcon} alt="temporal" title="Temporal"/> :
+                                        <img className="list__row list__row-normal list__row-type" src={rasterNonTemporalIcon} alt="non-temporal" title="Non-temporal"/>
                                     }
                                     <div className="list__row list__row-normal list__row-name" title={raster.name}>{raster.name}</div>
                                     <div className="list__row list__row-normal list__row-org"title={raster.organisation && raster.organisation.name}>{raster.organisation && raster.organisation.name}</div>

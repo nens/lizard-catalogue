@@ -139,6 +139,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     } = props;
 
     // useMountEffect to call useEffect only once when component first mounted
+    // eslint-disable-next-line
     const useMountEffect = (func: EffectCallback) => useEffect(func, []);
 
     // useMountEffect for event listener to use ESC to close a modal

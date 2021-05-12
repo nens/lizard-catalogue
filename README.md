@@ -1,44 +1,50 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+Installation
+============
 
-To install npm packages run:
+- Required: A working nodejs and yarn installation.
+- In the root directory of the repository: `$ yarn install`
+- start the app using `$ yarn start`
+- By default, the proxy sends requests to https://nxt3.staging.lizard.net/
+  (for selected URLs), without authentication.
+- Set up proxy and basic authentication by following the steps [here](./BASIC_AUTH.md)
+- start the app by running one of (depending on your choice in previous step):
 
-### `npm install`
+`yarn start`
+or
+`PROXY_URL=https://nxt3.staging.lizard.net/ PROXY_API_KEY=123456789STAGINGKEY yarn start`
+or
+`yarn run startauth`
 
-In the project directory, you can run:
+Installation problems
+=====================
 
-### `npm start`
+- in case you run into the following error:
+postcss@8.2.1: The engine "node" is incompatible with this module. Expected version "^10 || ^12 || >=14". Got "13.7.0"
+Use nvm to use nodeJS version 12:
+`$ nvm install 12`
+`$ nvm use 12`
 
-Add your username and password to log in by running:<br>
-### `./start`
-This is a python script that will prompt you for username passwords and will actually run the following script behind the scenes: <br>
-It runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Production bundle
+=================
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+Run `$ yarn build` and look in the `build/` folder.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Releasing
+=========
 
-### `npm run build`
+Run `$ yarn run release` and answer the questions accordingly.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br>
-After this it also zips the build folder and puts the result in the `dist` folder.<br>
-Your app is ready to be deployed!
+Deployment
+=========
 
-### `npm run release`
+For the deployment of frontend repositories we make use of an Ansible script in the lizard-nxt repository.
+More information is provided in the readme file of lizard-nxt: https://github.com/nens/lizard-nxt/blob/master/README.rst
+Look below the heading "Deployment clients".
 
-Uses release-it library to release the `dist` folder to github.<br>
-A wizard will follow. Usually just choose the defaults everywhere by hitting enter.<br>
-
-## Deployment
 **Note: some users might experience some problems for the first deployment on their local machine and maybe some other times as well. Please follow the instructions below!** 
 
 Instructions for first-time deployment, follow these extra steps first before the actual deployment:
@@ -53,48 +59,30 @@ If the message in the console is: "Could not resolve hostname: Name or service n
 	    search nens.local
   + Save and exit the file;  
 - Now you are ready to move to the final step of the deployment.
-  
-For the deployment of frontend repositories we make use of an Ansible script in the lizard-nxt repository.
-More information is provided in the readme file of lizard-nxt: https://github.com/nens/lizard-nxt/blob/master/README.rst
-Look below the heading "Deployment clients". 
+
+Redux
+=====
+
+Redux is used for the app-wide notification system.
 
 
-### `npm run eject`
+React-router
+============
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+React-router is used for the URL setup.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Sentry
+======
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+To be written...
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Browser development extensions
+==============================
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+These extensions may help:
 
-### Code Splitting
+- React Devtools for [Chrome](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en) or [Firefox](https://addons.mozilla.org/en-US/firefox/addon/react-devtools/)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+- Redux Devtools for [Chrome](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) or [Firefox](https://addons.mozilla.org/en-Gb/firefox/addon/remotedev/)

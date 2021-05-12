@@ -13,6 +13,10 @@
 /build
 /deploy
 
+# authentication
+startauth
+startauth.sh
+
 # misc
 .DS_Store
 .env.local
