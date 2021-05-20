@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
-import { MyStore, getRaster, getOrganisations, getLizardBootstrap } from '../../reducers';
-import { Raster, LatLng, Organisation, Bootstrap } from '../../interface';
+import { MyStore, getRaster, getLizardBootstrap } from '../../reducers';
+import { Raster, LatLng, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import { openRasterInAPI, openRasterInLizard, getDatasetGetCapabilitesURL, getRasterGetCapabilitesURL } from '../../utils/url';
@@ -15,7 +15,6 @@ import '../styles/Buttons.css';
 
 interface PropsFromState {
     raster: Raster | null,
-    organisations: Organisation[],
     bootstrap: Bootstrap,
     user: Bootstrap['user'],
 };
@@ -27,12 +26,14 @@ interface MyProps {
 interface MyState {
     showExport: boolean,
     showTableTab: string,
+    authorizedToManageLayer: boolean,
 };
 
 class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
     state = {
         showExport: false,
         showTableTab: 'Details',
+        authorizedToManageLayer: false,
     };
 
     toggleExportModal = () => {
@@ -47,9 +48,18 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
         return (dataset && selectedDataset) || null;
     };
 
+    async componentDidMount() {
+        if (this.props.raster) {
+            const authorized =  await isAuthorizedToManageLayer(this.props.raster, this.props.bootstrap.user);
+            this.setState({
+                authorizedToManageLayer: authorized
+            });
+        };
+    };
+
     render() {
         //Destructure the props
-        const { raster, organisations, bootstrap } = this.props;
+        const { raster } = this.props;
 
         //If no raster is selected, display a text
         if (!raster) return <div className="details details-loading">Please select a raster</div>;
@@ -80,15 +90,6 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
         //If the projection is EPSG:4326, the resolution is calculated in square degrees, otherwise it is in m2
         const resolution = raster.projection === "EPSG:4326" ? rasterResolution.toFixed(6) + " deg2" : rasterResolution + " m2"
 
-        // Only show manage button if user is admin of the organisation of the layer
-        // or the supplier of the layer and supplier in the organsation of the layer.
-        let authorizedToManageLayer: boolean = false;
-        if (raster && bootstrap) {
-            authorizedToManageLayer = isAuthorizedToManageLayer(
-                raster, bootstrap.user.username, organisations
-            );
-        }
-
         return (
             <div className="details" id="scrollbar">
                 <div className="details-name">
@@ -96,7 +97,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                         {raster.name}
                     </h3>
                     <span title="To manage this raster">
-                        {authorizedToManageLayer ?
+                        {this.state.authorizedToManageLayer ?
                             <a
                                 href={`/management/#/data_management/rasters/layers/${raster.uuid}`}
                                 target="_blank"
@@ -108,7 +109,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                                     alt="View in manage client"
                                 />
                             </a>
-                        :null
+                        : null
                         }
                     </span>
                 </div>
@@ -280,13 +281,11 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
 const mapStateToProps = (state: MyStore): PropsFromState => {
     if (!state.selectedItem) return {
         raster: null,
-        organisations: getOrganisations(state),
         bootstrap: getLizardBootstrap(state),
         user: state.bootstrap.user,
     };
     return {
         raster: getRaster(state, state.selectedItem),
-        organisations: getOrganisations(state),
         bootstrap: getLizardBootstrap(state),
         user: state.bootstrap.user,
     };

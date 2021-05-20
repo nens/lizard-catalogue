@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
-import { MyStore, getWMS, getOrganisations, getLizardBootstrap } from '../../reducers';
-import { WMS, LatLng, Organisation, Bootstrap } from '../../interface';
+import { MyStore, getWMS, getLizardBootstrap } from '../../reducers';
+import { WMS, LatLng, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL} from '../../utils/url';
 import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
@@ -13,22 +13,32 @@ import '../styles/Buttons.css';
 
 interface PropsFromState {
     wms: WMS | null,
-    organisations: Organisation[],
     bootstrap: Bootstrap
 };
 
 interface MyState {
     showTableTab: string,
+    authorizedToManageLayer: boolean,
 }
 
 class WMSDetails extends React.Component<PropsFromState, MyState> {
     state = {
         showTableTab: 'Details',
+        authorizedToManageLayer: false,
     }
+
+    async componentDidMount() {
+        if (this.props.wms) {
+            const authorized =  await isAuthorizedToManageLayer(this.props.wms, this.props.bootstrap.user);
+            this.setState({
+                authorizedToManageLayer: authorized
+            });
+        };
+    };
 
     render() {
         //Destructure the props
-        const { wms, organisations, bootstrap } = this.props;
+        const { wms } = this.props;
 
         //If no WMS layer is selected, display a text
         if (!wms) return <div className="details details-loading">Please select a WMS Layer</div>;
@@ -46,15 +56,6 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
         //Calculate the zoom level of the raster by using the zoomLevelCalculation function
         const zoom = zoomLevelCalculation(wmsBounds);
 
-        // Only show manage button if user is admin of the organisation of the layer
-        // or the supplier of the layer and supplier in the organsation of the layer.
-        let authorizedToManageLayer: boolean = false;
-        if (wms && bootstrap) {
-            authorizedToManageLayer = isAuthorizedToManageLayer(
-                wms, bootstrap.user.username, organisations
-            );
-        }
-
         return (
             <div className="details" id="scrollbar">
                 <div className="details-name">
@@ -62,7 +63,7 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
                         {wms.name}
                     </h3>
                     <span title="To manage this WMS layer">
-                        {authorizedToManageLayer ?
+                        {this.state.authorizedToManageLayer ?
                             <a
                                 href={`/management/#/data_management/wms_layers/${wms.uuid}`}
                                 target="_blank"
@@ -201,12 +202,10 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
 const mapStateToProps = (state: MyStore): PropsFromState => {
     if (!state.selectedItem) return {
         wms: null,
-        organisations: getOrganisations(state),
         bootstrap: getLizardBootstrap(state)
     };
     return {
         wms: getWMS(state, state.selectedItem),
-        organisations: getOrganisations(state),
         bootstrap: getLizardBootstrap(state)
     };
 };
