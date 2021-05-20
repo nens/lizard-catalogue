@@ -33,12 +33,6 @@
     white-space: nowrap;
 }
 
-.details-manage-icon {
-    position: relative;
-    top: 7px;
-    padding-left: 5px;
-}
-
 .details-uuid {
     font-size: 1.6rem;
     margin-bottom: 1.5rem;
