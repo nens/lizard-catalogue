@@ -300,6 +300,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
 const bootstrap = (
     state: MyStore['bootstrap'] = {
         user: {
+            id: null,
             first_name: null,
             username: null,
             authenticated: false
@@ -312,10 +313,11 @@ const bootstrap = (
         case REQUEST_LIZARD_BOOTSTRAP:
             return { ...state, isFetching: true };
         case RECEIVE_LIZARD_BOOTSTRAP:
-            const { user } = action.payload
+            const { user } = action.payload;
             return {
                 ...state,
                 user: {
+                    id: user.id,
                     first_name: user.first_name,
                     username: user.username,
                     authenticated: user.authenticated
