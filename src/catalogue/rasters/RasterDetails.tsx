@@ -39,6 +39,7 @@ const RasterDetails = (props: MyProps) => {
                 setAuthorizedToManageLayer(authorized);
             };
         })();
+        return () => setAuthorizedToManageLayer(false);
     }, [raster, user]);
 
     //If no raster is selected, display a text
