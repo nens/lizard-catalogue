@@ -1,6 +1,6 @@
 {
   "name": "lizard-catalogue",
-  "version": "0.2.26",
+  "version": "0.2.27",
   "main": "target/index.js",
   "homepage": "/catalogue",
   "private": true,
