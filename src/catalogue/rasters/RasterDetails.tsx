@@ -6,8 +6,9 @@ import { Raster, LatLng, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import { openRasterInAPI, openRasterInLizard, getDatasetGetCapabilitesURL, getRasterGetCapabilitesURL } from '../../utils/url';
+import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import Export from '../components/Export';
-import {mapBoxAccesToken} from "../../mapboxConfig.js"
+import manageIcon from '../../images/manage.svg';
 import '../styles/Details.css';
 import '../styles/Modal.css';
 import '../styles/Buttons.css';
@@ -103,7 +104,7 @@ class RasterDetails extends React.Component<PropsFromState & MyProps, MyState> {
                             >
                                 <img
                                     className="details-manage-icon"
-                                    src="image/manageButton.svg"
+                                    src={manageIcon}
                                     alt="View in manage client"
                                 />
                             </a>

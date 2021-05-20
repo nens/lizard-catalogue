@@ -6,7 +6,8 @@ import { WMS, LatLng, Organisation, Bootstrap } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL} from '../../utils/url';
 import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
-import {mapBoxAccesToken} from "../../mapboxConfig.js"
+import { mapBoxAccesToken } from "../../mapboxConfig.js";
+import manageIcon from '../../images/manage.svg';
 import '../styles/Details.css';
 import '../styles/Buttons.css';
 
@@ -60,7 +61,7 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
                     <h3 title={wms.name}>
                         {wms.name}
                     </h3>
-                    <span title="To manage this raster">
+                    <span title="To manage this WMS layer">
                         {authorizedToManageLayer ?
                             <a
                                 href={`/management/#/data_management/wms_layers/${wms.uuid}`}
@@ -69,7 +70,7 @@ class WMSDetails extends React.Component<PropsFromState, MyState> {
                             >
                                 <img
                                     className="details-manage-icon"
-                                    src="image/manageButton.svg"
+                                    src={manageIcon}
                                     alt="View in manage client"
                                 />
                             </a>
