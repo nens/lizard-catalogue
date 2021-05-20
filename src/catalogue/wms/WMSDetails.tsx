@@ -18,7 +18,6 @@ const WMSDetails = () => {
 
     const [showTableTab, setShowTableTab] = useState<string>('Details');
     const [authorizedToManageLayer, setAuthorizedToManageLayer] = useState<boolean>(false);
-    console.log(authorizedToManageLayer);
 
     useEffect(() => {
         (async () => {
