@@ -12,6 +12,6 @@
     "publish": false
   },
   "hooks": {
-    "after:version:bump": "npm run build"
+    "after:version:bump": "yarn build"
   }
 }
