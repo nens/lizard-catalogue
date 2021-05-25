@@ -25,6 +25,7 @@ export interface SwitchDataType {
 //LIZARD BOOTSTRAP
 export interface Bootstrap {
     user: {
+        id: number | null,
         first_name: string | null,
         username: string | null,
         authenticated: boolean
