@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import {uniqWith, differenceWith} from 'lodash';
+import { uniqWith, differenceWith } from 'lodash';
 
 import {
     RASTERS_FETCHED,
@@ -57,6 +57,7 @@ import {
     DISMISS_NOTIFICATION,
     ADD_TIMESERIES_EXPORT_TASK,
     REQUEST_TIMESERIES_EXPORT,
+    USER_ORGANISATIONS_FETCHED,
 } from "./action";
 import {
     Raster,
@@ -684,14 +685,16 @@ const organisations = (state: MyStore['organisations'] = [], { type, organisatio
             });
 
             //Update Redux state
-            return filteredOrganisations.map(organisation => {
-                return {
-                    url: organisation.url,
-                    name: organisation.name,
-                    uuid: organisation.uuid,
-                    roles: organisation.roles
+            return filteredOrganisations;
+        case USER_ORGANISATIONS_FETCHED:
+            const listOfUserOrganisations = state.map(organisation => {
+                const selectedOrganisation = organisations.find((org: Organisation) => org.uuid === organisation.uuid);
+                if (selectedOrganisation) {
+                    return selectedOrganisation;
                 };
+                return organisation;
             });
+            return listOfUserOrganisations;
         default:
             return state;
     };

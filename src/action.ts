@@ -304,6 +304,7 @@ export const selectItem = (uuid: string, dispatch): void => {
 //MARK: Observation types and Organisation
 export const OBSERVATION_TYPES_FETCHED = 'OBSERVATION_TYPES_FETCHED';
 export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
+export const USER_ORGANISATIONS_FETCHED = 'USER_ORGANISATIONS_FETCHED';
 export const DATASETS_FETCHED = 'DATASETS_FETCHED';
 
 export const fetchObservationTypes = (dispatch): void => {
@@ -324,6 +325,18 @@ export const fetchOrganisations = (dispatch): void => {
         .then(response => {
             dispatch({
                 type: ORGANISATIONS_FETCHED,
+                organisations: response.body
+            });
+        })
+        .catch(console.error)
+};
+
+export const fetchUserOrganisations = (userId: number) => dispatch => {
+    request
+        .get(`/api/v4/users/${userId}/organisations/?page_size=0`)
+        .then(response => {
+            dispatch({
+                type: USER_ORGANISATIONS_FETCHED,
                 organisations: response.body
             });
         })
