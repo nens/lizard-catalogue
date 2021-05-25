@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import {uniqWith, differenceWith} from 'lodash';
+import { uniqWith, differenceWith } from 'lodash';
 
 import {
     RASTERS_FETCHED,
@@ -57,6 +57,7 @@ import {
     DISMISS_NOTIFICATION,
     ADD_TIMESERIES_EXPORT_TASK,
     REQUEST_TIMESERIES_EXPORT,
+    USER_ORGANISATIONS_FETCHED,
 } from "./action";
 import {
     Raster,
@@ -300,6 +301,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
 const bootstrap = (
     state: MyStore['bootstrap'] = {
         user: {
+            id: null,
             first_name: null,
             username: null,
             authenticated: false
@@ -312,10 +314,11 @@ const bootstrap = (
         case REQUEST_LIZARD_BOOTSTRAP:
             return { ...state, isFetching: true };
         case RECEIVE_LIZARD_BOOTSTRAP:
-            const { user } = action.payload
+            const { user } = action.payload;
             return {
                 ...state,
                 user: {
+                    id: user.id,
                     first_name: user.first_name,
                     username: user.username,
                     authenticated: user.authenticated
@@ -682,14 +685,16 @@ const organisations = (state: MyStore['organisations'] = [], { type, organisatio
             });
 
             //Update Redux state
-            return filteredOrganisations.map(organisation => {
-                return {
-                    url: organisation.url,
-                    name: organisation.name,
-                    uuid: organisation.uuid,
-                    roles: organisation.roles
+            return filteredOrganisations;
+        case USER_ORGANISATIONS_FETCHED:
+            const listOfUserOrganisations = state.map(organisation => {
+                const selectedOrganisation = organisations.find((org: Organisation) => org.uuid === organisation.uuid);
+                if (selectedOrganisation) {
+                    return selectedOrganisation;
                 };
+                return organisation;
             });
+            return listOfUserOrganisations;
         default:
             return state;
     };

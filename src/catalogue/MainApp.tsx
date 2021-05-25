@@ -47,10 +47,31 @@ import {
     fetchMonitoringNetworks,
     fetchMonitoringNetworkObservationTypes,
     fetchLocations,
+    fetchUserOrganisations,
 } from '../action';
-import { getCurrentRasterList, getObservationTypes, getOrganisations, getDatasets, getCurrentDataType, getCurrentWMSList, getCurrentMonitoringNetworkList, getFilters, getSelectedItem } from '../reducers';
+import {
+    getCurrentRasterList,
+    getObservationTypes,
+    getOrganisations,
+    getDatasets,
+    getCurrentDataType,
+    getCurrentWMSList,
+    getCurrentMonitoringNetworkList,
+    getFilters,
+    getSelectedItem,
+    getLizardBootstrap
+} from '../reducers';
 import { SwitchDataType } from '../interface';
-import { getUrlParams, getSearch, getOrganisation, getObservationType, getDataset, getDataType, newURL, getUUID } from '../utils/getUrlParams';
+import {
+    getUrlParams,
+    getSearch,
+    getOrganisation,
+    getObservationType,
+    getDataset,
+    getDataType,
+    newURL,
+    getUUID
+} from '../utils/getUrlParams';
 import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
@@ -72,6 +93,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     const currentDataType = useSelector(getCurrentDataType);
     const filters = useSelector(getFilters);
     const selectedItem = useSelector(getSelectedItem);
+    const userId = useSelector(getLizardBootstrap).user.id;
 
     const [showProfileDropdown, setShowProfileDropdown] = useState(false);
     const [showInboxDropdown, setShowInboxDropdown] = useState(false);
@@ -136,6 +158,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         fetchMonitoringNetworks,
         fetchRasters,
         fetchWMSLayers,
+        fetchUserOrganisations,
     } = props;
 
     // useMountEffect to call useEffect only once when component first mounted
@@ -163,6 +186,12 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         props.fetchOrganisations();
         props.fetchDatasets();
     });
+
+    useEffect(() => {
+        if (userId) {
+            fetchUserOrganisations(userId);
+        };
+    }, [userId, fetchUserOrganisations])
 
     // useMountEffect to update Redux store with URL params
     useMountEffect(() => {
@@ -375,6 +404,7 @@ const mapDispatchToProps = (dispatch: any) => ({
     updateBasketWithWMS: (wmsLayers: string[]) => updateBasketWithWMS(wmsLayers, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
+    fetchUserOrganisations: (userId: number) => dispatch(fetchUserOrganisations(userId)),
     fetchDatasets: () => fetchDatasets(dispatch),
     fetchWMSLayers: (
         page: number,
