@@ -187,11 +187,12 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         props.fetchDatasets();
     });
 
+    // useEffect to fetch list of organisations which the currently login user is a member of
     useEffect(() => {
         if (userId) {
             fetchUserOrganisations(userId);
         };
-    }, [userId, fetchUserOrganisations])
+    }, [userId, fetchUserOrganisations]);
 
     // useMountEffect to update Redux store with URL params
     useMountEffect(() => {

@@ -3,27 +3,36 @@
 // the user has the 'admin' role in the organisation of the layer or
 // the user is the supplier of the layer
 // and has the 'supplier' role in the organisation of the layer.
-export const isAuthorizedToManageLayer = (layer, userName, allOrganisations) => {
 
-    let layerOrganisationWithRolesOfUser = allOrganisations.find(function(organisation) {
+import { Organisation, Raster, WMS } from "../interface";
+
+export const isAuthorizedToManageLayer = (
+    layer: Raster | WMS,
+    userName: string | null,
+    organisations: Organisation[]
+) => {
+    if (!userName) return false;
+
+    const layerOrganisationWithRolesOfUser = organisations.find(organisation => {
         return organisation.name === layer.organisation.name;
     });
 
     if (!layerOrganisationWithRolesOfUser) {
         return false;
-    }
+    };
     if ( !layerOrganisationWithRolesOfUser.roles) {
         return false;
-    }
+    };
 
     // Check if user is "admin" in the organisation of the layer or
     // "supplier" in the organisation of the layer and supplier of the layer.
     if (layerOrganisationWithRolesOfUser.roles.includes("admin")) {
         return true;
-    } else if (layerOrganisationWithRolesOfUser.roles.includes("supplier") &&
-            layer["supplier"] === userName) {
+    } else if (
+        layerOrganisationWithRolesOfUser.roles.includes("supplier") &&
+        layer["supplier"] === userName
+    ) {
         return true;
-    }
-
+    };
     return false;
-}
+};
