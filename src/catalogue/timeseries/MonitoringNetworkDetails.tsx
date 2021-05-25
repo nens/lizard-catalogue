@@ -21,7 +21,7 @@ const addRefToUnit = (observationType: ObservationType) => {
     return observationType.reference_frame ? observationType.unit + observationType.reference_frame : observationType.unit;
 };
 
-const MonitoringNetworkDetails: React.FC = () => {
+const MonitoringNetworkDetails = () => {
     const selectedItem = useSelector(getSelectedItem);
     const allMonitoringNetworks = useSelector(getAllMonitoringNetworks);
     const monitoringNetwork = allMonitoringNetworks[selectedItem] as MonitoringNetwork;
