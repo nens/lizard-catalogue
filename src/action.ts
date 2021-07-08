@@ -227,15 +227,13 @@ const timeseriesReceived = (timeseriesList: TimeSeries[]) => ({
     timeseriesList
 });
 
-export const fetchTimeseries = (uuid: string) => (dispatch) => {
+export const fetchTimeseries = (uuid: string) => async (dispatch) => {
     dispatch(timeseriesRequested());
 
-    request
-        .get(`/api/v4/monitoringnetworks/${uuid}/timeseries/?page_size=10000`)
-        .then(response => {
-            dispatch(timeseriesReceived(response.body.results))
-        })
-        .catch(console.error)
+    const timeseries = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/timeseries/?page_size=100`, []);
+    if (!timeseries) return;
+
+    dispatch(timeseriesReceived(timeseries));
 };
 
 export const removeTimeseries = () => (dispatch) => {
@@ -258,15 +256,13 @@ const observationTypesReceived = (observationTypeList: ObservationType[], count:
     count
 });
 
-export const fetchMonitoringNetworkObservationTypes = (uuid: string) => (dispatch) => {
+export const fetchMonitoringNetworkObservationTypes = (uuid: string) => async (dispatch) => {
     dispatch(observationTypesRequested());
 
-    request
-        .get(`/api/v4/monitoringnetworks/${uuid}/observationtypes/?page_size=10000`)
-        .then(response => {
-            dispatch(observationTypesReceived(response.body.results, response.body.count))
-        })
-        .catch(console.error)
+    const observationTypes = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/observationtypes/?page_size=100`, []);
+    if (!observationTypes) return;
+
+    dispatch(observationTypesReceived(observationTypes, observationTypes.length));
 };
 
 //MARK: Locations for selected monitoring network
@@ -282,14 +278,13 @@ const locationsReceived = (locationsList: Location[]) => ({
     locationsList
 });
 
-export const fetchLocations = (uuid: string) => (dispatch) => {
+export const fetchLocations = (uuid: string) => async (dispatch) => {
     dispatch(locationsRequested());
-    request
-        .get(`/api/v4/monitoringnetworks/${uuid}/locations/?page_size=10000`)
-        .then(response => {
-            dispatch(locationsReceived(response.body.results))
-        })
-        .catch(console.error)
+
+    const locations = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/locations/?page_size=100`, []);
+    if (!locations) return;
+
+    dispatch(locationsReceived(locations));
 };
 
 //MARK: Select Item to view (Raster or WMS layer)
@@ -308,28 +303,24 @@ export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
 export const USER_ORGANISATIONS_FETCHED = 'USER_ORGANISATIONS_FETCHED';
 export const DATASETS_FETCHED = 'DATASETS_FETCHED';
 
-export const fetchObservationTypes = (dispatch): void => {
-    request
-        .get(`/api/v4/observationtypes/?page_size=0`)
-        .then(response => {
-            dispatch({
-                type: OBSERVATION_TYPES_FETCHED,
-                observationTypes: response.body
-            });
-        })
-        .catch(console.error)
+export const fetchObservationTypes = async (dispatch) => {
+    const observationTypes = await paginatedFetchHelper(`/api/v4/observationtypes/?page_size=100`, []);
+    if (!observationTypes) return;
+
+    dispatch({
+        type: OBSERVATION_TYPES_FETCHED,
+        observationTypes
+    });
 };
 
-export const fetchOrganisations = (dispatch): void => {
-    request
-        .get(`/api/v4/organisations/?page_size=0`)
-        .then(response => {
-            dispatch({
-                type: ORGANISATIONS_FETCHED,
-                organisations: response.body
-            });
-        })
-        .catch(console.error)
+export const fetchOrganisations = async (dispatch) => {
+    const organisations = await paginatedFetchHelper(`/api/v4/organisations/?page_size=100`, []);
+    if (!organisations) return;
+
+    dispatch({
+        type: ORGANISATIONS_FETCHED,
+        organisations
+    });
 };
 
 export const fetchUserOrganisations = (userId: number) => async dispatch => {
@@ -342,16 +333,14 @@ export const fetchUserOrganisations = (userId: number) => async dispatch => {
     });
 };
 
-export const fetchDatasets = (dispatch): void => {
-    request
-        .get(`/api/v4/datasets/?page_size=0`)
-        .then(response => {
-            dispatch({
-                type: DATASETS_FETCHED,
-                datasets: response.body
-            });
-        })
-        .catch(console.error)
+export const fetchDatasets = async (dispatch) => {
+    const datasets = await paginatedFetchHelper(`/api/v4/datasets/`, []);
+    if (!datasets) return;
+
+    dispatch({
+        type: DATASETS_FETCHED,
+        datasets
+    });
 };
 
 //MARK: Filters
@@ -482,16 +471,13 @@ export const REMOVE_MESSAGE = 'REMOVE_MESSAGE';
 export const DOWNLOAD_FILE = 'DOWNLOAD_FILE';
 
 export const requestInbox = (dispatch) => {
-    setInterval(() => {
-        request
-            .get(`/api/v3/inbox/?page_size=10000000`)
-            .then(response => {
-                dispatch({
-                    type: REQUEST_INBOX,
-                    messages: response.body.results
-                });
-            })
-            .catch(console.error)
+    setInterval(async () => {
+        const messages = await paginatedFetchHelper(`/api/v3/inbox/`, []);
+        if (!messages) return;
+        dispatch({
+            type: REQUEST_INBOX,
+            messages
+        });
     }, 5000);
 };
 
@@ -690,19 +676,17 @@ export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch:
     
 };
 
-export const requestProjections = (rasterUuid: string) => (dispatch: Dispatch<SetFetchingStateProjections | ReceivedProjections | SetFetchingStateProjections>) => {
+export const requestProjections = (rasterUuid: string) => async (dispatch: Dispatch<SetFetchingStateProjections | ReceivedProjections | SetFetchingStateProjections>) => {
     dispatch(setFetchingStateProjections("SENT"));
 
-    const requestUrl = `/api/v4/rasters/${rasterUuid}/projections/?page_size=100000`;
-    request.get(requestUrl)
-    .then(response => {
-        dispatch(receivedProjections(response.body.results));
-    })
-    .catch(error=>{
-        console.error(error);
-        dispatch(setFetchingStateProjections("FAILED"));
-    })
+    const projections = await paginatedFetchHelper(`/api/v4/rasters/${rasterUuid}/projections/?page_size=100`, []);
 
+    if (!projections) {
+        dispatch(setFetchingStateProjections("FAILED"));
+        return;
+    };
+
+    dispatch(receivedProjections(projections));
 };
 
 // MARK: Timeseries export
