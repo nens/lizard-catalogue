@@ -1,5 +1,5 @@
 import request from 'superagent';
-import { Dispatch,} from 'redux';
+import { Dispatch } from 'redux';
 import store  from './store';
 import {
     RasterListObject,
@@ -37,7 +37,8 @@ import {
     getExportSelectedGridCellIds,
     getDateTimeStart,
 } from './reducers';
-import {areGridCelIdsEqual} from './utils/rasterExportUtils'
+import { areGridCelIdsEqual } from './utils/rasterExportUtils'
+import { paginatedFetchHelper } from './utils/paginatedFetchHelper';
 
 
 
@@ -331,16 +332,14 @@ export const fetchOrganisations = (dispatch): void => {
         .catch(console.error)
 };
 
-export const fetchUserOrganisations = (userId: number) => dispatch => {
-    request
-        .get(`/api/v4/users/${userId}/organisations/?page_size=0`)
-        .then(response => {
-            dispatch({
-                type: USER_ORGANISATIONS_FETCHED,
-                organisations: response.body
-            });
-        })
-        .catch(console.error)
+export const fetchUserOrganisations = (userId: number) => async dispatch => {
+    const userOrganisations = await paginatedFetchHelper(`/api/v4/users/${userId}/organisations/`, []);
+    if (!userOrganisations) return;
+
+    dispatch({
+        type: USER_ORGANISATIONS_FETCHED,
+        organisations: userOrganisations
+    });
 };
 
 export const fetchDatasets = (dispatch): void => {
