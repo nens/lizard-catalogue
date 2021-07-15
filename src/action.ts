@@ -231,7 +231,11 @@ export const fetchTimeseries = (uuid: string) => async (dispatch) => {
     dispatch(timeseriesRequested());
 
     const timeseries = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/timeseries/?page_size=1000`, []);
-    if (!timeseries) return;
+
+    if (!timeseries) {
+        dispatch(addNotification(`Failed to load available timeseries for monitoring network ${uuid}.`));
+        return;
+    };
 
     dispatch(timeseriesReceived(timeseries));
 };
@@ -260,7 +264,11 @@ export const fetchMonitoringNetworkObservationTypes = (uuid: string) => async (d
     dispatch(observationTypesRequested());
 
     const observationTypes = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/observationtypes/?page_size=10000`, []);
-    if (!observationTypes) return;
+
+    if (!observationTypes) {
+        dispatch(addNotification(`Failed to load available observation types for monitoring network ${uuid}.`));
+        return;
+    };
 
     dispatch(observationTypesReceived(observationTypes, observationTypes.length));
 };
@@ -282,7 +290,11 @@ export const fetchLocations = (uuid: string) => async (dispatch) => {
     dispatch(locationsRequested());
 
     const locations = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/locations/?page_size=1000`, []);
-    if (!locations) return;
+
+    if (!locations) {
+        dispatch(addNotification(`Failed to load available locations for monitoring network ${uuid}.`));
+        return;
+    };
 
     dispatch(locationsReceived(locations));
 };
@@ -305,7 +317,11 @@ export const DATASETS_FETCHED = 'DATASETS_FETCHED';
 
 export const fetchObservationTypes = async (dispatch) => {
     const observationTypes = await paginatedFetchHelper(`/api/v4/observationtypes/?page_size=10000`, []);
-    if (!observationTypes) return;
+
+    if (!observationTypes) {
+        dispatch(addNotification('Failed to load available observation types.'));
+        return;
+    };
 
     dispatch({
         type: OBSERVATION_TYPES_FETCHED,
@@ -315,7 +331,11 @@ export const fetchObservationTypes = async (dispatch) => {
 
 export const fetchOrganisations = async (dispatch) => {
     const organisations = await paginatedFetchHelper(`/api/v4/organisations/?page_size=1000`, []);
-    if (!organisations) return;
+
+    if (!organisations) {
+        dispatch(addNotification('Failed to load available organisations.'));
+        return;
+    };
 
     dispatch({
         type: ORGANISATIONS_FETCHED,
@@ -325,7 +345,11 @@ export const fetchOrganisations = async (dispatch) => {
 
 export const fetchUserOrganisations = (userId: number) => async dispatch => {
     const userOrganisations = await paginatedFetchHelper(`/api/v4/users/${userId}/organisations/`, []);
-    if (!userOrganisations) return;
+
+    if (!userOrganisations) {
+        dispatch(addNotification('Failed to load available organisations of current user.'));
+        return;
+    };
 
     dispatch({
         type: USER_ORGANISATIONS_FETCHED,
@@ -335,7 +359,11 @@ export const fetchUserOrganisations = (userId: number) => async dispatch => {
 
 export const fetchDatasets = async (dispatch) => {
     const datasets = await paginatedFetchHelper(`/api/v4/datasets/`, []);
-    if (!datasets) return;
+
+    if (!datasets) {
+        dispatch(addNotification('Failed to load available datasets.'));
+        return;
+    };
 
     dispatch({
         type: DATASETS_FETCHED,
@@ -676,12 +704,13 @@ export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch:
     
 };
 
-export const requestProjections = (rasterUuid: string) => async (dispatch: Dispatch<SetFetchingStateProjections | ReceivedProjections | SetFetchingStateProjections>) => {
+export const requestProjections = (rasterUuid: string) => async (dispatch) => {
     dispatch(setFetchingStateProjections("SENT"));
 
     const projections = await paginatedFetchHelper(`/api/v4/rasters/${rasterUuid}/projections/?page_size=100`, []);
 
     if (!projections) {
+        dispatch(addNotification('Failed to load available projections.'));
         dispatch(setFetchingStateProjections("FAILED"));
         return;
     };
@@ -719,7 +748,7 @@ export const dismissNotification = () => ({
     type: DISMISS_NOTIFICATION
 });
 
-export const addNotification = (message: string, timeout: number) => (dispatch) => {
+export const addNotification = (message: string, timeout?: number) => (dispatch) => {
     if (timeout) {
         setTimeout(() => {
             dispatch(dismissNotification());
