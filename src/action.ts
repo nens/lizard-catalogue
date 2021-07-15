@@ -230,7 +230,7 @@ const timeseriesReceived = (timeseriesList: TimeSeries[]) => ({
 export const fetchTimeseries = (uuid: string) => async (dispatch) => {
     dispatch(timeseriesRequested());
 
-    const timeseries = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/timeseries/?page_size=100`, []);
+    const timeseries = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/timeseries/?page_size=1000`, []);
     if (!timeseries) return;
 
     dispatch(timeseriesReceived(timeseries));
@@ -259,7 +259,7 @@ const observationTypesReceived = (observationTypeList: ObservationType[], count:
 export const fetchMonitoringNetworkObservationTypes = (uuid: string) => async (dispatch) => {
     dispatch(observationTypesRequested());
 
-    const observationTypes = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/observationtypes/?page_size=100`, []);
+    const observationTypes = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/observationtypes/?page_size=10000`, []);
     if (!observationTypes) return;
 
     dispatch(observationTypesReceived(observationTypes, observationTypes.length));
@@ -281,7 +281,7 @@ const locationsReceived = (locationsList: Location[]) => ({
 export const fetchLocations = (uuid: string) => async (dispatch) => {
     dispatch(locationsRequested());
 
-    const locations = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/locations/?page_size=100`, []);
+    const locations = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/locations/?page_size=1000`, []);
     if (!locations) return;
 
     dispatch(locationsReceived(locations));
@@ -304,7 +304,7 @@ export const USER_ORGANISATIONS_FETCHED = 'USER_ORGANISATIONS_FETCHED';
 export const DATASETS_FETCHED = 'DATASETS_FETCHED';
 
 export const fetchObservationTypes = async (dispatch) => {
-    const observationTypes = await paginatedFetchHelper(`/api/v4/observationtypes/?page_size=100`, []);
+    const observationTypes = await paginatedFetchHelper(`/api/v4/observationtypes/?page_size=10000`, []);
     if (!observationTypes) return;
 
     dispatch({
@@ -314,7 +314,7 @@ export const fetchObservationTypes = async (dispatch) => {
 };
 
 export const fetchOrganisations = async (dispatch) => {
-    const organisations = await paginatedFetchHelper(`/api/v4/organisations/?page_size=100`, []);
+    const organisations = await paginatedFetchHelper(`/api/v4/organisations/?page_size=1000`, []);
     if (!organisations) return;
 
     dispatch({
