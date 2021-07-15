@@ -230,7 +230,7 @@ const timeseriesReceived = (timeseriesList: TimeSeries[]) => ({
 export const fetchTimeseries = (uuid: string) => async (dispatch) => {
     dispatch(timeseriesRequested());
 
-    const timeseries = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/timeseries/?page_size=1000`, []);
+    const timeseries = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/timeseries/?page_size=100`, []);
 
     if (!timeseries) {
         dispatch(addNotification(`Failed to load available timeseries for monitoring network ${uuid}.`));
