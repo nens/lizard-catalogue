@@ -16,6 +16,7 @@ import { fetchTimeseries, removeTimeseries } from './../../action';
 import { openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
 import { timeValidator } from '../../utils/timeValidator';
 import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
+import { paginatedFetchHelper } from '../../utils/paginatedFetchHelper';
 import { Location, TimeSeries } from '../../interface';
 import { TimeseriesPeriodFilter } from './TimeseriesPeriodFilter';
 import TimeSeriesExportModal from './TimeseriesExportModal';
@@ -92,7 +93,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
             });
 
             // Building queries based on filter inputs
-            const params: string[] = [`page_size=10000`];
+            const params: string[] = [`page_size=100`];
 
             if (finalSearchInput) params.push(`name__icontains=${encodeURIComponent(finalSearchInput)}`);
             if (selectedObservationTypeCode) params.push(`timeseries__observation_type__code=${encodeURIComponent(selectedObservationTypeCode)}`);
@@ -104,11 +105,10 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
             const queries = params.join('&');
 
-            // Fetching action
-            fetch(`/api/v4/monitoringnetworks/${selectedItem}/locations/?${queries}`)
-                .then(response => response.json())
-                .then(data => {
-                    const locationList = data.results as Location[];
+            // Fetching action using the paginatedFetchHelper
+            paginatedFetchHelper(`/api/v4/monitoringnetworks/${selectedItem}/locations/?${queries}`, []).then(
+                (locationList: Location[]) => {
+                    if (!locationList) return;
                     const filteredLocations = {} as {[uuid: string]: Location};
                     locationList.forEach(location => {
                         filteredLocations[location.uuid] = {
@@ -123,8 +123,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         spatialBounds: getSpatialBounds(locationList),
                         centerPoint: locationList.length && !getSpatialBounds(locationList) && getGeometry(locationList[0]) ? getGeometry(locationList[0])!.coordinates : null,
                     });
-                })
-                .catch(console.error);
+                }
+            );
         } else {
             // Remove state of filtered locations
             setFilteredLocationObject(null);
