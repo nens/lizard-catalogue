@@ -38,7 +38,7 @@ import {
     getDateTimeStart,
 } from './reducers';
 import { areGridCelIdsEqual } from './utils/rasterExportUtils'
-import { paginatedFetchHelper } from './utils/paginatedFetchHelper';
+import { recursiveFetchFunction } from './hooks';
 
 
 
@@ -230,7 +230,7 @@ const timeseriesReceived = (timeseriesList: TimeSeries[]) => ({
 export const fetchTimeseries = (uuid: string) => async (dispatch) => {
     dispatch(timeseriesRequested());
 
-    const timeseries = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/timeseries/?page_size=100`, []);
+    const timeseries = await recursiveFetchFunction(`/api/v4/monitoringnetworks/${uuid}/timeseries/`, { page_size: 100 });
 
     if (!timeseries) {
         dispatch(addNotification(`Failed to load available timeseries for monitoring network ${uuid}.`));
@@ -263,7 +263,7 @@ const observationTypesReceived = (observationTypeList: ObservationType[], count:
 export const fetchMonitoringNetworkObservationTypes = (uuid: string) => async (dispatch) => {
     dispatch(observationTypesRequested());
 
-    const observationTypes = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/observationtypes/?page_size=10000`, []);
+    const observationTypes = await recursiveFetchFunction(`/api/v4/monitoringnetworks/${uuid}/observationtypes/`, { page_size: 10000 });
 
     if (!observationTypes) {
         dispatch(addNotification(`Failed to load available observation types for monitoring network ${uuid}.`));
@@ -289,7 +289,7 @@ const locationsReceived = (locationsList: Location[]) => ({
 export const fetchLocations = (uuid: string) => async (dispatch) => {
     dispatch(locationsRequested());
 
-    const locations = await paginatedFetchHelper(`/api/v4/monitoringnetworks/${uuid}/locations/?page_size=1000`, []);
+    const locations = await recursiveFetchFunction(`/api/v4/monitoringnetworks/${uuid}/locations/`, { page_size: 1000 });
 
     if (!locations) {
         dispatch(addNotification(`Failed to load available locations for monitoring network ${uuid}.`));
@@ -316,7 +316,7 @@ export const USER_ORGANISATIONS_FETCHED = 'USER_ORGANISATIONS_FETCHED';
 export const DATASETS_FETCHED = 'DATASETS_FETCHED';
 
 export const fetchObservationTypes = async (dispatch) => {
-    const observationTypes = await paginatedFetchHelper(`/api/v4/observationtypes/?page_size=10000`, []);
+    const observationTypes = await recursiveFetchFunction(`/api/v4/observationtypes/`, { page_size: 10000 });
 
     if (!observationTypes) {
         dispatch(addNotification('Failed to load available observation types.'));
@@ -330,7 +330,7 @@ export const fetchObservationTypes = async (dispatch) => {
 };
 
 export const fetchOrganisations = async (dispatch) => {
-    const organisations = await paginatedFetchHelper(`/api/v4/organisations/?page_size=1000`, []);
+    const organisations = await recursiveFetchFunction(`/api/v4/organisations/`, { page_size: 1000 });
 
     if (!organisations) {
         dispatch(addNotification('Failed to load available organisations.'));
@@ -344,7 +344,7 @@ export const fetchOrganisations = async (dispatch) => {
 };
 
 export const fetchUserOrganisations = (userId: number) => async dispatch => {
-    const userOrganisations = await paginatedFetchHelper(`/api/v4/users/${userId}/organisations/`, []);
+    const userOrganisations = await recursiveFetchFunction(`/api/v4/users/${userId}/organisations/`, {});
 
     if (!userOrganisations) {
         dispatch(addNotification('Failed to load available organisations of current user.'));
@@ -358,7 +358,7 @@ export const fetchUserOrganisations = (userId: number) => async dispatch => {
 };
 
 export const fetchDatasets = async (dispatch) => {
-    const datasets = await paginatedFetchHelper(`/api/v4/datasets/`, []);
+    const datasets = await recursiveFetchFunction(`/api/v4/datasets/`, {});
 
     if (!datasets) {
         dispatch(addNotification('Failed to load available datasets.'));
@@ -500,7 +500,7 @@ export const DOWNLOAD_FILE = 'DOWNLOAD_FILE';
 
 export const requestInbox = (dispatch) => {
     setInterval(async () => {
-        const messages = await paginatedFetchHelper(`/api/v3/inbox/`, []);
+        const messages = await recursiveFetchFunction(`/api/v3/inbox/`, {});
         if (!messages) return;
         dispatch({
             type: REQUEST_INBOX,
@@ -707,7 +707,7 @@ export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch:
 export const requestProjections = (rasterUuid: string) => async (dispatch) => {
     dispatch(setFetchingStateProjections("SENT"));
 
-    const projections = await paginatedFetchHelper(`/api/v4/rasters/${rasterUuid}/projections/?page_size=100`, []);
+    const projections = await recursiveFetchFunction(`/api/v4/rasters/${rasterUuid}/projections/?page_size=100`, {});
 
     if (!projections) {
         dispatch(addNotification('Failed to load available projections.'));
