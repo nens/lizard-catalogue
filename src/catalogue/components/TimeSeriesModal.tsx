@@ -16,7 +16,7 @@ import { fetchTimeseries, removeTimeseries } from './../../action';
 import { openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
 import { timeValidator } from '../../utils/timeValidator';
 import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
-import { paginatedFetchHelper } from '../../utils/paginatedFetchHelper';
+import { recursiveFetchFunction } from '../../hooks';
 import { Location, TimeSeries } from '../../interface';
 import { TimeseriesPeriodFilter } from './TimeseriesPeriodFilter';
 import TimeSeriesExportModal from './TimeseriesExportModal';
@@ -106,7 +106,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
             const queries = params.join('&');
 
             // Fetching action using the paginatedFetchHelper
-            paginatedFetchHelper(`/api/v4/monitoringnetworks/${selectedItem}/locations/?${queries}`, []).then(
+            recursiveFetchFunction(`/api/v4/monitoringnetworks/${selectedItem}/locations/?${queries}`, {}).then(
                 (locationList: Location[]) => {
                     if (!locationList) return;
                     const filteredLocations = {} as {[uuid: string]: Location};
