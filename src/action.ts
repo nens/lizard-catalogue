@@ -234,7 +234,10 @@ export const fetchTimeseries = (uuid: string) => async (dispatch) => {
 
     if (!timeseries) {
         dispatch(addNotification(`Failed to load available timeseries for monitoring network ${uuid}.`));
-        return;
+        return {
+            status: 'Error',
+            errorMessage: `Failed to load available timeseries for monitoring network ${uuid}`
+        };
     };
 
     dispatch(timeseriesReceived(timeseries));

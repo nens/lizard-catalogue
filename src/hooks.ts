@@ -72,7 +72,9 @@ export async function basicFetchFunction(
       data: json.results
     };
   } else {
-    throw new FetchError(response, `Received status: ${response.status}`)
+    // throw new FetchError(response, `Received status: ${response.status}`)
+    console.error(`Received status: ${response.status}`, response);
+    return;
   }
 }
 
@@ -81,6 +83,9 @@ export async function recursiveFetchFunction (
     params: Params
 ) {
   const response = await basicFetchFunction(baseUrl, params);
+
+  if (!response) return;
+
   const results = response.data;
 
   if (response.nextUrl) {

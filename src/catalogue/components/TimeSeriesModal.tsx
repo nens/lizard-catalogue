@@ -41,7 +41,7 @@ interface filteredLocationObject {
 };
 
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
-    const { fetchTimeseries, removeTimeseries } = props;
+    const { fetchTimeseries, removeTimeseries, toggleTimeseriesModal } = props;
     const mapRef = useRef<Map>(null);
 
     const selectedItem = useSelector(getSelectedItem);
@@ -145,9 +145,13 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     // useEffect to fetch timeseries when component first mounted
     // and remove timeseries when component unmounts
     useEffect(() => {
-        fetchTimeseries(selectedItem);
+        fetchTimeseries(selectedItem).then(response => {
+            if (response && response.status === 'Error') {
+                toggleTimeseriesModal(); // close the modal if timeseries cannot be loaded
+            };
+        });
         return () => removeTimeseries();
-    }, [selectedItem, fetchTimeseries, removeTimeseries]);
+    }, [selectedItem, fetchTimeseries, removeTimeseries, toggleTimeseriesModal]);
 
     if (!timeseriesObject || timeseriesObject.isFetching) return (
         <div className="modal-main modal-timeseries modal-timeseries-loading">
