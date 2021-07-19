@@ -105,7 +105,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
             const queries = params.join('&');
 
-            // Fetching action using the paginatedFetchHelper
+            // Recursive fetch action for locations with search queries
             recursiveFetchFunction(`/api/v4/monitoringnetworks/${selectedItem}/locations/?${queries}`, {}).then(
                 (locationList: Location[]) => {
                     if (!locationList) return;
