@@ -236,7 +236,7 @@ export const fetchTimeseries = (uuid: string) => async (dispatch) => {
         dispatch(addNotification(`Failed to load available timeseries for monitoring network ${uuid}.`));
         return {
             status: 'Error',
-            errorMessage: `Failed to load available timeseries for monitoring network ${uuid}`
+            errorMessage: `Failed to load available timeseries for monitoring network ${uuid}.`
         };
     };
 
@@ -270,7 +270,10 @@ export const fetchMonitoringNetworkObservationTypes = (uuid: string) => async (d
 
     if (!observationTypes) {
         dispatch(addNotification(`Failed to load available observation types for monitoring network ${uuid}.`));
-        return;
+        return {
+            status: 'Error',
+            errorMessage: `Failed to load available observation types for monitoring network ${uuid}.`
+        };
     };
 
     dispatch(observationTypesReceived(observationTypes, observationTypes.length));
@@ -296,7 +299,10 @@ export const fetchLocations = (uuid: string) => async (dispatch) => {
 
     if (!locations) {
         dispatch(addNotification(`Failed to load available locations for monitoring network ${uuid}.`));
-        return;
+        return{
+            status: 'Error',
+            errorMessage: `Failed to load available locations for monitoring network ${uuid}.`
+        };
     };
 
     dispatch(locationsReceived(locations));
@@ -323,7 +329,10 @@ export const fetchObservationTypes = async (dispatch) => {
 
     if (!observationTypes) {
         dispatch(addNotification('Failed to load available observation types.'));
-        return;
+        return {
+            status: 'Error',
+            errorMessage: `Failed to load available observation types.`
+        };
     };
 
     dispatch({
@@ -337,7 +346,10 @@ export const fetchOrganisations = async (dispatch) => {
 
     if (!organisations) {
         dispatch(addNotification('Failed to load available organisations.'));
-        return;
+        return {
+            status: 'Error',
+            errorMessage: `Failed to load available organisations.`
+        };
     };
 
     dispatch({
@@ -351,7 +363,10 @@ export const fetchUserOrganisations = (userId: number) => async dispatch => {
 
     if (!userOrganisations) {
         dispatch(addNotification('Failed to load available organisations of current user.'));
-        return;
+        return {
+            status: 'Error',
+            errorMessage: `Failed to load available organisations of current user.`
+        };
     };
 
     dispatch({
@@ -365,7 +380,10 @@ export const fetchDatasets = async (dispatch) => {
 
     if (!datasets) {
         dispatch(addNotification('Failed to load available datasets.'));
-        return;
+        return {
+            status: 'Error',
+            errorMessage: `Failed to load available datasets.`
+        };
     };
 
     dispatch({

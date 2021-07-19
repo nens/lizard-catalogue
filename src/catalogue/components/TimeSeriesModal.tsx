@@ -147,7 +147,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     useEffect(() => {
         fetchTimeseries(selectedItem).then(response => {
             if (response && response.status === 'Error') {
-                toggleTimeseriesModal(); // close the modal if timeseries cannot be loaded
+                toggleTimeseriesModal(); // close the modal if timeseries failed to load
             };
         });
         return () => removeTimeseries();
