@@ -80,17 +80,15 @@ export async function basicFetchFunction(
 
 export async function recursiveFetchFunction (
     baseUrl: string,
-    params: Params
+    params: Params,
+    previousResults: any[] = []
 ) {
   const response = await basicFetchFunction(baseUrl, params);
-
   if (!response) return;
 
-  const results = response.data;
-
+  const results = previousResults.concat(response.data);
   if (response.nextUrl) {
-    return results.concat(await recursiveFetchFunction(response.nextUrl, {}))
+    return await recursiveFetchFunction(response.nextUrl, {}, results);
   };
-
   return results;
 };
