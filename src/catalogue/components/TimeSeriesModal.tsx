@@ -16,7 +16,7 @@ import { fetchTimeseries, removeTimeseries } from './../../action';
 import { openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
 import { timeValidator } from '../../utils/timeValidator';
 import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
-import { paginatedFetchHelper } from '../../utils/paginatedFetchHelper';
+import { recursiveFetchFunction } from '../../hooks';
 import { Location, TimeSeries } from '../../interface';
 import { TimeseriesPeriodFilter } from './TimeseriesPeriodFilter';
 import TimeSeriesExportModal from './TimeseriesExportModal';
@@ -41,7 +41,7 @@ interface filteredLocationObject {
 };
 
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
-    const { fetchTimeseries, removeTimeseries } = props;
+    const { fetchTimeseries, removeTimeseries, toggleTimeseriesModal } = props;
     const mapRef = useRef<Map>(null);
 
     const selectedItem = useSelector(getSelectedItem);
@@ -105,8 +105,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
             const queries = params.join('&');
 
-            // Fetching action using the paginatedFetchHelper
-            paginatedFetchHelper(`/api/v4/monitoringnetworks/${selectedItem}/locations/?${queries}`, []).then(
+            // Recursive fetch action for locations with search queries
+            recursiveFetchFunction(`/api/v4/monitoringnetworks/${selectedItem}/locations/?${queries}`, {}).then(
                 (locationList: Location[]) => {
                     if (!locationList) return;
                     const filteredLocations = {} as {[uuid: string]: Location};
@@ -145,9 +145,13 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     // useEffect to fetch timeseries when component first mounted
     // and remove timeseries when component unmounts
     useEffect(() => {
-        fetchTimeseries(selectedItem);
+        fetchTimeseries(selectedItem).then(response => {
+            if (response && response.status === 'Error') {
+                toggleTimeseriesModal(); // close the modal if timeseries failed to load
+            };
+        });
         return () => removeTimeseries();
-    }, [selectedItem, fetchTimeseries, removeTimeseries]);
+    }, [selectedItem, fetchTimeseries, removeTimeseries, toggleTimeseriesModal]);
 
     if (!timeseriesObject || timeseriesObject.isFetching) return (
         <div className="modal-main modal-timeseries modal-timeseries-loading">
