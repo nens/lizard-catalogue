@@ -153,7 +153,7 @@ const MonitoringNetworkDetails = () => {
             {timeseriesModal && (
                 <div className="modal-background">
                     <TimeSeriesModal
-                        toggleTimeseriesModal={() => setTimeseriesModal(!timeseriesModal)}
+                        closeTimeseriesModal={() => setTimeseriesModal(false)}
                     />
                 </div>
             )}

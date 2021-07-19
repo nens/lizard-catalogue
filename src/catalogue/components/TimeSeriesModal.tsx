@@ -28,7 +28,7 @@ import '../styles/Buttons.css';
 import '../styles/Icons.css';
 
 interface MyProps {
-    toggleTimeseriesModal: () => void
+    closeTimeseriesModal: () => void
 };
 
 interface filteredLocationObject {
@@ -41,7 +41,7 @@ interface filteredLocationObject {
 };
 
 const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
-    const { fetchTimeseries, removeTimeseries, toggleTimeseriesModal } = props;
+    const { fetchTimeseries, removeTimeseries, closeTimeseriesModal } = props;
     const mapRef = useRef<Map>(null);
 
     const selectedItem = useSelector(getSelectedItem);
@@ -135,7 +135,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     useEffect(() => {
         const closeModalOnEsc = (e) => {
             if (e.key === 'Escape') {
-                props.toggleTimeseriesModal();
+                closeTimeseriesModal();
             };
         };
         if (!exportModal) window.addEventListener('keydown', closeModalOnEsc);
@@ -147,11 +147,14 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     useEffect(() => {
         fetchTimeseries(selectedItem).then(response => {
             if (response && response.status === 'Error') {
-                toggleTimeseriesModal(); // close the modal if timeseries failed to load
+                closeTimeseriesModal(); // close the modal if timeseries failed to load
             };
         });
         return () => removeTimeseries();
-    }, [selectedItem, fetchTimeseries, removeTimeseries, toggleTimeseriesModal]);
+        // closeTimeseriesModal is excluded from the dependency array
+        // as it caused the effect to be called multiple times
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedItem, fetchTimeseries, removeTimeseries]);
 
     if (!timeseriesObject || timeseriesObject.isFetching) return (
         <div className="modal-main modal-timeseries modal-timeseries-loading">
@@ -233,7 +236,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
         <div className="modal-main modal-timeseries">
             <div className="modal-header">
                 <span>Select Time Series</span>
-                <button onClick={props.toggleTimeseriesModal}>&times;</button>
+                <button onClick={closeTimeseriesModal}>&times;</button>
             </div>
             <div className="timeseries">
                 <div className="timeseries-filter">
