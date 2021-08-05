@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
-import { ObservationType, Organisation, Dataset } from '../../interface';
+import { ObservationType, Organisation, Layercollection } from '../../interface';
 import SearchBar from './SearchBar';
 import './../styles/FilterOption.css';
 
 interface MyProps {
-    filterOption: "observationType" | "organisation" | "dataset",
-    listOfItems: (ObservationType | Organisation | Dataset)[],
+    filterOption: "observationType" | "organisation" | "layercollection",
+    listOfItems: (ObservationType | Organisation | Layercollection)[],
     filterValue: string,
     selectItem: (value: string) => void,
     removeItem: () => void,
 };
 
 // Helper function to get input value
-const getItemValue = (item: ObservationType | Organisation | Dataset, filterOption: MyProps['filterOption']) => {
+const getItemValue = (item: ObservationType | Organisation | Layercollection, filterOption: MyProps['filterOption']) => {
     if (filterOption === "observationType") {
         return (item as ObservationType).parameter;
     } else if (filterOption === "organisation") {
         return (item as Organisation).name;
-    } else { // filterOption === "dataset"
-        return (item as Dataset).slug;
+    } else { // filterOption === "layercollection"
+        return (item as Layercollection).slug;
     };
 };
 
@@ -44,8 +44,8 @@ const FilterOption: React.FC<MyProps> = (props) => {
             return (item as ObservationType).parameter.toLowerCase().includes(searchInput.toLowerCase());
         } else if (filterOption === "organisation") {
             return (item as Organisation).name.toLowerCase().includes(searchInput.toLowerCase());
-        } else { // filterOption === "dataset"
-            return (item as Dataset).slug.toLowerCase().includes(searchInput.toLowerCase());
+        } else { // filterOption === "layercollection"
+            return (item as Layercollection).slug.toLowerCase().includes(searchInput.toLowerCase());
         };
     });
 
@@ -54,8 +54,8 @@ const FilterOption: React.FC<MyProps> = (props) => {
         title = "Observation Type";
     } else if (filterOption === "organisation") {
         title = "Organisation (owner)";
-    } else { // filterOption = "dataset"
-        title = "Dataset";
+    } else { // filterOption = "layercollection"
+        title = "Layer Collection";
     };
 
     return (

@@ -4,7 +4,7 @@ import { MyStore, getRaster, getOrganisations, getLizardBootstrap, getSelectedIt
 import { Raster, LatLng } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
-import { openRasterInAPI, openRasterInLizard, getDatasetGetCapabilitesURL, getRasterGetCapabilitesURL } from '../../utils/url';
+import { openRasterInAPI, openRasterInLizard, getLayercollectionGetCapabilitesURL, getRasterGetCapabilitesURL } from '../../utils/url';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import Export from '../components/Export';
 import manageIcon from '../../images/manage.svg';
@@ -35,15 +35,15 @@ const RasterDetails = (props: MyProps) => {
         return () => setAuthorizedToManageLayer(false);
     }, [raster, user, organisations]);
 
-    const selectedDataset = (raster: Raster) => {
-        const { dataset } = props.filters;
-        const selectedDataset = dataset && raster.datasets.find(dataSet => dataSet.slug === dataset);
-        return (dataset && selectedDataset) || null;
+    const selectedLayercollection = (raster: Raster) => {
+        const { layercollection } = props.filters;
+        const selectedLayercollection = layercollection && raster.layer_collections.find(layercollectionParameter => layercollectionParameter.slug === layercollection);
+        return (layercollection && selectedLayercollection) || null;
     };
 
     //If no raster is selected, display a text
     if (!raster) return <div className="details details-loading">Please select a raster</div>;
-    const dataset = selectedDataset(raster);
+    const layercollection = selectedLayercollection(raster);
 
     //Set the Map with bounds coming from spatial_bounds of the Raster
     const rasterBounds = getBounds(raster);
@@ -116,10 +116,10 @@ const RasterDetails = (props: MyProps) => {
                 <span className="details-title">Organisation</span>
                 <span>{raster.organisation && raster.organisation.name}</span>
             </div>
-            {dataset ? (
+            {layercollection ? (
                 <div className="details-info">
-                    <span className="details-title">Dataset</span>
-                    <span>{dataset && dataset.slug}</span>
+                    <span className="details-title">Layer-collection</span>
+                    <span>{layercollection && layercollection.slug}</span>
                 </div>
             ) : null}
             <div className="details-capabilities">
@@ -144,22 +144,22 @@ const RasterDetails = (props: MyProps) => {
                         </button>
                     </div>
                 </div>
-                {dataset ? (
+                {layercollection ? (
                     <div>
-                        For this complete dataset:
+                        For this complete layercollection:
                         <div className="details__url-field">
                             <input
                                 type="text"
                                 className="details__get-capabilities-url"
-                                title={getDatasetGetCapabilitesURL(dataset)}
-                                value={getDatasetGetCapabilitesURL(dataset)}
+                                title={getLayercollectionGetCapabilitesURL(layercollection)}
+                                value={getLayercollectionGetCapabilitesURL(layercollection)}
                                 spellCheck={false}
                                 readOnly={true}
                             />
                             <button
                                 className="details__button-copy"
                                 title="Copy link"
-                                onClick={() => navigator.clipboard.writeText(getDatasetGetCapabilitesURL(dataset))}
+                                onClick={() => navigator.clipboard.writeText(getLayercollectionGetCapabilitesURL(layercollection))}
                             >
                                 Copy link
                             </button>

@@ -87,7 +87,7 @@ const rastersFetched = (rasterListObject: RasterListObject) => ({
     payload: rasterListObject
 });
 
-export const fetchRasters = (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, ordering: string, dispatch): void => {
+export const fetchRasters = (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, layercollectionSlug: string, ordering: string, dispatch): void => {
     dispatch(rastersRequested());
 
     const params: string[] = [];
@@ -95,7 +95,7 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
     if (page) params.push(`page=${page}`);
     if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
     if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
-    if (datasetSlug) params.push(`datasets__slug=${encodeURIComponent(datasetSlug)}`);
+    if (layercollectionSlug) params.push(`layer_collections__slug=${encodeURIComponent(layercollectionSlug)}`);
     if (observationTypeParameter) params.push(`observation_type__parameter__icontains=${encodeURIComponent(observationTypeParameter)}`);
     if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
 
@@ -133,7 +133,7 @@ const wmsLayersReceived = (wmsObject: WMSObject) => ({
     payload: wmsObject
 });
 
-export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, datasetSlug: string, ordering: string, dispatch): void => {
+export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, layercollectionSlug: string, ordering: string, dispatch): void => {
     dispatch(wmsRequested());
 
     const params: string[] = [];
@@ -141,7 +141,7 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
     if (page) params.push(`page=${page}`);
     if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
     if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
-    if (datasetSlug) params.push(`datasets__slug=${encodeURIComponent(datasetSlug)}`);
+    if (layercollectionSlug) params.push(`layer_collections__slug=${encodeURIComponent(layercollectionSlug)}`);
     if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
 
     const queries = params.join('&');
@@ -322,7 +322,7 @@ export const selectItem = (uuid: string, dispatch): void => {
 export const OBSERVATION_TYPES_FETCHED = 'OBSERVATION_TYPES_FETCHED';
 export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
 export const USER_ORGANISATIONS_FETCHED = 'USER_ORGANISATIONS_FETCHED';
-export const DATASETS_FETCHED = 'DATASETS_FETCHED';
+export const LAYERCOLLECTIONS_FETCHED = 'LAYERCOLLECTIONS_FETCHED';
 
 export const fetchObservationTypes = async (dispatch) => {
     const observationTypes = await recursiveFetchFunction(`/api/v4/observationtypes/`, { page_size: 10000 });
@@ -375,30 +375,30 @@ export const fetchUserOrganisations = (userId: number) => async dispatch => {
     });
 };
 
-export const fetchDatasets = async (dispatch) => {
-    const datasets = await recursiveFetchFunction(`/api/v4/datasets/`, {});
+export const fetchLayercollections = async (dispatch) => {
+    const layercollections = await recursiveFetchFunction(`/api/v4/layercollections/`, {});
 
-    if (!datasets) {
-        dispatch(addNotification('Failed to load available datasets.'));
+    if (!layercollections) {
+        dispatch(addNotification('Failed to load available layercollections.'));
         return {
             status: 'Error',
-            errorMessage: `Failed to load available datasets.`
+            errorMessage: `Failed to load available layercollections.`
         };
     };
 
     dispatch({
-        type: DATASETS_FETCHED,
-        datasets
+        type: LAYERCOLLECTIONS_FETCHED,
+        layercollections
     });
 };
 
 //MARK: Filters
 export const SELECT_ORGANISATION = 'SELECT_ORGANISATION';
-export const SELECT_DATASET = 'SELECT_DATASET';
+export const SELECT_LAYERCOLLECTION = 'SELECT_LAYERCOLLECTION';
 export const SELECT_OBSERVATIONTYPE = 'SELECT_OBSERVATIONTYPE';
 export const UPDATE_SEARCH = 'UPDATE_SEARCH';
 export const REMOVE_ORGANISATION = 'REMOVE_ORGANISATION';
-export const REMOVE_DATASET = 'REMOVE_DATASET';
+export const REMOVE_LAYERCOLLECTION = 'REMOVE_LAYERCOLLECTION';
 export const REMOVE_OBSERVATIONTYPE = 'REMOVE_OBSERVATIONTYPE';
 export const REMOVE_SEARCH = 'REMOVE_SEARCH';
 export const UPDATE_ORDER = 'UPDATE_ORDER';
@@ -417,16 +417,16 @@ export const removeOrganisation = (dispatch) => {
     });
 };
 
-export const selectDataset = (dispatch, dataset: string) => {
+export const selectLayercollection = (dispatch, layercollection: string) => {
     dispatch({
-        type: SELECT_DATASET,
-        dataset
+        type: SELECT_LAYERCOLLECTION,
+        layercollection
     });
 };
 
-export const removeDataset = (dispatch) => {
+export const removeLayercollection = (dispatch) => {
     dispatch({
-        type: REMOVE_DATASET
+        type: REMOVE_LAYERCOLLECTION
     });
 };
 

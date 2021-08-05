@@ -46,7 +46,7 @@ export interface Raster {
     name: string,
     organisation: Organisation,
     observation_type: ObservationType,
-    datasets: Dataset[],
+    layer_collections: Layercollection[],
     description: string,
     temporal: boolean,
     interval: string,
@@ -93,7 +93,7 @@ export interface WMS {
     url: string,
     wms_url: string,
     organisation: Organisation,
-    datasets: Dataset[],
+    layercollections: Layercollection[],
     access_modifier: string,
     download_url: string | null,
     spatial_bounds: {
@@ -169,8 +169,8 @@ export interface ObservationType {
     reference_frame: string | null,
 };
 
-//DATASET
-export interface Dataset {
+//LAYERCOLLECTION
+export interface Layercollection {
     slug: string,
     organisation: {
         url: string,
