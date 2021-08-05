@@ -53,7 +53,7 @@ const WMSDetails = () => {
                 <span title="To manage this WMS layer">
                     {authorizedToManageLayer ?
                         <a
-                            href={`/management/#/data_management/wms_layers/${wms.uuid}`}
+                            href={`/management/data_management/wms_layers/${wms.uuid}`}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
