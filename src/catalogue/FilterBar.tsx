@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect, useSelector } from 'react-redux';
-import { ObservationType, Organisation, Dataset, SwitchDataType } from '../interface';
+import { ObservationType, Organisation, Layercollection, SwitchDataType } from '../interface';
 import { getFilters, MyStore } from '../reducers';
 import {
     selectOrganisation,
     removeOrganisation,
-    selectDataset,
+    selectLayercollection,
     selectObservationType,
     removeObservationType,
-    removeDataset,
+    removeLayercollection,
     updatePage
 } from '../action';
 import FilterOption from './components/FilterOption';
@@ -17,7 +17,7 @@ import './styles/FilterBar.css';
 interface MyProps {
     observationTypes: ObservationType[],
     organisations: Organisation[],
-    datasets: Dataset[],
+    layercollections: Layercollection[],
     currentDataType: MyStore['currentDataType'],
     onDataTypeChange: (dataType: SwitchDataType['payload']) => void,
 };
@@ -26,13 +26,13 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
     const {
         observationTypes,
         organisations,
-        datasets,
+        layercollections,
         currentDataType,
         onDataTypeChange,
         selectOrganisation,
         removeOrganisation,
-        selectDataset,
-        removeDataset,
+        selectLayercollection,
+        removeLayercollection,
         selectObservationType,
         removeObservationType,
         updatePage
@@ -71,14 +71,14 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
             />
             {currentDataType !== "Timeseries" ? (
                 <FilterOption
-                    filterOption="dataset"
-                    listOfItems={datasets}
-                    filterValue={filters.dataset}
+                    filterOption="layercollection"
+                    listOfItems={layercollections}
+                    filterValue={filters.layercollection}
                     selectItem={value => {
                         updatePage(1);
-                        selectDataset(value);
+                        selectLayercollection(value);
                     }}
-                    removeItem={removeDataset}
+                    removeItem={removeLayercollection}
                 />
             ) : null}
             {currentDataType === "Raster" ? (
@@ -100,8 +100,8 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
 const mapDispatchToProps = (dispatch: any) => ({
     selectOrganisation: (organisationName: string) => selectOrganisation(dispatch, organisationName),
     removeOrganisation: () => removeOrganisation(dispatch),
-    selectDataset: (datasetSlug: string) => selectDataset(dispatch, datasetSlug),
-    removeDataset: () => removeDataset(dispatch),
+    selectLayercollection: (layercollectionSlug: string) => selectLayercollection(dispatch, layercollectionSlug),
+    removeLayercollection: () => removeLayercollection(dispatch),
     selectObservationType: (observationTypeParameter: string) => selectObservationType(dispatch, observationTypeParameter),
     removeObservationType: () => removeObservationType(dispatch),
     updatePage: (page: number) => updatePage(dispatch, page),

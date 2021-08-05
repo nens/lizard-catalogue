@@ -5,7 +5,7 @@ import {
     RASTERS_FETCHED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
-    DATASETS_FETCHED,
+    LAYERCOLLECTIONS_FETCHED,
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
     RECEIVE_LIZARD_BOOTSTRAP,
@@ -34,11 +34,11 @@ import {
     RECEIVED_PROJECTIONS,
     FETCHING_STATE_PROJECTIONS,
     SELECT_ORGANISATION,
-    SELECT_DATASET,
+    SELECT_LAYERCOLLECTION,
     SELECT_OBSERVATIONTYPE,
     UPDATE_SEARCH,
     REMOVE_ORGANISATION,
-    REMOVE_DATASET,
+    REMOVE_LAYERCOLLECTION,
     REMOVE_OBSERVATIONTYPE,
     REMOVE_SEARCH,
     UPDATE_ORDER,
@@ -63,7 +63,7 @@ import {
     Raster,
     ObservationType,
     Organisation,
-    Dataset,
+    Layercollection,
     Bootstrap,
     WMS,
     SwitchDataType,
@@ -80,7 +80,7 @@ export interface MyStore {
     bootstrap: Bootstrap,
     observationTypes: ObservationType[],
     organisations: Organisation[],
-    datasets: Dataset[],
+    layercollections: Layercollection[],
     currentDataType: 'Raster' | 'WMS' | 'Timeseries' | '',
     currentRasterList: {
         count: number,
@@ -145,7 +145,7 @@ export interface MyStore {
     rasterExportState: RasterExportState,
     filters: {
         organisation: Organisation['name'],
-        dataset: Dataset['slug'],
+        layercollection: Layercollection['slug'],
         observationType: ObservationType['parameter'],
         searchTerm: string,
         ordering: string,
@@ -700,16 +700,16 @@ const organisations = (state: MyStore['organisations'] = [], { type, organisatio
     };
 };
 
-const datasets = (state: MyStore['datasets'] = [], { type, datasets }): MyStore['datasets'] => {
+const layercollections = (state: MyStore['layercollections'] = [], { type, layercollections }): MyStore['layercollections'] => {
     switch (type) {
-        case DATASETS_FETCHED:
-            return datasets
-                //Remove datasets with empty slug name
-                .filter(dataset => dataset.slug !== '')
-                .map(dataset => {
+        case LAYERCOLLECTIONS_FETCHED:
+            return layercollections
+                //Remove layercollections with empty slug name
+                .filter(layercollection => layercollection.slug !== '')
+                .map(layercollection => {
                     return {
-                        slug: dataset.slug,
-                        organisation: dataset.organisation,
+                        slug: layercollection.slug,
+                        organisation: layercollection.organisation,
                     };
                 });
         default:
@@ -721,13 +721,13 @@ const datasets = (state: MyStore['datasets'] = [], { type, datasets }): MyStore[
 const filters =(
     state: MyStore['filters'] = {
         organisation: '',
-        dataset: '',
+        layercollection: '',
         observationType: '',
         searchTerm: '',
         ordering: '',
         page: 1,
     },
-    { type, organisation, dataset, observationType, searchTerm, ordering, page }
+    { type, organisation, layercollection, observationType, searchTerm, ordering, page }
 ): MyStore['filters'] => {
     switch (type) {
         case UPDATE_PAGE:
@@ -740,10 +740,10 @@ const filters =(
                 ...state,
                 organisation
             };
-        case SELECT_DATASET:
+        case SELECT_LAYERCOLLECTION:
             return {
                 ...state,
-                dataset
+                layercollection
             };
         case SELECT_OBSERVATIONTYPE:
             return {
@@ -765,10 +765,10 @@ const filters =(
                 ...state,
                 organisation: ''
             };
-        case REMOVE_DATASET:
+        case REMOVE_LAYERCOLLECTION:
             return {
                 ...state,
-                dataset: ''
+                layercollection: ''
             };
         case REMOVE_OBSERVATIONTYPE:
             return {
@@ -960,8 +960,8 @@ export const getOrganisations = (state: MyStore) => {
     return state.organisations;
 };
 
-export const getDatasets = (state: MyStore) => {
-    return state.datasets;
+export const getLayercollections = (state: MyStore) => {
+    return state.layercollections;
 };
 
 export const getInbox = (state: MyStore) => {
@@ -998,7 +998,7 @@ export default combineReducers({
     basket,
     observationTypes,
     organisations,
-    datasets,
+    layercollections,
     inbox,
     notification,
     timeseriesExport

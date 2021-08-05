@@ -95,10 +95,10 @@ const WMSDetails = () => {
                 <span className="details-title">Organisation</span>
                 <span>{wms.organisation && wms.organisation.name}</span>
             </div>
-            {wms.datasets && wms.datasets[0] ? (
+            {wms.layer_collections && wms.layer_collections[0] ? (
                 <div className="details-info">
-                    <span className="details-title">Dataset</span>
-                    <span>{wms.datasets && wms.datasets[0] && wms.datasets[0].slug}</span>
+                    <span className="details-title">Layer-collection</span>
+                    <span>{wms.layer_collections && wms.layer_collections[0] && wms.layer_collections[0].slug}</span>
                 </div>
             ) : null}
             {wms.wms_url ? (

@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import { Raster, WMS, LatLng, Dataset, Location } from "../interface";
+import { Raster, WMS, LatLng, Layercollection, Location } from "../interface";
 import { baseUrl } from "../api";
 import { getIdFromUrl } from './getUuidFromUrl';
 import moment from "moment";
@@ -132,8 +132,8 @@ export const getRasterGetCapabilitesURL = (raster: Raster) => {
     return `${baseUrl}/wms/raster_${raster.uuid}/?request=GetCapabilities`;
 };
 
-export const getDatasetGetCapabilitesURL = (dataset: Dataset) => {
-    return dataset && `${baseUrl}/wms/${dataset.slug}/?request=GetCapabilities`;
+export const getLayercollectionGetCapabilitesURL = (layercollection: Layercollection) => {
+    return layercollection && `${baseUrl}/wms/${layercollection.slug}/?request=GetCapabilities`;
 };
 
 export const requestTimeseriesExport = (timeseriesUUIDs: string[], start: number, end: number | null) => {

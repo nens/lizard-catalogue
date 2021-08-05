@@ -8,7 +8,7 @@
 
 // Firslty, some useEffects are only called when the component first mounted,
 // these useEffects are called inside the useMountEffect callback to do the following works:
-// 1- fetch static lizard data: bootstrap, organisations, observation types and datasets
+// 1- fetch static lizard data: bootstrap, organisations, observation types and layercollections
 // 2- look up queries in the URL to update the filters state of the Redux store
 // 3- poll the inbox endpoint frequently to check if any tasks are in progress
 // 4- event listener to close modals on ESC
@@ -29,7 +29,7 @@ import {
     fetchRasters,
     fetchObservationTypes,
     fetchOrganisations,
-    fetchDatasets,
+    fetchLayercollections,
     fetchLizardBootstrap,
     switchDataType,
     selectItem,
@@ -42,7 +42,7 @@ import {
     updateOrder,
     updatePage,
     selectOrganisation,
-    selectDataset,
+    selectLayercollection,
     selectObservationType,
     fetchMonitoringNetworks,
     fetchMonitoringNetworkObservationTypes,
@@ -53,7 +53,7 @@ import {
     getCurrentRasterList,
     getObservationTypes,
     getOrganisations,
-    getDatasets,
+    getLayercollections,
     getCurrentDataType,
     getCurrentWMSList,
     getCurrentMonitoringNetworkList,
@@ -67,7 +67,7 @@ import {
     getSearch,
     getOrganisation,
     getObservationType,
-    getDataset,
+    getLayercollection,
     getDataType,
     newURL,
     getUUID
@@ -89,7 +89,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     const currentMonitoringNetworkList = useSelector(getCurrentMonitoringNetworkList);
     const observationTypes = useSelector(getObservationTypes);
     const organisations = useSelector(getOrganisations);
-    const datasets = useSelector(getDatasets);
+    const layercollections = useSelector(getLayercollections);
     const currentDataType = useSelector(getCurrentDataType);
     const filters = useSelector(getFilters);
     const selectedItem = useSelector(getSelectedItem);
@@ -176,15 +176,15 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         return () => window.removeEventListener("keydown", closeModalsOnEsc);
     });
 
-    // useMountEffect to fetch bootstrap, organisations, observation types and datasets
+    // useMountEffect to fetch bootstrap, organisations, observation types and layercollections
     useMountEffect(() => {
         // Fetch Lizard Bootstrap
         props.fetchLizardBootstrap();
 
-        // Fetch all organisations, datasets and observation types
+        // Fetch all organisations, layercollections and observation types
         props.fetchObservationTypes();
         props.fetchOrganisations();
-        props.fetchDatasets();
+        props.fetchLayercollections();
     });
 
     // useEffect to fetch list of organisations which the currently login user is a member of
@@ -202,13 +202,13 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         const search = getSearch(urlSearchParams);
         const organisation = getOrganisation(urlSearchParams);
         const observation = getObservationType(urlSearchParams);
-        const dataset = getDataset(urlSearchParams);
+        const layercollection = getLayercollection(urlSearchParams);
         const uuid = getUUID(urlSearchParams);
 
         // Update Redux filters with URL parameters
         props.updateSearch(search);
         props.selectOrganisation(organisation);
-        props.selectDataset(dataset);
+        props.selectLayercollection(layercollection);
         props.selectObservationType(observation);
         props.switchDataType(dataType);
         props.selectItem(uuid);
@@ -230,7 +230,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
             filters.searchTerm,
             filters.organisation,
             currentDataType === 'WMS' ? '' : filters.observationType,
-            currentDataType === 'Timeseries' ? '' : filters.dataset,
+            currentDataType === 'Timeseries' ? '' : filters.layercollection,
             selectedItem
         );
 
@@ -244,7 +244,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         filters.searchTerm,
         filters.organisation,
         filters.observationType,
-        filters.dataset,
+        filters.layercollection,
         selectedItem,
         props.history
     ]);
@@ -258,7 +258,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                 filters.searchTerm,
                 filters.organisation,
                 filters.observationType,
-                filters.dataset,
+                filters.layercollection,
                 filters.ordering
             );
         } else if (currentDataType === 'WMS') {
@@ -266,7 +266,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                 filters.page,
                 filters.searchTerm,
                 filters.organisation,
-                filters.dataset,
+                filters.layercollection,
                 filters.ordering
             );
         } else if (currentDataType === 'Timeseries') {
@@ -282,7 +282,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         fetchMonitoringNetworks,
         fetchRasters,
         fetchWMSLayers,
-        filters.dataset,
+        filters.layercollection,
         filters.observationType,
         filters.ordering,
         filters.organisation,
@@ -326,7 +326,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                 <FilterBar
                     observationTypes={observationTypes}
                     organisations={organisations}
-                    datasets={datasets}
+                    layercollections={layercollections}
                     onDataTypeChange={onDataTypeChange}
                     currentDataType={currentDataType}
                 />
@@ -398,22 +398,22 @@ const mapDispatchToProps = (dispatch: any) => ({
         searchTerm: string,
         organisationName: string,
         observationTypeParameter: string,
-        datasetSlug: string,
+        layercollectionSlug: string,
         ordering: string
-    ) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, datasetSlug, ordering, dispatch),
+    ) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, layercollectionSlug, ordering, dispatch),
     updateBasketWithRaster: (rasters: string[]) => updateBasketWithRaster(rasters, dispatch),
     updateBasketWithWMS: (wmsLayers: string[]) => updateBasketWithWMS(wmsLayers, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
     fetchUserOrganisations: (userId: number) => dispatch(fetchUserOrganisations(userId)),
-    fetchDatasets: () => fetchDatasets(dispatch),
+    fetchLayercollections: () => fetchLayercollections(dispatch),
     fetchWMSLayers: (
         page: number,
         searchTerm: string,
         organisationName: string,
-        datasetSlug: string,
+        layercollectionSlug: string,
         ordering: string
-    ) => fetchWMSLayers(page, searchTerm, organisationName, datasetSlug, ordering, dispatch),
+    ) => fetchWMSLayers(page, searchTerm, organisationName, layercollectionSlug, ordering, dispatch),
     fetchMonitoringNetworks: (
         page: number,
         searchTerm: string,
@@ -430,7 +430,7 @@ const mapDispatchToProps = (dispatch: any) => ({
     updateOrder: (ordering: string) => updateOrder(dispatch, ordering),
     updatePage: (page: number) => updatePage(dispatch, page),
     selectOrganisation: (organisationName: string) => selectOrganisation(dispatch, organisationName),
-    selectDataset: (datasetSlug: string) => selectDataset(dispatch, datasetSlug),
+    selectLayercollection: (layercollectionSlug: string) => selectLayercollection(dispatch, layercollectionSlug),
     selectObservationType: (observationTypeParameter: string) => selectObservationType(dispatch, observationTypeParameter),
 });
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;

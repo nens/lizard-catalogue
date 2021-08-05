@@ -10,8 +10,8 @@ export default class Information extends React.Component {
                     <div className="information_main-content">
                         <p>Welcome to the Lizard Catalogue!</p>
                         <p>
-                            This catalogue provides you a detailed overview of all the raster datasets in Lizard.
-                            You can search for datasets, filter them per organisation, view detailed metadata and open datasets in the Lizard Portal and the Lizard API.
+                            This catalogue provides you a detailed overview of all the raster layercollections in Lizard.
+                            You can search for layer-collections, filter them per organisation, view detailed metadata and open layercollections in the Lizard Portal and the Lizard API.
                         </p>
                     </div>
                 </div>

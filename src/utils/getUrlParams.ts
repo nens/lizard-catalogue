@@ -17,9 +17,9 @@ export const getOrganisation = (urlSearchParams) => {
 export const getObservationType = (urlSearchParams) => {
     return urlSearchParams.get('observation') || '';
 };
-//Capture the value of the dataset property in the search params object
-export const getDataset = (urlSearchParams) => {
-    return urlSearchParams.get('dataset') || '';
+//Capture the value of the layercollection property in the search params object
+export const getLayercollection = (urlSearchParams) => {
+    return urlSearchParams.get('layercollection') || '';
 };
 //Capture the current data type selection of the Catalogue (Raster or WMS)
 export const getDataType = (urlSearchParams) => {
@@ -32,13 +32,13 @@ export const getUUID = (URLSearchParams) => {
 };
 
 //Generate new URLs with different search params for sharing searches
-export const newURL = (dataType: string, searchTerm: string, organisationName: string, observationTypeParameter: string, datasetSlug: string, uuid: string) => {
+export const newURL = (dataType: string, searchTerm: string, organisationName: string, observationTypeParameter: string, layercollectionSlug: string, uuid: string) => {
     const params: string[] = [];
 
     if (dataType) params.push(`data=${dataType}`);
     if (searchTerm) params.push(`search=${encodeURIComponent(searchTerm)}`);
     if (organisationName) params.push(`organisation=${encodeURIComponent(organisationName)}`);
-    if (datasetSlug) params.push(`dataset=${encodeURIComponent(datasetSlug)}`);
+    if (layercollectionSlug) params.push(`layercollection=${encodeURIComponent(layercollectionSlug)}`);
     if (observationTypeParameter) params.push(`observation=${encodeURIComponent(observationTypeParameter)}`);
     if (uuid) params.push(`uuid=${uuid}`);
 
