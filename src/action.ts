@@ -95,7 +95,7 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
     if (page) params.push(`page=${page}`);
     if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
     if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
-    if (layercollectionSlug) params.push(`layercollections__slug=${encodeURIComponent(layercollectionSlug)}`);
+    if (layercollectionSlug) params.push(`layer_collections__slug=${encodeURIComponent(layercollectionSlug)}`);
     if (observationTypeParameter) params.push(`observation_type__parameter__icontains=${encodeURIComponent(observationTypeParameter)}`);
     if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
 
@@ -141,7 +141,7 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
     if (page) params.push(`page=${page}`);
     if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
     if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
-    if (layercollectionSlug) params.push(`layercollections__slug=${encodeURIComponent(layercollectionSlug)}`);
+    if (layercollectionSlug) params.push(`layer_collections__slug=${encodeURIComponent(layercollectionSlug)}`);
     if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
 
     const queries = params.join('&');
