@@ -118,7 +118,7 @@ const RasterDetails = (props: MyProps) => {
             </div>
             {layercollection ? (
                 <div className="details-info">
-                    <span className="details-title">Layer-collection</span>
+                    <span className="details-title">Layer collection</span>
                     <span>{layercollection && layercollection.slug}</span>
                 </div>
             ) : null}

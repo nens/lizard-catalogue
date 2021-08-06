@@ -97,7 +97,7 @@ const WMSDetails = () => {
             </div>
             {wms.layer_collections && wms.layer_collections[0] ? (
                 <div className="details-info">
-                    <span className="details-title">Layer-collection</span>
+                    <span className="details-title">Layer collection</span>
                     <span>{wms.layer_collections && wms.layer_collections[0] && wms.layer_collections[0].slug}</span>
                 </div>
             ) : null}
