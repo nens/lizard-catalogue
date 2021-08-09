@@ -65,6 +65,10 @@ const Header: React.FC<MyProps & PropsFromState> = (props) => {
                 <h3 className="header-logo__text">Catalogue</h3>
             </div>
             <div className="header-nav">
+                <a href="/" className="header-nav__icon-box">
+                    <i className="fa fa-home" style={{fontSize: "20px", }} />
+                    <span className="header-nav__text">Home</span>
+                </a>
                 <div className="header-nav__icon-box inbox-dropdown" onClick={openInboxDropdown}>
                     <img src={exportIcon} alt="export" className="header-nav__icon" />
                     {inbox.length === 0 ? <span /> : <span className="header-nav__notification">{inbox.length}</span>}
