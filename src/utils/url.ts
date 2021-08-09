@@ -121,7 +121,7 @@ export const openAllInLizard = (rasters: Raster[], centerPoint: LatLng, zoom: nu
     const urlPathForRaster = rasterIddArray.map(id => `,raster$${id}`).join('');
     const urlPathForWMSLayer = wmsIdArray.map(id => `,wmslayer$${id}`).join('');
 
-    window.open(`viewer/nl/map/topography${urlPathForRaster}${urlPathForWMSLayer}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
+    window.open(`/viewer/nl/map/topography${urlPathForRaster}${urlPathForWMSLayer}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };
 
 export const openWMSDownloadURL = (wms: WMS) => {
