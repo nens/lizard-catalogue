@@ -80,9 +80,9 @@ export const openLocationsInLizard = async (locations: Location[], start: number
     const objectUrl = await constructObjectUrl(locationsWithCoordinates);
 
     const url = locationsWithCoordinates.length ? (
-        `/nl/charts/topography/multi-point/${objectUrl}/@${centerPoint.lat},${centerPoint.lng},14/`
+        `/viewer/nl/charts/topography/multi-point/${objectUrl}/@${centerPoint.lat},${centerPoint.lng},14/`
     ) : (
-        `/nl/charts/topography/multi-point/${objectUrl}/`
+        `/viewer/nl/charts/topography/multi-point/${objectUrl}/`
     );
     if (!start) {
         // Open locations in chart mode to view the timeseries without duration
@@ -101,14 +101,14 @@ export const openRasterInLizard = (raster: Raster, centerPoint: LatLng, zoom: nu
     //create short UUID of the raster
     const rasterShortUUID = raster.uuid.substr(0, 7);
     
-    window.open(`/nl/map/topography,raster$${rasterShortUUID}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
+    window.open(`/viewer/nl/map/topography,raster$${rasterShortUUID}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };
 
 export const openWMSInLizard = (wms: WMS, centerPoint: LatLng, zoom: number) => {
     //create short UUID of the WMS layer
     const wmsShortUUID = wms.uuid.substr(0, 7);
 
-    window.open(`/nl/map/topography,wmslayer$${wmsShortUUID}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
+    window.open(`/viewer/nl/map/topography,wmslayer$${wmsShortUUID}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };
 
 export const openAllInLizard = (rasters: Raster[], centerPoint: LatLng, zoom: number, wmsLayers: WMS[]) => {
@@ -121,7 +121,7 @@ export const openAllInLizard = (rasters: Raster[], centerPoint: LatLng, zoom: nu
     const urlPathForRaster = rasterIddArray.map(id => `,raster$${id}`).join('');
     const urlPathForWMSLayer = wmsIdArray.map(id => `,wmslayer$${id}`).join('');
 
-    window.open(`/nl/map/topography${urlPathForRaster}${urlPathForWMSLayer}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
+    window.open(`/viewer/nl/map/topography${urlPathForRaster}${urlPathForWMSLayer}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };
 
 export const openWMSDownloadURL = (wms: WMS) => {
