@@ -58,6 +58,7 @@ import {
     ADD_TIMESERIES_EXPORT_TASK,
     REQUEST_TIMESERIES_EXPORT,
     USER_ORGANISATIONS_FETCHED,
+    SET_NO_DATA_VALUE,
 } from "./action";
 import {
     Raster,
@@ -157,8 +158,7 @@ export interface MyStore {
     }
 };
 
-const rasterExportState = (state: MyStore["rasterExportState"]=
-    {
+const rasterExportState = (state: MyStore["rasterExportState"] = {
     selectedGridCellIds: [],
     fetchingStateGrid: "NOT_SENT",
     fetchingStateGridMsg: "",
@@ -181,7 +181,7 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
         fetchingState: "NOT_SENT",
         projections: [],
     }
-    },
+},
     action
 ): MyStore['rasterExportState'] => {
     switch (action.type) {
@@ -292,6 +292,11 @@ const rasterExportState = (state: MyStore["rasterExportState"]=
                 ...state,
                 rasterExportRequests: [],
                 numberOfinboxMessagesBeforeRequest: 0,
+            }
+        case SET_NO_DATA_VALUE:
+            return {
+                ...state,
+                noDataValue: action.noDataValue
             }
         default:
             return state;
@@ -879,6 +884,9 @@ export const getProjections = (state: MyStore) => {
 }
 export const getExportGridCellCellFetchingState = (state: MyStore) => {
     return state.rasterExportState.fetchingStateGrid;
+}
+export const getExportNoDataValue = (state: MyStore) => {
+    return state.rasterExportState.noDataValue;
 }
 
 export const getIsFormValidForRequestingGridCells = (state: MyStore) => {

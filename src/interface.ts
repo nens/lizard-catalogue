@@ -231,6 +231,7 @@ export interface RasterExportState {
     dateTimeStart: string,
     numberOfinboxMessagesBeforeRequest: number,
     projectionsAvailableForCurrentRaster: Projections,
+    noDataValue?: number,
 }
 
 export interface Projections {
@@ -305,7 +306,8 @@ export type RasterExportFormFieldType =
     MyStore['rasterExportState']['projection'] |
     MyStore['rasterExportState']['tileWidth'] |
     MyStore['rasterExportState']['tileHeight'] |
-    MyStore['rasterExportState']['bounds']
+    MyStore['rasterExportState']['bounds'] |
+    MyStore['rasterExportState']['noDataValue']
 
 
 export interface FieldValuePair{field: string, value: RasterExportFormFieldType}
@@ -333,4 +335,5 @@ export interface RasterExportRequest {
     resolution: number | "";
     tileWidth: number | "";
     tileHeight: number | "";
+    noDataValue?: number;
 }

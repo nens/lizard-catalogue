@@ -20,6 +20,7 @@ import {
     getExportGridCellCellFetchingState,
     getInbox,
     getExportGridCellBounds,
+    getExportNoDataValue,
 } from '../../reducers';
 import {
   RootState,
@@ -65,6 +66,7 @@ class ExportModal extends React.Component<MyProps> {
             {field: "tileWidth", value: '1000'},
             {field: "tileHeight", value: '1000'},
             {field:'dateTimeStart', value: ""},
+            {field: "noDataValue", value: undefined},
             {
                 field: 'bounds',
                 value: { 
@@ -287,17 +289,16 @@ class ExportModal extends React.Component<MyProps> {
                             </div>
                             <br />
                             <div>
-                                <h4>No data value</h4>
+                                <h4>No data value (optional)</h4>
                                 <input
                                     className="export_input"
                                     type="number"
-                                    value={this.props.tileHeight}
+                                    value={this.props.noDataValue || ''}
                                     onChange={(event)=> {
                                         const filteredString = (event.target.value+'').replace(/[^\d]/g, '');
-                                        this.props.updateExportFormAndFetchExportGridCells([{field:'tileHeight', value: filteredString}]);
+                                        this.props.updateExportFormAndFetchExportGridCells([{field:'noDataValue', value: filteredString}]);
                                     }}
                                 />
-                                {this.props.tileHeight === ""? <span>* Choose a number</span>:null}
                             </div>
                         </div>
                     </div>
@@ -398,6 +399,7 @@ const mapStateToProps = (state: RootState) => ({
     dateTimeStart: getDateTimeStart(state),
     inbox: getInbox(state),
     exportBounds: getExportGridCellBounds(state),
+    noDataValue: getExportNoDataValue(state),
 });
 
 type PropsFromState = ReturnType<typeof mapStateToProps>
