@@ -89,7 +89,7 @@ class ExportModal extends React.Component<MyProps> {
                     <div className="export_map-box">
                         { 
                             // show spinner if gridcells are not yet retrieved
-                            (fetchingGridState === "SENT" || fetchingGridState === "NOT_SENT") && exportGridCells.length===0 ?
+                            (fetchingGridState === "SENT" || fetchingGridState === "NOT_SENT") && exportGridCells.length===0 ? (
                             <div 
                                 className="loading-screen loading-screen-export"
                             >
@@ -100,8 +100,7 @@ class ExportModal extends React.Component<MyProps> {
                                     Retrieving Grid Cells..."
                                 </div>
                             </div>
-                            :
-                            null
+                            ) : null
                         }
                         
                         <Map 
@@ -131,7 +130,7 @@ class ExportModal extends React.Component<MyProps> {
                         >
                             <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                             <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
-                            {exportGridCells.length !== 0 ?
+                            {exportGridCells.length !== 0 ? (
                                 <GeoJSON 
                                     className={"export_grid_cell"}
                                     data={{"type": "FeatureCollection", "features": exportGridCells}}
@@ -181,9 +180,7 @@ class ExportModal extends React.Component<MyProps> {
                                         });
                                       }}
                                 />
-                            :
-                            null
-                            }
+                            ) : null}
                         </Map>
                     </div>
                 </div>
@@ -288,12 +285,26 @@ class ExportModal extends React.Component<MyProps> {
                                 />
                                 {this.props.tileHeight === ""? <span>* Choose a number</span>:null}
                             </div>
+                            <br />
+                            <div>
+                                <h4>No data value</h4>
+                                <input
+                                    className="export_input"
+                                    type="number"
+                                    value={this.props.tileHeight}
+                                    onChange={(event)=> {
+                                        const filteredString = (event.target.value+'').replace(/[^\d]/g, '');
+                                        this.props.updateExportFormAndFetchExportGridCells([{field:'tileHeight', value: filteredString}]);
+                                    }}
+                                />
+                                {this.props.tileHeight === ""? <span>* Choose a number</span>:null}
+                            </div>
                         </div>
                     </div>
                     
                     <div className="export_text">
                         {
-                            exportGridCells.length > 1500 ? 
+                            exportGridCells.length > 1500 ? (
                             <div className="export-input-error-msg"> 
                                 <span
                                     className="export-input-error-msg-large"
@@ -305,11 +316,11 @@ class ExportModal extends React.Component<MyProps> {
                                 Zoom-in when using a fine resolution
                                 </span>
                             </div>
-                            :
+                            ) :
                             parseInt(this.props.tileHeight + '') && 
                             parseInt(this.props.tileWidth + '') && 
                             (parseInt(this.props.tileHeight+'') * parseInt(this.props.tileWidth+'') > 1000000000) 
-                            ? 
+                            ? (
                             <div className="export-input-error-msg"> 
                                 <span
                                     className="export-input-error-msg-large"
@@ -323,7 +334,7 @@ class ExportModal extends React.Component<MyProps> {
                                 must be below 1.000.000.000 pixels 
                                 </span>
                             </div>
-                            : selectedGridIds.length === maximumSelectForExport ?
+                            ) : selectedGridIds.length === maximumSelectForExport ? (
                             <div className="export-input-error-msg"> 
                                 <span
                                     className="export-input-error-msg-large"
@@ -335,11 +346,12 @@ class ExportModal extends React.Component<MyProps> {
                                 It is not allowed to export more then 3 items at once
                                 </span>
                             </div>
-                            :
+                            ) : (
                             <span>
                             First choose your settings then select the
                             desired tiles to export/download
                             </span>
+                            )
                         }
                         
                     </div>
