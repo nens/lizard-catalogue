@@ -295,8 +295,7 @@ class ExportModal extends React.Component<MyProps> {
                                     type="number"
                                     value={this.props.noDataValue || ''}
                                     onChange={(event)=> {
-                                        const filteredString = (event.target.value+'').replace(/[^\d]/g, '');
-                                        this.props.updateExportFormAndFetchExportGridCells([{field:'noDataValue', value: filteredString}]);
+                                        this.props.updateExportFormAndFetchExportGridCells([{field:'noDataValue', value: event.target.value}]);
                                     }}
                                 />
                             </div>
