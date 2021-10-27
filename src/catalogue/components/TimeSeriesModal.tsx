@@ -523,7 +523,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                                     }}
                                     disabled={!selectedLocations.length}
                                 >
-                                    OPEN IN PORTAL
+                                    OPEN IN VIEWER
                                 </button>
                                 <button
                                     className="button-action"

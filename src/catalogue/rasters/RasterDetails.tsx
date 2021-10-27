@@ -217,7 +217,7 @@ const RasterDetails = (props: MyProps) => {
                             onClick={() => openRasterInLizard(raster, centerPoint, zoom)}
                             title="Open in Portal"
                         >
-                            OPEN IN PORTAL
+                            OPEN IN VIEWER
                         </button>
                     </div>
                     <div />

@@ -153,7 +153,7 @@ const WMSDetails = () => {
                             onClick={() => openWMSInLizard(wms, centerPoint, zoom)}
                             title="Open in Portal"
                         >
-                            OPEN IN PORTAL
+                            OPEN IN VIEWER
                         </button>
                     </div>
                     <div />
