@@ -688,7 +688,7 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
         })
 };
 
-export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch: Dispatch<RequestRasterExports | ReceivedTaskRasterExport | FailedTaskRasterExport>) =>{
+export const requestRasterExports = (numberOfInboxMessages: number, openDownloadModal: Function) => (dispatch) =>{
 
     dispatch(setCurrentRasterExportsToStore(numberOfInboxMessages));
 
@@ -729,17 +729,25 @@ export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch:
 
         const requestUrl = `/api/v4/rasters/${rasterUuid}/data/?${urlQuery}`;
 
-        request.get(requestUrl)
-        .then(() => {
+        fetch(requestUrl)
+        .then(res => res.json())
+        .then((res) => {
+            if (res.status === 400) {
+                if (res.detail.nodata && res.detail.nodata[0]) {
+                    dispatch(addNotification(res.detail.nodata[0]));
+                } else {
+                    dispatch(addNotification('Raster export failed.'));
+                };
+                return;
+            };
+            openDownloadModal();
             dispatch(receivedTaskRasterExport(id));
         })
-        .catch(error=>{
+        .catch(error => {
             console.error(error);
             dispatch(failedTaskRasterExport(id));
-        })
-
+        });
     });
-    
 };
 
 export const requestProjections = (rasterUuid: string) => async (dispatch) => {

@@ -362,8 +362,7 @@ class ExportModal extends React.Component<MyProps> {
                             disabled={this.props.selectedGridCellIds.length === 0}
                             title={this.props.selectedGridCellIds.length === 0 ? "First make a selection on the map" : undefined}  
                             onClick={()=>{
-                                this.props.requestRasterExports(this.props.inbox.length);
-                                openDownloadModal();
+                                this.props.requestRasterExports(this.props.inbox.length, openDownloadModal);
                             }}
                         >
                             <i className="fa fa-download" />
@@ -409,7 +408,7 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: FieldValuePair[])=> dispatch(updateExportFormAndFetchExportGridCells(fieldValuePairs)),
-    requestRasterExports: (numberOfInboxMessages:number)=> dispatch(requestRasterExports(numberOfInboxMessages)),
+    requestRasterExports: (numberOfInboxMessages:number, openDownloadModal: Function)=> dispatch(requestRasterExports(numberOfInboxMessages, openDownloadModal)),
     requestProjections: (rasterUuid:string) => dispatch(requestProjections(rasterUuid)),
 });
 
