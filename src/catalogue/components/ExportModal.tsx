@@ -357,7 +357,7 @@ class ExportModal extends React.Component<MyProps> {
                     </div>
                     <div className="export_buttons">
                         <button 
-                            className={`details__button`}
+                            className={"button-action button-export"}
                             disabled={this.props.selectedGridCellIds.length === 0}
                             title={this.props.selectedGridCellIds.length === 0 ? "First make a selection on the map" : undefined}  
                             onClick={()=>{
@@ -369,7 +369,7 @@ class ExportModal extends React.Component<MyProps> {
                             {`Download ${this.props.selectedGridCellIds.length}  selected cells`}
                         </button>
                         <button 
-                            className={`details__button details__button-danger`}
+                            className={"button-action button-action-danger button-export"}
                             disabled={this.props.selectedGridCellIds.length === 0? true: false}
                             title={this.props.selectedGridCellIds.length === 0 ? "No grid cells selected" : undefined}  
                             onClick={()=>{
