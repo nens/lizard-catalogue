@@ -734,8 +734,10 @@ export const requestRasterExports = (numberOfInboxMessages: number, openDownload
         .then((res) => {
             if (res.status === 400) {
                 if (res.detail.nodata && res.detail.nodata[0]) {
+                    console.error(res.detail.nodata[0]);
                     dispatch(addNotification(res.detail.nodata[0]));
                 } else {
+                    console.error(res);
                     dispatch(addNotification('Raster export failed.'));
                 };
                 return;
