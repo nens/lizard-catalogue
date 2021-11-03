@@ -28,6 +28,11 @@
     background-color: var(--border-color-soft);
 }
 
+.button-action-danger {
+    color: #FFFFFF;
+    background-color: #ff7070;
+}
+
 /* Polygon buttons */
 .button-polygon {
     font-size: 2.6rem;
@@ -134,4 +139,11 @@
 }
 .button-copy:active:after {
     content: 'Copied!'
+}
+
+/* CSS for export button in the export modal */
+.button-export {
+    width: auto;
+    font-size: 1.4rem;
+    line-height: 1.6rem;
 }

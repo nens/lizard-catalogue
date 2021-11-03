@@ -100,14 +100,6 @@
 .export_buttons button {
     height: 3rem;
 }
-.details__button {
-    margin-top: 1rem;
-}
-
-.details__button:disabled {
-    background-color: #BFBFBF;
-    cursor: not-allowed;
-}
 
 .export_grid_cell:hover {
     fill-opacity: 0.5;

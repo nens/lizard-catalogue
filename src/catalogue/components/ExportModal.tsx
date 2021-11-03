@@ -20,6 +20,7 @@ import {
     getExportGridCellCellFetchingState,
     getInbox,
     getExportGridCellBounds,
+    getExportNoDataValue,
 } from '../../reducers';
 import {
   RootState,
@@ -65,6 +66,7 @@ class ExportModal extends React.Component<MyProps> {
             {field: "tileWidth", value: '1000'},
             {field: "tileHeight", value: '1000'},
             {field:'dateTimeStart', value: ""},
+            {field: "noDataValue", value: undefined},
             {
                 field: 'bounds',
                 value: { 
@@ -89,7 +91,7 @@ class ExportModal extends React.Component<MyProps> {
                     <div className="export_map-box">
                         { 
                             // show spinner if gridcells are not yet retrieved
-                            (fetchingGridState === "SENT" || fetchingGridState === "NOT_SENT") && exportGridCells.length===0 ?
+                            (fetchingGridState === "SENT" || fetchingGridState === "NOT_SENT") && exportGridCells.length===0 ? (
                             <div 
                                 className="loading-screen loading-screen-export"
                             >
@@ -100,8 +102,7 @@ class ExportModal extends React.Component<MyProps> {
                                     Retrieving Grid Cells..."
                                 </div>
                             </div>
-                            :
-                            null
+                            ) : null
                         }
                         
                         <Map 
@@ -131,7 +132,7 @@ class ExportModal extends React.Component<MyProps> {
                         >
                             <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                             <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
-                            {exportGridCells.length !== 0 ?
+                            {exportGridCells.length !== 0 ? (
                                 <GeoJSON 
                                     className={"export_grid_cell"}
                                     data={{"type": "FeatureCollection", "features": exportGridCells}}
@@ -181,9 +182,7 @@ class ExportModal extends React.Component<MyProps> {
                                         });
                                       }}
                                 />
-                            :
-                            null
-                            }
+                            ) : null}
                         </Map>
                     </div>
                 </div>
@@ -288,12 +287,24 @@ class ExportModal extends React.Component<MyProps> {
                                 />
                                 {this.props.tileHeight === ""? <span>* Choose a number</span>:null}
                             </div>
+                            <br />
+                            <div>
+                                <h4>No data value (optional)</h4>
+                                <input
+                                    className="export_input"
+                                    type="number"
+                                    value={this.props.noDataValue || ''}
+                                    onChange={(event)=> {
+                                        this.props.updateExportFormAndFetchExportGridCells([{field:'noDataValue', value: event.target.value}]);
+                                    }}
+                                />
+                            </div>
                         </div>
                     </div>
                     
                     <div className="export_text">
                         {
-                            exportGridCells.length > 1500 ? 
+                            exportGridCells.length > 1500 ? (
                             <div className="export-input-error-msg"> 
                                 <span
                                     className="export-input-error-msg-large"
@@ -305,11 +316,11 @@ class ExportModal extends React.Component<MyProps> {
                                 Zoom-in when using a fine resolution
                                 </span>
                             </div>
-                            :
+                            ) :
                             parseInt(this.props.tileHeight + '') && 
                             parseInt(this.props.tileWidth + '') && 
                             (parseInt(this.props.tileHeight+'') * parseInt(this.props.tileWidth+'') > 1000000000) 
-                            ? 
+                            ? (
                             <div className="export-input-error-msg"> 
                                 <span
                                     className="export-input-error-msg-large"
@@ -323,7 +334,7 @@ class ExportModal extends React.Component<MyProps> {
                                 must be below 1.000.000.000 pixels 
                                 </span>
                             </div>
-                            : selectedGridIds.length === maximumSelectForExport ?
+                            ) : selectedGridIds.length === maximumSelectForExport ? (
                             <div className="export-input-error-msg"> 
                                 <span
                                     className="export-input-error-msg-large"
@@ -335,22 +346,22 @@ class ExportModal extends React.Component<MyProps> {
                                 It is not allowed to export more then 3 items at once
                                 </span>
                             </div>
-                            :
+                            ) : (
                             <span>
                             First choose your settings then select the
                             desired tiles to export/download
                             </span>
+                            )
                         }
                         
                     </div>
                     <div className="export_buttons">
                         <button 
-                            className={`details__button`}
+                            className={"button-action button-export"}
                             disabled={this.props.selectedGridCellIds.length === 0}
                             title={this.props.selectedGridCellIds.length === 0 ? "First make a selection on the map" : undefined}  
                             onClick={()=>{
-                                this.props.requestRasterExports(this.props.inbox.length);
-                                openDownloadModal();
+                                this.props.requestRasterExports(this.props.inbox.length, openDownloadModal);
                             }}
                         >
                             <i className="fa fa-download" />
@@ -358,7 +369,7 @@ class ExportModal extends React.Component<MyProps> {
                             {`Download ${this.props.selectedGridCellIds.length}  selected cells`}
                         </button>
                         <button 
-                            className={`details__button details__button-danger`}
+                            className={"button-action button-action-danger button-export"}
                             disabled={this.props.selectedGridCellIds.length === 0? true: false}
                             title={this.props.selectedGridCellIds.length === 0 ? "No grid cells selected" : undefined}  
                             onClick={()=>{
@@ -386,6 +397,7 @@ const mapStateToProps = (state: RootState) => ({
     dateTimeStart: getDateTimeStart(state),
     inbox: getInbox(state),
     exportBounds: getExportGridCellBounds(state),
+    noDataValue: getExportNoDataValue(state),
 });
 
 type PropsFromState = ReturnType<typeof mapStateToProps>
@@ -395,7 +407,7 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
     updateExportFormAndFetchExportGridCells: (fieldValuePairs: FieldValuePair[])=> dispatch(updateExportFormAndFetchExportGridCells(fieldValuePairs)),
-    requestRasterExports: (numberOfInboxMessages:number)=> dispatch(requestRasterExports(numberOfInboxMessages)),
+    requestRasterExports: (numberOfInboxMessages:number, openDownloadModal: Function)=> dispatch(requestRasterExports(numberOfInboxMessages, openDownloadModal)),
     requestProjections: (rasterUuid:string) => dispatch(requestProjections(rasterUuid)),
 });
 

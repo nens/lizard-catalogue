@@ -36,6 +36,7 @@ import {
     getExportGridCellBounds, 
     getExportSelectedGridCellIds,
     getDateTimeStart,
+    getExportNoDataValue,
 } from './reducers';
 import { areGridCelIdsEqual } from './utils/rasterExportUtils'
 import { recursiveFetchFunction } from './hooks';
@@ -560,6 +561,7 @@ export const RECEIVED_PROJECTIONS = "RECEIVED_PROJECTIONS";
 export const FETCHING_STATE_PROJECTIONS = "FETCHING_STATE_PROJECTIONS";
 export const SET_RASTER_EXPORT_FORM_FIELDS = "SET_RASTER_EXPORT_FORM_FIELDS";
 export const REMOVE_CURRENT_EXPORT_TASKS = "REMOVE_CURRENT_EXPORT_TASKS";
+export const SET_NO_DATA_VALUE = "SET_NO_DATA_VALUE";
 
 export const removeCurrentExportTasks = (dispatch) => {
     dispatch({
@@ -622,6 +624,10 @@ export const setFetchingStateProjections = (fetchingState: FetchingState) : SetF
     fetchingState,
 }) 
 
+export const setNoDataValue = (value: number) => ({
+    type: SET_NO_DATA_VALUE,
+    noDataValue: value
+})
 
 const fieldValuePairContainsFieldThatShouldResetGridCells = (fieldValuePair: FieldValuePair) => {
      return   fieldValuePair.field === 'projection' ||
@@ -633,12 +639,9 @@ const fieldValuePairsListContainsFieldThatShouldResetGridCells = (fieldValuePair
     return   !!fieldValuePairs.find(fieldValuePairContainsFieldThatShouldResetGridCells);
 }
 
-export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate: FieldValuePair[]) => 
-    (
+export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate: FieldValuePair[]) => (
     dispatch: Dispatch<RemoveAllSelectedExportGridCellIds | RemoveAllExportGridCells | SetRasterExportFormFields | RequestedGridCells | RetrievedRasterExportGridcells | FailedRetrievingRasterExportGridcells>
-    ) =>
-    {
-
+) => {
     if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
         dispatch(removeAllExportGridCells());
     }
@@ -685,7 +688,7 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
         })
 };
 
-export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch: Dispatch<RequestRasterExports | ReceivedTaskRasterExport | FailedTaskRasterExport>) =>{
+export const requestRasterExports = (numberOfInboxMessages: number, openDownloadModal: Function) => (dispatch) =>{
 
     dispatch(setCurrentRasterExportsToStore(numberOfInboxMessages));
 
@@ -695,6 +698,7 @@ export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch:
     const tileWidth = getExportGridCellTileWidth(state);
     const tileHeight = getExportGridCellTileHeight(state);
     const start = getDateTimeStart(state);
+    const noDataValue = getExportNoDataValue(state);
     const rasterUuid = state.selectedItem;
     const availableGridCells = state.rasterExportState.availableGridCells;
 
@@ -707,22 +711,45 @@ export const requestRasterExports = (numberOfInboxMessages:number) => (dispatch:
             return;
         }
         const currentGridBbox = currentGrid.properties.bbox;
-        const requestUrl = start===''?
-            `/api/v4/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&async=true&notify_user=true`
-            :
-            `/api/v4/rasters/${rasterUuid}/data/?format=geotiff&bbox=${currentGridBbox}&projection=${projection}&width=${tileWidth}&height=${tileHeight}&start=${start}&async=true&notify_user=true`
 
-        request.get(requestUrl)
-        .then(() => {
+        const params = [
+            'format=geotiff',
+            `bbox=${currentGridBbox}`,
+            `projection=${projection}`,
+            `width=${tileWidth}`,
+            `height=${tileHeight}`,
+            'async=true',
+            'notify_user=true'
+        ];
+
+        if (start !== '') params.push(`start=${start}`);
+        if (noDataValue !== undefined) params.push(`nodata=${noDataValue}`);
+
+        const urlQuery = params.join('&');
+
+        const requestUrl = `/api/v4/rasters/${rasterUuid}/data/?${urlQuery}`;
+
+        fetch(requestUrl)
+        .then(res => res.json())
+        .then((res) => {
+            if (res.status === 400) {
+                if (res.detail.nodata && res.detail.nodata[0]) {
+                    console.error(res.detail.nodata[0]);
+                    dispatch(addNotification(res.detail.nodata[0]));
+                } else {
+                    console.error(res);
+                    dispatch(addNotification('Raster export failed.'));
+                };
+                return;
+            };
+            openDownloadModal();
             dispatch(receivedTaskRasterExport(id));
         })
-        .catch(error=>{
+        .catch(error => {
             console.error(error);
             dispatch(failedTaskRasterExport(id));
-        })
-
+        });
     });
-    
 };
 
 export const requestProjections = (rasterUuid: string) => async (dispatch) => {
