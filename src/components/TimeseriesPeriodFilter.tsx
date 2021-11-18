@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import Datetime from 'react-datetime';
-import { timeValidator } from '../../utils/timeValidator';
+import { timeValidator } from './../utils/timeValidator';
 import 'react-datetime/css/react-datetime.css';
 import '../styles/DatetimePicker.css'; // this css file is to customize the position of the datetime picker
 import '../styles/TimeSeriesModal.css';

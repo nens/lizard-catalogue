@@ -11,10 +11,10 @@ import {
 } from '../../reducers';
 import { MonitoringNetwork, ObservationType } from '../../interface';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
-import TimeSeriesModal from '../components/TimeSeriesModal';
-import '../styles/Details.css';
-import '../styles/Buttons.css';
-import '../styles/Modal.css';
+import TimeSeriesModal from '../../components/TimeSeriesModal';
+import '../../styles/Details.css';
+import '../../styles/Buttons.css';
+import '../../styles/Modal.css';
 
 // Helper function to add reference frame to unit of observation type
 const addRefToUnit = (observationType: ObservationType) => {

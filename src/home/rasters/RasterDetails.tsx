@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getRaster, getOrganisations, getLizardBootstrap, getSelectedItem } from '../../reducers';
 import { Raster, LatLng } from '../../interface';
@@ -6,12 +7,11 @@ import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import { openRasterInAPI, openRasterInLizard, getLayercollectionGetCapabilitesURL, getRasterGetCapabilitesURL } from '../../utils/url';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
-import Export from '../components/Export';
+import Export from '../../components/Export';
 import manageIcon from '../../images/manage.svg';
-import '../styles/Details.css';
-import '../styles/Modal.css';
-import '../styles/Buttons.css';
-import { useSelector } from 'react-redux';
+import '../../styles/Details.css';
+import '../../styles/Modal.css';
+import '../../styles/Buttons.css';
 
 interface MyProps {
     filters: MyStore['filters'],
@@ -77,7 +77,7 @@ const RasterDetails = (props: MyProps) => {
                     {raster.name}
                 </h3>
                 <span title="To manage this raster">
-                    {authorizedToManageLayer ?
+                    {authorizedToManageLayer ? (
                         <a
                             href={`/management/data_management/rasters/layers/${raster.uuid}`}
                             target="_blank"
@@ -89,8 +89,7 @@ const RasterDetails = (props: MyProps) => {
                                 alt="View in manage client"
                             />
                         </a>
-                    :null
-                    }
+                    ) : null}
                 </span>
             </div>
             <div className="details-uuid">

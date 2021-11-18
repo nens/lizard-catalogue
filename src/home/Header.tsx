@@ -2,16 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { MyStore, getRaster, getWMS } from '../reducers';
 import { Raster, Bootstrap, WMS, Message } from '../interface';
-import Basket from './components/Basket';
-import Information from './components/Information';
-import Inbox from './components/Inbox';
+import Basket from '../components/Basket';
+import Information from '../components/Information';
+import Inbox from '../components/Inbox';
 import packageJson from '../../package.json';
 import lizardLogo from '../images/lizard-logo.svg';
 import exportIcon from '../images/download.svg';
 import basketIcon from '../images/shopping-basket.svg';
 import userIcon from '../images/user.svg';
 import infoIcon from '../images/info.svg';
-import './styles/Header.css';
+import '../styles/Header.css';
 
 interface MyProps {
     showProfileDropdown: boolean,
@@ -85,18 +85,18 @@ const Header: React.FC<MyProps & PropsFromState> = (props) => {
                     {basket.length === 0 ? <span /> : <span className="header-nav__notification">{basket.length}</span>}
                     <span className="header-nav__text">Basket</span>
                 </a>
-                {user.authenticated ?
+                {user.authenticated ? (
                     <div className="header-nav__icon-box user-profile" onClick={openProfileDropdown}>
                         <img src={userIcon} alt="user" className="header-nav__icon" />
                         <span className="header-nav__text">{user.first_name}</span>
                         {props.showProfileDropdown && renderProfileDropdown(routeCurrentLocationInCatalog)}
                     </div>
-                    :
+                ) : (
                     <a href={`/accounts/login/?next=/catalogue/${encodeURIComponent(routeCurrentLocationInCatalog)}`} className="header-nav__icon-box user-profile">
                         <img src={userIcon} alt="user" className="header-nav__icon" />
                         <span className="header-nav__text">Login</span>
                     </a>
-                }
+                )}
                 <a href="#information" className="header-nav__icon-box" title="Info">
                     <img src={infoIcon} alt="info" className="header-nav__icon" />
                 </a>

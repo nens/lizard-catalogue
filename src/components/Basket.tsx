@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Raster, WMS, LatLng } from '../../interface';
-import { getCenterPoint, zoomLevelCalculation, getBounds } from '../../utils/latLngZoomCalculation';
-import { openAllInLizard } from '../../utils/url';
-import { removeRasterFromBasket, removeWMSFromBasket } from '../../action';
-import rasterTemporalIcon from '../../images/raster-temporal.svg';
-import rasterNonTemporalIcon from '../../images/raster-non-temporal.svg';
-import wmsIcon from '../../images/wms.svg';
-import removeIcon from '../../images/remove_shopping_cart.svg';
+import { Raster, WMS, LatLng } from './../interface';
+import { getCenterPoint, zoomLevelCalculation, getBounds } from './../utils/latLngZoomCalculation';
+import { openAllInLizard } from './../utils/url';
+import { removeRasterFromBasket, removeWMSFromBasket } from './../action';
+import rasterTemporalIcon from './../images/raster-temporal.svg';
+import rasterNonTemporalIcon from './../images/raster-non-temporal.svg';
+import wmsIcon from './../images/wms.svg';
+import removeIcon from './../images/remove_shopping_cart.svg';
 import '../styles/Basket.css';
 
 interface PropsFromDispatch {

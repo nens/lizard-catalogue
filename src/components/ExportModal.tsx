@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import {mapBoxAccesToken} from "../../mapboxConfig.js"
-
+import { mapBoxAccesToken } from './../mapboxConfig.js';
 import { 
     Map, 
     TileLayer, 
@@ -21,11 +20,11 @@ import {
     getInbox,
     getExportGridCellBounds,
     getExportNoDataValue,
-} from '../../reducers';
+} from './../reducers';
 import {
   RootState,
   AppDispatch
-} from '../../store';
+} from './../store';
 import {
     addToSelectedExportGridCellIds,
     removeFromSelectedExportGridCellIds,
@@ -33,18 +32,15 @@ import {
     updateExportFormAndFetchExportGridCells,
     requestRasterExports,
     requestProjections,
-} from '../../action';
-import {areGridCelIdsEqual} from '../../utils/rasterExportUtils';
-import { 
-    Raster, 
-    FieldValuePair,
- } from '../../interface';
-import '../styles/Export.css';
+} from './../action';
+import { getSpatialBoundsIntersect, gridPolygonToSpatialBounds } from './../utils/geoUtils';
+import { areGridCelIdsEqual } from './../utils/rasterExportUtils';
+import { Raster, FieldValuePair } from './../interface';
 import Datetime from "react-datetime";
-import "react-datetime/css/react-datetime.css";
 import moment from "moment";
 import MDSpinner from "react-md-spinner";
-import { getSpatialBoundsIntersect, gridPolygonToSpatialBounds } from '../../utils/geoUtils';
+import '../styles/Export.css';
+import "react-datetime/css/react-datetime.css";
 
 const maximumSelectForExport = 3;
 

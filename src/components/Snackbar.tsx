@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect, useSelector } from 'react-redux';
-import { dismissNotification } from '../../action';
-import { getNotification } from '../../reducers';
+import { dismissNotification } from './../action';
+import { getNotification } from './../reducers';
 import '../styles/Snackbar.css';
 
 const Snackbar: React.FC<PropsFromDispatch> = (props) => {

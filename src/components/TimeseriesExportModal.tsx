@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
-import { getInbox } from '../../reducers';
-import { addNotification, addTimeseriesExportTask } from '../../action';
-import { timeValidator } from '../../utils/timeValidator';
-import { requestTimeseriesExport } from '../../utils/url';
+import { getInbox } from './../reducers';
+import { addNotification, addTimeseriesExportTask } from './../action';
+import { timeValidator } from './../utils/timeValidator';
+import { requestTimeseriesExport } from './../utils/url';
 import { TimeseriesPeriodFilter } from './TimeseriesPeriodFilter';
 import '../styles/TimeseriesExportModal.css';
 import '../styles/Modal.css';

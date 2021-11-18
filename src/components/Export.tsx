@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Raster } from '../../interface';
+import { Raster } from './../interface';
 import DownloadModal from './DownloadModal';
 import ExportModal from './ExportModal';
 import '../styles/Export.css';
