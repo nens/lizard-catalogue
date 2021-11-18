@@ -51,7 +51,7 @@ const WMSDetails = () => {
                     {wms.name}
                 </h3>
                 <span title="To manage this WMS layer">
-                    {authorizedToManageLayer ?
+                    {authorizedToManageLayer ? (
                         <a
                             href={`/management/data_management/wms_layers/${wms.uuid}`}
                             target="_blank"
@@ -63,8 +63,7 @@ const WMSDetails = () => {
                                 alt="View in manage client"
                             />
                         </a>
-                    :null
-                    }
+                    ) :null}
                 </span>
             </div>
             <div className="details-uuid">
@@ -79,12 +78,14 @@ const WMSDetails = () => {
             <div className="details-map">
                 <Map bounds={bounds} zoom={wms.min_zoom} zoomControl={false}>
                     <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
-                    {wms.wms_url ? <WMSTileLayer
-                        url={wms.wms_url}
-                        layers={wms.slug}
-                        transparent={true}
-                        format="image/png"
-                    /> : null}
+                    {wms.wms_url ? (
+                        <WMSTileLayer
+                            url={wms.wms_url}
+                            layers={wms.slug}
+                            transparent={true}
+                            format="image/png"
+                        />
+                    ) : null}
                 </Map>
             </div>
             <div className="details-info">

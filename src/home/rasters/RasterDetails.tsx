@@ -77,7 +77,7 @@ const RasterDetails = (props: MyProps) => {
                     {raster.name}
                 </h3>
                 <span title="To manage this raster">
-                    {authorizedToManageLayer ?
+                    {authorizedToManageLayer ? (
                         <a
                             href={`/management/data_management/rasters/layers/${raster.uuid}`}
                             target="_blank"
@@ -89,8 +89,7 @@ const RasterDetails = (props: MyProps) => {
                                 alt="View in manage client"
                             />
                         </a>
-                    :null
-                    }
+                    ) : null}
                 </span>
             </div>
             <div className="details-uuid">

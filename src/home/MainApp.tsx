@@ -330,7 +330,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                     onDataTypeChange={onDataTypeChange}
                     currentDataType={currentDataType}
                 />
-                {currentDataType === "Raster" ?
+                {currentDataType === "Raster" ? (
                     <>
                         <RasterList
                             searchTerm={searchTerm}
@@ -346,8 +346,8 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                             filters={filters}
                         />
                     </>
-                : null}
-                {currentDataType === "WMS" ?
+                ) : null}
+                {currentDataType === "WMS" ? (
                     <>
                         <WMSList
                             searchTerm={searchTerm}
@@ -361,8 +361,8 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                         />
                         <WMSDetails />
                     </>
-                : null}
-                {currentDataType === "Timeseries" ?
+                ) : null}
+                {currentDataType === "Timeseries" ? (
                     <>
                         <MonitoringNetworkList
                             searchTerm={searchTerm}
@@ -375,7 +375,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                         />
                         <MonitoringNetworkDetails />
                     </>
-                : null}
+                ) : null}
             </div>
             {/* ALERT POPUP */}
             {(
