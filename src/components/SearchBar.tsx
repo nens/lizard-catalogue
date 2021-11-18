@@ -1,5 +1,5 @@
 import * as React from 'react';
-import searchIcon from '../../images/search.svg';
+import searchIcon from './../images/search.svg';
 import '../styles/SearchBar.css';
 
 interface MyProps {

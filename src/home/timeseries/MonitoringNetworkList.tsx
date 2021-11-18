@@ -3,9 +3,9 @@ import MDSpinner from "react-md-spinner";
 import { connect } from 'react-redux';
 import { MonitoringNetwork } from '../../interface';
 import { MyStore, getMonitoringNetwork } from '../../reducers';
-import SearchBar from '../components/SearchBar';
-import Pagination from '../components/Pagination';
-import '../styles/List.css';
+import SearchBar from '../../components/SearchBar';
+import Pagination from '../../components/Pagination';
+import '../../styles/List.css';
 
 interface MyProps {
     searchTerm: string,

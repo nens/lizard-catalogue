@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Message, RasterExportRequest } from '../../interface';
+import { Message, RasterExportRequest } from './../interface';
 import { connect } from 'react-redux';
-import { removeMessage, downloadFile, removeCurrentExportTasks } from '../../action';
-import { MyStore } from '../../reducers';
+import { removeMessage, downloadFile, removeCurrentExportTasks } from './../action';
+import { MyStore } from './../reducers';
 import '../styles/Inbox.css';
 
 interface MyProps {

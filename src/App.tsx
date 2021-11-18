@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
-import store from './store';
-import MainContainer from './catalogue/MainApp';
-import Snackbar from './catalogue/components/Snackbar';
 import { QueryClientProvider } from 'react-query';
 import { queryClient } from './hooks';
+import store from './store';
+import MainContainer from './home/MainApp';
+import Snackbar from './components/Snackbar';
 
 function App() {
   return (

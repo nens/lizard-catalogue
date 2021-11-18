@@ -11,8 +11,8 @@ import {
     removeLayercollection,
     updatePage
 } from '../action';
-import FilterOption from './components/FilterOption';
-import './styles/FilterBar.css';
+import FilterOption from '../components/FilterOption';
+import '../styles/FilterBar.css';
 
 interface MyProps {
     observationTypes: ObservationType[],

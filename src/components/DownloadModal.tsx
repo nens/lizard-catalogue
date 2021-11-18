@@ -2,8 +2,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Circle } from 'rc-progress';
 import '../styles/Download.css';
-import { MyStore } from '../../reducers';
-import { Message, RasterExportRequest } from '../../interface';
+import { MyStore } from './../reducers';
+import { Message, RasterExportRequest } from './../interface';
 
 interface PropsFromState {
     inbox: Message[],

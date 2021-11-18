@@ -5,24 +5,24 @@ import Leaflet from 'leaflet';
 import inside from 'point-in-polygon'
 import moment from 'moment';
 import { Map, TileLayer, Marker, ZoomControl, Tooltip, Polygon } from 'react-leaflet';
-import { mapBoxAccesToken } from "../../mapboxConfig.js";
+import { mapBoxAccesToken } from "./../mapboxConfig.js";
 import {
     getSelectedItem,
     getTimeseriesObject,
     getLocationsObjectNotNull,
     getMonitoringNetworkObservationTypesNotNull,
-} from './../../reducers';
-import { fetchTimeseries, removeTimeseries } from './../../action';
-import { openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
-import { timeValidator } from '../../utils/timeValidator';
-import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
-import { recursiveFetchFunction } from '../../hooks';
-import { Location, ObservationType, TimeSeries } from '../../interface';
+} from './../reducers';
+import { fetchTimeseries, removeTimeseries } from './../action';
+import { openTimeseriesInAPI, openLocationsInLizard } from './../utils/url';
+import { timeValidator } from './../utils/timeValidator';
+import { getSpatialBounds, getGeometry } from './../utils/getSpatialBounds';
+import { recursiveFetchFunction } from './../hooks';
+import { Location, ObservationType, TimeSeries } from './../interface';
 import { TimeseriesPeriodFilter } from './TimeseriesPeriodFilter';
 import { convertToSelectObject, Dropdown } from './Dropdown';
 import TimeSeriesExportModal from './TimeseriesExportModal';
 import SearchBar from './SearchBar';
-import polygonIcon from '../../images/polygon.svg';
+import polygonIcon from './../images/polygon.svg';
 import '../styles/TimeSeriesModal.css';
 import '../styles/Modal.css';
 import '../styles/Buttons.css';

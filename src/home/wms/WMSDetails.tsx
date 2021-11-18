@@ -8,8 +8,8 @@ import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL} from '../../utils/ur
 import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import manageIcon from '../../images/manage.svg';
-import '../styles/Details.css';
-import '../styles/Buttons.css';
+import '../../styles/Details.css';
+import '../../styles/Buttons.css';
 
 const WMSDetails = () => {
     const selectedItem = useSelector(getSelectedItem);

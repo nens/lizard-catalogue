@@ -3,12 +3,12 @@ import MDSpinner from "react-md-spinner";
 import { connect } from 'react-redux';
 import { Raster } from '../../interface';
 import { MyStore, getRaster } from '../../reducers';
-import BasketNotification from '../components/BasketNotification';
-import SearchBar from '../components/SearchBar';
-import Pagination from '../components/Pagination';
+import BasketNotification from '../../components/BasketNotification';
+import SearchBar from '../../components/SearchBar';
+import Pagination from '../../components/Pagination';
 import rasterTemporalIcon from '../../images/raster-temporal.svg';
 import rasterNonTemporalIcon from '../../images/raster-non-temporal.svg';
-import '../styles/List.css';
+import '../../styles/List.css';
 
 interface MyProps {
     searchTerm: string,

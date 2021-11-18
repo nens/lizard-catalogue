@@ -80,8 +80,8 @@ import MonitoringNetworkList from './timeseries/MonitoringNetworkList';
 import MonitoringNetworkDetails from './timeseries/MonitoringNetworkDetails';
 import FilterBar from './FilterBar';
 import Header from './Header';
-import AlertPopup from './components/AlertPopup';
-import './styles/MainApp.css';
+import AlertPopup from '../components/AlertPopup';
+import '../styles/MainApp.css';
 
 const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     const currentRasterList = useSelector(getCurrentRasterList);

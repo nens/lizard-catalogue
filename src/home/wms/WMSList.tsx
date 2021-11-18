@@ -3,10 +3,10 @@ import MDSpinner from "react-md-spinner";
 import { connect } from 'react-redux';
 import { WMS } from '../../interface';
 import { MyStore, getWMS } from '../../reducers';
-import BasketNotification from '../components/BasketNotification';
-import SearchBar from '../components/SearchBar';
-import Pagination from '../components/Pagination';
-import '../styles/List.css';
+import BasketNotification from '../../components/BasketNotification';
+import SearchBar from '../../components/SearchBar';
+import Pagination from '../../components/Pagination';
+import '../../styles/List.css';
 
 interface MyProps {
     searchTerm: string,
