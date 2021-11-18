@@ -17,8 +17,9 @@ import { openTimeseriesInAPI, openLocationsInLizard } from './../../utils/url';
 import { timeValidator } from '../../utils/timeValidator';
 import { getSpatialBounds, getGeometry } from '../../utils/getSpatialBounds';
 import { recursiveFetchFunction } from '../../hooks';
-import { Location, TimeSeries } from '../../interface';
+import { Location, ObservationType, TimeSeries } from '../../interface';
 import { TimeseriesPeriodFilter } from './TimeseriesPeriodFilter';
+import { convertToSelectObject, Dropdown } from './Dropdown';
 import TimeSeriesExportModal from './TimeseriesExportModal';
 import SearchBar from './SearchBar';
 import polygonIcon from '../../images/polygon.svg';
@@ -58,9 +59,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     const [locationOnZoom, setLocationOnZoom] = useState<string>('');
     const [searchInput, setSearchInput] = useState<string>('');
     const [finalSearchInput, setFinalSearchInput] = useState<string>('');
-
-    const [selectedObservationTypeCode, setSelectedObservationTypeCode] = useState<string>('');
-    const [oldInputValue, setOldInputValue] = useState('');
+    const [selectedObservationType, setSelectedObservationType] = useState<ObservationType | null>(null);
 
     // list of selected timeseries
     const [selectedTimeseries, setSelectedTimeseries] = useState<TimeSeries[]>([]);
@@ -83,7 +82,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
 
     // useEffect to fetch new state of locations based on filter inputs
     useEffect(() => {
-        if (finalSearchInput || selectedObservationTypeCode || start || end) {
+        if (finalSearchInput || selectedObservationType || start || end) {
             // Set to loading state
             setFilteredLocationObject({
                 isFetching: true,
@@ -96,7 +95,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
             const params: string[] = [`page_size=100`];
 
             if (finalSearchInput) params.push(`name__icontains=${encodeURIComponent(finalSearchInput)}`);
-            if (selectedObservationTypeCode) params.push(`timeseries__observation_type__code=${encodeURIComponent(selectedObservationTypeCode)}`);
+            if (selectedObservationType) params.push(`timeseries__observation_type__code=${encodeURIComponent(selectedObservationType.code)}`);
 
             // We flip the query for start and end to make sure that all cases of timeseries
             // with data are presented as discussed and agreed under this issue: "https://github.com/nens/lizard-catalogue/issues/220"
@@ -129,7 +128,7 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
             // Remove state of filtered locations
             setFilteredLocationObject(null);
         };
-    }, [selectedItem, finalSearchInput, selectedObservationTypeCode, start, end])
+    }, [selectedItem, finalSearchInput, selectedObservationType, start, end])
 
     // Add event listener to close modal on ESCAPE
     useEffect(() => {
@@ -168,8 +167,8 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     // Get list of timeseries nested in selected locations with observation type filter
     const getTimeseriesWithObservationTypeFilter = (timeseries: TimeSeries[]) => {
         return timeseries.filter(ts => {
-            if (selectedObservationTypeCode) {
-                return ts.observation_type.code === selectedObservationTypeCode;
+            if (selectedObservationType) {
+                return ts.observation_type.code === selectedObservationType.code;
             } else {
                 return true;
             };
@@ -402,34 +401,15 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
                     <div className="timeseries-filter-bar">
                         <div className="timeseries-filter-observation-type">
                             <h3>FILTER OBSERVATION TYPE</h3>
-                            <form
-                                autoComplete='off'
-                                onSubmit={e => e.preventDefault()}
-                            >
-                                <input
-                                    className={'searchbar-input searchbar-input-filter'}
-                                    list={'observation-types'}
+                            <form>
+                                <Dropdown
                                     placeholder={'- Search and select -'}
-                                    onChange={e => {
-                                        const value = e.target.value;
-                                        if (!value) setSelectedObservationTypeCode('');
-                                        const selectedObservationType = observationTypes.find(observationType => value === (observationType.parameter || observationType.code));
-                                        if (selectedObservationType) setSelectedObservationTypeCode(selectedObservationType.code);
-                                    }}
-                                    onMouseOver={e => {
-                                        setOldInputValue(e.currentTarget.value);
-                                        e.currentTarget.value = '';
-                                    }}
-                                    onMouseOut={e => e.currentTarget.value = oldInputValue}
+                                    options={observationTypes.map(obsT => convertToSelectObject(obsT.id, obsT.parameter || obsT.code, obsT))}
+                                    value={selectedObservationType ? convertToSelectObject(selectedObservationType.id, selectedObservationType.parameter || selectedObservationType.code, selectedObservationType) : null}
+                                    // @ts-ignore
+                                    onChange={(e) => setSelectedObservationType(e)}
+                                    dropUp={true}
                                 />
-                                <datalist id={'observation-types'}>
-                                    {observationTypes.map(observationType => (
-                                        <option
-                                            key={observationType.id}
-                                            value={observationType.parameter || observationType.code}
-                                        />
-                                    ))}
-                                </datalist>
                             </form>
                         </div>
                         <div className="timeseries-filter-period">
