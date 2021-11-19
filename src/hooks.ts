@@ -42,7 +42,8 @@ export class FetchError extends Error {
 
 export async function basicFetchFunction(
   baseUrl: string,
-  params: Params
+  params: Params,
+  signal?: AbortSignal,
 ) {
   const response = await fetch(combineUrlAndParams(baseUrl, params), {
     method: 'GET',
@@ -50,7 +51,8 @@ export async function basicFetchFunction(
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-    }
+    },
+    signal
   });
 
   if (response.ok) {
@@ -81,14 +83,15 @@ export async function basicFetchFunction(
 export async function recursiveFetchFunction (
     baseUrl: string,
     params: Params,
-    previousResults: any[] = []
+    previousResults: any[] = [],
+    signal?: AbortSignal,
 ) {
-  const response = await basicFetchFunction(baseUrl, params);
+  const response = await basicFetchFunction(baseUrl, params, signal);
   if (!response) return;
 
   const results = previousResults.concat(response.data);
   if (response.nextUrl) {
-    return await recursiveFetchFunction(response.nextUrl, {}, results);
+    return await recursiveFetchFunction(response.nextUrl, {}, results, signal);
   };
   return results;
 };
