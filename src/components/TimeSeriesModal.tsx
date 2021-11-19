@@ -144,16 +144,21 @@ const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
     // useEffect to fetch timeseries when component first mounted
     // and remove timeseries when component unmounts
     useEffect(() => {
+        // use AbortController instance to stop the recursive fetch timeseries function
+        // when the TimeseriesModal component unmounted
         const controller = new AbortController();
+
         fetchTimeseries(selectedItem, controller.signal).then(response => {
             if (response && response.status === 'Error') {
                 closeTimeseriesModal(); // close the modal if timeseries failed to load
             };
         });
+
         return () => {
             controller.abort();
             removeTimeseries();
         };
+
         // closeTimeseriesModal is excluded from the dependency array
         // as it caused the effect to be called multiple times
         // eslint-disable-next-line react-hooks/exhaustive-deps
