@@ -293,10 +293,16 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     // useEffect to fetch monitoring network observation types and locations
     // of selected monitoring network
     useEffect(() => {
+        // Add abort controller for the fetch requests
+        const controller = new AbortController();
+
         if (currentDataType === 'Timeseries' && selectedItem) {
-            fetchMonitoringNetworkObservationTypes(selectedItem);
-            fetchLocations(selectedItem);
+            fetchMonitoringNetworkObservationTypes(selectedItem, controller.signal);
+            fetchLocations(selectedItem, controller.signal);
         };
+
+        // Abort the current fetch request when component unmounted
+        return () => controller.abort();
     }, [
         currentDataType,
         selectedItem,
@@ -420,8 +426,8 @@ const mapDispatchToProps = (dispatch: any) => ({
         organisationName: string,
         ordering: string
     ) => fetchMonitoringNetworks(page, searchTerm, organisationName, ordering, dispatch),
-    fetchMonitoringNetworkObservationTypes: (uuid: string) => dispatch(fetchMonitoringNetworkObservationTypes(uuid)),
-    fetchLocations: (uuid: string) => dispatch(fetchLocations(uuid)),
+    fetchMonitoringNetworkObservationTypes: (uuid: string, signal?: AbortSignal) => dispatch(fetchMonitoringNetworkObservationTypes(uuid, signal)),
+    fetchLocations: (uuid: string, signal?: AbortSignal) => dispatch(fetchLocations(uuid, signal)),
     selectItem: (uuid: string) => selectItem(uuid, dispatch),
     switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
     toggleAlert: () => toggleAlert(dispatch),

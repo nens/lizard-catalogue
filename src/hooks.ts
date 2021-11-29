@@ -42,53 +42,60 @@ export class FetchError extends Error {
 
 export async function basicFetchFunction(
   baseUrl: string,
-  params: Params
+  params: Params,
+  signal?: AbortSignal,
 ) {
-  const response = await fetch(combineUrlAndParams(baseUrl, params), {
-    method: 'GET',
-    credentials: "same-origin",
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    }
-  });
+  try {
+    const response = await fetch(combineUrlAndParams(baseUrl, params), {
+      method: 'GET',
+      credentials: "same-origin",
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      signal
+    });
 
-  if (response.ok) {
-    const json = await response.json();
+    if (response.ok) {
+      const json = await response.json();
 
-    let nextUrl = json.next;
-    let previousUrl = json.previous;
-    // This hack is for development; turn absolute URLs into local ones.
-    if (nextUrl) {
-      nextUrl = nextUrl.split('lizard.net')[1];
-    }
-    if (previousUrl) {
-      previousUrl = previousUrl.split('lizard.net')[1];
-    }
-    // This is how Lizard API v4 formats list responses.
-    return {
-      nextUrl,
-      previousUrl,
-      data: json.results
+      let nextUrl = json.next;
+      let previousUrl = json.previous;
+      // This hack is for development; turn absolute URLs into local ones.
+      if (nextUrl) {
+        nextUrl = nextUrl.split('lizard.net')[1];
+      }
+      if (previousUrl) {
+        previousUrl = previousUrl.split('lizard.net')[1];
+      }
+      // This is how Lizard API v4 formats list responses.
+      return {
+        nextUrl,
+        previousUrl,
+        data: json.results
+      };
+    } else {
+      // throw new FetchError(response, `Received status: ${response.status}`)
+      console.error(`Received status: ${response.status}`, response);
+      return;
     };
-  } else {
-    // throw new FetchError(response, `Received status: ${response.status}`)
-    console.error(`Received status: ${response.status}`, response);
-    return;
-  }
-}
+  } catch {
+    console.error('User aborted a request.');
+  };
+};
 
 export async function recursiveFetchFunction (
-    baseUrl: string,
-    params: Params,
-    previousResults: any[] = []
+  baseUrl: string,
+  params: Params,
+  previousResults: any[] = [],
+  signal?: AbortSignal,
 ) {
-  const response = await basicFetchFunction(baseUrl, params);
+  const response = await basicFetchFunction(baseUrl, params, signal);
   if (!response) return;
 
   const results = previousResults.concat(response.data);
   if (response.nextUrl) {
-    return await recursiveFetchFunction(response.nextUrl, {}, results);
+    return await recursiveFetchFunction(response.nextUrl, {}, results, signal);
   };
   return results;
 };

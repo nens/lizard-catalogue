@@ -228,13 +228,13 @@ const timeseriesReceived = (timeseriesList: TimeSeries[]) => ({
     timeseriesList
 });
 
-export const fetchTimeseries = (uuid: string) => async (dispatch) => {
+export const fetchTimeseries = (uuid: string, signal?: AbortSignal) => async (dispatch) => {
     dispatch(timeseriesRequested());
 
-    const timeseries = await recursiveFetchFunction(`/api/v4/monitoringnetworks/${uuid}/timeseries/`, { page_size: 100 });
+    const timeseries = await recursiveFetchFunction(`/api/v4/monitoringnetworks/${uuid}/timeseries/`, { page_size: 100 }, [], signal);
 
     if (!timeseries) {
-        dispatch(addNotification(`Failed to load available timeseries for monitoring network ${uuid}.`));
+        dispatch(addNotification(`Failed to load available timeseries for monitoring network ${uuid}.`, 2000));
         return {
             status: 'Error',
             errorMessage: `Failed to load available timeseries for monitoring network ${uuid}.`
@@ -264,13 +264,13 @@ const observationTypesReceived = (observationTypeList: ObservationType[], count:
     count
 });
 
-export const fetchMonitoringNetworkObservationTypes = (uuid: string) => async (dispatch) => {
+export const fetchMonitoringNetworkObservationTypes = (uuid: string, signal?: AbortSignal) => async (dispatch) => {
     dispatch(observationTypesRequested());
 
-    const observationTypes = await recursiveFetchFunction(`/api/v4/monitoringnetworks/${uuid}/observationtypes/`, { page_size: 10000 });
+    const observationTypes = await recursiveFetchFunction(`/api/v4/monitoringnetworks/${uuid}/observationtypes/`, { page_size: 10000 }, [], signal);
 
     if (!observationTypes) {
-        dispatch(addNotification(`Failed to load available observation types for monitoring network ${uuid}.`));
+        dispatch(addNotification(`Failed to load available observation types for monitoring network ${uuid}.`, 2000));
         return {
             status: 'Error',
             errorMessage: `Failed to load available observation types for monitoring network ${uuid}.`
@@ -293,13 +293,13 @@ const locationsReceived = (locationsList: Location[]) => ({
     locationsList
 });
 
-export const fetchLocations = (uuid: string) => async (dispatch) => {
+export const fetchLocations = (uuid: string, signal?: AbortSignal) => async (dispatch) => {
     dispatch(locationsRequested());
 
-    const locations = await recursiveFetchFunction(`/api/v4/monitoringnetworks/${uuid}/locations/`, { page_size: 1000 });
+    const locations = await recursiveFetchFunction(`/api/v4/monitoringnetworks/${uuid}/locations/`, { page_size: 1000 }, [], signal);
 
     if (!locations) {
-        dispatch(addNotification(`Failed to load available locations for monitoring network ${uuid}.`));
+        dispatch(addNotification(`Failed to load available locations for monitoring network ${uuid}.`, 2000));
         return{
             status: 'Error',
             errorMessage: `Failed to load available locations for monitoring network ${uuid}.`
