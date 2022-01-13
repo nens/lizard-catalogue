@@ -59,6 +59,8 @@ import {
     REQUEST_TIMESERIES_EXPORT,
     USER_ORGANISATIONS_FETCHED,
     SET_NO_DATA_VALUE,
+    REQUEST_SCENARIOS,
+    RECEIVE_SCENARIOS,
 } from "./action";
 import {
     Raster,
@@ -73,6 +75,7 @@ import {
     MonitoringNetwork,
     TimeSeries,
     Location,
+    Scenario,
 } from './interface';
 import { areGridCelIdsEqual, haveGridCellsSameId } from './utils/rasterExportUtils';
 import { getSpatialBounds, getGeometry } from './utils/getSpatialBounds';
@@ -104,6 +107,17 @@ export interface MyStore {
     } | null,
     allWMS: {
         [index: string]: WMS,
+    } | {},
+    currentScenariosList: {
+        count: number,
+        previous: string | null,
+        next: string | null,
+        scenariosList: string[],
+        isFetching: boolean,
+        showAlert: boolean,
+    } | null,
+    allScenarios: {
+        [index: string]: Scenario,
     } | {},
     currentMonitoringNetworkList: {
         count: number,
@@ -456,6 +470,54 @@ const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
             const newState = { ...state };
             action.payload.results.forEach(wms => {
                 newState[wms.uuid] = wms;
+            });
+            return newState;
+        default:
+            return state;
+    };
+};
+
+const currentScenariosList = (state: MyStore['currentScenariosList'] = null, action): MyStore['currentScenariosList'] => {
+    switch (action.type) {
+        case REQUEST_SCENARIOS:
+            return {
+                count: 0,
+                previous: null,
+                next: null,
+                scenariosList: [],
+                isFetching: true,
+                showAlert: false
+            }
+        case RECEIVE_SCENARIOS:
+            const { count, previous, next } = action.payload;
+            return {
+                count: count,
+                previous: previous,
+                next: next,
+                scenariosList: action.payload.results.map(scenario => scenario.uuid),
+                isFetching: false,
+                showAlert: count === 0 ? true : false
+            };
+        case TOGGLE_ALERT:
+            if (state) {
+                return {
+                    ...state,
+                    showAlert: false
+                }
+            } else {
+                return state;
+            };
+        default:
+            return state;
+    };
+};
+
+const allScenarios = (state: MyStore['allScenarios'] = {}, action): MyStore['allScenarios'] => {
+    switch (action.type) {
+        case RECEIVE_SCENARIOS:
+            const newState = { ...state };
+            action.payload.results.forEach(scenario => {
+                newState[scenario.uuid] = scenario;
             });
             return newState;
         default:
@@ -920,6 +982,14 @@ export const getWMS = (state: MyStore, uuid: string) => {
     return state.allWMS[uuid];
 };
 
+export const getCurrentScenariosList = (state: MyStore) => {
+    return state.currentScenariosList;
+};
+
+export const getScenario = (state: MyStore, uuid: string) => {
+    return state.allScenarios[uuid];
+};
+
 export const getCurrentMonitoringNetworkList = (state: MyStore) => {
     return state.currentMonitoringNetworkList;
 };
@@ -996,6 +1066,8 @@ export default combineReducers({
     allRasters,
     currentWMSList,
     allWMS,
+    currentScenariosList,
+    allScenarios,
     currentMonitoringNetworkList,
     allMonitoringNetworks,
     timeseriesObject,

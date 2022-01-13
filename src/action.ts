@@ -27,6 +27,7 @@ import {
     TimeSeries,
     Location,
     ObservationType,
+    ScenariosObject,
 } from './interface';
 import { 
     getExportGridCellResolution, 
@@ -161,6 +162,54 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
                     .catch(console.error)
             } else {
                 dispatch(wmsLayersReceived(response.body))
+            }
+        })
+        .catch(console.error)
+};
+
+//MARK: Scenarios
+export const REQUEST_SCENARIOS = 'REQUEST_SCENARIOS';
+export const RECEIVE_SCENARIOS = 'RECEIVE_SCENARIOS';
+
+const scenariosRequested = () => ({
+    type: REQUEST_SCENARIOS
+});
+
+const scenariosReceived = (scenariosObject: ScenariosObject) => ({
+    type: RECEIVE_SCENARIOS,
+    payload: scenariosObject
+});
+
+export const fetchScenarios = (page: number, searchTerm: string, organisationName: string, ordering: string, dispatch): void => {
+    dispatch(scenariosRequested());
+
+    const params: string[] = [];
+
+    if (page) params.push(`page=${page}`);
+    if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
+    if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
+    if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
+
+    const queries = params.join('&');
+
+    request
+        .get(`/api/v4/scenarios/?${queries}`)
+        .then(response => {
+            if (
+                response.body.count === 0 &&
+                // Check if search input is an UUID
+                searchTerm && searchTerm.includes('-') && searchTerm.length === 36
+            ) {
+                //If could not find any scenario with the search term by scenario's name then look for its uuid
+                const newQueries = queries.replace('name__icontains', 'uuid');
+                request
+                    .get(`/api/v4/scenarios/?${newQueries}`)
+                    .then(response => {
+                        dispatch(scenariosReceived(response.body))
+                    })
+                    .catch(console.error)
+            } else {
+                dispatch(scenariosReceived(response.body))
             }
         })
         .catch(console.error)
