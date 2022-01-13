@@ -41,8 +41,7 @@ import {
 } from './reducers';
 import { areGridCelIdsEqual } from './utils/rasterExportUtils'
 import { recursiveFetchFunction } from './hooks';
-
-
+import { UUID_REGEX } from './utils/uuidRegex';
 
 //MARK: Bootsrap
 export const REQUEST_LIZARD_BOOTSTRAP = "REQUEST_LIZARD_BOOTSTRAP";
@@ -107,7 +106,7 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
         .get(`/api/v4/rasters/?${queries}&scenario__isnull=true`)
         .then(response => {
             if(response.body.count === 0 && searchTerm) {
-                //If could not find any raster with the search term by raster's name then look for raster's uuid
+                // If no raster found by name then search by uuid
                 const newQueries = queries.replace('name__icontains', 'uuid');
                 request
                     .get(`/api/v4/rasters/?${newQueries}&scenario__isnull=true`)
@@ -152,7 +151,7 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
         .get(`/api/v4/wmslayers/?${queries}`)
         .then(response => {
             if(response.body.count === 0 && searchTerm) {
-                //If could not find any WMS layer with the search term by WMS's name then look for WMS's uuid
+                // If no WMS layer found by name then search by uuid
                 const newQueries = queries.replace('name__icontains', 'uuid');
                 request
                     .get(`/api/v4/wmslayers/?${newQueries}`)
@@ -195,17 +194,24 @@ export const fetchScenarios = (page: number, searchTerm: string, organisationNam
     request
         .get(`/api/v4/scenarios/?${queries}`)
         .then(response => {
-            if (
-                response.body.count === 0 &&
-                // Check if search input is an UUID
-                searchTerm && searchTerm.includes('-') && searchTerm.length === 36
-            ) {
-                //If could not find any scenario with the search term by scenario's name then look for its uuid
-                const newQueries = queries.replace('name__icontains', 'uuid');
+            if (response.body.count === 0 && searchTerm) {
+                // If no scenario found by name then search by model name
+                const newQueries = queries.replace('name__icontains', 'model_name__icontains');
                 request
                     .get(`/api/v4/scenarios/?${newQueries}`)
                     .then(response => {
-                        dispatch(scenariosReceived(response.body))
+                        if (response.body.count === 0 && searchTerm) {
+                            // If no scenario found by name and model name then search by uuid
+                            const newQueries = queries.replace('name__icontains', 'uuid');
+                            request
+                                .get(`/api/v4/scenarios/?${newQueries}`)
+                                .then(response => {
+                                    dispatch(scenariosReceived(response.body))
+                                })
+                                .catch(console.error)
+                        } else {
+                            dispatch(scenariosReceived(response.body))
+                        }
                     })
                     .catch(console.error)
             } else {
@@ -243,12 +249,8 @@ export const fetchMonitoringNetworks = (page: number, searchTerm: string, organi
     request
         .get(`/api/v4/monitoringnetworks/?${queries}`)
         .then(response => {
-            if (
-                response.body.count === 0 &&
-                // Check if search input is an UUID
-                searchTerm && searchTerm.includes('-') && searchTerm.length === 36
-            ) {
-                //If could not find any monitoring network with the search term by monitoring network's name then look for its uuid
+            if (response.body.count === 0 && searchTerm && UUID_REGEX.test(searchTerm)) {
+                // If no monitoring network found by name then search by uuid
                 const newQueries = queries.replace('name__icontains', 'uuid');
                 request
                     .get(`/api/v4/monitoringnetworks/?${newQueries}`)
