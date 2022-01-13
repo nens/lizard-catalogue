@@ -19,7 +19,7 @@ import { MyStore } from './reducers';
 //ACTION
 export interface SwitchDataType {
     type: typeof SWITCH_DATA_TYPE,
-    payload: "Raster" | "WMS" | "Timeseries"
+    payload: "Raster" | "WMS" | "Timeseries" | "Scenario"
 };
 
 //LIZARD BOOTSTRAP

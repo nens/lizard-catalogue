@@ -49,7 +49,8 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
                     if (
                         e.target.value === "Raster" ||
                         e.target.value === "WMS" ||
-                        e.target.value === "Timeseries"
+                        e.target.value === "Timeseries" ||
+                        e.target.value === "Scenario"
                     ) {
                         onDataTypeChange(e.target.value)
                     };
@@ -58,6 +59,7 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
                 <option value="Raster">RASTER</option>
                 <option value="WMS">WMS LAYER</option>
                 <option value="Timeseries">TIME SERIES</option>
+                <option value="Scenario">SCENARIO</option>
             </select>
             <FilterOption
                 filterOption="organisation"
@@ -69,7 +71,7 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
                 }}
                 removeItem={removeOrganisation}
             />
-            {currentDataType !== "Timeseries" ? (
+            {currentDataType === "Raster" || currentDataType === "WMS" ? (
                 <FilterOption
                     filterOption="layercollection"
                     listOfItems={layercollections}
