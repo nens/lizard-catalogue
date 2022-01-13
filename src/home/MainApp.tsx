@@ -48,6 +48,7 @@ import {
     fetchMonitoringNetworkObservationTypes,
     fetchLocations,
     fetchUserOrganisations,
+    fetchScenarios,
 } from '../action';
 import {
     getCurrentRasterList,
@@ -157,6 +158,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         fetchMonitoringNetworkObservationTypes,
         fetchMonitoringNetworks,
         fetchRasters,
+        fetchScenarios,
         fetchWMSLayers,
         fetchUserOrganisations,
     } = props;
@@ -249,7 +251,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         props.history
     ]);
 
-    // useEffect to fetch rasters, WMS or monitoring networks
+    // useEffect to fetch rasters, WMS, scenarios and monitoring networks
     // based on currentDataType and filters state in Redux
     useEffect(() => {
         if (currentDataType === 'Raster') {
@@ -269,6 +271,13 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                 filters.layercollection,
                 filters.ordering
             );
+        } else if (currentDataType === 'Scenario') {
+            fetchScenarios(
+                filters.page,
+                filters.searchTerm,
+                filters.organisation,
+                filters.ordering
+            );
         } else if (currentDataType === 'Timeseries') {
             fetchMonitoringNetworks(
                 filters.page,
@@ -281,6 +290,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         currentDataType,
         fetchMonitoringNetworks,
         fetchRasters,
+        fetchScenarios,
         fetchWMSLayers,
         filters.layercollection,
         filters.observationType,
@@ -425,6 +435,12 @@ const mapDispatchToProps = (dispatch: any) => ({
         layercollectionSlug: string,
         ordering: string
     ) => fetchWMSLayers(page, searchTerm, organisationName, layercollectionSlug, ordering, dispatch),
+    fetchScenarios: (
+        page: number,
+        searchTerm: string,
+        organisationName: string,
+        ordering: string
+    ) => fetchScenarios(page, searchTerm, organisationName, ordering, dispatch),
     fetchMonitoringNetworks: (
         page: number,
         searchTerm: string,
