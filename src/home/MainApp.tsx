@@ -58,6 +58,7 @@ import {
     getCurrentDataType,
     getCurrentWMSList,
     getCurrentMonitoringNetworkList,
+    getCurrentScenariosList,
     getFilters,
     getSelectedItem,
     getLizardBootstrap
@@ -77,6 +78,7 @@ import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
 import WMSDetails from './wms/WMSDetails';
+import ScenarioList from './scenarios/ScenarioList';
 import MonitoringNetworkList from './timeseries/MonitoringNetworkList';
 import MonitoringNetworkDetails from './timeseries/MonitoringNetworkDetails';
 import FilterBar from './FilterBar';
@@ -87,6 +89,7 @@ import '../styles/MainApp.css';
 const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     const currentRasterList = useSelector(getCurrentRasterList);
     const currentWMSList = useSelector(getCurrentWMSList);
+    const currentScenariosList = useSelector(getCurrentScenariosList);
     const currentMonitoringNetworkList = useSelector(getCurrentMonitoringNetworkList);
     const observationTypes = useSelector(getObservationTypes);
     const organisations = useSelector(getOrganisations);
@@ -394,7 +397,15 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                 ) : null}
                 {currentDataType === "Scenario" ? (
                     <>
-                        Scenario
+                        <ScenarioList
+                            searchTerm={searchTerm}
+                            currentScenariosList={currentScenariosList}
+                            selectItem={props.selectItem}
+                            onPageClick={onPageClick}
+                            onSearchChange={onSearchChange}
+                            onSearchSubmit={onSearchSubmit}
+                            onSorting={props.updateOrder}
+                        />
                     </>
                 ) : null}
             </div>
