@@ -76,6 +76,7 @@ class ScenariosList extends React.Component<ScenariosListProps> {
                             </div>
                             <div className="list__row list__row-raster-description">
                                 Created
+                                <i className="fa fa-sort" onClick={() => onSorting('created')} />
                             </div>
                             <div className="list__row list__row-access" />
                         </li>

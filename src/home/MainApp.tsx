@@ -41,6 +41,8 @@ import {
     updateSearch,
     updateOrder,
     updatePage,
+    removeSearch,
+    removeOrder,
     selectOrganisation,
     selectLayercollection,
     selectObservationType,
@@ -145,14 +147,15 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         props.updatePage(1); // Go back to page 1 in the result list
     };
 
-    //When switch the view from Rasters to WMS layers and vice versa, set the state of this main container back to initial state
+    // When switch the view from Rasters to WMS layers and vice versa, set the state of this main container back to initial state
     const onDataTypeChange = (dataType: SwitchDataType['payload']) => {
         props.switchDataType(dataType);
 
-        //Update Redux store and the component's state
+        // Update Redux store and the component's state
         props.selectItem(''); // Remove the previous selected item
-        props.updateSearch(''); // Remove the search input
+        props.removeSearch(); // Remove the search input
         props.updatePage(1); // Go back to page 1 in the result list
+        props.removeOrder(); // Remove any ordering
         setSearchTerm('');
     };
 
@@ -467,7 +470,9 @@ const mapDispatchToProps = (dispatch: any) => ({
     toggleAlert: () => toggleAlert(dispatch),
     requestInbox: () => requestInbox(dispatch),
     updateSearch: (searchTerm: string) => updateSearch(dispatch, searchTerm),
+    removeSearch: () => removeSearch(dispatch),
     updateOrder: (ordering: string) => updateOrder(dispatch, ordering),
+    removeOrder: () => removeOrder(dispatch),
     updatePage: (page: number) => updatePage(dispatch, page),
     selectOrganisation: (organisationName: string) => selectOrganisation(dispatch, organisationName),
     selectLayercollection: (layercollectionSlug: string) => selectLayercollection(dispatch, layercollectionSlug),

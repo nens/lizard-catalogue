@@ -449,12 +449,13 @@ export const SELECT_ORGANISATION = 'SELECT_ORGANISATION';
 export const SELECT_LAYERCOLLECTION = 'SELECT_LAYERCOLLECTION';
 export const SELECT_OBSERVATIONTYPE = 'SELECT_OBSERVATIONTYPE';
 export const UPDATE_SEARCH = 'UPDATE_SEARCH';
+export const UPDATE_ORDER = 'UPDATE_ORDER';
+export const UPDATE_PAGE = 'UPDATE_PAGE';
 export const REMOVE_ORGANISATION = 'REMOVE_ORGANISATION';
 export const REMOVE_LAYERCOLLECTION = 'REMOVE_LAYERCOLLECTION';
 export const REMOVE_OBSERVATIONTYPE = 'REMOVE_OBSERVATIONTYPE';
 export const REMOVE_SEARCH = 'REMOVE_SEARCH';
-export const UPDATE_ORDER = 'UPDATE_ORDER';
-export const UPDATE_PAGE = 'UPDATE_PAGE';
+export const REMOVE_ORDER = 'REMOVE_ORDER';
 
 export const selectOrganisation = (dispatch, organisation: string) => {
     dispatch({
@@ -512,6 +513,12 @@ export const updateOrder = (dispatch, ordering: string) => {
     dispatch({
         type: UPDATE_ORDER,
         ordering
+    });
+};
+
+export const removeOrder = (dispatch) => {
+    dispatch({
+        type: REMOVE_ORDER
     });
 };
 

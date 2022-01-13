@@ -41,6 +41,7 @@ import {
     REMOVE_LAYERCOLLECTION,
     REMOVE_OBSERVATIONTYPE,
     REMOVE_SEARCH,
+    REMOVE_ORDER,
     UPDATE_ORDER,
     UPDATE_PAGE,
     REMOVE_CURRENT_EXPORT_TASKS,
@@ -846,6 +847,11 @@ const filters =(
             return {
                 ...state,
                 searchTerm: ''
+            };
+        case REMOVE_ORDER:
+            return {
+                ...state,
+                ordering: ''
             };
         default:
             return state;
