@@ -79,6 +79,7 @@ import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
 import WMSDetails from './wms/WMSDetails';
 import ScenarioList from './scenarios/ScenarioList';
+import ScenarioDetails from './scenarios/ScenarioDetails';
 import MonitoringNetworkList from './timeseries/MonitoringNetworkList';
 import MonitoringNetworkDetails from './timeseries/MonitoringNetworkDetails';
 import FilterBar from './FilterBar';
@@ -406,6 +407,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                             onSearchSubmit={onSearchSubmit}
                             onSorting={props.updateOrder}
                         />
+                        <ScenarioDetails />
                     </>
                 ) : null}
             </div>

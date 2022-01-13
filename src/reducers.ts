@@ -986,7 +986,7 @@ export const getCurrentScenariosList = (state: MyStore) => {
     return state.currentScenariosList;
 };
 
-export const getScenario = (state: MyStore, uuid: string) => {
+export const getScenario = (state: MyStore, uuid: string): Scenario => {
     return state.allScenarios[uuid];
 };
 

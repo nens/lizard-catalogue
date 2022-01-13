@@ -1,8 +1,13 @@
 import * as L from 'leaflet';
-import { Raster, WMS, LatLng, Layercollection, Location } from "../interface";
+import { Raster, WMS, LatLng, Layercollection, Location, Scenario } from "../interface";
 import { baseUrl } from "../api";
 import { getIdFromUrl } from './getUuidFromUrl';
 import moment from "moment";
+
+// Helper function to get short UUID
+const getShortUuid = (uuid: string) => {
+    return uuid.substring(0, 7);
+};
 
 export const openRasterInAPI = (raster: Raster) => {
     window.open(`/api/v4/rasters/${raster.uuid}`)
@@ -10,6 +15,10 @@ export const openRasterInAPI = (raster: Raster) => {
 
 export const openWMSInAPI = (wms: WMS) => {
     window.open(`/api/v4/wmslayers/${wms.uuid}`)
+};
+
+export const openScenarioInAPI = (scenario: Scenario) => {
+    window.open(`/api/v4/scenarios/${scenario.uuid}`)
 };
 
 export const openTimeseriesInAPI = (timeseriesUUIDs: string[]) => {
@@ -98,23 +107,21 @@ export const openLocationsInLizard = async (locations: Location[], start: number
 };
 
 export const openRasterInLizard = (raster: Raster, centerPoint: LatLng, zoom: number) => {
-    //create short UUID of the raster
-    const rasterShortUUID = raster.uuid.substr(0, 7);
-    
-    window.open(`/viewer/nl/map/topography,raster$${rasterShortUUID}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
+    window.open(`/viewer/nl/map/topography,raster$${getShortUuid(raster.uuid)}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };
 
 export const openWMSInLizard = (wms: WMS, centerPoint: LatLng, zoom: number) => {
-    //create short UUID of the WMS layer
-    const wmsShortUUID = wms.uuid.substr(0, 7);
+    window.open(`/viewer/nl/map/topography,wmslayer$${getShortUuid(wms.uuid)}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
+};
 
-    window.open(`/viewer/nl/map/topography,wmslayer$${wmsShortUUID}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
+export const openScenarioInLizard = (scenario: Scenario) => {
+    window.open(`/viewer/nl/map/topography,scenario$${getShortUuid(scenario.uuid)}`);
 };
 
 export const openAllInLizard = (rasters: Raster[], centerPoint: LatLng, zoom: number, wmsLayers: WMS[]) => {
     //create arrays of short ID of all the rasters and WMS layers in the basket
-    const rasterIddArray = rasters.map(raster => raster.uuid.substr(0, 7));
-    const wmsIdArray = wmsLayers.map(wms => wms.uuid.substr(0, 7));
+    const rasterIddArray = rasters.map(raster => getShortUuid(raster.uuid));
+    const wmsIdArray = wmsLayers.map(wms => getShortUuid(wms.uuid));
 
     //create the url path to display all the rasters and WMS layers in the basket on the map
     //the format of the url is something like: ',raster$rasterID1,raster$rasterID2,...,wmslayer$wmsLayerID1,...'
@@ -130,6 +137,10 @@ export const openWMSDownloadURL = (wms: WMS) => {
 
 export const getRasterGetCapabilitesURL = (raster: Raster) => {
     return `${baseUrl}/wms/raster_${raster.uuid}/?request=GetCapabilities`;
+};
+
+export const getScenarioGetCapabilitesURL = (scenario: Scenario) => {
+    return `${baseUrl}/wms/scenario_${scenario.uuid}/?request=GetCapabilities`;
 };
 
 export const getLayercollectionGetCapabilitesURL = (layercollection: Layercollection) => {
