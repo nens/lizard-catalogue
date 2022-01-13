@@ -229,8 +229,8 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
             currentDataType,
             filters.searchTerm,
             filters.organisation,
-            currentDataType === 'WMS' ? '' : filters.observationType,
-            currentDataType === 'Timeseries' ? '' : filters.layercollection,
+            currentDataType === 'Raster' ? filters.observationType : '',
+            currentDataType === 'Raster' || currentDataType === 'WMS' ? filters.layercollection : '',
             selectedItem
         );
 
@@ -380,6 +380,11 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                             onSorting={props.updateOrder}
                         />
                         <MonitoringNetworkDetails />
+                    </>
+                ) : null}
+                {currentDataType === "Scenario" ? (
+                    <>
+                        Scenario
                     </>
                 ) : null}
             </div>
