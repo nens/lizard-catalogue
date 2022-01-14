@@ -1,14 +1,12 @@
-import * as React from 'react';
-import '../styles/BasketNotification.css';
+import React from 'react';
+import styles from './BasketNotification.module.css';
 
-export default class BasketNotification extends React.Component {
-    render() {
-        return (
-            <div className="notification">
-                <p>Your selection has been updated successfully! Please go to the basket to see your selected item(s).</p>
-                {/* eslint-disable-next-line */}
-                <a href="#" className="notification-close">OK</a>
-            </div>
-        );
-    };
-};
+export default function BasketNotification () {
+    return (
+        <div className={styles.Notification}>
+            <p>Your selection has been updated successfully! Please go to the basket to see your selected item(s).</p>
+            {/* eslint-disable-next-line */}
+            <a href="#" className={styles.NotificationClose}>OK</a>
+        </div>
+    )
+}
