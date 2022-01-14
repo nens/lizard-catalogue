@@ -358,7 +358,6 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                     <>
                         <RasterList
                             searchTerm={searchTerm}
-                            currentRasterList={currentRasterList}
                             selectItem={props.selectItem}
                             updateBasketWithRaster={props.updateBasketWithRaster}
                             onPageClick={onPageClick}

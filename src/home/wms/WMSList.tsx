@@ -92,10 +92,10 @@ export default function WmsList (props: MyProps) {
                                 key={wms.uuid}
                                 onClick={() => selectItem(wms.uuid)}
                             >
-                            <input className="list__row list__row-normal list__row-box" type="checkbox" onChange={() => onCheckboxSelect(wms.uuid)} checked={checked} />
-                            <div className="list__row list__row-normal list__row-name" title={wms.name}>{wms.name}</div>
-                            <div className="list__row list__row-normal list__row-org" title={wms.organisation && wms.organisation.name}>{wms.organisation && wms.organisation.name}</div>
-                            <div className="list__row list__row-normal list__row-wms-description" title={wms.description}>{wms.description}</div>
+                                <input className="list__row list__row-normal list__row-box" type="checkbox" onChange={() => onCheckboxSelect(wms.uuid)} checked={checked} />
+                                <div className="list__row list__row-normal list__row-name" title={wms.name}>{wms.name}</div>
+                                <div className="list__row list__row-normal list__row-org" title={wms.organisation && wms.organisation.name}>{wms.organisation && wms.organisation.name}</div>
+                                <div className="list__row list__row-normal list__row-wms-description" title={wms.description}>{wms.description}</div>
                                 <div className="list__row list__row-normal list__row-access">
                                     <AccessModifier accessModifier={wms.access_modifier} />
                                 </div>
