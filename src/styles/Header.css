@@ -128,7 +128,7 @@
     transform: scale(1);
 }
 
-.modal:target .information {
+.modal:target #information {
     opacity: 1;
     transform: scale(1);
 }
