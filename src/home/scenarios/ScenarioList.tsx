@@ -1,10 +1,11 @@
 import React from 'react';
-import MDSpinner from "react-md-spinner";
 import { useSelector } from 'react-redux';
 import { Scenario } from '../../interface';
 import { getSelectedItem, getFilters, getCurrentScenariosList, getAllScenarios } from '../../reducers';
 import SearchBar from '../../components/SearchBar';
 import Pagination from '../../components/Pagination';
+import LoadingScreen from '../../components/LoadingScreen';
+import AccessModifier from '../../components/AccessModifier';
 import '../../styles/List.css';
 
 interface MyProps {
@@ -15,10 +16,6 @@ interface MyProps {
     onSorting: (ordering: string) => void,
     selectItem: (uuid: string) => void
 };
-
-const LoadingScreen = () => (
-    <div className="list loading-screen"><MDSpinner size={50} /></div>
-);
 
 const ScenariosList = (props: MyProps) => {
     const { searchTerm, onPageClick, onSearchChange, onSearchSubmit, onSorting, selectItem } = props;
@@ -63,30 +60,20 @@ const ScenariosList = (props: MyProps) => {
                         </div>
                         <div className="list__row list__row-access" />
                     </li>
-                    {scenarios.map((scenario: Scenario) => {
-                        const renderAccessModifier = () => {
-                            if (scenario.access_modifier === "Public" || scenario.access_modifier === "Publiek") {
-                                return <div className="access-modifier public">{scenario.access_modifier.toUpperCase()}</div>
-                            } else if (scenario.access_modifier === "Private" || scenario.access_modifier === "Privaat") {
-                                return <div className="access-modifier private">{scenario.access_modifier.toUpperCase()}</div>
-                            } else {
-                                return <div className="access-modifier common">{scenario.access_modifier.toUpperCase()}</div>
-                            }
-                        }
-
-                        return (
-                            <li
-                                className={selectedItem === scenario.uuid ? "list__row-li list__row-li-selected" : "list__row-li"}
-                                key={scenario.uuid}
-                                onClick={() => selectItem(scenario.uuid)}
-                            >
-                                <div className="list__row list__row-normal list__row-name" title={scenario.name}>{scenario.name}</div>
-                                <div className="list__row list__row-normal list__row-org" title={scenario.organisation && scenario.organisation.name}>{scenario.organisation && scenario.organisation.name}</div>
-                                <div className="list__row list__row-normal list__row-raster-description" title={scenario.created}>{scenario.created}</div>
-                                <div className="list__row list__row-normal list__row-access">{renderAccessModifier()}</div>
-                            </li>
-                        )
-                    })}
+                    {scenarios.map((scenario: Scenario) => (
+                        <li
+                            className={selectedItem === scenario.uuid ? "list__row-li list__row-li-selected" : "list__row-li"}
+                            key={scenario.uuid}
+                            onClick={() => selectItem(scenario.uuid)}
+                        >
+                            <div className="list__row list__row-normal list__row-name" title={scenario.name}>{scenario.name}</div>
+                            <div className="list__row list__row-normal list__row-org" title={scenario.organisation && scenario.organisation.name}>{scenario.organisation && scenario.organisation.name}</div>
+                            <div className="list__row list__row-normal list__row-raster-description" title={scenario.created}>{scenario.created}</div>
+                            <div className="list__row list__row-normal list__row-access">
+                                <AccessModifier accessModifier={scenario.access_modifier} />
+                            </div>
+                        </li>
+                    ))}
                 </ul>
             </div>
             <div className="list__footer">
