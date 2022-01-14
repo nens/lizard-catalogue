@@ -60,7 +60,6 @@ import {
     getCurrentDataType,
     getCurrentWMSList,
     getCurrentMonitoringNetworkList,
-    getCurrentScenariosList,
     getFilters,
     getSelectedItem,
     getLizardBootstrap
@@ -92,7 +91,6 @@ import '../styles/MainApp.css';
 const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     const currentRasterList = useSelector(getCurrentRasterList);
     const currentWMSList = useSelector(getCurrentWMSList);
-    const currentScenariosList = useSelector(getCurrentScenariosList);
     const currentMonitoringNetworkList = useSelector(getCurrentMonitoringNetworkList);
     const observationTypes = useSelector(getObservationTypes);
     const organisations = useSelector(getOrganisations);
@@ -403,7 +401,6 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                     <>
                         <ScenarioList
                             searchTerm={searchTerm}
-                            currentScenariosList={currentScenariosList}
                             selectItem={props.selectItem}
                             onPageClick={onPageClick}
                             onSearchChange={onSearchChange}
