@@ -123,8 +123,6 @@ export default function RasterList (props: MyProps) {
                 <Pagination
                     count={count}
                     page={page}
-                    paginatedPages={[page - 2, page - 1, page, page + 1, page + 2]}
-                    totalPages={Math.ceil(count / 10)}
                     onPageClick={onPageClick}
                 />
                 <button
