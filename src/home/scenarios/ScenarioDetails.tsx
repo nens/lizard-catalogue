@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Map, TileLayer } from 'react-leaflet';
 import { MyStore, getOrganisations, getLizardBootstrap, getSelectedItem, getScenario } from '../../reducers';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { getScenarioGetCapabilitesURL, openScenarioInAPI, openScenarioInLizard } from '../../utils/url';
-import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import manageIcon from '../../images/manage.svg';
 import '../../styles/Details.css';
 import '../../styles/Modal.css';
@@ -61,13 +59,8 @@ const ScenarioDetails = () => {
                     <i className="fa fa-clone" />
                 </button>
             </div>
-            <div className="details-map">
-                <Map zoomControl={false}>
-                    <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
-                </Map>
-            </div>
             <div className="details-info">
-                <span className="details-title">Model name</span>
+                <span className="details-title">Model Name</span>
                 <span className="description">{scenario.model_name}</span>
             </div>
             <div className="details-info">
