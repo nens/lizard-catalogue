@@ -60,6 +60,7 @@ import {
     getCurrentDataType,
     getCurrentWMSList,
     getCurrentMonitoringNetworkList,
+    getCurrentScenariosList,
     getFilters,
     getSelectedItem,
     getLizardBootstrap
@@ -92,6 +93,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     const currentRasterList = useSelector(getCurrentRasterList);
     const currentWMSList = useSelector(getCurrentWMSList);
     const currentMonitoringNetworkList = useSelector(getCurrentMonitoringNetworkList);
+    const currentScenariosList = useSelector(getCurrentScenariosList);
     const observationTypes = useSelector(getObservationTypes);
     const organisations = useSelector(getOrganisations);
     const layercollections = useSelector(getLayercollections);
@@ -108,6 +110,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         if (currentRasterList && currentRasterList.showAlert === true) props.toggleAlert();
         if (currentWMSList && currentWMSList.showAlert === true) props.toggleAlert();
         if (currentMonitoringNetworkList && currentMonitoringNetworkList.showAlert === true) props.toggleAlert();
+        if (currentScenariosList && currentScenariosList.showAlert === true) props.toggleAlert();
     };
 
     const closeDropdowns = () => {
@@ -387,7 +390,6 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                     <>
                         <MonitoringNetworkList
                             searchTerm={searchTerm}
-                            currentMonitoringNetworkList={currentMonitoringNetworkList}
                             selectItem={props.selectItem}
                             onPageClick={onPageClick}
                             onSearchChange={onSearchChange}
@@ -418,6 +420,8 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                 currentWMSList && currentWMSList.showAlert === true
             ) || (
                 currentMonitoringNetworkList && currentMonitoringNetworkList.showAlert === true
+            ) || (
+                currentScenariosList && currentScenariosList.showAlert === true
             ) ? (
                 <AlertPopup toggleAlert={props.toggleAlert} />
             ) : null}

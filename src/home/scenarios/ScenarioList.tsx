@@ -17,7 +17,7 @@ interface MyProps {
     selectItem: (uuid: string) => void
 };
 
-const ScenariosList = (props: MyProps) => {
+export default function ScenariosList (props: MyProps) {
     const { searchTerm, onPageClick, onSearchChange, onSearchSubmit, onSorting, selectItem } = props;
     const currentScenariosList = useSelector(getCurrentScenariosList);
     const allScenarios = useSelector(getAllScenarios);
@@ -87,6 +87,4 @@ const ScenariosList = (props: MyProps) => {
             </div>
         </div>
     )
-};
-
-export default ScenariosList;
+}
