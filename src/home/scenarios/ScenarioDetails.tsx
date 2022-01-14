@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { MyStore, getOrganisations, getLizardBootstrap, getSelectedItem, getScenario } from '../../reducers';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { getScenarioGetCapabilitesURL, openScenarioInAPI, openScenarioInLizard } from '../../utils/url';
+import { getLocalDateString, getLocalString } from '../../utils/dateUtils';
+import { bytesToMb } from '../../utils/byteConversionUtils';
 import manageIcon from '../../images/manage.svg';
 import '../../styles/Details.css';
 import '../../styles/Modal.css';
@@ -103,8 +105,30 @@ const ScenarioDetails = () => {
             </div>
             {showTableTab === 'Details' ? (
                 <div className="details-grid details-grid-body">
-                    <div>Name</div>
-                    <div>{scenario.name}</div>
+                    <div>Data type</div>
+                    <div>Scenario</div>
+                    <div>Model revision</div>
+                    <div>{scenario.model_revision}</div>
+                    <div>Model URL</div>
+                    <div>{scenario.model_url}</div>
+                    <div>Simulation ID</div>
+                    <div>{scenario.simulation_id}</div>
+                    <div>Username</div>
+                    <div>{scenario.username}</div>
+                    <div>Created</div>
+                    <div>{getLocalDateString(scenario.created)}</div>
+                    <div>Lastest update</div>
+                    <div>{getLocalDateString(scenario.last_modified)}</div>
+                    <div>For ICMS</div>
+                    <div>{scenario.for_icms ? 'Yes' : 'No'}</div>
+                    <div>Raw results</div>
+                    <div>{scenario.has_raw_results ? 'Yes' : 'No'}</div>
+                    <div>Total size</div>
+                    <div>{bytesToMb(scenario.total_size)}</div>
+                    <div>Start</div>
+                    <div>{getLocalString(scenario.start_time_sim)}</div>
+                    <div>End</div>
+                    <div>{getLocalString(scenario.end_time_sim)}</div>
                 </div>
             ) : (
                 <div className="details-grid details-grid-body details-grid-actions">

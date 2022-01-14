@@ -119,6 +119,7 @@ export interface Scenario {
     organisation: Organisation,
     access_modifier: string,
     created: string,
+    last_modified: string,
     simulation_id: number,
     start_time_sim: string,
     end_time_sim: string,
