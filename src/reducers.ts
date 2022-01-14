@@ -984,6 +984,10 @@ export const getCurrentWMSList = (state: MyStore) => {
     return state.currentWMSList;
 };
 
+export const getAllWms = (state: MyStore) => {
+    return state.allWMS;
+};
+
 export const getWMS = (state: MyStore, uuid: string) => {
     return state.allWMS[uuid];
 };

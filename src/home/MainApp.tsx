@@ -375,7 +375,6 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                     <>
                         <WMSList
                             searchTerm={searchTerm}
-                            currentWMSList={currentWMSList}
                             selectItem={props.selectItem}
                             updateBasketWithWMS={props.updateBasketWithWMS}
                             onPageClick={onPageClick}
