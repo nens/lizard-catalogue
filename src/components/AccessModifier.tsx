@@ -1,18 +1,17 @@
 import React from 'react';
-import '../styles/List.css';
+import styles from './AccessModifier.module.css';
 
 interface MyProps {
   accessModifier: string
 }
 
-// Helper function
-const getAccessModifierClassName = (accessModifier: string) => {
+const getAccessModifierStyles = (accessModifier: string) => {
   if (accessModifier === "Public" || accessModifier === "Publiek") {
-    return "public";
+    return styles.Public;
   } else if (accessModifier === "Private" || accessModifier === "Privaat") {
-    return "private";
+    return styles.Private;
   } else {
-    return "common";
+    return styles.Common;
   };
 };
 
@@ -20,7 +19,7 @@ export default function AccessModifier (props: MyProps) {
   const { accessModifier } = props;
   return (
     <div
-      className={`access-modifier ${getAccessModifierClassName(accessModifier)}`}
+      className={`${styles.AccessModifier} ${getAccessModifierStyles(accessModifier)}`}
     >
       {accessModifier.toUpperCase()}
     </div>
