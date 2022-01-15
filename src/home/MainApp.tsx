@@ -37,6 +37,7 @@ import {
     toggleAlert,
     updateBasketWithRaster,
     updateBasketWithWMS,
+    updateBasketWithScenarios,
     requestInbox,
     updateSearch,
     updateOrder,
@@ -402,6 +403,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                         <ScenarioList
                             searchTerm={searchTerm}
                             selectItem={props.selectItem}
+                            updateBasketWithScenarios={props.updateBasketWithScenarios}
                             onPageClick={onPageClick}
                             onSearchChange={onSearchChange}
                             onSearchSubmit={onSearchSubmit}
@@ -439,6 +441,7 @@ const mapDispatchToProps = (dispatch: any) => ({
     ) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, layercollectionSlug, ordering, dispatch),
     updateBasketWithRaster: (rasters: string[]) => updateBasketWithRaster(rasters, dispatch),
     updateBasketWithWMS: (wmsLayers: string[]) => updateBasketWithWMS(wmsLayers, dispatch),
+    updateBasketWithScenarios: (scenarios: string[]) => updateBasketWithScenarios(scenarios, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
     fetchUserOrganisations: (userId: number) => dispatch(fetchUserOrganisations(userId)),

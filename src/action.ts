@@ -535,6 +535,8 @@ export const UPDATE_BASKET_WITH_RASTER = 'UPDATE_BASKET_WITH_RASTER';
 export const REMOVE_RASTER_FROM_BASKET = 'REMOVE_RASTER_FROM_BASKET';
 export const UPDATE_BASKET_WITH_WMS = 'UPDATE_BASKET_WITH_WMS';
 export const REMOVE_WMS_FROM_BASKET = 'REMOVE_WMS_FROM_BASKET';
+export const UPDATE_BASKET_WITH_SCENARIOS = 'UPDATE_BASKET_WITH_SCENARIOS';
+export const REMOVE_SCENARIO_FROM_BASKET = 'REMOVE_SCENARIO_FROM_BASKET';
 
 export const updateBasketWithRaster = (rasters: string[], dispatch): void => {
     dispatch({
@@ -560,6 +562,20 @@ export const updateBasketWithWMS = (wmsLayers: string[], dispatch): void => {
 export const removeWMSFromBasket = (uuid: string, dispatch): void => {
     dispatch({
         type: REMOVE_WMS_FROM_BASKET,
+        uuid
+    });
+};
+
+export const updateBasketWithScenarios = (scenarios: string[], dispatch): void => {
+    dispatch({
+        type: UPDATE_BASKET_WITH_SCENARIOS,
+        scenarios
+    });
+};
+
+export const removeScenarioFromBasket = (uuid: string, dispatch): void => {
+    dispatch({
+        type: REMOVE_SCENARIO_FROM_BASKET,
         uuid
     });
 };

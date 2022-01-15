@@ -16,11 +16,12 @@ interface MyProps {
     onSearchChange: (event: object) => void,
     onSearchSubmit: (event: object) => void,
     onSorting: (ordering: string) => void,
-    selectItem: (uuid: string) => void
+    selectItem: (uuid: string) => void,
+    updateBasketWithScenarios: (scenarios: string[]) => void
 };
 
 export default function ScenariosList (props: MyProps) {
-    const { searchTerm, onPageClick, onSearchChange, onSearchSubmit, onSorting, selectItem } = props;
+    const { searchTerm, onPageClick, onSearchChange, onSearchSubmit, onSorting, selectItem, updateBasketWithScenarios } = props;
     const currentScenariosList = useSelector(getCurrentScenariosList);
     const allScenarios = useSelector(getAllScenarios);
     const selectedItem = useSelector(getSelectedItem);
@@ -50,7 +51,7 @@ export default function ScenariosList (props: MyProps) {
     const addToBasket = () => {
         // Open the notification popup
         window.location.href = '#notification';
-        // updateBasketWithScenarios(checkedScenarios);
+        updateBasketWithScenarios(checkedScenarios);
         setCheckedScenarios([]);
     };
 

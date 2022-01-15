@@ -18,6 +18,8 @@ import {
     REMOVE_RASTER_FROM_BASKET,
     UPDATE_BASKET_WITH_WMS,
     REMOVE_WMS_FROM_BASKET,
+    UPDATE_BASKET_WITH_SCENARIOS,
+    REMOVE_SCENARIO_FROM_BASKET,
     REQUEST_INBOX,
     REMOVE_MESSAGE,
     DOWNLOAD_FILE,
@@ -155,7 +157,8 @@ export interface MyStore {
     selectedItem: string,
     basket: {
         rasters: string[],
-        wmsLayers: string[]
+        wmsLayers: string[],
+        scenarios: string[]
     },
     inbox: Message[],
     rasterExportState: RasterExportState,
@@ -661,7 +664,8 @@ const selectedItem = (state: MyStore['selectedItem'] = '', { type, uuid }): MySt
 const basket = (
     state: MyStore['basket'] = {
         rasters: [],
-        wmsLayers: []
+        wmsLayers: [],
+        scenarios: []
     },
     action
 ) => {
@@ -697,6 +701,22 @@ const basket = (
             return {
                 ...state,
                 wmsLayers: state.wmsLayers.filter((wms, i) => wms && i !== index2)
+            };
+        case UPDATE_BASKET_WITH_SCENARIOS:
+            const scenarios = [
+                ...state.scenarios,
+                ...action.scenarios
+            ];
+            return {
+                ...state,
+                //Remove duplicates in the scenarios array
+                scenarios: scenarios.filter((item, i) => scenarios.indexOf(item) === i)
+            };
+        case REMOVE_SCENARIO_FROM_BASKET:
+            const index3 = state.scenarios.indexOf(action.uuid);
+            return {
+                ...state,
+                scenarios: state.scenarios.filter((scenario, i) => scenario && i !== index3)
             };
         default:
             return state;
