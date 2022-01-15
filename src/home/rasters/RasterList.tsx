@@ -50,7 +50,7 @@ export default function RasterList (props: MyProps) {
     };
 
     const addToBasket = () => {
-        //Click the button will open the notification popup
+        // Open the notification popup
         window.location.href = '#notification';
         updateBasketWithRaster(checkedRasters);
         setCheckedRasters([]);
@@ -95,7 +95,7 @@ export default function RasterList (props: MyProps) {
                         <div className="list__row list__row-access" />
                     </li>
                     {rasters.map((raster: Raster) => {
-                        const checked = checkedRasters.filter(uuid => uuid === raster.uuid).length === 0 ? false : true;
+                        const checked = !!checkedRasters.find(uuid => uuid === raster.uuid);
                         return (
                             <li
                                 className={selectedItem === raster.uuid ? "list__row-li list__row-li-selected" : "list__row-li"}
@@ -133,7 +133,7 @@ export default function RasterList (props: MyProps) {
                     ADD TO BASKET
                 </button>
             </div>
-            {/*Notification popup when click on the Add to Basket button*/}
+            {/* Notification popup when click on the Add to Basket button */}
             <div className="modal" id="notification">
                 <BasketNotification />
             </div>

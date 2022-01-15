@@ -48,7 +48,7 @@ export default function WmsList (props: MyProps) {
     };
 
     const addToBasket = () => {
-        //Click the button will open the notification popup
+        // Open the notification popup
         window.location.href = '#notification';
         updateBasketWithWMS(checkedWmsLayers);
         setCheckedWmsLayers([]);
@@ -85,7 +85,7 @@ export default function WmsList (props: MyProps) {
                         <div className="list__row list__row-access" />
                     </li>
                     {wmsLayers.map((wms: WMS) => {
-                        const checked = checkedWmsLayers.filter(uuid => uuid === wms.uuid).length === 0 ? false : true;
+                        const checked = !!checkedWmsLayers.find(uuid => uuid === wms.uuid);
                         return (
                             <li
                                 className={selectedItem === wms.uuid ? "list__row-li list__row-li-selected" : "list__row-li"}
@@ -118,7 +118,7 @@ export default function WmsList (props: MyProps) {
                     ADD TO BASKET
                 </button>
             </div>
-            {/*Notification popup when click on the Add to Basket button*/}
+            {/* Notification popup when click on the Add to Basket button */}
             <div className="modal" id="notification">
                 <BasketNotification />
             </div>
