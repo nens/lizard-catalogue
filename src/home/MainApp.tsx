@@ -341,7 +341,6 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                 <Header
                     showProfileDropdown={showProfileDropdown}
                     showInboxDropdown={showInboxDropdown}
-                    toggleAlertMessage={toggleAlertMessage}
                     openProfileDropdown={openProfileDropdown}
                     openInboxDropdown={openInboxDropdown}
                     closeAllDropdowns={closeAllDropdowns}

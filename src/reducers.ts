@@ -1096,6 +1096,10 @@ export const getFilters = (state: MyStore) => {
     return state.filters;
 };
 
+export const getNumberOfItemsInBasket = (state: MyStore) => {
+    return state.basket.rasters.concat(state.basket.wmsLayers).concat(state.basket.scenarios).length;
+};
+
 export default combineReducers({
     rasterExportState,
     bootstrap,

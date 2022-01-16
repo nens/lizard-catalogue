@@ -2,6 +2,7 @@ import * as L from 'leaflet';
 import { Raster, WMS, LatLng, Layercollection, Location, Scenario } from "../interface";
 import { baseUrl } from "../api";
 import { getIdFromUrl } from './getUuidFromUrl';
+import { getBounds, getCenterPoint, zoomLevelCalculation } from './latLngZoomCalculation';
 import moment from "moment";
 
 // Helper function to get short UUID
@@ -118,17 +119,41 @@ export const openScenarioInLizard = (scenario: Scenario) => {
     window.open(`/viewer/nl/map/topography,scenario$${getShortUuid(scenario.uuid)}`);
 };
 
-export const openAllInLizard = (rasters: Raster[], centerPoint: LatLng, zoom: number, wmsLayers: WMS[]) => {
-    //create arrays of short ID of all the rasters and WMS layers in the basket
+export const openAllInLizard = (rasters: Raster[], wmsLayers: WMS[], scenarios: Scenario[]) => {
+    // Get the last selected raster in the basket or last selected WMS layer if there is no raster
+    let lastSelectedObject: Raster | WMS | null = null;
+
+    // The first item in the rasters/WMS layers array is the last selected object
+    if (rasters.length > 0) {
+        lastSelectedObject = rasters[0];
+    } else if (wmsLayers.length > 0) {
+        lastSelectedObject = wmsLayers[0];
+    };
+
+    // Get the spatial bounds of the last selected object,
+    // if lastSelectedObject is null then set it to the global map
+    const bounds = lastSelectedObject ? getBounds(lastSelectedObject) : {
+        north: 85, east: 180, south: -85, west: -180
+    };
+
+    // Get the center point based on its spatial bounds
+    const centerPoint: LatLng = getCenterPoint(bounds);
+
+    // Calculate the zoom level by using the zoomLevelCalculation function
+    const zoom = zoomLevelCalculation(bounds);
+
+    // create arrays of short ID of all the rasters, scenarios and WMS layers in the basket
     const rasterIddArray = rasters.map(raster => getShortUuid(raster.uuid));
     const wmsIdArray = wmsLayers.map(wms => getShortUuid(wms.uuid));
+    const scenarioIdArray = scenarios.map(scenario => getShortUuid(scenario.uuid));
 
-    //create the url path to display all the rasters and WMS layers in the basket on the map
-    //the format of the url is something like: ',raster$rasterID1,raster$rasterID2,...,wmslayer$wmsLayerID1,...'
+    // create the url path to display all the rasters, scenarios and WMS layers in the basket on the map
+    // the format of the url is something like: ',raster$rasterID1,raster$rasterID2,...,wmslayer$wmsLayerID1,...,scenario$scenarioID1,...'
     const urlPathForRaster = rasterIddArray.map(id => `,raster$${id}`).join('');
     const urlPathForWMSLayer = wmsIdArray.map(id => `,wmslayer$${id}`).join('');
+    const urlPathForScenario = scenarioIdArray.map(id => `,scenario$${id}`).join('');
 
-    window.open(`/viewer/nl/map/topography${urlPathForRaster}${urlPathForWMSLayer}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
+    window.open(`/viewer/nl/map/topography${urlPathForRaster}${urlPathForWMSLayer}${urlPathForScenario}/point/@${centerPoint.lat},${centerPoint.lng},${zoom}`);
 };
 
 export const openWMSDownloadURL = (wms: WMS) => {
