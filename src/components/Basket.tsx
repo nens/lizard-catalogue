@@ -8,7 +8,7 @@ import rasterTemporalIcon from './../images/raster-temporal.svg';
 import rasterNonTemporalIcon from './../images/raster-non-temporal.svg';
 import wmsIcon from './../images/wms.svg';
 import removeIcon from './../images/remove_shopping_cart.svg';
-import '../styles/Basket.css';
+import styles from './Basket.module.css';
 
 const Basket = (props: DispatchProps) => {
     const numberOfItemsInBasket = useSelector(getNumberOfItemsInBasket);
@@ -22,60 +22,60 @@ const Basket = (props: DispatchProps) => {
     const scenarios = useSelector((state: MyStore) => state.basket.scenarios.map(uuid => allScenarios[uuid]).reverse());
 
     return (
-        <div className="basket">
+        <div className={styles.Basket} id="basket">
             <h3>My selection</h3>
-            <div className="basket_upper-layer">
-                <span className="basket_number-of-items">{numberOfItemsInBasket} items</span>
-                <span className="basket_layer-title">Upper layer</span>
+            <div className={styles.BasketUpperLayer}>
+                <span className={styles.BasketNumberOfItems}>{numberOfItemsInBasket} items</span>
+                <span className={styles.BasketLayerTitle}>Upper layer</span>
             </div>
-            <ul className="basket_items" id="scrollbar">
+            <ul className={styles.BasketItems} id="scrollbar">
                 {rasters.map(raster => (
-                    <li className="basket_item" key={raster.uuid}>
+                    <li className={styles.BasketItem} key={raster.uuid}>
                         {raster.temporal ?
-                            <img className="li li-type" src={rasterTemporalIcon} alt="temporal" /> :
-                            <img className="li li-type" src={rasterNonTemporalIcon} alt="non-temporal" />
+                            <img className={styles.BasketItemLi} src={rasterTemporalIcon} alt="temporal" /> :
+                            <img className={styles.BasketItemLi} src={rasterNonTemporalIcon} alt="non-temporal" />
                         }
-                        <div className="li li-name">{raster.name}</div>
-                        <div className="li li-org">{raster.organisation && raster.organisation.name}</div>
-                        <div className="li li-time">{getLocalDateString(raster.last_modified)}</div>
-                        <div className="li li-basket li-basket__icon-box" onClick={() => props.removeRasterFromBasket(raster.uuid)}>
-                            <img className="li-basket__icon" src={removeIcon} alt="remove" />
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemName}`}>{raster.name}</div>
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemOrg}`}>{raster.organisation && raster.organisation.name}</div>
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemTime}`}>{getLocalDateString(raster.last_modified)}</div>
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemBasket} ${styles.BasketIconContainer}`} onClick={() => props.removeRasterFromBasket(raster.uuid)}>
+                            <img className={styles.BasketIcon} src={removeIcon} alt="remove" />
                         </div>
                     </li>
                 ))}
                 {wmsLayers.map(wms => (
-                    <li className="basket_item" key={wms.uuid}>
-                        <img className="li li-type" src={wmsIcon} alt="wms" />
-                        <div className="li li-name">{wms.name}</div>
-                        <div className="li li-org">{wms.organisation && wms.organisation.name}</div>
-                        <div className="li li-time" />
-                        <div className="li li-basket li-basket__icon-box" onClick={() => props.removeWMSFromBasket(wms.uuid)}>
-                            <img className="li-basket__icon" src={removeIcon} alt="remove" />
+                    <li className={styles.BasketItem} key={wms.uuid}>
+                        <img className={styles.BasketItemLi} src={wmsIcon} alt="wms" />
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemName}`}>{wms.name}</div>
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemOrg}`}>{wms.organisation && wms.organisation.name}</div>
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemTime}`} />
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemBasket} ${styles.BasketIconContainer}`} onClick={() => props.removeWMSFromBasket(wms.uuid)}>
+                            <img className={styles.BasketIcon} src={removeIcon} alt="remove" />
                         </div>
                     </li>
                 ))}
                 {scenarios.map(scenario => (
-                    <li className="basket_item" key={scenario.uuid}>
-                        <img className="li li-type" src={rasterNonTemporalIcon} alt="wms" />
-                        <div className="li li-name">{scenario.name}</div>
-                        <div className="li li-org">{scenario.organisation && scenario.organisation.name}</div>
-                        <div className="li li-time">{getLocalDateString(scenario.last_modified)}</div>
-                        <div className="li li-basket li-basket__icon-box" onClick={() => props.removeScenarioFromBasket(scenario.uuid)}>
-                            <img className="li-basket__icon" src={removeIcon} alt="remove" />
+                    <li className={styles.BasketItem} key={scenario.uuid}>
+                        <img className={styles.BasketItemLi} src={rasterNonTemporalIcon} alt="wms" />
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemName}`}>{scenario.name}</div>
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemOrg}`}>{scenario.organisation && scenario.organisation.name}</div>
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemTime}`}>{getLocalDateString(scenario.last_modified)}</div>
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemBasket} ${styles.BasketIconContainer}`} onClick={() => props.removeScenarioFromBasket(scenario.uuid)}>
+                            <img className={styles.BasketIcon} src={removeIcon} alt="remove" />
                         </div>
                     </li>
                 ))}
             </ul>
-            <p className="basket_lower-layer">Lower layer</p>
+            <p className={styles.BasketLowerLayer}>Lower layer</p>
             <button
-                className="basket_button"
+                className={styles.BasketButton}
                 disabled={!numberOfItemsInBasket}
                 onClick={() => openAllInLizard(rasters, wmsLayers, scenarios)}
             >
                 Open all data in Lizard
             </button>
             {/* eslint-disable-next-line */}
-            <a href="#" className="basket_close">&times;</a>
+            <a href="#" className={styles.BasketClose}>&times;</a>
         </div>
     );
 };

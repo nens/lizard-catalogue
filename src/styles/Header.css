@@ -123,7 +123,7 @@
     visibility: visible;
 }
 
-.modal:target .basket {
+.modal:target #basket {
     opacity: 1;
     transform: scale(1);
 }
