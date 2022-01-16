@@ -86,17 +86,16 @@
 }
 
 .BasketItemName {
-  flex: 2;
+  flex: 5;
   text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 5px;
 }
 
 .BasketItemOrg {
   flex: 3;
-  text-align: left;
-}
-
-.BasketItemObs {
-  flex: 2;
   text-align: left;
 }
 

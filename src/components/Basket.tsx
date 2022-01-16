@@ -35,7 +35,7 @@ const Basket = (props: DispatchProps) => {
                             <img className={styles.BasketItemLi} src={rasterTemporalIcon} alt="temporal" /> :
                             <img className={styles.BasketItemLi} src={rasterNonTemporalIcon} alt="non-temporal" />
                         }
-                        <div className={`${styles.BasketItemLi} ${styles.BasketItemName}`}>{raster.name}</div>
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemName}`} title={raster.name}>{raster.name}</div>
                         <div className={`${styles.BasketItemLi} ${styles.BasketItemOrg}`}>{raster.organisation && raster.organisation.name}</div>
                         <div className={`${styles.BasketItemLi} ${styles.BasketItemTime}`}>{getLocalDateString(raster.last_modified)}</div>
                         <div className={`${styles.BasketItemLi} ${styles.BasketItemBasket} ${styles.BasketIconContainer}`} onClick={() => props.removeRasterFromBasket(raster.uuid)}>
@@ -46,7 +46,7 @@ const Basket = (props: DispatchProps) => {
                 {wmsLayers.map(wms => (
                     <li className={styles.BasketItem} key={wms.uuid}>
                         <img className={styles.BasketItemLi} src={wmsIcon} alt="wms" />
-                        <div className={`${styles.BasketItemLi} ${styles.BasketItemName}`}>{wms.name}</div>
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemName}`} title={wms.name}>{wms.name}</div>
                         <div className={`${styles.BasketItemLi} ${styles.BasketItemOrg}`}>{wms.organisation && wms.organisation.name}</div>
                         <div className={`${styles.BasketItemLi} ${styles.BasketItemTime}`} />
                         <div className={`${styles.BasketItemLi} ${styles.BasketItemBasket} ${styles.BasketIconContainer}`} onClick={() => props.removeWMSFromBasket(wms.uuid)}>
@@ -57,7 +57,7 @@ const Basket = (props: DispatchProps) => {
                 {scenarios.map(scenario => (
                     <li className={styles.BasketItem} key={scenario.uuid}>
                         <img className={styles.BasketItemLi} src={rasterNonTemporalIcon} alt="wms" />
-                        <div className={`${styles.BasketItemLi} ${styles.BasketItemName}`}>{scenario.name}</div>
+                        <div className={`${styles.BasketItemLi} ${styles.BasketItemName}`} title={scenario.name}>{scenario.name}</div>
                         <div className={`${styles.BasketItemLi} ${styles.BasketItemOrg}`}>{scenario.organisation && scenario.organisation.name}</div>
                         <div className={`${styles.BasketItemLi} ${styles.BasketItemTime}`}>{getLocalDateString(scenario.last_modified)}</div>
                         <div className={`${styles.BasketItemLi} ${styles.BasketItemBasket} ${styles.BasketIconContainer}`} onClick={() => props.removeScenarioFromBasket(scenario.uuid)}>
