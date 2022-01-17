@@ -6,6 +6,7 @@ import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { getScenarioGetCapabilitesURL, openScenarioInAPI, openScenarioInLizard } from '../../utils/url';
 import { getLocalDateString, getLocalString } from '../../utils/dateUtils';
 import { bytesToMb } from '../../utils/byteConversionUtils';
+import ScenarioResults from './ScenarioResults';
 import manageIcon from '../../images/manage.svg';
 import '../../styles/Details.css';
 import '../../styles/Modal.css';
@@ -165,9 +166,9 @@ const ScenarioDetails = () => {
                     </div>
                     <div />
                 </div>
-            ) : ( // Scenario results tab
-                <div className="details-grid details-grid-body">
-                    <div />
+            ) : ( // Results tab
+                <div className="details-grid details-grid-body details-grid-body-results">
+                    <ScenarioResults uuid={scenario.uuid} />
                 </div>
             )}
         </div>
