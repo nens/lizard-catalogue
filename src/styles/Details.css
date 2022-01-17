@@ -92,7 +92,8 @@
     flex: 1;
     width: 100%;
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1px;
     grid-auto-rows: minmax(30px, 30px);
     border-collapse: collapse;
 }
@@ -119,15 +120,14 @@
     align-items: center;
     background-color: var(--main-color-scheme);
     border-radius: 4px 4px 0 0;
-    box-shadow: 6px 0px 5px #00000029;
     cursor: pointer;
 }
 .details-grid-header > div:nth-child(2) {
-    box-shadow: none;
     border-radius: 4px 4px 0 0;
 }
 .details-grid-header-selected {
     opacity: 1 !important;
+    /* box-shadow: 6px 0px 5px #00000029; */
 }
 .details-grid-body div {
     padding: 0.5rem;

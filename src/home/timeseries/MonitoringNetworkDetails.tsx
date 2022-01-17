@@ -13,7 +13,7 @@ import {
     MyStore,
 } from '../../reducers';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
-import { MonitoringNetwork, ObservationType } from '../../interface';
+import { MonitoringNetwork, ObservationType, TableTab } from '../../interface';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import TimeSeriesModal from '../../components/TimeSeriesModal';
 import manageIcon from '../../images/manage.svg';
@@ -35,7 +35,7 @@ const MonitoringNetworkDetails = () => {
     const user = useSelector(getLizardBootstrap).user;
 
     const [timeseriesModal, setTimeseriesModal] = useState(false);
-    const [activeTab, setActiveTab] = useState<'Details' | 'Actions'>('Details');
+    const [activeTab, setActiveTab] = useState<TableTab>('Details');
     const [authorizedToManageLayer, setAuthorizedToManageLayer] = useState<boolean>(false);
 
     useEffect(() => {

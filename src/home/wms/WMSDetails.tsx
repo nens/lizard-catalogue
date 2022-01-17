@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getLizardBootstrap, getOrganisations, getSelectedItem, getWMS, MyStore } from '../../reducers';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
-import { LatLng } from '../../interface';
+import { LatLng, TableTab } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL} from '../../utils/url';
 import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
@@ -17,7 +17,7 @@ const WMSDetails = () => {
     const organisations = useSelector(getOrganisations);
     const user = useSelector(getLizardBootstrap).user;
 
-    const [showTableTab, setShowTableTab] = useState<string>('Details');
+    const [showTableTab, setShowTableTab] = useState<TableTab>('Details');
     const [authorizedToManageLayer, setAuthorizedToManageLayer] = useState<boolean>(false);
 
     useEffect(() => {

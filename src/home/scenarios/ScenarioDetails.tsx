@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Scenario } from '../../interface';
+import { Scenario, TableTab } from '../../interface';
 import { MyStore, getOrganisations, getLizardBootstrap, getSelectedItem, getScenario } from '../../reducers';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { getScenarioGetCapabilitesURL, openScenarioInAPI, openScenarioInLizard } from '../../utils/url';
@@ -17,7 +17,7 @@ const ScenarioDetails = () => {
     const organisations = useSelector(getOrganisations);
     const user = useSelector(getLizardBootstrap).user;
 
-    const [showTableTab, setShowTableTab] = useState<string>('Details');
+    const [showTableTab, setShowTableTab] = useState<TableTab>('Details');
     const [authorizedToManageLayer, setAuthorizedToManageLayer] = useState<boolean>(false);
 
     useEffect(() => {
@@ -89,7 +89,12 @@ const ScenarioDetails = () => {
                     </button>
                 </div>
             </div>
-            <div className="details-grid details-grid-header">
+            <div
+                className="details-grid details-grid-header"
+                style={{
+                    gridTemplateColumns: '1fr 1fr 1fr'
+                }}
+            >
                 <div
                     className={showTableTab === 'Details' ? 'details-grid-header-selected' : ''}
                     onClick={() => setShowTableTab('Details')}
@@ -101,6 +106,12 @@ const ScenarioDetails = () => {
                     onClick={() => setShowTableTab('Actions')}
                 >
                     Actions
+                </div>
+                <div
+                    className={showTableTab === 'Results' ? 'details-grid-header-selected' : ''}
+                    onClick={() => setShowTableTab('Results')}
+                >
+                    Results
                 </div>
             </div>
             {showTableTab === 'Details' ? (
@@ -130,7 +141,7 @@ const ScenarioDetails = () => {
                     <div>End</div>
                     <div>{getLocalString(scenario.end_time_sim)}</div>
                 </div>
-            ) : (
+            ) : showTableTab === 'Actions' ? (
                 <div className="details-grid details-grid-body details-grid-actions">
                     <div />
                     <div>
@@ -152,6 +163,10 @@ const ScenarioDetails = () => {
                             OPEN IN API
                         </button>
                     </div>
+                    <div />
+                </div>
+            ) : ( // Scenario results tab
+                <div className="details-grid details-grid-body">
                     <div />
                 </div>
             )}

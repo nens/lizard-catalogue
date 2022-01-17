@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getRaster, getOrganisations, getLizardBootstrap, getSelectedItem } from '../../reducers';
-import { Raster, LatLng } from '../../interface';
+import { Raster, LatLng, TableTab } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import { openRasterInAPI, openRasterInLizard, getLayercollectionGetCapabilitesURL, getRasterGetCapabilitesURL } from '../../utils/url';
@@ -24,7 +24,7 @@ const RasterDetails = (props: MyProps) => {
     const user = useSelector(getLizardBootstrap).user;
 
     const [rasterExport, setRasterExport] = useState<boolean>(false);
-    const [showTableTab, setShowTableTab] = useState<string>('Details');
+    const [showTableTab, setShowTableTab] = useState<TableTab>('Details');
     const [authorizedToManageLayer, setAuthorizedToManageLayer] = useState<boolean>(false);
 
     useEffect(() => {

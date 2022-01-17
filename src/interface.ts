@@ -16,6 +16,9 @@ import {
 } from "./action";
 import { MyStore } from './reducers';
 
+// TABLE TABS
+export type TableTab = 'Details' | 'Actions' | 'Results';
+
 // ACTION
 export interface SwitchDataType {
     type: typeof SWITCH_DATA_TYPE,
