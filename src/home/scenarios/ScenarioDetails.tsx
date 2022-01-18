@@ -116,7 +116,7 @@ const ScenarioDetails = () => {
                 </div>
             </div>
             {showTableTab === 'Details' ? (
-                <div className="details-grid details-grid-body">
+                <div className="details-grid details-grid-body details-grid-body-details">
                     <div>Data type</div>
                     <div>Scenario</div>
                     <div>Model revision</div>

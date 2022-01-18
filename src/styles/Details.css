@@ -135,7 +135,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.details-grid-body div:nth-child(2n) {
+.details-grid-body-details div:nth-child(2n) {
     font-weight: 500;
 }
 .details-grid-actions div {

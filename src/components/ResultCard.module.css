@@ -1,0 +1,38 @@
+.ResultContainer {
+  position: relative;
+}
+
+.ResultType {
+  font-weight: 400;
+  font-size: 1.6rem;
+  line-height: 2rem;
+  color: #858585;
+  background-color: #FFFFFF;
+  padding: 0 0.8rem;
+  position: absolute;
+  top: 0.5rem;
+  left: 2.5rem;
+}
+
+.ResultList {
+  text-align: center;
+  padding: 2rem;
+  box-sizing: border-box;
+  border-radius: 0.4rem;
+  border: 1px solid #858585;
+}
+
+.ResultList li {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+.ResultList li:last-child {
+  margin-bottom: 0;
+}
+
+.ResultList img {
+  cursor: pointer;
+}
