@@ -33,6 +33,10 @@
   margin-bottom: 0;
 }
 
+.ResultList li a {
+  color: var(--main-color-scheme);
+}
+
 .ResultList img {
   cursor: pointer;
 }
