@@ -1,5 +1,6 @@
 .ResultContainer {
   position: relative;
+  overflow: hidden;
 }
 
 .ResultType {

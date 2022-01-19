@@ -130,12 +130,12 @@
     opacity: 1 !important;
     /* box-shadow: 6px 0px 5px #00000029; */
 }
-.details-grid-body div {
+.details-grid-body > div {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.details-grid-body-details div:nth-child(2n) {
+.details-grid-body-details > div:nth-child(2n) {
     font-weight: 500;
 }
 .details-grid-actions div {
