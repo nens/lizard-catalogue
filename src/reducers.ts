@@ -940,6 +940,9 @@ const timeseriesExport = (state: MyStore['timeseriesExport'] = {}, { type, taskU
     };
 };
 
+export const getRasterExportState = (state: MyStore) => {
+    return state.rasterExportState;
+}
 export const getExportAvailableGridCells = (state: MyStore) => {
     return state.rasterExportState.availableGridCells;
 }
