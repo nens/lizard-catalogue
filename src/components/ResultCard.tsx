@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import MDSpinner from 'react-md-spinner';
-import { Results, ResultType } from '../home/scenarios/ScenarioResults';
 import { Raster } from '../interface';
 import { getUuidFromUrl } from '../utils/getUuidFromUrl';
 import { boundsToDisplay, getBounds } from '../utils/latLngZoomCalculation';
@@ -9,19 +8,37 @@ import downloadIcon from '../images/download-icon.svg';
 import rasterExportIcon from '../images/raster-export.svg';
 import styles from './ResultCard.module.css';
 
-interface MyProps {
-  resultType: ResultType,
-  results: Results
-}
-
 interface RasterState {
   id: number,
   isFetching: boolean,
   raster?: Raster
 }
 
+interface ScenarioResult {
+  id: number,
+  url: string,
+  scenario: string,
+  raster: string,
+  attachment_url: string,
+  result_type: {
+    name: string,
+    code: string,
+    layer_description: string
+  }
+}
+
+interface Results {
+  isFetching: boolean,
+  results: ScenarioResult[] | undefined | null
+}
+
+interface MyProps {
+  resultType: string,
+  results: Results
+}
+
 export default function ResultCard (props: MyProps) {
-  const { resultType, results } = props;
+  const { isFetching, results: scenarioResults} = props.results;
   const [rasterState, setRasterState] = useState<RasterState | null>(null);
 
   // Fetch function to fetch scenario raster result
@@ -53,18 +70,20 @@ export default function ResultCard (props: MyProps) {
     });
   };
 
+  if (!isFetching && (!scenarioResults || scenarioResults.length === 0)) return null;
+
   return (
     <div className={styles.ResultContainer}>
       <div
         className={styles.ResultType}
       >
-        {resultType.toUpperCase()}
+        {props.resultType.toUpperCase()}
       </div>
       <ul
         className={styles.ResultList}
       >
-        {!results.isFetching ? (
-          results.results.map(result => (
+        {!isFetching && scenarioResults ? (
+          scenarioResults.map(result => (
             <li key={result.id}>
               <a
                 title={result.raster ? 'Click to open Raster export modal' : 'Click to download result'}
