@@ -56,7 +56,7 @@ class ExportModal extends React.Component<MyProps> {
 
     componentDidMount() {
         this.props.requestProjections(this.props.raster.uuid);
-        this.props.updateExportFormAndFetchExportGridCells([
+        this.props.updateExportFormAndFetchExportGridCells(this.props.raster.uuid, [
             {field: "projection", value: this.props.raster.projection},
             {field: "resolution", value: '100'},
             {field: "tileWidth", value: '1000'},
@@ -77,6 +77,7 @@ class ExportModal extends React.Component<MyProps> {
 
     render() {
         const { raster, bounds, openDownloadModal,fetchingGridState, exportBounds } = this.props;
+        console.log(fetchingGridState)
         const exportGridCells = this.props.availableGridCells.filter(grid=> getSpatialBoundsIntersect(gridPolygonToSpatialBounds(grid), exportBounds));
         const selectedGridIds = this.props.selectedGridCellIds; 
 
@@ -119,11 +120,13 @@ class ExportModal extends React.Component<MyProps> {
                                     return;
                                 }
 
-                                this.props.updateExportFormAndFetchExportGridCells([
-                                    {
-                                    field: 'bounds',
-                                    value: intersectSpatialBounds,
-                                }])
+                                this.props.updateExportFormAndFetchExportGridCells(
+                                    this.props.raster.uuid,
+                                    [{
+                                        field: 'bounds',
+                                        value: intersectSpatialBounds
+                                    }]
+                                )
                             }}
                         >
                             <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
@@ -213,7 +216,7 @@ class ExportModal extends React.Component<MyProps> {
                                         // value={e.dateTime}
                                         onChange={event => {
                                             const isoDateTime = event === ''? '' : moment(event).toISOString()
-                                            this.props.updateExportFormAndFetchExportGridCells([{field:'dateTimeStart', value: isoDateTime}]);
+                                            this.props.updateExportFormAndFetchExportGridCells(this.props.raster.uuid, [{field:'dateTimeStart', value: isoDateTime}]);
                                                 
                                         }}
                                     />
@@ -226,7 +229,7 @@ class ExportModal extends React.Component<MyProps> {
                                     className="export_input" 
                                     value={this.props.projection}
                                     onChange={(event)=> {
-                                        this.props.updateExportFormAndFetchExportGridCells([{field:'projection', value: event.target.value+''}]);
+                                        this.props.updateExportFormAndFetchExportGridCells(this.props.raster.uuid, [{field:'projection', value: event.target.value+''}]);
                                     }} 
                                 >
                                     {this.props.availableProjections.map((projectionObj, i)=>{
@@ -250,7 +253,7 @@ class ExportModal extends React.Component<MyProps> {
                                     value={this.props.resolution}
                                     onChange={(event)=> {
                                         const filteredString = (event.target.value+'').replace(/[^\d.]/g, '');
-                                        this.props.updateExportFormAndFetchExportGridCells([{field:'resolution', value: filteredString}]);
+                                        this.props.updateExportFormAndFetchExportGridCells(this.props.raster.uuid, [{field:'resolution', value: filteredString}]);
                                     }}
                                 />
                                 {this.props.resolution === ""? <span>* Choose a number</span>:null}
@@ -264,7 +267,7 @@ class ExportModal extends React.Component<MyProps> {
                                     value={this.props.tileWidth}
                                     onChange={(event)=> {
                                         const filteredString = (event.target.value+'').replace(/[^\d]/g, '');
-                                        this.props.updateExportFormAndFetchExportGridCells([{field:'tileWidth', value: filteredString}]);
+                                        this.props.updateExportFormAndFetchExportGridCells(this.props.raster.uuid, [{field:'tileWidth', value: filteredString}]);
                                     }}
                                 />
                                 {this.props.tileWidth === ""? <span><br/>* Choose a number</span>:null}
@@ -278,7 +281,7 @@ class ExportModal extends React.Component<MyProps> {
                                     value={this.props.tileHeight}
                                     onChange={(event)=> {
                                         const filteredString = (event.target.value+'').replace(/[^\d]/g, '');
-                                        this.props.updateExportFormAndFetchExportGridCells([{field:'tileHeight', value: filteredString}]);
+                                        this.props.updateExportFormAndFetchExportGridCells(this.props.raster.uuid, [{field:'tileHeight', value: filteredString}]);
                                     }}
                                 />
                                 {this.props.tileHeight === ""? <span>* Choose a number</span>:null}
@@ -291,7 +294,7 @@ class ExportModal extends React.Component<MyProps> {
                                     type="number"
                                     value={this.props.noDataValue || ''}
                                     onChange={(event)=> {
-                                        this.props.updateExportFormAndFetchExportGridCells([{field:'noDataValue', value: event.target.value}]);
+                                        this.props.updateExportFormAndFetchExportGridCells(this.props.raster.uuid, [{field:'noDataValue', value: event.target.value}]);
                                     }}
                                 />
                             </div>
@@ -357,7 +360,7 @@ class ExportModal extends React.Component<MyProps> {
                             disabled={this.props.selectedGridCellIds.length === 0}
                             title={this.props.selectedGridCellIds.length === 0 ? "First make a selection on the map" : undefined}  
                             onClick={()=>{
-                                this.props.requestRasterExports(this.props.inbox.length, openDownloadModal);
+                                this.props.requestRasterExports(this.props.inbox.length, openDownloadModal, this.props.raster.uuid);
                             }}
                         >
                             <i className="fa fa-download" />
@@ -402,8 +405,8 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
     addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
     removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
-    updateExportFormAndFetchExportGridCells: (fieldValuePairs: FieldValuePair[])=> dispatch(updateExportFormAndFetchExportGridCells(fieldValuePairs)),
-    requestRasterExports: (numberOfInboxMessages:number, openDownloadModal: Function)=> dispatch(requestRasterExports(numberOfInboxMessages, openDownloadModal)),
+    updateExportFormAndFetchExportGridCells: (rasterUuid: string, fieldValuePairs: FieldValuePair[])=> dispatch(updateExportFormAndFetchExportGridCells(rasterUuid, fieldValuePairs)),
+    requestRasterExports: (numberOfInboxMessages:number, openDownloadModal: Function, rasterUuid: string)=> dispatch(requestRasterExports(numberOfInboxMessages, openDownloadModal, rasterUuid)),
     requestProjections: (rasterUuid:string) => dispatch(requestProjections(rasterUuid)),
 });
 

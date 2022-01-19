@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Raster } from './../interface';
 import DownloadModal from './DownloadModal';
 import ExportModal from './ExportModal';
@@ -9,48 +9,35 @@ interface MyProps {
     raster: Raster,
     bounds: number[][],
     toggleExportModal: () => void
-};
+}
 
-export default class Export extends React.Component<MyProps> {
-    state = {
-        showDownloadModal: false
-    };
+export default function Export (props: MyProps) {
+    const { raster, bounds, toggleExportModal } = props;
+    const [downloadModal, setDownloadModal] = useState<boolean>(false);
 
-    openDownloadModal = () => {
-        this.setState({
-            showDownloadModal: true
-        });
-    };
-
-    closeModalOnEsc = (e) => {
-        if (e.key === "Escape") {
-            this.props.toggleExportModal();
+    useEffect(() => {
+        const closeModalsOnEsc = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                toggleExportModal();
+            };
         };
-    };
+        window.addEventListener("keydown", closeModalsOnEsc);
+        return () => window.removeEventListener("keydown", closeModalsOnEsc);
+    });
 
-    componentDidMount() {
-        window.addEventListener("keydown", this.closeModalOnEsc);
-    };
-
-    componentWillUnmount() {
-        window.removeEventListener("keydown", this.closeModalOnEsc);
-    };
-
-    render() {
-        return (
-            <div className="modal-main modal-raster-export">
-                {this.state.showDownloadModal ? (
-                    <DownloadModal />
-                ) : (
-                    <ExportModal
-                        raster={this.props.raster}
-                        bounds={this.props.bounds}
-                        openDownloadModal={this.openDownloadModal}
-                    />
-                )}
-                {/* eslint-disable-next-line */}
-                <a className="modal-close" onClick={this.props.toggleExportModal}>&times;</a>
-            </div>
-        );
-    };
-};
+    return (
+        <div className="modal-main modal-raster-export">
+            {downloadModal ? (
+                <DownloadModal />
+            ) : (
+                <ExportModal
+                    raster={raster}
+                    bounds={bounds}
+                    openDownloadModal={() => setDownloadModal(true)}
+                />
+            )}
+            {/* eslint-disable-next-line */}
+            <a className="modal-close" onClick={toggleExportModal}>&times;</a>
+        </div>
+    )
+}

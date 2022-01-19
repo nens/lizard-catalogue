@@ -713,7 +713,7 @@ const fieldValuePairsListContainsFieldThatShouldResetGridCells = (fieldValuePair
     return   !!fieldValuePairs.find(fieldValuePairContainsFieldThatShouldResetGridCells);
 }
 
-export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate: FieldValuePair[]) => (
+export const updateExportFormAndFetchExportGridCells = (rasterUuid: string, fieldValuePairesToUpdate: FieldValuePair[]) => (
     dispatch: Dispatch<RemoveAllSelectedExportGridCellIds | RemoveAllExportGridCells | SetRasterExportFormFields | RequestedGridCells | RetrievedRasterExportGridcells | FailedRetrievingRasterExportGridcells>
 ) => {
     if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
@@ -726,7 +726,6 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
     const projection = getExportGridCellProjection(state);
     const tileWidth = getExportGridCellTileWidth(state);
     const tileHeight = getExportGridCellTileHeight(state);
-    const rasterUuid = state.selectedItem;
     const bounds = getExportGridCellBounds(state);
     const boundsString = `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`;
     
@@ -740,15 +739,13 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
             const newProjection = getExportGridCellProjection(newState);
             const newTileWidth = getExportGridCellTileWidth(newState);
             const newTileHeight = getExportGridCellTileHeight(newState);
-            const newRasterUuid = newState.selectedItem;
 
             if (
                 // only update the gridcells if the values for which the request was done were not changed
                 newResolution === resolution &&
                 newProjection === projection &&
                 newTileWidth === tileWidth &&
-                newTileHeight === tileHeight &&
-                newRasterUuid === rasterUuid
+                newTileHeight === tileHeight
             ) {
                 if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
                     dispatch(removeAllExportGridCells());
@@ -762,7 +759,7 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
         })
 };
 
-export const requestRasterExports = (numberOfInboxMessages: number, openDownloadModal: Function) => (dispatch) =>{
+export const requestRasterExports = (numberOfInboxMessages: number, openDownloadModal: Function, rasterUuid: string) => (dispatch) =>{
 
     dispatch(setCurrentRasterExportsToStore(numberOfInboxMessages));
 
@@ -773,7 +770,6 @@ export const requestRasterExports = (numberOfInboxMessages: number, openDownload
     const tileHeight = getExportGridCellTileHeight(state);
     const start = getDateTimeStart(state);
     const noDataValue = getExportNoDataValue(state);
-    const rasterUuid = state.selectedItem;
     const availableGridCells = state.rasterExportState.availableGridCells;
 
     selectedGridCellIds.forEach((id)=>{
