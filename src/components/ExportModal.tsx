@@ -66,7 +66,6 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
     const exportGridCells = availableGridCells.filter(grid => getSpatialBoundsIntersect(gridPolygonToSpatialBounds(grid), exportBounds));
 
     useEffect(() => {
-        console.log('call useEffect')
         requestProjections(raster.uuid);
         updateExportFormAndFetchExportGridCells(raster.uuid, [
             {field: "projection", value: raster.projection},
