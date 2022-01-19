@@ -943,48 +943,15 @@ const timeseriesExport = (state: MyStore['timeseriesExport'] = {}, { type, taskU
 export const getRasterExportState = (state: MyStore) => {
     return state.rasterExportState;
 }
-export const getExportAvailableGridCells = (state: MyStore) => {
-    return state.rasterExportState.availableGridCells;
-}
-export const getExportSelectedGridCellIds = (state: MyStore) => {
-    return state.rasterExportState.selectedGridCellIds;
-}
-export const getFetchingStateGrid = (state: MyStore) => {
-    return state.rasterExportState.fetchingStateGrid;
-}
-export const getExportGridCellResolution = (state: MyStore) => {
-    return state.rasterExportState.resolution;
-}
-export const getExportGridCellProjection = (state: MyStore) => {
-    return state.rasterExportState.projection;
-}
-export const getExportGridCellTileWidth = (state: MyStore) => {
-    return state.rasterExportState.tileWidth;
-}
-export const getExportGridCellTileHeight = (state: MyStore) => {
-    return state.rasterExportState.tileHeight;
-}
-export const getExportGridCellBounds = (state: MyStore) => {
-    return state.rasterExportState.bounds;
-}
-export const getDateTimeStart = (state: MyStore) => {
-    return state.rasterExportState.dateTimeStart;
-}
-export const getProjections = (state: MyStore) => {
-    return state.rasterExportState.projectionsAvailableForCurrentRaster.projections;
-}
-export const getExportGridCellCellFetchingState = (state: MyStore) => {
-    return state.rasterExportState.fetchingStateGrid;
-}
-export const getExportNoDataValue = (state: MyStore) => {
-    return state.rasterExportState.noDataValue;
-}
 
 export const getIsFormValidForRequestingGridCells = (state: MyStore) => {
-    return getExportGridCellResolution(state) !== "" && 
-    getExportGridCellProjection(state) !== "" && 
-    getExportGridCellTileWidth(state) !== "" &&
-    getExportGridCellTileHeight(state) !== "";
+    const rasterExportState = state.rasterExportState;
+    return (
+        rasterExportState.resolution !== "" &&
+        rasterExportState.projection !== "" &&
+        rasterExportState.tileWidth !== "" &&
+        rasterExportState.tileHeight !== ""
+    );
 }
 
 export const getLizardBootstrap = (state: MyStore) => {

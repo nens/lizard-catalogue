@@ -29,16 +29,7 @@ import {
     ObservationType,
     ScenariosObject,
 } from './interface';
-import { 
-    getExportGridCellResolution, 
-    getExportGridCellProjection, 
-    getExportGridCellTileWidth, 
-    getExportGridCellTileHeight, 
-    getExportGridCellBounds, 
-    getExportSelectedGridCellIds,
-    getDateTimeStart,
-    getExportNoDataValue,
-} from './reducers';
+import { getRasterExportState } from './reducers';
 import { areGridCelIdsEqual } from './utils/rasterExportUtils'
 import { recursiveFetchFunction } from './hooks';
 import { UUID_REGEX } from './utils/uuidRegex';
@@ -722,11 +713,12 @@ export const updateExportFormAndFetchExportGridCells = (rasterUuid: string, fiel
     dispatch(updateExportRasterFormFields(fieldValuePairesToUpdate));
 
     const state = store.getState();
-    const resolution = getExportGridCellResolution(state);
-    const projection = getExportGridCellProjection(state);
-    const tileWidth = getExportGridCellTileWidth(state);
-    const tileHeight = getExportGridCellTileHeight(state);
-    const bounds = getExportGridCellBounds(state);
+    const rasterExportState = getRasterExportState(state);
+    const resolution = rasterExportState.resolution;
+    const projection = rasterExportState.projection;
+    const tileWidth = rasterExportState.tileWidth;
+    const tileHeight = rasterExportState.tileHeight;
+    const bounds = rasterExportState.bounds;
     const boundsString = `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`;
     
     request
@@ -735,10 +727,11 @@ export const updateExportFormAndFetchExportGridCells = (rasterUuid: string, fiel
             const gridCells = response.body.features;
 
             const newState = store.getState();
-            const newResolution = getExportGridCellResolution(newState);
-            const newProjection = getExportGridCellProjection(newState);
-            const newTileWidth = getExportGridCellTileWidth(newState);
-            const newTileHeight = getExportGridCellTileHeight(newState);
+            const newRasterExportState = getRasterExportState(newState);
+            const newResolution = newRasterExportState.resolution;
+            const newProjection = newRasterExportState.projection;
+            const newTileWidth = newRasterExportState.tileWidth;
+            const newTileHeight = newRasterExportState.tileHeight;
 
             if (
                 // only update the gridcells if the values for which the request was done were not changed
@@ -764,16 +757,16 @@ export const requestRasterExports = (numberOfInboxMessages: number, openDownload
     dispatch(setCurrentRasterExportsToStore(numberOfInboxMessages));
 
     const state = store.getState();
-    const selectedGridCellIds = getExportSelectedGridCellIds(state);
-    const projection = getExportGridCellProjection(state);
-    const tileWidth = getExportGridCellTileWidth(state);
-    const tileHeight = getExportGridCellTileHeight(state);
-    const start = getDateTimeStart(state);
-    const noDataValue = getExportNoDataValue(state);
-    const availableGridCells = state.rasterExportState.availableGridCells;
+    const rasterExportState = getRasterExportState(state);
+    const selectedGridCellIds = rasterExportState.selectedGridCellIds;
+    const projection = rasterExportState.projection;
+    const tileWidth = rasterExportState.tileWidth;
+    const tileHeight = rasterExportState.tileHeight;
+    const start = rasterExportState.dateTimeStart;
+    const noDataValue = rasterExportState.noDataValue;
+    const availableGridCells = rasterExportState.availableGridCells;
 
-    selectedGridCellIds.forEach((id)=>{
-
+    selectedGridCellIds.forEach((id) => {
         const currentGrid = availableGridCells.find(cell=>{return areGridCelIdsEqual(cell.properties.id, id)});
         if (!currentGrid) {
             console.warn(`Raster with id ${id} not found among availableGridCells. Therefore export was not started.`);

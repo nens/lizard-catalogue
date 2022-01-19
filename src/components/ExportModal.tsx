@@ -1,26 +1,8 @@
 import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { mapBoxAccesToken } from './../mapboxConfig.js';
-import { 
-    Map, 
-    TileLayer, 
-    WMSTileLayer, 
-    GeoJSON,
-} from 'react-leaflet';
-import {
-    getExportAvailableGridCells,
-    getExportSelectedGridCellIds,
-    getExportGridCellResolution,
-    getExportGridCellProjection,
-    getExportGridCellTileWidth,
-    getExportGridCellTileHeight,
-    // getDateTimeStart,
-    getProjections,
-    getExportGridCellCellFetchingState,
-    getInbox,
-    getExportGridCellBounds,
-    getExportNoDataValue,
-} from './../reducers';
+import { Map, TileLayer, WMSTileLayer, GeoJSON } from 'react-leaflet';
+import { getInbox, getRasterExportState } from './../reducers';
 import { AppDispatch } from './../store';
 import {
     addToSelectedExportGridCellIds,
@@ -50,18 +32,19 @@ interface MyProps {
 function ExportModal (props: MyProps & PropsFromDispatch) {
     const { raster, bounds, openDownloadModal, requestProjections, updateExportFormAndFetchExportGridCells } = props;
 
-    const fetchingGridState = useSelector(getExportGridCellCellFetchingState);
-    const availableGridCells = useSelector(getExportAvailableGridCells);
-    const availableProjections = useSelector(getProjections);
-    const selectedGridCellIds = useSelector(getExportSelectedGridCellIds);
-    const resolution = useSelector(getExportGridCellResolution);
-    const projection = useSelector(getExportGridCellProjection);
-    const tileWidth = useSelector(getExportGridCellTileWidth);
-    const tileHeight = useSelector(getExportGridCellTileHeight);
-    // const dateTimeStart = useSelector(getDateTimeStart);
-    const exportBounds = useSelector(getExportGridCellBounds);
-    const noDataValue = useSelector(getExportNoDataValue);
     const inbox = useSelector(getInbox);
+    const rasterExportState = useSelector(getRasterExportState);
+    const fetchingGridState = rasterExportState.fetchingStateGrid;
+    const availableGridCells = rasterExportState.availableGridCells;
+    const availableProjections = rasterExportState.projectionsAvailableForCurrentRaster.projections;
+    const selectedGridCellIds = rasterExportState.selectedGridCellIds;
+    const resolution = rasterExportState.resolution;
+    const projection = rasterExportState.projection;
+    const tileWidth = rasterExportState.tileWidth;
+    const tileHeight = rasterExportState.tileHeight;
+    const exportBounds = rasterExportState.bounds;
+    const noDataValue = rasterExportState.noDataValue;
+    // const dateTimeStart = rasterExportState.dateTimeStart;
 
     const exportGridCells = availableGridCells.filter(grid => getSpatialBoundsIntersect(gridPolygonToSpatialBounds(grid), exportBounds));
 
