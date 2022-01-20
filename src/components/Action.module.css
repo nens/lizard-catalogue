@@ -16,6 +16,10 @@
   transform: translateY(2px);
 }
 
+.ActionTextBox {
+  line-height: initial;
+}
+
 .ActionTextBox p {
   color: #505050;
   margin-top: 0.6rem;
