@@ -16,6 +16,7 @@ import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { MonitoringNetwork, ObservationType, TableTab } from '../../interface';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import TimeSeriesModal from '../../components/TimeSeriesModal';
+import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
 import '../../styles/Details.css';
 import '../../styles/Buttons.css';
@@ -168,15 +169,12 @@ const MonitoringNetworkDetails = () => {
                 )
             ) : (
                 <div className="details-grid details-grid-body details-grid-actions">
-                    <div />
-                    <div>
-                        <button
-                            className="button-action"
-                            onClick={() => setTimeseriesModal(!timeseriesModal)}
-                        >
-                            SELECT TIME SERIES
-                        </button>
-                    </div>
+                    <Action
+                        title='Select time series'
+                        description='Open the time series selection modal to select and export selected time series'
+                        tooltip='Open the Time Series selection modal'
+                        onClick={() => setTimeseriesModal(!timeseriesModal)}
+                    />
                 </div>
             )}
             {/*This is the PopUp window for the time-series selection screen*/}
