@@ -140,7 +140,7 @@ const WMSDetails = () => {
                 </div>
             </div>
             {showTableTab === 'Details' ? (
-                <div className="details-grid details-grid-body">
+                <div className="details-grid details-grid-body details-grid-body-details">
                     <div>Data type</div>
                     <div>WMS layer</div>
                     <div>Slug</div>

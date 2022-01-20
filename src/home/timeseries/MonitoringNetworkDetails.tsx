@@ -142,7 +142,7 @@ const MonitoringNetworkDetails = () => {
                         </div>
                     </div>
                 ): (
-                    <div className="details-grid details-grid-body">
+                    <div className="details-grid details-grid-body details-grid-body-details">
                         <div>Observation types</div>
                         {observationTypeObject.observationTypes.map((observationType, i) => {
                             // Only show first 10 observation types in the table

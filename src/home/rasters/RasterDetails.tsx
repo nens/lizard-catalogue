@@ -182,7 +182,7 @@ const RasterDetails = (props: MyProps) => {
                 </div>
             </div>
             {showTableTab === 'Details' ? (
-                <div className="details-grid details-grid-body">
+                <div className="details-grid details-grid-body details-grid-body-details">
                     <div>Temporal</div>
                     <div>{raster.temporal ? 'Yes' : 'No'}</div>
                     <div>Resolution</div>

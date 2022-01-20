@@ -141,6 +141,11 @@
 .details-grid-body-details > div:nth-child(2n) {
     font-weight: 500;
 }
+.details-grid-body-details > div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
 .details-grid-body-results {
     grid-template-columns: 1fr;
