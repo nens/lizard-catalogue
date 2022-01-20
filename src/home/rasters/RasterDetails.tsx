@@ -212,12 +212,12 @@ const RasterDetails = (props: MyProps) => {
                 <div className="details-grid details-grid-body details-grid-actions">
                     <Action
                         title='Open in Portal'
-                        description='Open in the viewer to playback and analyze (open in a new tab)'
+                        description='Open in the viewer to playback and analyze (open in a new browser tab)'
                         onClick={() => openRasterInLizard(raster, centerPoint, zoom)}
                     />
                     <Action
                         title='Open in API'
-                        description='Show the API detail page (open in a new tab)'
+                        description='Show the API detail page (open in a new browser tab)'
                         onClick={() => openRasterInAPI(raster)}
                     />
                     <Action

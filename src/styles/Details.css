@@ -111,6 +111,12 @@
     display: flex;
     flex-direction: column;
 }
+.details-grid-actions > div {
+    margin-bottom: 2.5rem;
+}
+.details-grid-actions > div:last-child {
+    margin-bottom: 1rem;
+}
 .details-grid-header > div {
     opacity: 0.34;
     font-size: 20px;
@@ -131,11 +137,6 @@
 .details-grid-header-selected {
     opacity: 1 !important;
     /* box-shadow: 6px 0px 5px #00000029; */
-}
-.details-grid-body > div {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 .details-grid-body-details > div:nth-child(2n) {
     font-weight: 500;
