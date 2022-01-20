@@ -1,6 +1,6 @@
-import * as React from 'react';
+import React from 'react';
 import searchIcon from './../images/search.svg';
-import '../styles/SearchBar.css';
+import styles from './SearchBar.module.css';
 
 interface MyProps {
     name: "searchBar" | "filterSearchBar",
@@ -11,24 +11,25 @@ interface MyProps {
     onSearchSubmit: (e: React.FormEvent<HTMLFormElement>) => void,
 };
 
-export default class SearchBar extends React.Component<MyProps> {
-    
-    render() {
-        const { name, searchTerm, title, placeholder, onSearchSubmit, onSearchChange } = this.props;
+export default function SearchBar (props: MyProps) {
+    const { name, searchTerm, title, placeholder, onSearchSubmit, onSearchChange } = props;
 
-        return (
-            <form onSubmit={onSearchSubmit} className="searchbar" title={title}>
-                <input
-                    type="text"
-                    className={name === "filterSearchBar" ? "searchbar-input searchbar-input-filter" : "searchbar-input"}
-                    placeholder={placeholder}
-                    onChange={onSearchChange}
-                    value={searchTerm}
-                />
-                <button className="searchbar-button" type="submit">
-                    <img src={searchIcon} alt="user" className={name === "filterSearchBar" ? "searchbar-icon searchbar-icon-filter" : "searchbar-icon"} />
-                </button>
-            </form>
-        );
-    };
-};
+    return (
+        <form
+            className={styles.SearchBar}
+            title={title}
+            onSubmit={onSearchSubmit}
+        >
+            <input
+                type="text"
+                className={name === "filterSearchBar" ? `${styles.SearchBarInput} ${styles.SearchBarInputFilter}` : styles.SearchBarInput}
+                placeholder={placeholder}
+                onChange={onSearchChange}
+                value={searchTerm}
+            />
+            <button className={styles.SearchBarButton} type="submit">
+                <img src={searchIcon} alt="user" className={name === "filterSearchBar" ? `${styles.SearchBarIcon} ${styles.SearchBarIconFilter}` : styles.SearchBarIcon} />
+            </button>
+        </form>
+    )
+}

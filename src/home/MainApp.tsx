@@ -37,10 +37,13 @@ import {
     toggleAlert,
     updateBasketWithRaster,
     updateBasketWithWMS,
+    updateBasketWithScenarios,
     requestInbox,
     updateSearch,
     updateOrder,
     updatePage,
+    removeSearch,
+    removeOrder,
     selectOrganisation,
     selectLayercollection,
     selectObservationType,
@@ -48,6 +51,7 @@ import {
     fetchMonitoringNetworkObservationTypes,
     fetchLocations,
     fetchUserOrganisations,
+    fetchScenarios,
 } from '../action';
 import {
     getCurrentRasterList,
@@ -57,6 +61,7 @@ import {
     getCurrentDataType,
     getCurrentWMSList,
     getCurrentMonitoringNetworkList,
+    getCurrentScenariosList,
     getFilters,
     getSelectedItem,
     getLizardBootstrap
@@ -76,6 +81,8 @@ import RasterList from './rasters/RasterList';
 import RasterDetails from './rasters/RasterDetails';
 import WMSList from './wms/WMSList';
 import WMSDetails from './wms/WMSDetails';
+import ScenarioList from './scenarios/ScenarioList';
+import ScenarioDetails from './scenarios/ScenarioDetails';
 import MonitoringNetworkList from './timeseries/MonitoringNetworkList';
 import MonitoringNetworkDetails from './timeseries/MonitoringNetworkDetails';
 import FilterBar from './FilterBar';
@@ -87,6 +94,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     const currentRasterList = useSelector(getCurrentRasterList);
     const currentWMSList = useSelector(getCurrentWMSList);
     const currentMonitoringNetworkList = useSelector(getCurrentMonitoringNetworkList);
+    const currentScenariosList = useSelector(getCurrentScenariosList);
     const observationTypes = useSelector(getObservationTypes);
     const organisations = useSelector(getOrganisations);
     const layercollections = useSelector(getLayercollections);
@@ -103,6 +111,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         if (currentRasterList && currentRasterList.showAlert === true) props.toggleAlert();
         if (currentWMSList && currentWMSList.showAlert === true) props.toggleAlert();
         if (currentMonitoringNetworkList && currentMonitoringNetworkList.showAlert === true) props.toggleAlert();
+        if (currentScenariosList && currentScenariosList.showAlert === true) props.toggleAlert();
     };
 
     const closeDropdowns = () => {
@@ -140,14 +149,15 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         props.updatePage(1); // Go back to page 1 in the result list
     };
 
-    //When switch the view from Rasters to WMS layers and vice versa, set the state of this main container back to initial state
+    // When switch the view from Rasters to WMS layers and vice versa, set the state of this main container back to initial state
     const onDataTypeChange = (dataType: SwitchDataType['payload']) => {
         props.switchDataType(dataType);
 
-        //Update Redux store and the component's state
+        // Update Redux store and the component's state
         props.selectItem(''); // Remove the previous selected item
-        props.updateSearch(''); // Remove the search input
+        props.removeSearch(); // Remove the search input
         props.updatePage(1); // Go back to page 1 in the result list
+        props.removeOrder(); // Remove any ordering
         setSearchTerm('');
     };
 
@@ -157,6 +167,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         fetchMonitoringNetworkObservationTypes,
         fetchMonitoringNetworks,
         fetchRasters,
+        fetchScenarios,
         fetchWMSLayers,
         fetchUserOrganisations,
     } = props;
@@ -229,8 +240,8 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
             currentDataType,
             filters.searchTerm,
             filters.organisation,
-            currentDataType === 'WMS' ? '' : filters.observationType,
-            currentDataType === 'Timeseries' ? '' : filters.layercollection,
+            currentDataType === 'Raster' ? filters.observationType : '',
+            currentDataType === 'Raster' || currentDataType === 'WMS' ? filters.layercollection : '',
             selectedItem
         );
 
@@ -249,7 +260,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         props.history
     ]);
 
-    // useEffect to fetch rasters, WMS or monitoring networks
+    // useEffect to fetch rasters, WMS, scenarios and monitoring networks
     // based on currentDataType and filters state in Redux
     useEffect(() => {
         if (currentDataType === 'Raster') {
@@ -269,6 +280,13 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                 filters.layercollection,
                 filters.ordering
             );
+        } else if (currentDataType === 'Scenario') {
+            fetchScenarios(
+                filters.page,
+                filters.searchTerm,
+                filters.organisation,
+                filters.ordering
+            );
         } else if (currentDataType === 'Timeseries') {
             fetchMonitoringNetworks(
                 filters.page,
@@ -281,6 +299,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         currentDataType,
         fetchMonitoringNetworks,
         fetchRasters,
+        fetchScenarios,
         fetchWMSLayers,
         filters.layercollection,
         filters.observationType,
@@ -322,7 +341,6 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                 <Header
                     showProfileDropdown={showProfileDropdown}
                     showInboxDropdown={showInboxDropdown}
-                    toggleAlertMessage={toggleAlertMessage}
                     openProfileDropdown={openProfileDropdown}
                     openInboxDropdown={openInboxDropdown}
                     closeAllDropdowns={closeAllDropdowns}
@@ -340,7 +358,6 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                     <>
                         <RasterList
                             searchTerm={searchTerm}
-                            currentRasterList={currentRasterList}
                             selectItem={props.selectItem}
                             updateBasketWithRaster={props.updateBasketWithRaster}
                             onPageClick={onPageClick}
@@ -357,7 +374,6 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                     <>
                         <WMSList
                             searchTerm={searchTerm}
-                            currentWMSList={currentWMSList}
                             selectItem={props.selectItem}
                             updateBasketWithWMS={props.updateBasketWithWMS}
                             onPageClick={onPageClick}
@@ -372,7 +388,6 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                     <>
                         <MonitoringNetworkList
                             searchTerm={searchTerm}
-                            currentMonitoringNetworkList={currentMonitoringNetworkList}
                             selectItem={props.selectItem}
                             onPageClick={onPageClick}
                             onSearchChange={onSearchChange}
@@ -380,6 +395,20 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                             onSorting={props.updateOrder}
                         />
                         <MonitoringNetworkDetails />
+                    </>
+                ) : null}
+                {currentDataType === "Scenario" ? (
+                    <>
+                        <ScenarioList
+                            searchTerm={searchTerm}
+                            selectItem={props.selectItem}
+                            updateBasketWithScenarios={props.updateBasketWithScenarios}
+                            onPageClick={onPageClick}
+                            onSearchChange={onSearchChange}
+                            onSearchSubmit={onSearchSubmit}
+                            onSorting={props.updateOrder}
+                        />
+                        <ScenarioDetails />
                     </>
                 ) : null}
             </div>
@@ -390,6 +419,8 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
                 currentWMSList && currentWMSList.showAlert === true
             ) || (
                 currentMonitoringNetworkList && currentMonitoringNetworkList.showAlert === true
+            ) || (
+                currentScenariosList && currentScenariosList.showAlert === true
             ) ? (
                 <AlertPopup toggleAlert={props.toggleAlert} />
             ) : null}
@@ -409,6 +440,7 @@ const mapDispatchToProps = (dispatch: any) => ({
     ) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, layercollectionSlug, ordering, dispatch),
     updateBasketWithRaster: (rasters: string[]) => updateBasketWithRaster(rasters, dispatch),
     updateBasketWithWMS: (wmsLayers: string[]) => updateBasketWithWMS(wmsLayers, dispatch),
+    updateBasketWithScenarios: (scenarios: string[]) => updateBasketWithScenarios(scenarios, dispatch),
     fetchObservationTypes: () => fetchObservationTypes(dispatch),
     fetchOrganisations: () => fetchOrganisations(dispatch),
     fetchUserOrganisations: (userId: number) => dispatch(fetchUserOrganisations(userId)),
@@ -420,6 +452,12 @@ const mapDispatchToProps = (dispatch: any) => ({
         layercollectionSlug: string,
         ordering: string
     ) => fetchWMSLayers(page, searchTerm, organisationName, layercollectionSlug, ordering, dispatch),
+    fetchScenarios: (
+        page: number,
+        searchTerm: string,
+        organisationName: string,
+        ordering: string
+    ) => fetchScenarios(page, searchTerm, organisationName, ordering, dispatch),
     fetchMonitoringNetworks: (
         page: number,
         searchTerm: string,
@@ -433,7 +471,9 @@ const mapDispatchToProps = (dispatch: any) => ({
     toggleAlert: () => toggleAlert(dispatch),
     requestInbox: () => requestInbox(dispatch),
     updateSearch: (searchTerm: string) => updateSearch(dispatch, searchTerm),
+    removeSearch: () => removeSearch(dispatch),
     updateOrder: (ordering: string) => updateOrder(dispatch, ordering),
+    removeOrder: () => removeOrder(dispatch),
     updatePage: (page: number) => updatePage(dispatch, page),
     selectOrganisation: (organisationName: string) => selectOrganisation(dispatch, organisationName),
     selectLayercollection: (layercollectionSlug: string) => selectLayercollection(dispatch, layercollectionSlug),

@@ -1,0 +1,26 @@
+.ProfileDropdown {
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+}
+
+.ProfileDropdown a {
+  font-size: 1.4rem;
+  color: #333;
+  background-color: #fafafa;
+  width: 100%;
+  padding: 0 2rem;
+}
+
+.ProfileDropdown a:hover {
+  background-color: #e5e5e5;
+}
+
+.ProfileDropdown i:hover {
+  background-color: #e5e5e5;
+}

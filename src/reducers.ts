@@ -18,6 +18,8 @@ import {
     REMOVE_RASTER_FROM_BASKET,
     UPDATE_BASKET_WITH_WMS,
     REMOVE_WMS_FROM_BASKET,
+    UPDATE_BASKET_WITH_SCENARIOS,
+    REMOVE_SCENARIO_FROM_BASKET,
     REQUEST_INBOX,
     REMOVE_MESSAGE,
     DOWNLOAD_FILE,
@@ -41,6 +43,7 @@ import {
     REMOVE_LAYERCOLLECTION,
     REMOVE_OBSERVATIONTYPE,
     REMOVE_SEARCH,
+    REMOVE_ORDER,
     UPDATE_ORDER,
     UPDATE_PAGE,
     REMOVE_CURRENT_EXPORT_TASKS,
@@ -59,6 +62,8 @@ import {
     REQUEST_TIMESERIES_EXPORT,
     USER_ORGANISATIONS_FETCHED,
     SET_NO_DATA_VALUE,
+    REQUEST_SCENARIOS,
+    RECEIVE_SCENARIOS,
 } from "./action";
 import {
     Raster,
@@ -73,6 +78,7 @@ import {
     MonitoringNetwork,
     TimeSeries,
     Location,
+    Scenario,
 } from './interface';
 import { areGridCelIdsEqual, haveGridCellsSameId } from './utils/rasterExportUtils';
 import { getSpatialBounds, getGeometry } from './utils/getSpatialBounds';
@@ -82,7 +88,7 @@ export interface MyStore {
     observationTypes: ObservationType[],
     organisations: Organisation[],
     layercollections: Layercollection[],
-    currentDataType: 'Raster' | 'WMS' | 'Timeseries' | '',
+    currentDataType: 'Raster' | 'WMS' | 'Timeseries' | 'Scenario',
     currentRasterList: {
         count: number,
         previous: string | null,
@@ -104,6 +110,17 @@ export interface MyStore {
     } | null,
     allWMS: {
         [index: string]: WMS,
+    } | {},
+    currentScenariosList: {
+        count: number,
+        previous: string | null,
+        next: string | null,
+        scenariosList: string[],
+        isFetching: boolean,
+        showAlert: boolean,
+    } | null,
+    allScenarios: {
+        [index: string]: Scenario,
     } | {},
     currentMonitoringNetworkList: {
         count: number,
@@ -140,7 +157,8 @@ export interface MyStore {
     selectedItem: string,
     basket: {
         rasters: string[],
-        wmsLayers: string[]
+        wmsLayers: string[],
+        scenarios: string[]
     },
     inbox: Message[],
     rasterExportState: RasterExportState,
@@ -335,7 +353,7 @@ const bootstrap = (
     }
 };
 
-const currentDataType = (state: MyStore['currentDataType'] = '', action: SwitchDataType): MyStore['currentDataType'] => {
+const currentDataType = (state: MyStore['currentDataType'] = 'Raster', action: SwitchDataType): MyStore['currentDataType'] => {
     switch (action.type) {
         case SWITCH_DATA_TYPE:
             return action.payload;
@@ -456,6 +474,54 @@ const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
             const newState = { ...state };
             action.payload.results.forEach(wms => {
                 newState[wms.uuid] = wms;
+            });
+            return newState;
+        default:
+            return state;
+    };
+};
+
+const currentScenariosList = (state: MyStore['currentScenariosList'] = null, action): MyStore['currentScenariosList'] => {
+    switch (action.type) {
+        case REQUEST_SCENARIOS:
+            return {
+                count: 0,
+                previous: null,
+                next: null,
+                scenariosList: [],
+                isFetching: true,
+                showAlert: false
+            }
+        case RECEIVE_SCENARIOS:
+            const { count, previous, next } = action.payload;
+            return {
+                count: count,
+                previous: previous,
+                next: next,
+                scenariosList: action.payload.results.map(scenario => scenario.uuid),
+                isFetching: false,
+                showAlert: count === 0 ? true : false
+            };
+        case TOGGLE_ALERT:
+            if (state) {
+                return {
+                    ...state,
+                    showAlert: false
+                }
+            } else {
+                return state;
+            };
+        default:
+            return state;
+    };
+};
+
+const allScenarios = (state: MyStore['allScenarios'] = {}, action): MyStore['allScenarios'] => {
+    switch (action.type) {
+        case RECEIVE_SCENARIOS:
+            const newState = { ...state };
+            action.payload.results.forEach(scenario => {
+                newState[scenario.uuid] = scenario;
             });
             return newState;
         default:
@@ -598,7 +664,8 @@ const selectedItem = (state: MyStore['selectedItem'] = '', { type, uuid }): MySt
 const basket = (
     state: MyStore['basket'] = {
         rasters: [],
-        wmsLayers: []
+        wmsLayers: [],
+        scenarios: []
     },
     action
 ) => {
@@ -634,6 +701,22 @@ const basket = (
             return {
                 ...state,
                 wmsLayers: state.wmsLayers.filter((wms, i) => wms && i !== index2)
+            };
+        case UPDATE_BASKET_WITH_SCENARIOS:
+            const scenarios = [
+                ...state.scenarios,
+                ...action.scenarios
+            ];
+            return {
+                ...state,
+                //Remove duplicates in the scenarios array
+                scenarios: scenarios.filter((item, i) => scenarios.indexOf(item) === i)
+            };
+        case REMOVE_SCENARIO_FROM_BASKET:
+            const index3 = state.scenarios.indexOf(action.uuid);
+            return {
+                ...state,
+                scenarios: state.scenarios.filter((scenario, i) => scenario && i !== index3)
             };
         default:
             return state;
@@ -785,6 +868,11 @@ const filters =(
                 ...state,
                 searchTerm: ''
             };
+        case REMOVE_ORDER:
+            return {
+                ...state,
+                ordering: ''
+            };
         default:
             return state;
     };
@@ -852,48 +940,18 @@ const timeseriesExport = (state: MyStore['timeseriesExport'] = {}, { type, taskU
     };
 };
 
-export const getExportAvailableGridCells = (state: MyStore) => {
-    return state.rasterExportState.availableGridCells;
-}
-export const getExportSelectedGridCellIds = (state: MyStore) => {
-    return state.rasterExportState.selectedGridCellIds;
-}
-export const getFetchingStateGrid = (state: MyStore) => {
-    return state.rasterExportState.fetchingStateGrid;
-}
-export const getExportGridCellResolution = (state: MyStore) => {
-    return state.rasterExportState.resolution;
-}
-export const getExportGridCellProjection = (state: MyStore) => {
-    return state.rasterExportState.projection;
-}
-export const getExportGridCellTileWidth = (state: MyStore) => {
-    return state.rasterExportState.tileWidth;
-}
-export const getExportGridCellTileHeight = (state: MyStore) => {
-    return state.rasterExportState.tileHeight;
-}
-export const getExportGridCellBounds = (state: MyStore) => {
-    return state.rasterExportState.bounds;
-}
-export const getDateTimeStart = (state: MyStore) => {
-    return state.rasterExportState.dateTimeStart;
-}
-export const getProjections = (state: MyStore) => {
-    return state.rasterExportState.projectionsAvailableForCurrentRaster.projections;
-}
-export const getExportGridCellCellFetchingState = (state: MyStore) => {
-    return state.rasterExportState.fetchingStateGrid;
-}
-export const getExportNoDataValue = (state: MyStore) => {
-    return state.rasterExportState.noDataValue;
+export const getRasterExportState = (state: MyStore) => {
+    return state.rasterExportState;
 }
 
 export const getIsFormValidForRequestingGridCells = (state: MyStore) => {
-    return getExportGridCellResolution(state) !== "" && 
-    getExportGridCellProjection(state) !== "" && 
-    getExportGridCellTileWidth(state) !== "" &&
-    getExportGridCellTileHeight(state) !== "";
+    const rasterExportState = state.rasterExportState;
+    return (
+        rasterExportState.resolution !== "" &&
+        rasterExportState.projection !== "" &&
+        rasterExportState.tileWidth !== "" &&
+        rasterExportState.tileHeight !== ""
+    );
 }
 
 export const getLizardBootstrap = (state: MyStore) => {
@@ -908,6 +966,10 @@ export const getCurrentRasterList = (state: MyStore) => {
     return state.currentRasterList;
 };
 
+export const getAllRasters = (state: MyStore) => {
+    return state.allRasters;
+};
+
 export const getRaster = (state: MyStore, uuid: string) => {
     return state.allRasters[uuid];
 };
@@ -916,8 +978,24 @@ export const getCurrentWMSList = (state: MyStore) => {
     return state.currentWMSList;
 };
 
+export const getAllWms = (state: MyStore) => {
+    return state.allWMS;
+};
+
 export const getWMS = (state: MyStore, uuid: string) => {
     return state.allWMS[uuid];
+};
+
+export const getCurrentScenariosList = (state: MyStore) => {
+    return state.currentScenariosList;
+};
+
+export const getAllScenarios = (state: MyStore) => {
+    return state.allScenarios;
+};
+
+export const getScenario = (state: MyStore, uuid: string): Scenario => {
+    return state.allScenarios[uuid];
 };
 
 export const getCurrentMonitoringNetworkList = (state: MyStore) => {
@@ -988,6 +1066,10 @@ export const getFilters = (state: MyStore) => {
     return state.filters;
 };
 
+export const getNumberOfItemsInBasket = (state: MyStore) => {
+    return state.basket.rasters.concat(state.basket.wmsLayers).concat(state.basket.scenarios).length;
+};
+
 export default combineReducers({
     rasterExportState,
     bootstrap,
@@ -996,6 +1078,8 @@ export default combineReducers({
     allRasters,
     currentWMSList,
     allWMS,
+    currentScenariosList,
+    allScenarios,
     currentMonitoringNetworkList,
     allMonitoringNetworks,
     timeseriesObject,

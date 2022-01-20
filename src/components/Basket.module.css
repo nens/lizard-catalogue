@@ -1,0 +1,156 @@
+.Basket {
+  font-size: 1.3rem;
+  line-height: 1.5rem;
+  width: 45%;
+  height: 55%;
+  color: var(--font-color);
+  border: 1px solid #BEBEBE;
+  background-color: #F1F1F1;
+  box-shadow: 0 2rem 2rem rgba(12, 12, 12, 0.4);
+  opacity: 0;
+  transform: translate(50%, -50%) scale(.5);
+  transition: all .4s .2s;
+
+  position: absolute;
+  top: 20%;
+  left: 25%;
+  
+  justify-content: center;
+  text-align: center;
+}
+
+.BasketClose {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--font-color);
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  text-decoration: none;
+  transition: all .2s;
+}
+
+.BasketClose:hover {
+  color: var(--main-color-scheme);
+}
+
+.BasketUpperLayer {
+  display: flex;
+  position: relative;
+}
+
+.BasketLowerLayer {
+  position: absolute;
+  left: 44%;
+}
+
+.BasketNumberOfItems {
+  color: #777;
+  margin-left: 2rem;
+}
+
+.BasketLayerTitle {
+  position: absolute;
+  left: 44%;
+}
+
+.BasketItems {
+  padding: 0 2rem;
+  min-height: 30%;
+  max-height: 66%;
+  overflow-y: auto;
+}
+
+.BasketItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 4.5rem;
+
+  border-radius: .8rem;
+  margin: 1rem auto;
+  background-color: #fff;
+}
+
+.BasketItem img {
+  width: 3rem;
+  height: 3rem;
+}
+
+.BasketItemLi {
+  flex: 1;
+  text-align: center;
+  margin: auto 2px;
+  overflow: hidden;
+}
+
+.BasketItemName {
+  flex: 5;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 5px;
+}
+
+.BasketItemOrg {
+  flex: 3;
+  text-align: left;
+}
+
+.BasketItemTime {
+  flex: 2;
+}
+
+.BasketItemBasket {
+  flex: .5;
+}
+
+.BasketButton {
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  padding: .8rem;
+  border-radius: .2rem;
+  border: none;
+  background-color: var(--main-color-scheme);
+  color: #fff;
+  box-shadow: .2rem .4rem .4rem rgba(12, 12, 12, 0.4);
+  cursor: pointer;
+}
+
+.BasketButton:focus {
+  outline: none;
+}
+
+.BasketButton:active {
+  transform: translateY(2px);
+}
+
+.BasketButton:disabled {    
+  background-color: #BFBFBF;
+  cursor: not-allowed;
+}
+
+/*ICON DECORATION*/
+.BasketIconContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 1rem;
+  cursor: pointer;
+  box-shadow: .1rem .2rem .4rem rgba(12, 12, 12, 0.4);
+  background-color: #FF7070;
+}
+.BasketIconContainer:active {
+  transform: translateY(2px);
+}
+
+.BasketIconContainer .BasketIcon {
+  height: 2.5rem;
+  width: 2rem;
+  fill: #fff;
+}

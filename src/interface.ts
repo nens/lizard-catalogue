@@ -16,13 +16,16 @@ import {
 } from "./action";
 import { MyStore } from './reducers';
 
-//ACTION
+// TABLE TABS
+export type TableTab = 'Details' | 'Actions' | 'Results';
+
+// ACTION
 export interface SwitchDataType {
     type: typeof SWITCH_DATA_TYPE,
-    payload: "Raster" | "WMS" | "Timeseries"
+    payload: "Raster" | "WMS" | "Timeseries" | "Scenario"
 };
 
-//LIZARD BOOTSTRAP
+// LIZARD BOOTSTRAP
 export interface Bootstrap {
     user: {
         id: number | null,
@@ -33,7 +36,7 @@ export interface Bootstrap {
     isFetching: boolean
 };
 
-//RASTER
+// RASTER
 export interface RasterListObject {
     count: number,
     previous: string,
@@ -72,7 +75,7 @@ export interface Raster {
     }
 };
 
-//WMS
+// WMS
 export interface WMSObject {
     count: number,
     previous: string,
@@ -102,6 +105,34 @@ export interface WMS {
         north: number,
         south: number
     } | null,
+};
+
+// SCENARIO
+export interface ScenariosObject {
+    count: number,
+    previous: string,
+    next: string,
+    results: Scenario[]
+};
+
+export interface Scenario {
+    uuid: string,
+    name: string,
+    url: string,
+    organisation: Organisation,
+    access_modifier: string,
+    created: string,
+    last_modified: string,
+    simulation_id: number,
+    start_time_sim: string,
+    end_time_sim: string,
+    username: string,
+    for_icms: boolean,
+    model_url: string | null,
+    model_revision: string,
+    model_name: string,
+    has_raw_results: boolean,
+    total_size: number
 };
 
 // MONITORING NETWORK FOR TIMESERIES
@@ -149,7 +180,7 @@ export interface Location {
     },
 }
 
-//ORGANISATION
+// ORGANISATION
 export interface Organisation {
     url: string,
     name: string,
@@ -157,7 +188,7 @@ export interface Organisation {
     roles: string[]
 };
 
-//OBSERVATION TYPE
+// OBSERVATION TYPE
 export interface ObservationType {
     id: number,
     url: string,
@@ -169,7 +200,7 @@ export interface ObservationType {
     reference_frame: string | null,
 };
 
-//LAYERCOLLECTION
+// LAYERCOLLECTION
 export interface Layercollection {
     slug: string,
     organisation: {
@@ -184,7 +215,7 @@ export interface LatLng {
     lng: number
 };
 
-//EXPORT MESSAGE
+// EXPORT MESSAGE
 export interface Message {
     id: string,
     message: string,
@@ -195,15 +226,15 @@ export interface Message {
 export type ExportGridCelId = number[];
 
 export interface ExportGridCell {
-    "type": string,
-    "geometry": {
+    type: string,
+    geometry: {
         type: string,
         coordinates: number[][],
     },
-    "properties": {
-        "projection": string,
-        "bbox": number[],
-        "id": ExportGridCelId
+    properties: {
+        projection: string,
+        bbox: number[],
+        id: ExportGridCelId
     }
 };
 

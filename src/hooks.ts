@@ -1,4 +1,4 @@
-import { QueryClient } from 'react-query';
+import { QueryClient, useQuery } from 'react-query';
 
 export type Params = Record<string, string|number>;
 
@@ -98,4 +98,21 @@ export async function recursiveFetchFunction (
     return await recursiveFetchFunction(response.nextUrl, {}, results, signal);
   };
   return results;
+};
+
+export function useRecursiveFetch (
+  baseUrl: string,
+  params: Params,
+  queryOptions: {
+    enabled?: boolean,
+    cacheTime?: number,
+  } = {},
+  previousResults: any[] = []
+) {
+  const fetchKey = combineUrlAndParams(baseUrl, params);
+  const queryFunction = () => recursiveFetchFunction(baseUrl, params, previousResults);
+
+  const query = useQuery(fetchKey, queryFunction, queryOptions);
+
+  return query;
 };

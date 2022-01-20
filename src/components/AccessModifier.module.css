@@ -1,0 +1,22 @@
+.AccessModifier {
+  font-size: 1rem;
+  color: #fff;
+  border-radius: .2rem;
+  margin-right: .4rem;
+  padding: .2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Public {
+  background-color: var(--main-color-scheme);
+}
+
+.Private {
+  background-color: #FF4500;
+}
+
+.Common {
+  background-color: #FFA500;
+}

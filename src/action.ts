@@ -27,21 +27,12 @@ import {
     TimeSeries,
     Location,
     ObservationType,
+    ScenariosObject,
 } from './interface';
-import { 
-    getExportGridCellResolution, 
-    getExportGridCellProjection, 
-    getExportGridCellTileWidth, 
-    getExportGridCellTileHeight, 
-    getExportGridCellBounds, 
-    getExportSelectedGridCellIds,
-    getDateTimeStart,
-    getExportNoDataValue,
-} from './reducers';
+import { getRasterExportState } from './reducers';
 import { areGridCelIdsEqual } from './utils/rasterExportUtils'
 import { recursiveFetchFunction } from './hooks';
-
-
+import { UUID_REGEX } from './utils/uuidRegex';
 
 //MARK: Bootsrap
 export const REQUEST_LIZARD_BOOTSTRAP = "REQUEST_LIZARD_BOOTSTRAP";
@@ -106,7 +97,7 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
         .get(`/api/v4/rasters/?${queries}&scenario__isnull=true`)
         .then(response => {
             if(response.body.count === 0 && searchTerm) {
-                //If could not find any raster with the search term by raster's name then look for raster's uuid
+                // If no raster found by name then search by uuid
                 const newQueries = queries.replace('name__icontains', 'uuid');
                 request
                     .get(`/api/v4/rasters/?${newQueries}&scenario__isnull=true`)
@@ -151,7 +142,7 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
         .get(`/api/v4/wmslayers/?${queries}`)
         .then(response => {
             if(response.body.count === 0 && searchTerm) {
-                //If could not find any WMS layer with the search term by WMS's name then look for WMS's uuid
+                // If no WMS layer found by name then search by uuid
                 const newQueries = queries.replace('name__icontains', 'uuid');
                 request
                     .get(`/api/v4/wmslayers/?${newQueries}`)
@@ -161,6 +152,61 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
                     .catch(console.error)
             } else {
                 dispatch(wmsLayersReceived(response.body))
+            }
+        })
+        .catch(console.error)
+};
+
+//MARK: Scenarios
+export const REQUEST_SCENARIOS = 'REQUEST_SCENARIOS';
+export const RECEIVE_SCENARIOS = 'RECEIVE_SCENARIOS';
+
+const scenariosRequested = () => ({
+    type: REQUEST_SCENARIOS
+});
+
+const scenariosReceived = (scenariosObject: ScenariosObject) => ({
+    type: RECEIVE_SCENARIOS,
+    payload: scenariosObject
+});
+
+export const fetchScenarios = (page: number, searchTerm: string, organisationName: string, ordering: string, dispatch): void => {
+    dispatch(scenariosRequested());
+
+    const params: string[] = [];
+
+    if (page) params.push(`page=${page}`);
+    if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
+    if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
+    if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
+
+    const queries = params.join('&');
+
+    request
+        .get(`/api/v4/scenarios/?${queries}`)
+        .then(response => {
+            if (response.body.count === 0 && searchTerm) {
+                // If no scenario found by name then search by model name
+                const newQueries = queries.replace('name__icontains', 'model_name__icontains');
+                request
+                    .get(`/api/v4/scenarios/?${newQueries}`)
+                    .then(response => {
+                        if (response.body.count === 0 && searchTerm) {
+                            // If no scenario found by name and model name then search by uuid
+                            const newQueries = queries.replace('name__icontains', 'uuid');
+                            request
+                                .get(`/api/v4/scenarios/?${newQueries}`)
+                                .then(response => {
+                                    dispatch(scenariosReceived(response.body))
+                                })
+                                .catch(console.error)
+                        } else {
+                            dispatch(scenariosReceived(response.body))
+                        }
+                    })
+                    .catch(console.error)
+            } else {
+                dispatch(scenariosReceived(response.body))
             }
         })
         .catch(console.error)
@@ -194,12 +240,8 @@ export const fetchMonitoringNetworks = (page: number, searchTerm: string, organi
     request
         .get(`/api/v4/monitoringnetworks/?${queries}`)
         .then(response => {
-            if (
-                response.body.count === 0 &&
-                // Check if search input is an UUID
-                searchTerm && searchTerm.includes('-') && searchTerm.length === 36
-            ) {
-                //If could not find any monitoring network with the search term by monitoring network's name then look for its uuid
+            if (response.body.count === 0 && searchTerm && UUID_REGEX.test(searchTerm)) {
+                // If no monitoring network found by name then search by uuid
                 const newQueries = queries.replace('name__icontains', 'uuid');
                 request
                     .get(`/api/v4/monitoringnetworks/?${newQueries}`)
@@ -398,12 +440,13 @@ export const SELECT_ORGANISATION = 'SELECT_ORGANISATION';
 export const SELECT_LAYERCOLLECTION = 'SELECT_LAYERCOLLECTION';
 export const SELECT_OBSERVATIONTYPE = 'SELECT_OBSERVATIONTYPE';
 export const UPDATE_SEARCH = 'UPDATE_SEARCH';
+export const UPDATE_ORDER = 'UPDATE_ORDER';
+export const UPDATE_PAGE = 'UPDATE_PAGE';
 export const REMOVE_ORGANISATION = 'REMOVE_ORGANISATION';
 export const REMOVE_LAYERCOLLECTION = 'REMOVE_LAYERCOLLECTION';
 export const REMOVE_OBSERVATIONTYPE = 'REMOVE_OBSERVATIONTYPE';
 export const REMOVE_SEARCH = 'REMOVE_SEARCH';
-export const UPDATE_ORDER = 'UPDATE_ORDER';
-export const UPDATE_PAGE = 'UPDATE_PAGE';
+export const REMOVE_ORDER = 'REMOVE_ORDER';
 
 export const selectOrganisation = (dispatch, organisation: string) => {
     dispatch({
@@ -464,6 +507,12 @@ export const updateOrder = (dispatch, ordering: string) => {
     });
 };
 
+export const removeOrder = (dispatch) => {
+    dispatch({
+        type: REMOVE_ORDER
+    });
+};
+
 export const updatePage = (dispatch, page: number) => {
     dispatch({
         type: UPDATE_PAGE,
@@ -477,6 +526,8 @@ export const UPDATE_BASKET_WITH_RASTER = 'UPDATE_BASKET_WITH_RASTER';
 export const REMOVE_RASTER_FROM_BASKET = 'REMOVE_RASTER_FROM_BASKET';
 export const UPDATE_BASKET_WITH_WMS = 'UPDATE_BASKET_WITH_WMS';
 export const REMOVE_WMS_FROM_BASKET = 'REMOVE_WMS_FROM_BASKET';
+export const UPDATE_BASKET_WITH_SCENARIOS = 'UPDATE_BASKET_WITH_SCENARIOS';
+export const REMOVE_SCENARIO_FROM_BASKET = 'REMOVE_SCENARIO_FROM_BASKET';
 
 export const updateBasketWithRaster = (rasters: string[], dispatch): void => {
     dispatch({
@@ -502,6 +553,20 @@ export const updateBasketWithWMS = (wmsLayers: string[], dispatch): void => {
 export const removeWMSFromBasket = (uuid: string, dispatch): void => {
     dispatch({
         type: REMOVE_WMS_FROM_BASKET,
+        uuid
+    });
+};
+
+export const updateBasketWithScenarios = (scenarios: string[], dispatch): void => {
+    dispatch({
+        type: UPDATE_BASKET_WITH_SCENARIOS,
+        scenarios
+    });
+};
+
+export const removeScenarioFromBasket = (uuid: string, dispatch): void => {
+    dispatch({
+        type: REMOVE_SCENARIO_FROM_BASKET,
         uuid
     });
 };
@@ -639,7 +704,7 @@ const fieldValuePairsListContainsFieldThatShouldResetGridCells = (fieldValuePair
     return   !!fieldValuePairs.find(fieldValuePairContainsFieldThatShouldResetGridCells);
 }
 
-export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate: FieldValuePair[]) => (
+export const updateExportFormAndFetchExportGridCells = (rasterUuid: string, fieldValuePairesToUpdate: FieldValuePair[]) => (
     dispatch: Dispatch<RemoveAllSelectedExportGridCellIds | RemoveAllExportGridCells | SetRasterExportFormFields | RequestedGridCells | RetrievedRasterExportGridcells | FailedRetrievingRasterExportGridcells>
 ) => {
     if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
@@ -648,12 +713,12 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
     dispatch(updateExportRasterFormFields(fieldValuePairesToUpdate));
 
     const state = store.getState();
-    const resolution = getExportGridCellResolution(state);
-    const projection = getExportGridCellProjection(state);
-    const tileWidth = getExportGridCellTileWidth(state);
-    const tileHeight = getExportGridCellTileHeight(state);
-    const rasterUuid = state.selectedItem;
-    const bounds = getExportGridCellBounds(state);
+    const rasterExportState = getRasterExportState(state);
+    const resolution = rasterExportState.resolution;
+    const projection = rasterExportState.projection;
+    const tileWidth = rasterExportState.tileWidth;
+    const tileHeight = rasterExportState.tileHeight;
+    const bounds = rasterExportState.bounds;
     const boundsString = `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`;
     
     request
@@ -662,19 +727,18 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
             const gridCells = response.body.features;
 
             const newState = store.getState();
-            const newResolution = getExportGridCellResolution(newState);
-            const newProjection = getExportGridCellProjection(newState);
-            const newTileWidth = getExportGridCellTileWidth(newState);
-            const newTileHeight = getExportGridCellTileHeight(newState);
-            const newRasterUuid = newState.selectedItem;
+            const newRasterExportState = getRasterExportState(newState);
+            const newResolution = newRasterExportState.resolution;
+            const newProjection = newRasterExportState.projection;
+            const newTileWidth = newRasterExportState.tileWidth;
+            const newTileHeight = newRasterExportState.tileHeight;
 
             if (
                 // only update the gridcells if the values for which the request was done were not changed
                 newResolution === resolution &&
                 newProjection === projection &&
                 newTileWidth === tileWidth &&
-                newTileHeight === tileHeight &&
-                newRasterUuid === rasterUuid
+                newTileHeight === tileHeight
             ) {
                 if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
                     dispatch(removeAllExportGridCells());
@@ -688,22 +752,21 @@ export const updateExportFormAndFetchExportGridCells = (fieldValuePairesToUpdate
         })
 };
 
-export const requestRasterExports = (numberOfInboxMessages: number, openDownloadModal: Function) => (dispatch) =>{
+export const requestRasterExports = (numberOfInboxMessages: number, openDownloadModal: Function, rasterUuid: string) => (dispatch) =>{
 
     dispatch(setCurrentRasterExportsToStore(numberOfInboxMessages));
 
     const state = store.getState();
-    const selectedGridCellIds = getExportSelectedGridCellIds(state);
-    const projection = getExportGridCellProjection(state);
-    const tileWidth = getExportGridCellTileWidth(state);
-    const tileHeight = getExportGridCellTileHeight(state);
-    const start = getDateTimeStart(state);
-    const noDataValue = getExportNoDataValue(state);
-    const rasterUuid = state.selectedItem;
-    const availableGridCells = state.rasterExportState.availableGridCells;
+    const rasterExportState = getRasterExportState(state);
+    const selectedGridCellIds = rasterExportState.selectedGridCellIds;
+    const projection = rasterExportState.projection;
+    const tileWidth = rasterExportState.tileWidth;
+    const tileHeight = rasterExportState.tileHeight;
+    const start = rasterExportState.dateTimeStart;
+    const noDataValue = rasterExportState.noDataValue;
+    const availableGridCells = rasterExportState.availableGridCells;
 
-    selectedGridCellIds.forEach((id)=>{
-
+    selectedGridCellIds.forEach((id) => {
         const currentGrid = availableGridCells.find(cell=>{return areGridCelIdsEqual(cell.properties.id, id)});
         if (!currentGrid) {
             console.warn(`Raster with id ${id} not found among availableGridCells. Therefore export was not started.`);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MDSpinner from "react-md-spinner";
 import { useSelector } from 'react-redux';
 import Leaflet from 'leaflet';
@@ -6,12 +6,17 @@ import { Map, TileLayer, Marker } from 'react-leaflet';
 import {
     getLocationsObject,
     getSelectedItem,
-    getAllMonitoringNetworks,
+    getMonitoringNetwork,
     getMonitoringNetworkObservationTypes,
+    getOrganisations,
+    getLizardBootstrap,
+    MyStore,
 } from '../../reducers';
-import { MonitoringNetwork, ObservationType } from '../../interface';
+import { isAuthorizedToManageLayer } from '../../utils/authorization';
+import { MonitoringNetwork, ObservationType, TableTab } from '../../interface';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import TimeSeriesModal from '../../components/TimeSeriesModal';
+import manageIcon from '../../images/manage.svg';
 import '../../styles/Details.css';
 import '../../styles/Buttons.css';
 import '../../styles/Modal.css';
@@ -23,13 +28,23 @@ const addRefToUnit = (observationType: ObservationType) => {
 
 const MonitoringNetworkDetails = () => {
     const selectedItem = useSelector(getSelectedItem);
-    const allMonitoringNetworks = useSelector(getAllMonitoringNetworks);
-    const monitoringNetwork = allMonitoringNetworks[selectedItem] as MonitoringNetwork;
+    const monitoringNetwork = useSelector((state: MyStore) => getMonitoringNetwork(state, selectedItem)) as MonitoringNetwork;
     const observationTypeObject = useSelector(getMonitoringNetworkObservationTypes);
     const locationsObject = useSelector(getLocationsObject);
+    const organisations = useSelector(getOrganisations);
+    const user = useSelector(getLizardBootstrap).user;
 
     const [timeseriesModal, setTimeseriesModal] = useState(false);
-    const [activeTab, setActiveTab] = useState<'Details' | 'Actions'>('Details');
+    const [activeTab, setActiveTab] = useState<TableTab>('Details');
+    const [authorizedToManageLayer, setAuthorizedToManageLayer] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (monitoringNetwork && user) {
+            const authorized = isAuthorizedToManageLayer(monitoringNetwork, user.username, organisations);
+            setAuthorizedToManageLayer(authorized);
+        };
+        return () => setAuthorizedToManageLayer(false);
+    }, [monitoringNetwork, user, organisations]);
 
     if (!monitoringNetwork) return <div className="details details-loading">Please select a monitoring network</div>;
 
@@ -39,6 +54,21 @@ const MonitoringNetworkDetails = () => {
                 <h3 title={monitoringNetwork.name}>
                     {monitoringNetwork.name}
                 </h3>
+                <span title="To manage this network">
+                    {authorizedToManageLayer ? (
+                        <a
+                            href={`/management/data_management/timeseries/monitoring_networks/${monitoringNetwork.uuid}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <img
+                                className="details-manage-icon"
+                                src={manageIcon}
+                                alt="View in manage client"
+                            />
+                        </a>
+                    ) : null}
+                </span>
             </div>
                 <div className="details-uuid">
                     <span>{monitoringNetwork.uuid}</span>

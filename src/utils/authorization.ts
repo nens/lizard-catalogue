@@ -4,10 +4,10 @@
 // the user is the supplier of the layer
 // and has the 'supplier' role in the organisation of the layer.
 
-import { Organisation, Raster, WMS } from "../interface";
+import { MonitoringNetwork, Organisation, Raster, Scenario, WMS } from "../interface";
 
 export const isAuthorizedToManageLayer = (
-    layer: Raster | WMS,
+    layer: Raster | WMS | Scenario | MonitoringNetwork,
     userName: string | null,
     organisations: Organisation[]
 ) => {
