@@ -8,6 +8,7 @@ import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from
 import { openRasterInAPI, openRasterInLizard, getLayercollectionGetCapabilitesURL, getRasterGetCapabilitesURL } from '../../utils/url';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import Export from '../../components/Export';
+import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
 import '../../styles/Details.css';
 import '../../styles/Modal.css';
@@ -209,40 +210,26 @@ const RasterDetails = (props: MyProps) => {
                 </div>
             ) : (
                 <div className="details-grid details-grid-body details-grid-actions">
-                    <div />
-                    <div>
-                        <button
-                            className="button-action"
-                            onClick={() => openRasterInLizard(raster, centerPoint, zoom)}
-                            title="Open in Portal"
-                        >
-                            OPEN IN VIEWER
-                        </button>
-                    </div>
-                    <div />
-                    <div>
-                        <button
-                            className="button-action"
-                            onClick={() => openRasterInAPI(raster)}
-                            title="Open in API"
-                        >
-                            OPEN IN API
-                        </button>
-                    </div>
-                    <div />
-                    <div>
-                        <button
-                            className="button-action"
-                            onClick={() => setRasterExport(!rasterExport)}
-                            disabled={!user.authenticated}
-                            title={!user.authenticated? "Log in to export" : "Export"}
-                        >
-                            EXPORT RASTER
-                        </button>
-                    </div>
+                    <Action
+                        title='Open in Portal'
+                        description='Open in the viewer to playback and analyze (open in a new tab)'
+                        onClick={() => openRasterInLizard(raster, centerPoint, zoom)}
+                    />
+                    <Action
+                        title='Open in API'
+                        description='Show the API detail page (open in a new tab)'
+                        onClick={() => openRasterInAPI(raster)}
+                    />
+                    <Action
+                        title='Export raster'
+                        description='Open the raster export modal'
+                        tooltip={!user.authenticated ? 'Please login to export' : undefined}
+                        disabled={!user.authenticated}
+                        onClick={() => setRasterExport(!rasterExport)}
+                    />
                 </div>
             )}
-            {/*This is the PopUp window for the export screen*/}
+            {/* Raster export modal */}
             {rasterExport && (
                 <div className="modal-background">
                     <Export

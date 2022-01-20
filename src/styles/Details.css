@@ -107,7 +107,9 @@
     border: 2.5px solid var(--main-color-scheme);
 }
 .details-grid-actions {
-    grid-auto-rows: minmax(60px, 60px);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
 }
 .details-grid-header > div {
     opacity: 0.34;
@@ -137,9 +139,6 @@
 }
 .details-grid-body-details > div:nth-child(2n) {
     font-weight: 500;
-}
-.details-grid-actions div {
-    padding: 1rem;
 }
 
 .details-grid-body-results {
