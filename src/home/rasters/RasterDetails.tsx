@@ -211,8 +211,8 @@ const RasterDetails = (props: MyProps) => {
             ) : (
                 <div className="details-grid details-grid-body details-grid-actions">
                     <Action
-                        title='Open in Portal'
-                        description='Open in the viewer to playback and analyze (open in a new browser tab)'
+                        title='Open in Viewer'
+                        description='Open in the Lizard Viewer to playback and analyze (open in a new browser tab)'
                         onClick={() => openRasterInLizard(raster, centerPoint, zoom)}
                     />
                     <Action

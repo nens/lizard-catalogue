@@ -7,6 +7,7 @@ import { getScenarioGetCapabilitesURL, openScenarioInAPI, openScenarioInLizard }
 import { getLocalDateString, getLocalString } from '../../utils/dateUtils';
 import { bytesToMb } from '../../utils/byteConversionUtils';
 import ScenarioResults from './ScenarioResults';
+import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
 import '../../styles/Details.css';
 import '../../styles/Modal.css';
@@ -144,27 +145,16 @@ const ScenarioDetails = () => {
                 </div>
             ) : showTableTab === 'Actions' ? (
                 <div className="details-grid details-grid-body details-grid-actions">
-                    <div />
-                    <div>
-                        <button
-                            className="button-action"
-                            onClick={() => openScenarioInLizard(scenario)}
-                            title="Open in Viewer"
-                        >
-                            OPEN IN VIEWER
-                        </button>
-                    </div>
-                    <div />
-                    <div>
-                        <button
-                            className="button-action"
-                            onClick={() => openScenarioInAPI(scenario)}
-                            title="Open in API"
-                        >
-                            OPEN IN API
-                        </button>
-                    </div>
-                    <div />
+                    <Action
+                        title='Open in Viewer'
+                        description='Open in the Lizard Viewer to playback and analyze (open in a new browser tab)'
+                        onClick={() => openScenarioInLizard(scenario)}
+                    />
+                    <Action
+                        title='Open in API'
+                        description='Show the API detail page (open in a new browser tab)'
+                        onClick={() => openScenarioInAPI(scenario)}
+                    />
                 </div>
             ) : ( // Results tab
                 <div className="details-grid details-grid-body details-grid-body-results">
