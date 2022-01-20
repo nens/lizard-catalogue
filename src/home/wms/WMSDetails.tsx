@@ -7,6 +7,7 @@ import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL} from '../../utils/url';
 import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
+import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
 import '../../styles/Details.css';
 import '../../styles/Buttons.css';
@@ -147,39 +148,23 @@ const WMSDetails = () => {
                 </div>
             ) : (
                 <div className="details-grid details-grid-body details-grid-actions">
-                    <div />
-                    <div>
-                        <button
-                            className="button-action"
-                            onClick={() => openWMSInLizard(wms, centerPoint, zoom)}
-                            title="Open in Portal"
-                        >
-                            OPEN IN VIEWER
-                        </button>
-                    </div>
-                    <div />
-                    <div>
-                        <button
-                            className="button-action"
-                            onClick={() => openWMSInAPI(wms)}
-                            title="Open in API"
-                        >
-                            OPEN IN API
-                        </button>
-                    </div>
+                    <Action
+                        title='Open in Portal'
+                        description='Open in the viewer to playback and analyze (open in a new browser tab)'
+                        onClick={() => openWMSInLizard(wms, centerPoint, zoom)}
+                    />
+                    <Action
+                        title='Open in API'
+                        description='Show the API detail page (open in a new browser tab)'
+                        onClick={() => openWMSInAPI(wms)}
+                    />
                     {wms.download_url ? (
-                        <>
-                        <div />
-                        <div>
-                            <button
-                                className="button-action"
-                                onClick={() => openWMSDownloadURL(wms)}
-                                title="Download"
-                            >
-                                DOWNLOAD
-                            </button>
-                        </div>
-                        </>
+                        <Action
+                            title='Download'
+                            description='Download the WMS to your local machine'
+                            tooltip='Click to download'
+                            onClick={() => openWMSDownloadURL(wms)}
+                        />
                     ) : null}
                 </div>
             )}
