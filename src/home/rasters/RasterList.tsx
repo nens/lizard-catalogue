@@ -89,7 +89,7 @@ export default function RasterList (props: MyProps) {
                             Description
                         </div>
                         <div className="list__row list__row-time">
-                            Latest update
+                            Last update
                             <i className="fa fa-sort" onClick={() => onSorting('last_modified')} />
                         </div>
                         <div className="list__row list__row-access" />

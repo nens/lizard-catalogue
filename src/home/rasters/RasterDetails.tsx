@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { MyStore, getRaster, getOrganisations, getLizardBootstrap, getSelectedItem } from '../../reducers';
 import { Raster, LatLng, TableTab } from '../../interface';
+import { getLocalDateString } from '../../utils/dateUtils';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
 import { openRasterInAPI, openRasterInLizard, getLayercollectionGetCapabilitesURL, getRasterGetCapabilitesURL } from '../../utils/url';
@@ -55,15 +56,6 @@ const RasterDetails = (props: MyProps) => {
     //Calculate the zoom level of the raster by using the zoomLevelCalculation function
     const zoom = zoomLevelCalculation(rasterBounds);
 
-    //Get the Date from the timestamp string
-    const lastestUpdateDate = new Date(raster.last_modified);
-    const startDate = new Date(raster.first_value_timestamp);
-    const stopDate = new Date(raster.last_value_timestamp);
-
-    //Turn the new Date into a string with the date format of DD-MM-YYYY
-    const latestUpdate = lastestUpdateDate.toLocaleDateString();
-    const start = startDate.toLocaleDateString();
-    const stop = stopDate.toLocaleDateString();
 
     //Calculate raster resolution and decide to show it in m2 or square degrees
     const rasterResolution = Math.abs(raster.pixelsize_x * raster.pixelsize_y);
@@ -193,16 +185,16 @@ const RasterDetails = (props: MyProps) => {
                     <div>{raster.observation_type && raster.observation_type.unit}</div>
                     <div>Scale</div>
                     <div>{raster.observation_type && raster.observation_type.scale}</div>
-                    <div>Latest update</div>
-                    <div>{latestUpdate}</div>
+                    <div>Last update</div>
+                    <div>{getLocalDateString(raster.last_modified)}</div>
                     {raster.temporal ? (
                         <>
                         <div>Interval</div>
                         <div>{raster.interval}</div>
                         <div>Start</div>
-                        <div>{start}</div>
+                        <div>{getLocalDateString(raster.first_value_timestamp)}</div>
                         <div>End</div>
-                        <div>{stop}</div>
+                        <div>{getLocalDateString(raster.last_value_timestamp)}</div>
                         </>
                     ) : null}
                 </div>
