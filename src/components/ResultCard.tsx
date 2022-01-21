@@ -7,6 +7,7 @@ import Export from './Export';
 import downloadIcon from '../images/download-icon.svg';
 import rasterExportIcon from '../images/raster-export.svg';
 import styles from './ResultCard.module.css';
+import '../styles/Modal.css';
 
 interface RasterState {
   id: number,
