@@ -129,10 +129,8 @@ const ScenarioDetails = () => {
                     <div>{scenario.username}</div>
                     <div>Created</div>
                     <div>{getLocalDateString(scenario.created)}</div>
-                    <div>Lastest update</div>
+                    <div>Last update</div>
                     <div>{getLocalDateString(scenario.last_modified)}</div>
-                    <div>For ICMS</div>
-                    <div>{scenario.for_icms ? 'Yes' : 'No'}</div>
                     <div>Raw results</div>
                     <div>{scenario.has_raw_results ? 'Yes' : 'No'}</div>
                     <div>Total size</div>
