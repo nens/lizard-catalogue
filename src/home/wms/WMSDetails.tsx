@@ -9,7 +9,7 @@ import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
-import '../../styles/Details.css';
+import styles from '../../styles/Details.module.css';
 import '../../styles/Buttons.css';
 
 const WMSDetails = () => {
@@ -29,8 +29,7 @@ const WMSDetails = () => {
         return () => setAuthorizedToManageLayer(false);
     }, [wms, user, organisations]);
 
-    //If no WMS layer is selected, display a text
-    if (!wms) return <div className="details details-loading">Please select a WMS Layer</div>;
+    if (!wms) return <div className={`${styles.Details} ${styles.DetailsText}`}>Please select a WMS Layer</div>;
 
     //Get WMS layer's getCapabilities link based on WMS layer's URL
     const wmsUrl = wms.wms_url && `${wms.wms_url}/?request=GetCapabilities`;
@@ -46,38 +45,39 @@ const WMSDetails = () => {
     const zoom = zoomLevelCalculation(wmsBounds);
 
     return (
-        <div className="details" id="scrollbar">
-            <div className="details-name">
-                <h3 title={wms.name}>
-                    {wms.name}
-                </h3>
-                <span title="To manage this WMS layer">
+        <div
+            className={styles.Details}
+            style={{
+                gridTemplateRows: "6rem 20rem auto 4rem auto 6rem 4rem 1fr"
+            }}
+        >
+            <div className={styles.NameUuidContainer}>
+                <div className={styles.Name}>
+                    <h3 title={wms.name}>
+                        {wms.name}
+                    </h3>
                     {authorizedToManageLayer ? (
-                        <a
-                            href={`/management/data_management/wms_layers/${wms.uuid}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <img
-                                className="details-manage-icon"
-                                src={manageIcon}
-                                alt="View in manage client"
-                            />
-                        </a>
-                    ) :null}
-                </span>
+                        <img
+                            className={styles.ManageIcon}
+                            src={manageIcon}
+                            title='To manage this WMS layer'
+                            alt="Manage"
+                            onClick={() => window.open(`/management/data_management/wms_layers/${wms.uuid}`)}
+                        />
+                    ) : null}
+                </div>
+                <div className={styles.Uuid}>
+                    <div title={wms.uuid}>{wms.uuid}</div>
+                    <button
+                        className="button-copy"
+                        onClick={() => navigator.clipboard.writeText(wms.uuid)}
+                    >
+                        <i className="fa fa-clone" />
+                    </button>
+                </div>
             </div>
-            <div className="details-uuid">
-                <span>{wms.uuid}</span>
-                <button
-                    className="button-copy"
-                    onClick={() => navigator.clipboard.writeText(wms.uuid)}
-                >
-                    <i className="fa fa-clone" />
-                </button>
-            </div>
-            <div className="details-map">
-                <Map bounds={bounds} zoom={wms.min_zoom} zoomControl={false}>
+            <div className={styles.Map}>
+                <Map bounds={bounds} zoom={wms.min_zoom} zoomControl={false} style={{ width: '100%' }}>
                     <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                     {wms.wms_url ? (
                         <WMSTileLayer
@@ -89,35 +89,34 @@ const WMSDetails = () => {
                     ) : null}
                 </Map>
             </div>
-            <div className="details-info">
-                <span className="details-title">Description</span>
-                <span className="description" id="scrollbar">{wms.description}</span>
+            <div className={styles.InfoBox}>
+                <span className={styles.InfoBoxTitle}>Description</span>
+                <span className={styles.InfoBoxDescription} id="scrollbar">{wms.description}</span>
             </div>
-            <div className="details-info">
-                <span className="details-title">Organisation</span>
+            <div className={styles.InfoBox}>
+                <span className={styles.InfoBoxTitle}>Organisation</span>
                 <span>{wms.organisation && wms.organisation.name}</span>
             </div>
             {wms.layer_collections && wms.layer_collections[0] ? (
-                <div className="details-info">
-                    <span className="details-title">Layer collection</span>
+                <div className={styles.InfoBox}>
+                    <span className={styles.InfoBoxTitle}>Layer collection</span>
                     <span>{wms.layer_collections && wms.layer_collections[0] && wms.layer_collections[0].slug}</span>
                 </div>
-            ) : null}
+            ) : <div />}
             {wms.wms_url ? (
-                <div className="details-info">
-                    <span className="details-title">WMS layer's URL</span>
-                    <div className="details__url-field">
+                <div className={styles.InfoBox}>
+                    <div className={styles.InfoBoxTitle}>WMS Layer's URL</div>
+                    <div className={styles.GetCapabilitiesUrlBox}>
                         <input
                             type="text"
-                            className="details__get-capabilities-url"
+                            className={styles.GetCapabilitiesUrl}
                             title={wmsUrl}
                             value={wmsUrl}
                             spellCheck={false}
                             readOnly={true}
                         />
                         <button
-                            className="details__button-copy"
-                            title="Copy link"
+                            className={styles.ButtonLinkCopy}
                             onClick={() => navigator.clipboard.writeText(wmsUrl)}
                         >
                             Copy link
@@ -125,29 +124,29 @@ const WMSDetails = () => {
                     </div>
                 </div>
             ) : null}
-            <div className="details-grid details-grid-header">
+            <div className={`${styles.Grid} ${styles.GridHeader}`}>
                 <div
-                    className={showTableTab === 'Details' ? 'details-grid-header-selected' : ''}
+                    className={showTableTab === 'Details' ? styles.GridHeaderSelected : ''}
                     onClick={() => setShowTableTab('Details')}
                 >
                     Details
                 </div>
                 <div
-                    className={showTableTab === 'Actions' ? 'details-grid-header-selected' : ''}
+                    className={showTableTab === 'Actions' ? styles.GridHeaderSelected : ''}
                     onClick={() => setShowTableTab('Actions')}
                 >
                     Actions
                 </div>
             </div>
             {showTableTab === 'Details' ? (
-                <div className="details-grid details-grid-body details-grid-body-details">
+                <div className={`${styles.Grid} ${styles.GridBody} ${styles.GridBodyDetails}`} id='scrollbar'>
                     <div>Data type</div>
                     <div>WMS layer</div>
                     <div>Slug</div>
                     <div>{wms.slug}</div>
                 </div>
             ) : (
-                <div className="details-grid details-grid-body details-grid-actions">
+                <div className={`${styles.Grid} ${styles.GridBody} ${styles.GridBodyActions}`} id='scrollbar'>
                     <Action
                         title='Open in Viewer'
                         description='Open in the Lizard Viewer to playback and analyze (open in a new browser tab)'
