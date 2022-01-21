@@ -16,8 +16,9 @@ import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { MonitoringNetwork, ObservationType, TableTab } from '../../interface';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import TimeSeriesModal from '../../components/TimeSeriesModal';
+import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
-import '../../styles/Details.css';
+import styles from '../../styles/Details.module.css';
 import '../../styles/Buttons.css';
 import '../../styles/Modal.css';
 
@@ -46,32 +47,32 @@ const MonitoringNetworkDetails = () => {
         return () => setAuthorizedToManageLayer(false);
     }, [monitoringNetwork, user, organisations]);
 
-    if (!monitoringNetwork) return <div className="details details-loading">Please select a monitoring network</div>;
+    if (!monitoringNetwork) return <div className={`${styles.Details} ${styles.DetailsText}`}>Please select a monitoring network</div>;
 
     return (
-        <div className="details" id="scrollbar">
-            <div className="details-name">
-                <h3 title={monitoringNetwork.name}>
-                    {monitoringNetwork.name}
-                </h3>
-                <span title="To manage this network">
+        <div
+            className={styles.Details}
+            style={{
+                gridTemplateRows: "6rem 20rem auto 4rem 4rem 1fr"
+            }}
+        >
+            <div className={styles.NameUuidContainer}>
+                <div className={styles.Name}>
+                    <h3 title={monitoringNetwork.name}>
+                        {monitoringNetwork.name}
+                    </h3>
                     {authorizedToManageLayer ? (
-                        <a
-                            href={`/management/data_management/timeseries/monitoring_networks/${monitoringNetwork.uuid}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <img
-                                className="details-manage-icon"
-                                src={manageIcon}
-                                alt="View in manage client"
-                            />
-                        </a>
+                        <img
+                            className={styles.ManageIcon}
+                            src={manageIcon}
+                            title='To manage this network'
+                            alt="Manage"
+                            onClick={() => window.open(`/management/data_management/timeseries/monitoring_networks/${monitoringNetwork.uuid}`)}
+                        />
                     ) : null}
-                </span>
-            </div>
-                <div className="details-uuid">
-                    <span>{monitoringNetwork.uuid}</span>
+                </div>
+                <div className={styles.Uuid}>
+                    <div title={monitoringNetwork.uuid}>{monitoringNetwork.uuid}</div>
                     <button
                         className="button-copy"
                         onClick={() => navigator.clipboard.writeText(monitoringNetwork.uuid)}
@@ -79,9 +80,10 @@ const MonitoringNetworkDetails = () => {
                         <i className="fa fa-clone" />
                     </button>
                 </div>
-            <div className="details-map">
+            </div>
+            <div className={styles.Map}>
                 {locationsObject && locationsObject.isFetching ? (
-                    <div className="details-map-loading">
+                    <div className={styles.MapLoading}>
                         <MDSpinner />
                     </div>
                 ) : null}
@@ -89,6 +91,7 @@ const MonitoringNetworkDetails = () => {
                     bounds={locationsObject ? locationsObject.spatialBounds : [[85, 180], [-85, -180]]}
                     zoomControl={false}
                     style={{
+                        width: '100%',
                         opacity: locationsObject && locationsObject.isFetching ? 0.4 : 1
                     }}
                 >
@@ -110,23 +113,23 @@ const MonitoringNetworkDetails = () => {
                     <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                 </Map>
             </div>
-            <div className="details-info">
-                <span className="details-title">Description</span>
-                <span className="description" id="scrollbar">{monitoringNetwork.description}</span>
+            <div className={styles.InfoBox}>
+                <span className={styles.InfoBoxTitle}>Description</span>
+                <span className={styles.InfoBoxDescription} id="scrollbar">{monitoringNetwork.description}</span>
             </div>
-            <div className="details-info">
-                <span className="details-title">Organisation</span>
+            <div className={styles.InfoBox}>
+                <span className={styles.InfoBoxTitle}>Organisation</span>
                 <span>{monitoringNetwork.organisation && monitoringNetwork.organisation.name}</span>
             </div>
-            <div className="details-grid details-grid-header">
+            <div className={`${styles.Grid} ${styles.GridHeader}`}>
                 <div
-                    className={activeTab === 'Details' ? 'details-grid-header-selected' : ''}
+                    className={activeTab === 'Details' ? styles.GridHeaderSelected : ''}
                     onClick={() => setActiveTab('Details')}
                 >
                     Details
                 </div>
                 <div
-                    className={activeTab === 'Actions' ? 'details-grid-header-selected' : ''}
+                    className={activeTab === 'Actions' ? styles.GridHeaderSelected : ''}
                     onClick={() => setActiveTab('Actions')}
                 >
                     Actions
@@ -134,14 +137,14 @@ const MonitoringNetworkDetails = () => {
             </div>
             {activeTab === 'Details' && observationTypeObject ? (
                 observationTypeObject.isFetching ? (
-                    <div className="details-grid details-grid-body">
+                    <div className={`${styles.Grid} ${styles.GridBody} ${styles.GridBodyDetails}`}>
                         <div>Observation types</div>
                         <div style={{ textAlign: 'center' }}>
                             <MDSpinner size={24} />
                         </div>
                     </div>
                 ): (
-                    <div className="details-grid details-grid-body">
+                    <div className={`${styles.Grid} ${styles.GridBody} ${styles.GridBodyDetails}`} id='scrollbar'>
                         <div>Observation types</div>
                         {observationTypeObject.observationTypes.map((observationType, i) => {
                             // Only show first 10 observation types in the table
@@ -167,16 +170,13 @@ const MonitoringNetworkDetails = () => {
                     </div>
                 )
             ) : (
-                <div className="details-grid details-grid-body details-grid-actions">
-                    <div />
-                    <div>
-                        <button
-                            className="button-action"
-                            onClick={() => setTimeseriesModal(!timeseriesModal)}
-                        >
-                            SELECT TIME SERIES
-                        </button>
-                    </div>
+                <div className={`${styles.Grid} ${styles.GridBody} ${styles.GridBodyActions}`} id='scrollbar'>
+                    <Action
+                        title='Select time series'
+                        description='Open the time series selection modal to select and export selected time series'
+                        tooltip='Open the Time Series selection modal'
+                        onClick={() => setTimeseriesModal(!timeseriesModal)}
+                    />
                 </div>
             )}
             {/*This is the PopUp window for the time-series selection screen*/}

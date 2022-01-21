@@ -7,9 +7,9 @@ import { getScenarioGetCapabilitesURL, openScenarioInAPI, openScenarioInLizard }
 import { getLocalDateString, getLocalString } from '../../utils/dateUtils';
 import { bytesToMb } from '../../utils/byteConversionUtils';
 import ScenarioResults from './ScenarioResults';
+import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
-import '../../styles/Details.css';
-import '../../styles/Modal.css';
+import styles from '../../styles/Details.module.css';
 import '../../styles/Buttons.css';
 
 const ScenarioDetails = () => {
@@ -29,61 +29,61 @@ const ScenarioDetails = () => {
         return () => setAuthorizedToManageLayer(false);
     }, [scenario, user, organisations]);
 
-    if (!scenario) return <div className="details details-loading">Please select a scenario</div>;
+    if (!scenario) return <div className={`${styles.Details} ${styles.DetailsText}`}>Please select a scenario</div>;
 
     return (
-        <div className="details" id="scrollbar">
-            <div className="details-name">
-                <h3 title={scenario.name}>
-                    {scenario.name}
-                </h3>
-                <span title="To manage this scenario">
+        <div
+            className={styles.Details}
+            style={{
+                gridTemplateRows: "6rem auto 4rem 6rem 4rem 1fr"
+            }}
+        >
+            <div className={styles.NameUuidContainer}>
+                <div className={styles.Name}>
+                    <h3 title={scenario.name}>
+                        {scenario.name}
+                    </h3>
                     {authorizedToManageLayer ? (
-                        <a
-                            href={`/management/data_management/scenarios/${scenario.uuid}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <img
-                                className="details-manage-icon"
-                                src={manageIcon}
-                                alt="View in manage client"
-                            />
-                        </a>
+                        <img
+                            className={styles.ManageIcon}
+                            src={manageIcon}
+                            title='To manage this scenario'
+                            alt="Manage"
+                            onClick={() => window.open(`/management/data_management/scenarios/${scenario.uuid}`)}
+                        />
                     ) : null}
-                </span>
+                </div>
+                <div className={styles.Uuid}>
+                    <div title={scenario.uuid}>{scenario.uuid}</div>
+                    <button
+                        className="button-copy"
+                        onClick={() => navigator.clipboard.writeText(scenario.uuid)}
+                    >
+                        <i className="fa fa-clone" />
+                    </button>
+                </div>
             </div>
-            <div className="details-uuid">
-                <span>{scenario.uuid}</span>
-                <button
-                    className="button-copy"
-                    onClick={() => navigator.clipboard.writeText(scenario.uuid)}
-                >
-                    <i className="fa fa-clone" />
-                </button>
+            <div className={styles.InfoBox} style={{ maxHeight: 'unset', wordBreak: 'break-all' }}>
+                <span className={styles.InfoBoxTitle}>Model Name</span>
+                <span className={styles.InfoBoxDescription}>{scenario.model_name}</span>
             </div>
-            <div className="details-info">
-                <span className="details-title">Model Name</span>
-                <span className="description">{scenario.model_name}</span>
-            </div>
-            <div className="details-info">
-                <span className="details-title">Organisation</span>
+            <div className={styles.InfoBox}>
+                <span className={styles.InfoBoxTitle}>Organisation</span>
                 <span>{scenario.organisation && scenario.organisation.name}</span>
             </div>
-            <div className="details-capabilities">
-                <span className="details-title">Lizard WMS GetCapabilities</span>
-                <div className="details__url-field">
+            <div className={styles.InfoBox}>
+                <div className={styles.InfoBoxTitle}>Lizard WMS GetCapabilities</div>
+                <div className={styles.GetCapabilitiesUrlBox}>
                     <input
                         type="text"
-                        className="details__get-capabilities-url"
+                        className={styles.GetCapabilitiesUrl}
                         title={getScenarioGetCapabilitesURL(scenario)}
                         value={getScenarioGetCapabilitesURL(scenario)}
                         spellCheck={false}
                         readOnly={true}
                     />
                     <button
-                        className="details__button-copy"
-                        title="Copy link"
+                        className={styles.ButtonLinkCopy}
                         onClick={() => navigator.clipboard.writeText(getScenarioGetCapabilitesURL(scenario))}
                     >
                         Copy link
@@ -91,32 +91,32 @@ const ScenarioDetails = () => {
                 </div>
             </div>
             <div
-                className="details-grid details-grid-header"
+                className={`${styles.Grid} ${styles.GridHeader}`}
                 style={{
                     gridTemplateColumns: '1fr 1fr 1fr'
                 }}
             >
                 <div
-                    className={showTableTab === 'Details' ? 'details-grid-header-selected' : ''}
+                    className={showTableTab === 'Details' ? styles.GridHeaderSelected : ''}
                     onClick={() => setShowTableTab('Details')}
                 >
                     Details
                 </div>
                 <div
-                    className={showTableTab === 'Actions' ? 'details-grid-header-selected' : ''}
+                    className={showTableTab === 'Actions' ? styles.GridHeaderSelected : ''}
                     onClick={() => setShowTableTab('Actions')}
                 >
                     Actions
                 </div>
                 <div
-                    className={showTableTab === 'Results' ? 'details-grid-header-selected' : ''}
+                    className={showTableTab === 'Results' ? styles.GridHeaderSelected : ''}
                     onClick={() => setShowTableTab('Results')}
                 >
                     Results
                 </div>
             </div>
             {showTableTab === 'Details' ? (
-                <div className="details-grid details-grid-body details-grid-body-details">
+                <div className={`${styles.Grid} ${styles.GridBody} ${styles.GridBodyDetails}`} id='scrollbar'>
                     <div>Data type</div>
                     <div>Scenario</div>
                     <div>Model revision</div>
@@ -129,10 +129,8 @@ const ScenarioDetails = () => {
                     <div>{scenario.username}</div>
                     <div>Created</div>
                     <div>{getLocalDateString(scenario.created)}</div>
-                    <div>Lastest update</div>
+                    <div>Last update</div>
                     <div>{getLocalDateString(scenario.last_modified)}</div>
-                    <div>For ICMS</div>
-                    <div>{scenario.for_icms ? 'Yes' : 'No'}</div>
                     <div>Raw results</div>
                     <div>{scenario.has_raw_results ? 'Yes' : 'No'}</div>
                     <div>Total size</div>
@@ -143,31 +141,20 @@ const ScenarioDetails = () => {
                     <div>{getLocalString(scenario.end_time_sim)}</div>
                 </div>
             ) : showTableTab === 'Actions' ? (
-                <div className="details-grid details-grid-body details-grid-actions">
-                    <div />
-                    <div>
-                        <button
-                            className="button-action"
-                            onClick={() => openScenarioInLizard(scenario)}
-                            title="Open in Viewer"
-                        >
-                            OPEN IN VIEWER
-                        </button>
-                    </div>
-                    <div />
-                    <div>
-                        <button
-                            className="button-action"
-                            onClick={() => openScenarioInAPI(scenario)}
-                            title="Open in API"
-                        >
-                            OPEN IN API
-                        </button>
-                    </div>
-                    <div />
+                <div className={`${styles.Grid} ${styles.GridBody} ${styles.GridBodyActions}`} id='scrollbar'>
+                    <Action
+                        title='Open in Viewer'
+                        description='Open in the Lizard Viewer to playback and analyze (open in a new browser tab)'
+                        onClick={() => openScenarioInLizard(scenario)}
+                    />
+                    <Action
+                        title='Open in API'
+                        description='Show the API detail page (open in a new browser tab)'
+                        onClick={() => openScenarioInAPI(scenario)}
+                    />
                 </div>
             ) : ( // Results tab
-                <div className="details-grid details-grid-body details-grid-body-results">
+                <div className={`${styles.Grid} ${styles.GridBody} ${styles.GridBodyResults}`} id='scrollbar'>
                     <ScenarioResults uuid={scenario.uuid} />
                 </div>
             )}
