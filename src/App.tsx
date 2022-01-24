@@ -12,9 +12,9 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <div className="App" id="catalogue">
           <Routes>
-            <Route path='/catalogue' element={<MainContainer />} />
-            <Route path='/' element={<Navigate to='/catalogue' />} />
-            <Route path='/catalog' element={<Navigate to='/catalogue' />} />
+            <Route path='/catalogue/' element={<MainContainer />} />
+            <Route path='/' element={<Navigate to='/catalogue/' />} />
+            <Route path='/catalog' element={<Navigate to='/catalogue/' />} />
           </Routes>
           <Snackbar />
         </div>
