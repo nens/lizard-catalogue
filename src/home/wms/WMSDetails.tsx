@@ -149,7 +149,7 @@ const WMSDetails = () => {
                 <div className={`${styles.Grid} ${styles.GridBody} ${styles.GridBodyActions}`} id='scrollbar'>
                     <Action
                         title='Open in Viewer'
-                        description='Open in the Lizard Viewer to playback and analyze (open in a new browser tab)'
+                        description='Open in the Lizard Viewer to analyze (open in a new browser tab)'
                         onClick={() => openWMSInLizard(wms, centerPoint, zoom)}
                     />
                     <Action

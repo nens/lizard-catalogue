@@ -173,7 +173,7 @@ const MonitoringNetworkDetails = () => {
                 <div className={`${styles.Grid} ${styles.GridBody} ${styles.GridBodyActions}`} id='scrollbar'>
                     <Action
                         title='Select time series'
-                        description='Open the time series selection modal to select and export selected time series'
+                        description='Open the time series selection modal to select and export time series'
                         tooltip='Open the Time Series selection modal'
                         onClick={() => setTimeseriesModal(!timeseriesModal)}
                     />
