@@ -1869,6 +1869,11 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
+"@types/geojson@*":
+  version "7946.0.8"
+  resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.8.tgz#30744afdb385e2945e22f3b033f897f76b1f12ca"
+  integrity sha512-1rkryxURpr6aWP7R786/UQOkJ3PcpQiWkAXBmdWc7ryFWqN6a4xfK7BtjXvFBKO9LjQ+MWQSWxYeZX1OApnArA==
+
 "@types/graceful-fs@^4.1.2":
   version "4.1.5"
   resolved "https://registry.yarnpkg.com/@types/graceful-fs/-/graceful-fs-4.1.5.tgz#21ffba0d98da4350db64891f92a9e5db3cdb4e15"
@@ -1945,6 +1950,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/leaflet@^1.7.8":
+  version "1.7.8"
+  resolved "https://registry.yarnpkg.com/@types/leaflet/-/leaflet-1.7.8.tgz#fbae5a3a3d22780632715287764352f80bbe3d4a"
+  integrity sha512-prZwhmUznkwTYCTZVGTR4U1GzgPP3PAWYYQ3wDgVkIoiuQTheWoycsXx4Rz9ARYhlDTl0Ycd8lvhH2/rNSkqIg==
+  dependencies:
+    "@types/geojson" "*"
+
 "@types/mime@^1":
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-1.3.2.tgz#93e25bf9ee75fe0fd80b594bc4feb0e862111b5a"
@@ -1964,6 +1976,11 @@
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
+
+"@types/point-in-polygon@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@types/point-in-polygon/-/point-in-polygon-1.1.1.tgz#6459c3d895fe585f2b5c46ff6715b886af4ed2eb"
+  integrity sha512-DDl4uxqbpRsBYg+youv7AbWsED4eycsPiSD+AaB+NAkFjHKHTuij55K29R8rFgqeoeazi/5syNW5J2uNnpS+Ow==
 
 "@types/prettier@^2.1.5":
   version "2.4.3"
