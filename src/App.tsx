@@ -1,5 +1,5 @@
 import { Provider } from 'react-redux';
-// import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import { QueryClientProvider } from 'react-query';
 import { queryClient } from './hooks';
 import store from './store';
@@ -11,11 +11,11 @@ function App() {
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <div className="App" id="catalogue">
-          <MainContainer />
-          {/* <Routes>
+          <Routes>
+            <Route path='/catalogue' element={<MainContainer />} />
             <Route path='/' element={<Navigate to='/catalogue' />} />
             <Route path='/catalog' element={<Navigate to='/catalogue' />} />
-          </Routes> */}
+          </Routes>
           <Snackbar />
         </div>
       </QueryClientProvider>
