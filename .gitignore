@@ -9,9 +9,8 @@
 /coverage
 
 # production
-/dist
 /build
-/deploy
+/dist
 
 # authentication
 startauth
@@ -27,4 +26,3 @@ startauth.sh
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.vscode

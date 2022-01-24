@@ -24,7 +24,7 @@
 
 import React, { EffectCallback, useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import {
     fetchRasters,
     fetchObservationTypes,
@@ -90,7 +90,7 @@ import Header from './Header';
 import AlertPopup from '../components/AlertPopup';
 import '../styles/MainApp.css';
 
-const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
+const MainApp: React.FC<DispatchProps> = (props) => {
     const currentRasterList = useSelector(getCurrentRasterList);
     const currentWMSList = useSelector(getCurrentWMSList);
     const currentMonitoringNetworkList = useSelector(getCurrentMonitoringNetworkList);
@@ -102,6 +102,9 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     const filters = useSelector(getFilters);
     const selectedItem = useSelector(getSelectedItem);
     const userId = useSelector(getLizardBootstrap).user.id;
+
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const [showProfileDropdown, setShowProfileDropdown] = useState(false);
     const [showInboxDropdown, setShowInboxDropdown] = useState(false);
@@ -208,7 +211,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
     // useMountEffect to update Redux store with URL params
     useMountEffect(() => {
         // Capture the search params in the URL
-        const urlSearchParams = getUrlParams(props.location.search);
+        const urlSearchParams = getUrlParams(location.search);
         const dataType = getDataType(urlSearchParams);
         const search = getSearch(urlSearchParams);
         const organisation = getOrganisation(urlSearchParams);
@@ -246,7 +249,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         );
 
         const updateURL = (url: string) => {
-            props.history.push(`${url}`);
+            navigate(`${url}`);
         };
 
         updateURL(url);
@@ -257,7 +260,7 @@ const MainApp: React.FC<DispatchProps & RouteComponentProps> = (props) => {
         filters.observationType,
         filters.layercollection,
         selectedItem,
-        props.history
+        navigate
     ]);
 
     // useEffect to fetch rasters, WMS, scenarios and monitoring networks
