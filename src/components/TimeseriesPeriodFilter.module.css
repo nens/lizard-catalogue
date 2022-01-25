@@ -1,0 +1,29 @@
+.TimeseriesPeriodContainer {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.TimeseriesPeriodArrow {
+  font-size: 4rem;
+  color: #707070;
+  margin: 0 4rem;
+}
+
+.TimeseriesTimeSelection {
+  display: flex;
+  flex-direction: column;
+}
+
+.TimeseriesTimeSelection span {
+  margin-bottom: 0.5rem;
+}
+
+/* Datetime picker */
+.TimeseriesDatetime {
+  color: var(--font-color);
+}
+.TimeseriesDatetimeError {
+  border: 1px solid red;
+}

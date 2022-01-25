@@ -23,8 +23,8 @@ import { convertToSelectObject, Dropdown } from './Dropdown';
 import TimeSeriesExportModal from './TimeseriesExportModal';
 import SearchBar from './SearchBar';
 import polygonIcon from './../images/polygon.svg';
+import styles from './TimeseriesModal.module.css';
 import mapStyles from './../styles/Details.module.css';
-import '../styles/TimeSeriesModal.css';
 import '../styles/Modal.css';
 import '../styles/Buttons.css';
 import '../styles/Icons.css';
@@ -247,13 +247,13 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                 <span>Select Time Series</span>
                 <button onClick={closeTimeseriesModal}>&times;</button>
             </div>
-            <div className="timeseries">
-                <div className="timeseries-filter">
-                    <div className="timeseries-top">
+            <div className={styles.Timeseries}>
+                <div className={styles.TimeseriesFilter}>
+                    <div className={styles.TimeseriesTop}>
                         <h3>1. SELECT LOCATIONS</h3>
-                        <span className="timeseries-helper-text">Select locations by clicking or select all locations with the same observation type</span>
-                        <div className="timeseries-map">
-                            <div className="timeseries-search-locations">
+                        <span className={styles.TimeseriesHelperText}>Select locations by clicking or select all locations with the same observation type</span>
+                        <div className={styles.TimeseriesMap}>
+                            <div className={styles.TimeseriesSearchLocation}>
                                 <SearchBar
                                     name="searchBar"
                                     searchTerm={searchInput}
@@ -280,6 +280,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                 zoomControl={false}
                                 attributionControl={false}
                                 style={{
+                                    height: '100%',
                                     opacity: locationsObject.isFetching || (filteredLocationObject && filteredLocationObject.isFetching) ? 0.4 : 1,
                                     cursor: drawingMode ? "default" : "pointer"
                                 }}
@@ -307,7 +308,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                                     new Leaflet.DivIcon({
                                                         iconSize: [24, 24],
                                                         tooltipAnchor: [12, 0],
-                                                        className: selectedLocations.includes(locationUuid) ? "location-icon location-icon-selected" : "location-icon"
+                                                        className: selectedLocations.includes(locationUuid) ? `${styles.LocationIcon} ${styles.LocationIconSelected}` : styles.LocationIcon
                                                     })
                                                 }
                                                 onClick={() => {
@@ -350,7 +351,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                 <i className="fa fa-expand" />
                             </button>
                             {drawingMode ? (
-                                <div className="polygon-button-container">
+                                <div className={styles.PolygonButtonContainer}>
                                     {/* Cancel polygon button */}
                                     <button
                                         className="button-action button-polygon"
@@ -389,7 +390,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                     </button>
                                 </div>
                             ) : (
-                                <div className="polygon-button-container">
+                                <div className={styles.PolygonButtonContainer}>
                                     {/* Start drawing polygon button */}
                                     <button
                                         className="button-action button-polygon"

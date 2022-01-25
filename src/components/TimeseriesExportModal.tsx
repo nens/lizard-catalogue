@@ -5,7 +5,7 @@ import { addNotification, addTimeseriesExportTask } from './../action';
 import { timeValidator } from './../utils/timeValidator';
 import { requestTimeseriesExport } from './../utils/url';
 import { TimeseriesPeriodFilter } from './TimeseriesPeriodFilter';
-import '../styles/TimeseriesExportModal.css';
+import styles from './TimeseriesExportModal.module.css';
 import '../styles/Modal.css';
 import '../styles/Buttons.css';
 import '../styles/Icons.css';
@@ -46,8 +46,8 @@ const TimeSeriesExportModal: FC<MyProps & PropsFromDispatch> = (props) => {
                 <span>Export period</span>
                 <button onClick={props.toggleModal}>&times;</button>
             </div>
-            <div className="timeseries-export">
-                <div className="timeseries-export-title">
+            <div className={styles.TimeseriesExport}>
+                <div className={styles.TimeseriesExportTitle}>
                     <h4>Choose a period for your export.</h4>
                     <span>If the filter period is filled in, it will be used as the default period.</span>
                 </div>

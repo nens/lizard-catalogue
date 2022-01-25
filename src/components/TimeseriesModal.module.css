@@ -1,0 +1,170 @@
+.Timeseries {
+  height: calc(100% - 5rem); /* modal header height = 5rem */
+  padding: 2rem;
+  display: flex;
+  flex-direction: row;
+}
+.TimeseriesTop {
+  height: 75%;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.Timeseries h3 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin: 0;
+  margin-bottom: 1rem;
+}
+.TimeseriesHelperText {
+  font-style: italic;
+  font-weight: 300;
+}
+
+.TimeseriesFilter {
+  width: 60%;
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.TimeseriesFilterBar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-evenly; */
+}
+
+.TimeseriesSelection {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+}
+
+.TimeseriesMap {
+  flex: 1;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.LocationIcon {
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 3px solid #707070;
+}
+.LocationIconSmall {
+  border: 2px solid #707070;
+}
+.LocationIconSelected {
+  background-color: var(--button-color-scheme);
+  border: 3px solid var(--main-color-scheme);
+}
+
+.TimeseriesSearchLocation {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  width: 97%;
+  z-index: 1000;
+}
+
+.timeseries-observation-list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.timeseries-observation-list li {
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+}
+.timeseries-observation-list li input {
+  cursor: pointer;
+}
+
+.timeseries-selected-locations {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--border-color-soft);
+}
+.timeseries-selected-locations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  white-space: nowrap;
+}
+.timeseries-selected-locations-header > div {
+  margin-right: 1rem;
+}
+
+.timeseries-location-list {
+  height: 100%;
+  padding: 2rem 0;
+  padding-right: 1rem;
+  margin: 0;
+  overflow-y: auto;
+}
+.timeseries-location-list li {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.timeseries-location-name {
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+.timeseries-filter-observation-type {
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.timeseries-filter-observation-type > h3 {
+  margin-bottom: 0;
+  flex: 1;
+}
+.timeseries-filter-observation-type > form {
+  flex: 1;
+}
+
+.timeseries-filter-period {
+  margin: 1rem 0;
+}
+
+/* Buttons */
+.timeseries-button-container {
+  margin-top: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.timeseries-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.timeseries-button-container button {
+  width: 90%;
+  margin-top: 1rem;
+  margin-right: 1rem;
+}
+
+.timeseries-button-clear-selection {
+  font-size: 1.6rem;
+  width: auto;
+}
+
+/* Polygon button container */
+.PolygonButtonContainer {
+  display: flex;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 1000;
+}
