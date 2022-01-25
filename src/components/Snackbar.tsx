@@ -1,22 +1,22 @@
 import { connect, useSelector } from 'react-redux';
 import { dismissNotification } from './../action';
 import { getNotification } from './../reducers';
-import '../styles/Snackbar.css';
+import styles from './SnackBar.module.css';
 
 const Snackbar: React.FC<PropsFromDispatch> = (props) => {
     const notification = useSelector(getNotification);
     const { dismiss } = props;
 
     return (
-        <div className={'snackbar-wrapper'}>
+        <div className={styles.SnackbarWrapper}>
             <div
-                className={`snackbar ${notification ? 'snackbar-show' : 'snackbar-hide'}`}
+                className={`${styles.Snackbar} ${notification ? styles.SnackbarShow : styles.SnackbarHide}`}
             >
-                <span className={'snackbar-message'}>
+                <span className={styles.SnackbarMessage}>
                     {notification}
                 </span>
                 <div
-                    className={'snackbar-dismiss'}
+                    className={styles.SnackbarDismiss}
                     onClick={dismiss}
                 >
                     Dismiss
