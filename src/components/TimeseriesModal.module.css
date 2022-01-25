@@ -68,94 +68,94 @@
   z-index: 1000;
 }
 
-.timeseries-observation-list {
+.TimeseriesObservationList {
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
-.timeseries-observation-list li {
+.TimeseriesObservationList li {
   margin-right: 1rem;
   margin-bottom: 1rem;
 }
-.timeseries-observation-list li input {
+.TimeseriesObservationList li input {
   cursor: pointer;
 }
 
-.timeseries-selected-locations {
+.TimeseriesSelectedLocations {
   height: 100%;
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid var(--border-color-soft);
 }
-.timeseries-selected-locations-header {
+.TimeseriesSelectedLocationsHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   white-space: nowrap;
 }
-.timeseries-selected-locations-header > div {
+.TimeseriesSelectedLocationsHeader > div {
   margin-right: 1rem;
 }
 
-.timeseries-location-list {
+.TimeseriesLocationList {
   height: 100%;
   padding: 2rem 0;
   padding-right: 1rem;
   margin: 0;
   overflow-y: auto;
 }
-.timeseries-location-list li {
+.TimeseriesLocationList li {
   font-weight: 600;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
-.timeseries-location-name {
+.TimeseriesLocationName {
   cursor: pointer;
   margin-right: 1rem;
 }
 
-.timeseries-filter-observation-type {
+.TimeseriesFilterObservationType {
   margin: 1rem 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.timeseries-filter-observation-type > h3 {
+.TimeseriesFilterObservationType > h3 {
   margin-bottom: 0;
   flex: 1;
 }
-.timeseries-filter-observation-type > form {
+.TimeseriesFilterObservationType > form {
   flex: 1;
 }
 
-.timeseries-filter-period {
+.TimeseriesFilterPeriod {
   margin: 1rem 0;
 }
 
 /* Buttons */
-.timeseries-button-container {
+.TimeseriesButtonContainer {
   margin-top: 1rem;
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
-.timeseries-buttons {
+.TimeseriesButtons {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
-.timeseries-button-container button {
+.TimeseriesButtonContainer button {
   width: 90%;
   margin-top: 1rem;
   margin-right: 1rem;
 }
 
-.timeseries-button-clear-selection {
+.TimeseriesButtonClearSelection {
   font-size: 1.6rem;
   width: auto;
 }

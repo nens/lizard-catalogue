@@ -409,8 +409,8 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                             )}
                         </div>
                     </div>
-                    <div className="timeseries-filter-bar">
-                        <div className="timeseries-filter-observation-type">
+                    <div className={styles.TimeseriesFilterBar}>
+                        <div className={styles.TimeseriesFilterObservationType}>
                             <h3>FILTER OBSERVATION TYPE</h3>
                             <form>
                                 <Dropdown
@@ -423,7 +423,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                 />
                             </form>
                         </div>
-                        <div className="timeseries-filter-period">
+                        <div className={styles.TimeseriesFilterPeriod}>
                             <h3>FILTER PERIOD</h3>
                             <TimeseriesPeriodFilter
                                 start={start}
@@ -434,16 +434,16 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                         </div>
                     </div>
                 </div>
-                <div className="timeseries-selection">
-                    <div className="timeseries-top">
-                        <div className="timeseries-selected-locations">
-                            <div className="timeseries-selected-locations-header">
+                <div className={styles.TimeseriesSelection}>
+                    <div className={styles.TimeseriesTop}>
+                        <div className={styles.TimeseriesSelectedLocations}>
+                            <div className={styles.TimeseriesSelectedLocationsHeader}>
                                 <div>
                                     <h3>2. SELECTED TIME SERIES</h3>
-                                    <span className="timeseries-helper-text">The selected time-series will appear here</span>
+                                    <span className={styles.TimeseriesHelperText}>The selected time-series will appear here</span>
                                 </div>
                                 <button
-                                    className="button-action timeseries-button-clear-selection"
+                                    className={`button-action ${styles.TimeseriesButtonClearSelection}`}
                                     onClick={() => {
                                         setSelectedLocations([]);
                                         setSelectedTimeseries([]);
@@ -454,7 +454,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                     CLEAR SELECTION
                                 </button>
                             </div>
-                            <ul className="timeseries-location-list" id="scrollbar">
+                            <ul className={styles.TimeseriesLocationList} id="scrollbar">
                                 {selectedTimeseries.map(ts => {
                                     // location name and location code are not available in the timeseries endpoint on production
                                     // so we cannot retrieve these infos directly from the ts.location.code and ts.location.name
@@ -463,7 +463,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                     return (
                                         <li key={ts.uuid}>
                                             <span
-                                                className="timeseries-location-name"
+                                                className={styles.TimeseriesLocationName}
                                                 title={"Click to zoom into the location"}
                                                 onClick={() => setLocationOnZoom(ts.location.uuid)}
                                             >
@@ -490,10 +490,10 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                             </ul>
                         </div>
                     </div>
-                    <div className="timeseries-button-container">
+                    <div className={styles.TimeseriesButtonContainer}>
                         <h3>3. ACTIONS FOR YOUR SELECTIONS</h3>
                         <div>
-                            <div className="timeseries-buttons">
+                            <div className={styles.TimeseriesButtons}>
                                 <button
                                     className="button-action"
                                     title="Open in API"
@@ -504,7 +504,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                 </button>
                                 <button className="button-action" style={{visibility: "hidden"}} />
                             </div>
-                            <div className="timeseries-buttons">
+                            <div className={styles.TimeseriesButtons}>
                                 <button
                                     className="button-action"
                                     title="Open in Portal"
