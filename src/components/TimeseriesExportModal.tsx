@@ -8,7 +8,6 @@ import { TimeseriesPeriodFilter } from './TimeseriesPeriodFilter';
 import styles from './TimeseriesExportModal.module.css';
 import '../styles/Modal.css';
 import '../styles/Buttons.css';
-import '../styles/Icons.css';
 
 interface MyProps {
     defaultStart: number | null,
