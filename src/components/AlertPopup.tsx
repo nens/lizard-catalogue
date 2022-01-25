@@ -1,11 +1,13 @@
+import styles from './AlertPopup.module.css';
+
 interface MyProps {
     toggleAlert: () => void,
-};
+}
 
 export default function AlertPopup (props: MyProps) {
     return (
         <div
-            className="authorisation-alert"
+            className={styles.AuthorisationAlert}
             onClick={props.toggleAlert}
             style={{ display: 'flex' }}
         >
