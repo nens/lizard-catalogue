@@ -23,6 +23,7 @@ import { convertToSelectObject, Dropdown } from './Dropdown';
 import TimeSeriesExportModal from './TimeseriesExportModal';
 import SearchBar from './SearchBar';
 import polygonIcon from './../images/polygon.svg';
+import mapStyles from './../styles/Details.module.css';
 import '../styles/TimeSeriesModal.css';
 import '../styles/Modal.css';
 import '../styles/Buttons.css';
@@ -267,7 +268,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                 />
                             </div>
                             {locationsObject.isFetching || (filteredLocationObject && filteredLocationObject.isFetching) ? (
-                                <div className="details-map-loading">
+                                <div className={mapStyles.MapLoading}>
                                     <MDSpinner />
                                 </div>
                             ) : null}
