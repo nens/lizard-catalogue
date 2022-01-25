@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ObservationType, Organisation, Layercollection } from './../interface';
 import SearchBar from './SearchBar';
-import './../styles/FilterOption.css';
+import styles from './FilterOption.module.css';
 
 interface MyProps {
     filterOption: "observationType" | "organisation" | "layercollection",
@@ -60,12 +60,12 @@ const FilterOption: React.FC<MyProps> = (props) => {
 
     return (
         <div
-            className="filter-option"
+            className={styles.FilterOption}
             style={{
                 display: listOfItems.length === 0 ? "none" : ""
             }}
         >
-            <div className="filter-title">
+            <div className={styles.FilterTitle}>
                 <h4 title={title}>{title}</h4>
                 {showList ? (
                     <button onClick={() => setShowList(false)}>
@@ -78,7 +78,7 @@ const FilterOption: React.FC<MyProps> = (props) => {
                 )}
             </div>
             <div
-                className="filter-content"
+                className={styles.FilterContent}
                 style={{
                     display: showList ? undefined : "none"
                 }}
@@ -92,27 +92,27 @@ const FilterOption: React.FC<MyProps> = (props) => {
                     onSearchChange={e => setSearchInput(e.currentTarget.value)}
                 />
                 {filterValue ? (
-                    <div className="filter-checked-item">
+                    <div className={styles.FilterCheckedItem}>
                         <button onClick={removeItem}>x</button>
                         {filterValue}
                     </div>
                 ) : (
-                    <div className="filter-checked-item" />
+                    <div className={styles.FilterCheckedItem} />
                 )}
-                <ul className="filter-list" id="scrollbar">
+                <ul className={styles.FilterList} id="scrollbar">
                     {filteredListOfItems.slice(0, numberOfItems).map((item, i) => (
-                        <li className="filter-item" key={i}>
+                        <li className={styles.FilterItem} key={i}>
                             <input
                                 type="radio"
-                                className="filter-radiobutton"
+                                className={styles.FilterRadioButton}
                                 onChange={() => selectItem(getItemValue(item, filterOption))}
                                 checked={filterValue === getItemValue(item, filterOption)}
                             />
-                            <label className="filter-item-name">{getItemValue(item, filterOption)}</label>
+                            <label className={styles.FilterItemName}>{getItemValue(item, filterOption)}</label>
                         </li>
                     ))}
                     {numberOfItems < filteredListOfItems.length ? (
-                        <button className="filter-list-button" onClick={() => setNumberOfItems(numberOfItems + 4)}>[+] {filteredListOfItems.length - numberOfItems} more</button>
+                        <button className={styles.FilterListButton} onClick={() => setNumberOfItems(numberOfItems + 4)}>[+] {filteredListOfItems.length - numberOfItems} more</button>
                     ) : null}
                 </ul>
             </div>
