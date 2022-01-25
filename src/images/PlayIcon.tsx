@@ -1,11 +1,10 @@
-import React, { FC } from 'react';
 import styles from './PlayIcon.module.css';
 
 interface MyProps {
   disabled?: boolean
 }
 
-const PlayIcon: FC<MyProps> = ({ disabled }) => {
+const PlayIcon: React.FC<MyProps> = ({ disabled }) => {
   return (
     <div
       className={styles.OuterCircle}

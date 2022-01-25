@@ -1,4 +1,3 @@
-import React from 'react';
 import { connect, useSelector } from 'react-redux';
 import { openAllInLizard } from './../utils/url';
 import { getLocalDateString } from '../utils/dateUtils';

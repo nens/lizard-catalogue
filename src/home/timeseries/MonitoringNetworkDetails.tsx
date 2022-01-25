@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import MDSpinner from "react-md-spinner";
 import { useSelector } from 'react-redux';
 import Leaflet from 'leaflet';
@@ -150,10 +150,10 @@ const MonitoringNetworkDetails = () => {
                             // Only show first 10 observation types in the table
                             if (i < 10) {
                                 return (
-                                    <React.Fragment key={i}>
+                                    <Fragment key={i}>
                                     <div>{observationType.parameter ? observationType.parameter : observationType.code} {observationType.unit ? `(${addRefToUnit(observationType)})` : null}</div>
                                     <div />
-                                    </React.Fragment>
+                                    </Fragment>
                                 )
                             } else {
                                 return null;

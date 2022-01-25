@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './BasketNotification.module.css';
 
 export default function BasketNotification () {

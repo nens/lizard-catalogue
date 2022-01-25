@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { mapBoxAccesToken } from './../mapboxConfig.js';
 import { Map, TileLayer, WMSTileLayer, GeoJSON } from 'react-leaflet';

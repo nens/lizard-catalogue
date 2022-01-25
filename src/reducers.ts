@@ -88,7 +88,7 @@ export interface MyStore {
     observationTypes: ObservationType[],
     organisations: Organisation[],
     layercollections: Layercollection[],
-    currentDataType: 'Raster' | 'WMS' | 'Timeseries' | 'Scenario',
+    currentDataType: 'Raster' | 'WMS' | 'Timeseries' | 'Scenario' | '',
     currentRasterList: {
         count: number,
         previous: string | null,
@@ -353,7 +353,7 @@ const bootstrap = (
     }
 };
 
-const currentDataType = (state: MyStore['currentDataType'] = 'Raster', action: SwitchDataType): MyStore['currentDataType'] => {
+const currentDataType = (state: MyStore['currentDataType'] = '', action: SwitchDataType): MyStore['currentDataType'] => {
     switch (action.type) {
         case SWITCH_DATA_TYPE:
             return action.payload;
