@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { Circle } from 'rc-progress';
 import { getInbox, getRasterExportState } from './../reducers';
-import '../styles/Download.css';
+import styles from './DownloadModal.module.css';
 
 export default function DownloadModal () {
     const inbox = useSelector(getInbox);
@@ -13,11 +13,11 @@ export default function DownloadModal () {
     const progressInPercentage = finishedTasks / allTasks * 100;
 
     return (
-        <div className="download">
+        <div className={styles.Download}>
             <h3>{progressInPercentage===100 ? "Finished!" : "Getting your request ready ..."}</h3>
-            <div className="download-progress">
+            <div className={styles.DownloadProgress}>
                 <Circle
-                    className="download-progress-circle"
+                    className={styles.DownloadProgressCircle}
                     percent={progressInPercentage}
                     strokeWidth={4}
                     trailWidth={4}
@@ -25,7 +25,7 @@ export default function DownloadModal () {
                 />
                 <i>{finishedTasks} / {allTasks} export(s) finished ({Math.round(progressInPercentage)}%)</i>
             </div>
-            <div className="download-text">
+            <div className={styles.DownloadText}>
             {progressInPercentage===100 ?
                 "Find your results in the 'Export' tab after closing this screen."
             :
