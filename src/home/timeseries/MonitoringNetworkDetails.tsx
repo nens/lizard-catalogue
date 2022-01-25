@@ -19,6 +19,7 @@ import TimeSeriesModal from '../../components/TimeSeriesModal';
 import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
 import styles from '../../styles/Details.module.css';
+import timeseriesModalStyles from '../../components/TimeseriesModal.module.css';
 import '../../styles/Buttons.css';
 import '../../styles/Modal.css';
 
@@ -103,7 +104,7 @@ const MonitoringNetworkDetails = () => {
                                     position={location.geometry.coordinates}
                                     icon={new Leaflet.DivIcon({
                                         iconSize: [16, 16],
-                                        className: "location-icon location-icon-small"
+                                        className: `${timeseriesModalStyles.LocationIcon} ${timeseriesModalStyles.LocationIconSmall}`
                                     })}
                                 />
                             )
