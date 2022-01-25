@@ -940,6 +940,10 @@ const timeseriesExport = (state: MyStore['timeseriesExport'] = {}, { type, taskU
     };
 };
 
+export const getTimeseriesExport = (state: MyStore) => {
+    return state.timeseriesExport;
+}
+
 export const getRasterExportState = (state: MyStore) => {
     return state.rasterExportState;
 }

@@ -42,12 +42,7 @@ export default function Header (props: MyProps) {
                     <img src={exportIcon} alt="export" className="header-nav__icon" />
                     {inbox.length === 0 ? <span /> : <span className="header-nav__notification">{inbox.length}</span>}
                     <span className="header-nav__inbox-text" style={{marginLeft: "1rem"}}>Export</span>
-                    {props.showInboxDropdown && (
-                        <Inbox
-                            inbox={inbox}
-                            closeAllDropdowns={props.closeAllDropdowns}
-                        />
-                    )}
+                    {props.showInboxDropdown ? <Inbox inbox={inbox} /> : null}
                 </div>
                 <a href="#basket" className="header-nav__icon-box" title={`${numberOfItemsInBasket} items in the basket`}>
                     <img src={basketIcon} alt="basket" className="header-nav__icon" />
