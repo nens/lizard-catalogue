@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getLizardBootstrap, getOrganisations, getSelectedItem, getWMS, MyStore } from '../../reducers';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';

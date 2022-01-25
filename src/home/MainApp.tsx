@@ -22,7 +22,7 @@
 // and the filters state in Redux store
 // 3- fetch the list of locations and observation types for a selected monitoring network
 
-import React, { EffectCallback, useEffect, useState } from 'react';
+import { EffectCallback, useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router';
 import {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import MDSpinner from 'react-md-spinner';
 import { Raster } from '../interface';
 import { getUuidFromUrl } from '../utils/getUuidFromUrl';

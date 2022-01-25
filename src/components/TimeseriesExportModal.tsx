@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { getInbox } from './../reducers';
 import { addNotification, addTimeseriesExportTask } from './../action';
@@ -17,7 +17,7 @@ interface MyProps {
     toggleModal: () => void,
 };
 
-const TimeSeriesExportModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
+const TimeSeriesExportModal: FC<MyProps & PropsFromDispatch> = (props) => {
     const {
         defaultStart,
         defaultEnd,

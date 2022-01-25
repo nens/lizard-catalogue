@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import PlayIcon from '../images/PlayIcon';
 import styles from './Action.module.css';
 
@@ -10,7 +9,7 @@ interface MyProps {
   onClick?: () => void,
 }
 
-const Action: FC<MyProps> = ({
+const Action: React.FC<MyProps> = ({
   title,
   description,
   tooltip,

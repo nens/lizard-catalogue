@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { Circle } from 'rc-progress';
 import { getInbox, getRasterExportState } from './../reducers';

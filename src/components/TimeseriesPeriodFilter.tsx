@@ -1,4 +1,3 @@
-import React from 'react';
 import moment from 'moment';
 import Datetime from 'react-datetime';
 import { timeValidator } from './../utils/timeValidator';

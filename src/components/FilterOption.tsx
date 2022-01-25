@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ObservationType, Organisation, Layercollection } from './../interface';
 import SearchBar from './SearchBar';
 import './../styles/FilterOption.css';

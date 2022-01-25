@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import MDSpinner from 'react-md-spinner';
 import Leaflet from 'leaflet';
@@ -41,7 +41,7 @@ interface filteredLocationObject {
     centerPoint: number[] | null,
 };
 
-const TimeSeriesModal: React.FC<MyProps & PropsFromDispatch> = (props) => {
+const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
     const { fetchTimeseries, removeTimeseries, closeTimeseriesModal } = props;
     const mapRef = useRef<Map>(null);
 

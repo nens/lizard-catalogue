@@ -1,4 +1,3 @@
-import React from 'react';
 import Select, { createFilter } from 'react-select';
 
 export type Value = {

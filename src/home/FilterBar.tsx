@@ -1,4 +1,3 @@
-import React from 'react';
 import { connect, useSelector } from 'react-redux';
 import { ObservationType, Organisation, Layercollection, SwitchDataType } from '../interface';
 import { getFilters, MyStore } from '../reducers';
