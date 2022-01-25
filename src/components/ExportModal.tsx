@@ -18,7 +18,7 @@ import { Raster, FieldValuePair } from './../interface';
 import Datetime from "react-datetime";
 import moment from "moment";
 import MDSpinner from "react-md-spinner";
-import '../styles/Export.css';
+import styles from './ExportModal.module.css';
 import "react-datetime/css/react-datetime.css";
 
 const maximumSelectForExport = 3;
@@ -70,21 +70,21 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
     }, [raster, bounds, requestProjections, updateExportFormAndFetchExportGridCells]);
 
     return (
-        <div className="export">
-            <div className="export_map-selection">
+        <div className={styles.Export}>
+            <div className={styles.ExportMapSelection}>
                 <h3>Export Selection</h3>
-                <div className="export_map-box">
+                <div className={styles.ExportMapBox}>
                     {
                         // show spinner if gridcells are not yet retrieved
                         (fetchingGridState === "SENT" || fetchingGridState === "NOT_SENT") && exportGridCells.length===0 ? (
                         <div
-                            className="loading-screen loading-screen-export"
+                            className={styles.LoadingScreenExport}
                         >
                             <MDSpinner size={150} />
                             <div
-                                className="loading-screen-export-text"
+                                className={styles.LoadingScreenExportText}
                             >
-                                Retrieving Grid Cells..."
+                                Retrieving Grid Cells ...
                             </div>
                         </div>
                         ) : null
@@ -120,7 +120,7 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                         <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
                         {exportGridCells.length !== 0 ? (
                             <GeoJSON 
-                                className={"export_grid_cell"}
+                                className={styles.ExportGridCell}
                                 data={{"type": "FeatureCollection", "features": exportGridCells}}
                                 style={(feature)=>{
                                     const isSelected = selectedGridCellIds.find(item=>{
@@ -144,10 +144,8 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                                         return {
                                             "color": "#A10000",
                                             "fillOpacity": "0",
-
                                         }
                                     }
-                                    
                                 }}
                                 key={exportGridCells.length + JSON.stringify(selectedGridCellIds)}
                                 onEachFeature={(_, layer) => { // _ = feature
@@ -162,24 +160,22 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                                             } else if (selectedGridCellIds.length < maximumSelectForExport) {
                                                 props.addToSelectedExportGridCellIds([gridcell.properties.id]);
                                             }
-
-                                        },
-                                        
+                                        }
                                     });
-                                    }}
+                                }}
                             />
                         ) : null}
                     </Map>
                 </div>
             </div>
-            <div className="export_rightsidebar">
-                <div className="export_raster">
+            <div className={styles.ExportRightSideBar}>
+                <div className={styles.ExportRaster}>
                     <h3>Selected Raster</h3>
-                    <div className="export_raster-info">
-                        <div className="export_raster-name" title={raster.name}>{raster.name}</div>
+                    <div className={styles.ExportRasterInfo}>
+                        <div className={styles.ExportRasterName} title={raster.name}>{raster.name}</div>
                         <div>
                             <h4>Description</h4>
-                            <div className="export_raster-description">{raster.description}</div>
+                            <div className={styles.ExportRasterDescription}>{raster.description}</div>
                         </div>
                         <div>
                             <h4>Organisation</h4>
@@ -191,7 +187,7 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                         </div>
                     </div>
                 </div>
-                <div className="export_settings">
+                <div className={styles.ExportSettings}>
                     <h3>Export Settings</h3>
                     <div>
                         {/* Datetime picker for temporal raster */}
@@ -204,7 +200,9 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                                     onChange={event => {
                                         const isoDateTime = event === ''? '' : moment(event).toISOString()
                                         props.updateExportFormAndFetchExportGridCells(props.raster.uuid, [{field:'dateTimeStart', value: isoDateTime}]);
-                                            
+                                    }}
+                                    inputProps={{
+                                        className: styles.ExportDateTimeInput
                                     }}
                                 />
                             </div>
@@ -213,7 +211,7 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                         <div>
                             <h4>Projection</h4>
                             <select
-                                className="export_input" 
+                                className={styles.ExportInput}
                                 value={projection}
                                 onChange={(event)=> {
                                     props.updateExportFormAndFetchExportGridCells(props.raster.uuid, [{field:'projection', value: event.target.value+''}]);
@@ -235,7 +233,7 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                         <div>
                             <h4>Pixel size (based on projection)</h4>
                             <input 
-                                className="export_input" 
+                                className={styles.ExportInput}
                                 type="text"
                                 value={resolution}
                                 onChange={(event)=> {
@@ -249,7 +247,7 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                         <div>
                             <h4>Tile Width in Pixels</h4>
                             <input 
-                                className="export_input" 
+                                className={styles.ExportInput}
                                 type="text"
                                 value={tileWidth}
                                 onChange={(event)=> {
@@ -263,7 +261,7 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                         <div>
                             <h4>Tile Height in Pixels</h4>
                             <input
-                                className="export_input" 
+                                className={styles.ExportInput}
                                 type="text"
                                 value={tileHeight}
                                 onChange={(event)=> {
@@ -277,7 +275,7 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                         <div>
                             <h4>No data value (optional)</h4>
                             <input
-                                className="export_input"
+                                className={styles.ExportInput}
                                 type="number"
                                 value={noDataValue || ''}
                                 onChange={(event)=> {
@@ -288,12 +286,12 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                     </div>
                 </div>
                 
-                <div className="export_text">
+                <div className={styles.ExportText}>
                     {
                         exportGridCells.length > 1500 ? (
-                        <div className="export-input-error-msg"> 
+                        <div className={styles.ExportInputErrorMessage}>
                             <span
-                                className="export-input-error-msg-large"
+                                className={styles.ExportInputErrorMessageLarge}
                             >
                                 Resolution too small: 
                             </span>
@@ -307,9 +305,9 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                         parseInt(tileHeight + '') && 
                         (parseInt(tileHeight+'') * parseInt(tileWidth+'') > 1000000000) 
                         ? (
-                        <div className="export-input-error-msg"> 
+                        <div className={styles.ExportInputErrorMessage}>
                             <span
-                                className="export-input-error-msg-large"
+                                className={styles.ExportInputErrorMessageLarge}
                             >
                                 Too many pixels: 
                             </span>
@@ -321,9 +319,9 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                             </span>
                         </div>
                         ) : selectedGridCellIds.length === maximumSelectForExport ? (
-                        <div className="export-input-error-msg"> 
+                        <div className={styles.ExportInputErrorMessage}>
                             <span
-                                className="export-input-error-msg-large"
+                                className={styles.ExportInputErrorMessageLarge}
                             >
                                 Maximum amount selected: 
                             </span>
@@ -339,9 +337,8 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                         </span>
                         )
                     }
-                    
                 </div>
-                <div className="export_buttons">
+                <div className={styles.ExportButtons}>
                     <button 
                         className={"button-action button-export"}
                         disabled={selectedGridCellIds.length === 0}

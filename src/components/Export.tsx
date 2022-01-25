@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Raster } from './../interface';
 import DownloadModal from './DownloadModal';
 import ExportModal from './ExportModal';
-import '../styles/Export.css';
 import '../styles/Modal.css';
 
 interface MyProps {

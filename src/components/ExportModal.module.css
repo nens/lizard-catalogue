@@ -1,0 +1,138 @@
+.Export {
+  font-size: 1.3rem;
+  width: 100%;
+  height: 100%;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  white-space: normal;
+}
+.Export h3 {
+  font-size: 3rem;
+  font-weight: 500;
+  line-height: 3.5rem;
+  margin: 0 0 2rem 0;
+  color: #535353;
+  white-space: nowrap;
+  display: flex;
+  justify-content: space-between;
+}
+.Export h4 {
+  font-size: 1.5rem;
+  margin: 0.5rem 0;
+  color: #535353;
+}
+
+/* MAP SELECTION */
+.ExportMapSelection {
+  flex: 3;
+  padding: 1rem;
+}
+
+.ExportMapBox {
+  outline: auto;
+  height: 93%;
+  display: flex;
+  position: relative;
+}
+
+.ExportRightSideBar {
+  flex: 1;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: auto;
+}
+
+.ExportRightSideBar h3 {
+  border-bottom: 1px solid grey;
+}
+
+.ExportRaster {
+  margin-bottom: 1rem;
+}
+
+.ExportRasterInfo div {
+  margin-bottom: 1rem;
+}
+
+.ExportRasterName {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ExportRasterDescription {
+  max-height: 5rem;
+  overflow: auto;
+  overflow-wrap: break-word;
+}
+
+.ExportSettings {
+  flex: 5;
+  margin-bottom: 1rem;
+}
+
+.ExportText {
+  flex: 1;
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  font-style: italic;
+  line-height: 1.25;
+  color: #3B3B3B;
+  text-align: center;
+  align-self: center;
+  width: 80%;
+}
+
+.ExportButtons {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ExportButtons button {
+  height: 3rem;
+}
+
+.ExportGridCell:hover {
+  fill-opacity: 0.5;
+}
+
+/* normal input fields  */
+.ExportInput,
+/* input fields as part of datetimepicker */
+.ExportDateTimeInput {
+  min-width: 245px;
+  width: 100%;
+}
+.ExportInputErrorMessage {
+  color:#A10000;
+}
+.ExportInputErrorMessageLarge {
+  font-size: 2rem;
+  color:#A10000;
+}
+.LoadingScreenExport {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 999999999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0,0,0,0.3);
+  font-size: 3rem;
+  color: white;
+}
+.LoadingScreenExportText {
+  margin-top: 3rem;
+}
