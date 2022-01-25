@@ -6,29 +6,33 @@ import { getRasterExportState, getTimeseriesExport } from './../reducers';
 import '../styles/Inbox.css';
 
 interface MyProps {
-    inbox: Message[],
-    closeAllDropdowns: () => void,
+    inbox: Message[]
 };
 
-const Inbox: React.FC<MyProps & PropsFromDispatch> = (props) => {
+const Inbox: React.FC<MyProps & PropsFromDispatch> = ({
+    inbox,
+    downloadFile,
+    removeCurrentExportTasks,
+    removeMessage
+}) => {
     const rasterExportState = useSelector(getRasterExportState);
     const numberOfinboxMessagesBeforeRequest = rasterExportState.numberOfinboxMessagesBeforeRequest;
     const rasterExportRequests = rasterExportState.rasterExportRequests;
     const timeseriesExportTasks = Object.keys(useSelector(getTimeseriesExport));
 
-    const removeMessage = (message: Message) => {
+    const removeMessageFromInbox = (message: Message) => {
         fetch(`/api/v3/inbox/${message.id}/read/`, {
             credentials: "same-origin",
             method: 'POST'
         });
-        props.removeMessage(message.id);
+        removeMessage(message.id);
     };
 
     const getNumberOfPendingExportTasks = () => {
         const totalExportRequests = rasterExportRequests.length + timeseriesExportTasks.length;
         // Return the number of pending export tasks that are not ready yet
         return totalExportRequests && (
-            totalExportRequests - (props.inbox.length - numberOfinboxMessagesBeforeRequest)
+            totalExportRequests - (inbox.length - numberOfinboxMessagesBeforeRequest)
         );
     };
 
@@ -37,7 +41,7 @@ const Inbox: React.FC<MyProps & PropsFromDispatch> = (props) => {
         // back to 0 if all export tasks have been finished
         const totalExportRequests = rasterExportRequests.length + timeseriesExportTasks.length;
         if (totalExportRequests && getNumberOfPendingExportTasks() === 0) {
-            props.removeCurrentExportTasks();
+            removeCurrentExportTasks();
         };
     });
 
@@ -48,7 +52,7 @@ const Inbox: React.FC<MyProps & PropsFromDispatch> = (props) => {
             className="inbox"
             onClick={(e) => e.stopPropagation()}
         >
-            {props.inbox.map(message => (
+            {inbox.map(message => (
                 <div className="inbox-file" key={message.id}>
                     <div
                         className="inbox-filename"
@@ -60,7 +64,7 @@ const Inbox: React.FC<MyProps & PropsFromDispatch> = (props) => {
                         <a
                             title="download file"
                             href={message.url}
-                            onClick={() => props.downloadFile(message.id)}
+                            onClick={() => downloadFile(message.id)}
                         >
                             <i className="fa fa-download inbox-download" />
                         </a>
@@ -70,7 +74,7 @@ const Inbox: React.FC<MyProps & PropsFromDispatch> = (props) => {
                     <div
                         className="inbox-read"
                         title="remove file"
-                        onClick={() => removeMessage(message)}
+                        onClick={() => removeMessageFromInbox(message)}
                         style={{
                             visibility: (message.downloaded || !message.url) ? 'visible' : 'hidden'
                         }}
@@ -91,7 +95,7 @@ const Inbox: React.FC<MyProps & PropsFromDispatch> = (props) => {
                     <div className="inbox-read" />
                 </div>
             ): null}
-            {(props.inbox.length === 0 && pendingExportTasks === 0) ? (
+            {(inbox.length === 0 && pendingExportTasks === 0) ? (
                 <i className="inbox-info">
                     No export tasks at the moment.
                 </i>
