@@ -171,33 +171,3 @@
   width: 100%;
   padding: 0 1rem;
 }
-
-.List__ButtonBasket {
-  font-size: 1.4rem;
-  text-transform: uppercase;
-  
-  position: absolute;
-  top: 0;
-  right: 1rem;
-
-  padding: .8rem;
-  border-radius: .2rem;
-  border: none;
-  background-color: var(--main-color-scheme);
-  color: #fff;
-  box-shadow: .2rem .4rem .4rem rgba(12, 12, 12, 0.4);
-  cursor: pointer;
-}
-
-.List__ButtonBasket:focus {
-  outline: none;
-}
-
-.List__ButtonBasket:active {
-  transform: translateY(2px);
-}
-
-.List__ButtonBasket:disabled {    
-  background-color: #BFBFBF;
-  cursor: not-allowed;
-}

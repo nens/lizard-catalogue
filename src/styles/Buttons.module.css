@@ -33,6 +33,57 @@
   background-color: #ff7070;
 }
 
+/* Button to copy link */
+.ButtonLinkCopy {
+  cursor: pointer;
+  width: 8rem;
+  margin: 0;
+  padding: 0.5rem;
+  color: #fff;
+  background-color: var(--main-color-scheme);
+  border: none;
+  border-radius: 0.2rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  box-shadow: 0.1rem 0.1rem 0.3rem rgba(12, 12, 12, 0.5);
+}
+.ButtonLinkCopy:focus {
+  outline: none;
+}
+.ButtonLinkCopy:active {
+  transform: translateY(2px);
+}
+
+/* Add to basket button */
+.ButtonBasket {
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  padding: .8rem;
+  border-radius: .2rem;
+  border: none;
+  background-color: var(--main-color-scheme);
+  color: #fff;
+  box-shadow: .2rem .4rem .4rem rgba(12, 12, 12, 0.4);
+  cursor: pointer;
+}
+
+.ButtonBasket:focus {
+  outline: none;
+}
+
+.ButtonBasket:active {
+  transform: translateY(2px);
+}
+
+.ButtonBasket:disabled {
+  background-color: #BFBFBF;
+  cursor: not-allowed;
+}
+
 /* Polygon buttons */
 .ButtonPolygon {
   font-size: 2.6rem;

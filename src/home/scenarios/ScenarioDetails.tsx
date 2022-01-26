@@ -83,7 +83,7 @@ const ScenarioDetails = () => {
                         readOnly={true}
                     />
                     <button
-                        className={styles.ButtonLinkCopy}
+                        className={buttonStyles.ButtonLinkCopy}
                         onClick={() => navigator.clipboard.writeText(getScenarioGetCapabilitesURL(scenario))}
                     >
                         Copy link

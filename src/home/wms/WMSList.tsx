@@ -8,6 +8,7 @@ import Pagination from '../../components/Pagination';
 import LoadingScreen from '../../components/LoadingScreen';
 import AccessModifier from '../../components/AccessModifier';
 import styles from '../../styles/List.module.css';
+import buttonStyles from '../../styles/Buttons.module.css';
 
 interface MyProps {
     searchTerm: string,
@@ -111,7 +112,7 @@ export default function WmsList (props: MyProps) {
                     onPageClick={onPageClick}
                 />
                 <button
-                    className={styles.List__ButtonBasket}
+                    className={buttonStyles.ButtonBasket}
                     disabled={checkedWmsLayers.length === 0 ? true : false}
                     onClick={addToBasket}
                 >

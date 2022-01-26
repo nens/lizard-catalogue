@@ -128,7 +128,7 @@ const RasterDetails = (props: MyProps) => {
                             readOnly={true}
                         />
                         <button
-                            className={styles.ButtonLinkCopy}
+                            className={buttonStyles.ButtonLinkCopy}
                             onClick={() => navigator.clipboard.writeText(getRasterGetCapabilitesURL(raster))}
                         >
                             Copy link
@@ -148,7 +148,7 @@ const RasterDetails = (props: MyProps) => {
                                 readOnly={true}
                             />
                             <button
-                                className={styles.ButtonLinkCopy}
+                                className={buttonStyles.ButtonLinkCopy}
                                 onClick={() => navigator.clipboard.writeText(getLayercollectionGetCapabilitesURL(layercollection))}
                             >
                                 Copy link
