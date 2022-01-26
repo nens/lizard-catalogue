@@ -6,7 +6,7 @@ import { timeValidator } from './../utils/timeValidator';
 import { requestTimeseriesExport } from './../utils/url';
 import { TimeseriesPeriodFilter } from './TimeseriesPeriodFilter';
 import styles from './TimeseriesExportModal.module.css';
-import '../styles/Modal.css';
+import modalStyles from '../styles/Modal.module.css';
 import '../styles/Buttons.css';
 
 interface MyProps {
@@ -40,8 +40,8 @@ const TimeSeriesExportModal: FC<MyProps & PropsFromDispatch> = (props) => {
     });
 
     return (
-        <div className="modal-main modal-timeseries-export">
-            <div className="modal-header">
+        <div className={`${modalStyles.ModalMain} ${modalStyles.ModalTimeseriesExport}`}>
+            <div className={modalStyles.ModalHeader}>
                 <span>Export period</span>
                 <button onClick={props.toggleModal}>&times;</button>
             </div>

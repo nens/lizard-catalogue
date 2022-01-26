@@ -12,7 +12,7 @@ import Export from '../../components/Export';
 import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
 import styles from '../../styles/Details.module.css';
-import '../../styles/Modal.css';
+import modalStyles from '../../styles/Modal.module.css';
 import '../../styles/Buttons.css';
 
 interface MyProps {
@@ -221,7 +221,7 @@ const RasterDetails = (props: MyProps) => {
             )}
             {/* Raster export modal */}
             {rasterExport && (
-                <div className="modal-background">
+                <div className={modalStyles.ModalBackground}>
                     <Export
                         raster={raster}
                         bounds={bounds}

@@ -25,7 +25,7 @@ import SearchBar from './SearchBar';
 import polygonIcon from './../images/polygon.svg';
 import styles from './TimeseriesModal.module.css';
 import mapStyles from './../styles/Details.module.css';
-import '../styles/Modal.css';
+import modalStyles from '../styles/Modal.module.css';
 import '../styles/Buttons.css';
 import '../styles/Icons.css';
 
@@ -166,7 +166,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
     }, [selectedItem, fetchTimeseries, removeTimeseries]);
 
     if (!timeseriesObject || timeseriesObject.isFetching) return (
-        <div className="modal-main modal-timeseries modal-timeseries-loading">
+        <div className={`${modalStyles.ModalMain} ${modalStyles.ModalTimeseries} ${modalStyles.ModalTimeseriesLoading}`}>
             <MDSpinner size={100}  style={{ marginBottom: "20px" }}/>
             Loading Time Series for this Monitoring Network ...
         </div>
@@ -242,8 +242,8 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
     };
 
     return (
-        <div className="modal-main modal-timeseries">
-            <div className="modal-header">
+        <div className={`${modalStyles.ModalMain} ${modalStyles.ModalTimeseries}`}>
+            <div className={modalStyles.ModalHeader}>
                 <span>Select Time Series</span>
                 <button onClick={closeTimeseriesModal}>&times;</button>
             </div>
@@ -535,7 +535,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
             </div>
             {/*This is the PopUp window for the time-series export modal*/}
             {exportModal && (
-                <div className="modal-background">
+                <div className={modalStyles.ModalBackground}>
                     <TimeSeriesExportModal
                         defaultStart={start}
                         defaultEnd={end}

@@ -19,9 +19,9 @@ import TimeSeriesModal from '../../components/TimeSeriesModal';
 import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
 import styles from '../../styles/Details.module.css';
+import modalStyles from '../../styles/Modal.module.css';
 import timeseriesModalStyles from '../../components/TimeseriesModal.module.css';
 import '../../styles/Buttons.css';
-import '../../styles/Modal.css';
 
 // Helper function to add reference frame to unit of observation type
 const addRefToUnit = (observationType: ObservationType) => {
@@ -182,7 +182,7 @@ const MonitoringNetworkDetails = () => {
             )}
             {/*This is the PopUp window for the time-series selection screen*/}
             {timeseriesModal && (
-                <div className="modal-background">
+                <div className={modalStyles.ModalBackground}>
                     <TimeSeriesModal
                         closeTimeseriesModal={() => setTimeseriesModal(false)}
                     />

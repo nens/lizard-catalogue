@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Raster } from './../interface';
 import DownloadModal from './DownloadModal';
 import ExportModal from './ExportModal';
-import '../styles/Modal.css';
+import styles from '../styles/Modal.module.css';
 
 interface MyProps {
     raster: Raster,
@@ -25,7 +25,7 @@ export default function Export (props: MyProps) {
     });
 
     return (
-        <div className="modal-main modal-raster-export">
+        <div className={`${styles.ModalMain} ${styles.ModalRasterExport}`}>
             {downloadModal ? (
                 <DownloadModal />
             ) : (
@@ -36,7 +36,7 @@ export default function Export (props: MyProps) {
                 />
             )}
             {/* eslint-disable-next-line */}
-            <a className="modal-close" onClick={toggleExportModal}>&times;</a>
+            <a className={styles.ModalClose} onClick={toggleExportModal}>&times;</a>
         </div>
     )
 }
