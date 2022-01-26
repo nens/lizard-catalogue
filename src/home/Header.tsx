@@ -11,7 +11,7 @@ import basketIcon from '../images/shopping-basket.svg';
 import userIcon from '../images/user.svg';
 import infoIcon from '../images/info.svg';
 import styles from './Header.module.css';
-import '../styles/Header.css';
+import '../styles/Modal.css';
 
 interface MyProps {
     showProfileDropdown: boolean,
