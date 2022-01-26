@@ -155,11 +155,6 @@
   margin-right: 1rem;
 }
 
-.TimeseriesButtonClearSelection {
-  font-size: 1.6rem;
-  width: auto;
-}
-
 /* Polygon button container */
 .PolygonButtonContainer {
   display: flex;

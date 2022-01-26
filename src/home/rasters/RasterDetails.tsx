@@ -13,7 +13,7 @@ import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
 import styles from '../../styles/Details.module.css';
 import modalStyles from '../../styles/Modal.module.css';
-import '../../styles/Buttons.css';
+import buttonStyles from '../../styles/Buttons.module.css';
 
 interface MyProps {
     filters: MyStore['filters'],
@@ -87,7 +87,7 @@ const RasterDetails = (props: MyProps) => {
                 <div className={styles.Uuid}>
                     <div title={raster.uuid}>{raster.uuid}</div>
                     <button
-                        className="button-copy"
+                        className={buttonStyles.ButtonCopy}
                         onClick={() => navigator.clipboard.writeText(raster.uuid)}
                     >
                         <i className="fa fa-clone" />

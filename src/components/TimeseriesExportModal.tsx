@@ -7,7 +7,7 @@ import { requestTimeseriesExport } from './../utils/url';
 import { TimeseriesPeriodFilter } from './TimeseriesPeriodFilter';
 import styles from './TimeseriesExportModal.module.css';
 import modalStyles from '../styles/Modal.module.css';
-import '../styles/Buttons.css';
+import buttonStyles from '../styles/Buttons.module.css';
 
 interface MyProps {
     defaultStart: number | null,
@@ -58,7 +58,7 @@ const TimeSeriesExportModal: FC<MyProps & PropsFromDispatch> = (props) => {
                     startDateRequired
                 />
                 <button
-                    className="button-action"
+                    className={buttonStyles.ButtonAction}
                     title={
                         !start ? 'Please select a start date to export the Time Series' :
                         timeValidator(start, end) ? timeValidator(start, end) as string :

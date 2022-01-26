@@ -26,8 +26,7 @@ import polygonIcon from './../images/polygon.svg';
 import styles from './TimeseriesModal.module.css';
 import mapStyles from './../styles/Details.module.css';
 import modalStyles from '../styles/Modal.module.css';
-import '../styles/Buttons.css';
-import '../styles/Icons.css';
+import buttonStyles from '../styles/Buttons.module.css';
 
 interface MyProps {
     closeTimeseriesModal: () => void
@@ -338,7 +337,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                 <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                             </Map>
                             <button
-                                className="button-action button-home-zoom"
+                                className={`${buttonStyles.ButtonAction} ${buttonStyles.ButtonHomeZoom}`}
                                 onClick={() => {
                                     // Remove location currently on zoom if any
                                     if (locationOnZoom) setLocationOnZoom('');
@@ -354,7 +353,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                 <div className={styles.PolygonButtonContainer}>
                                     {/* Cancel polygon button */}
                                     <button
-                                        className="button-action button-polygon"
+                                        className={`${buttonStyles.ButtonAction} ${buttonStyles.ButtonPolygon}`}
                                         onClick={() => {
                                             setPolygon([]);
                                             setDrawingMode(false);
@@ -365,7 +364,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                     </button>
                                     {/* Re-draw last step button */}
                                     <button
-                                        className="button-action button-polygon"
+                                        className={`${buttonStyles.ButtonAction} ${buttonStyles.ButtonPolygon}`}
                                         onClick={() => setPolygon(polygon.slice(0, -1))}
                                         title="Re-draw"
                                         disabled={!polygon.length}
@@ -374,7 +373,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                     </button>
                                     {/* Confirm polygon button */}
                                     <button
-                                        className="button-action button-polygon"
+                                        className={`${buttonStyles.ButtonAction} ${buttonStyles.ButtonPolygon}`}
                                         onClick={() => {
                                             if (filteredLocations) {
                                                 selectLocationsTimeseriesInPolygon(Object.values(filteredLocations));
@@ -393,7 +392,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                 <div className={styles.PolygonButtonContainer}>
                                     {/* Start drawing polygon button */}
                                     <button
-                                        className="button-action button-polygon"
+                                        className={`${buttonStyles.ButtonAction} ${buttonStyles.ButtonPolygon}`}
                                         onClick={() => {
                                             setPolygon([]);
                                             setDrawingMode(true);
@@ -443,7 +442,11 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                     <span className={styles.TimeseriesHelperText}>The selected time-series will appear here</span>
                                 </div>
                                 <button
-                                    className={`button-action ${styles.TimeseriesButtonClearSelection}`}
+                                    className={buttonStyles.ButtonAction}
+                                    style={{
+                                        fontSize: 16,
+                                        width: 'auto'
+                                    }}
                                     onClick={() => {
                                         setSelectedLocations([]);
                                         setSelectedTimeseries([]);
@@ -470,7 +473,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                                 {location.name} ({location.code}) [{ts.name}] [{ts.observation_type.parameter}]
                                             </span>
                                             <button
-                                                className="button-deselect"
+                                                className={buttonStyles.ButtonDeselect}
                                                 onClick={() => {
                                                     const locationOfTheTimeseries = ts.location.uuid;
                                                     const selectedTimeseriesInThisLocation = selectedTimeseries.filter(ts => ts.location.uuid === locationOfTheTimeseries);
@@ -481,8 +484,8 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                                     setSelectedTimeseries(selectedTimeseries.filter(t => t.uuid !== ts.uuid));
                                                 }}
                                             >
-                                                <i className="fa fa-minus-square-o icon-deselect" />
-                                                <i className="fa fa-minus-square icon-deselect icon-deselect-on-hover" />
+                                                <i className={`fa fa-minus-square-o ${buttonStyles.IconDeselect}`} />
+                                                <i className={`fa fa-minus-square ${buttonStyles.IconDeselect} ${buttonStyles.IconDeselect__OnHover}`} />
                                             </button>
                                         </li>
                                     )
@@ -495,18 +498,18 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                         <div>
                             <div className={styles.TimeseriesButtons}>
                                 <button
-                                    className="button-action"
+                                    className={buttonStyles.ButtonAction}
                                     title="Open in API"
                                     onClick={() => openTimeseriesInAPI(selectedTimeseries.map(ts => ts.uuid))}
                                     disabled={!selectedTimeseries.length}
                                 >
                                     OPEN IN API
                                 </button>
-                                <button className="button-action" style={{visibility: "hidden"}} />
+                                <button className={buttonStyles.ButtonAction} style={{ visibility: "hidden" }} />
                             </div>
                             <div className={styles.TimeseriesButtons}>
                                 <button
-                                    className="button-action"
+                                    className={buttonStyles.ButtonAction}
                                     title="Open in Portal"
                                     onClick={async () => {
                                         const arrayOfLocations = selectedLocations.map(uuid => locations[uuid]);
@@ -517,7 +520,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                     OPEN IN VIEWER
                                 </button>
                                 <button
-                                    className="button-action"
+                                    className={buttonStyles.ButtonAction}
                                     title={
                                         !selectedTimeseries.length ? 'Please select Time Series to export' :
                                         timeValidator(start, end) ? timeValidator(start, end) as string :

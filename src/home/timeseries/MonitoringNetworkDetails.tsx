@@ -21,7 +21,7 @@ import manageIcon from '../../images/manage.svg';
 import styles from '../../styles/Details.module.css';
 import modalStyles from '../../styles/Modal.module.css';
 import timeseriesModalStyles from '../../components/TimeseriesModal.module.css';
-import '../../styles/Buttons.css';
+import buttonStyles from '../../styles/Buttons.module.css';
 
 // Helper function to add reference frame to unit of observation type
 const addRefToUnit = (observationType: ObservationType) => {
@@ -75,7 +75,7 @@ const MonitoringNetworkDetails = () => {
                 <div className={styles.Uuid}>
                     <div title={monitoringNetwork.uuid}>{monitoringNetwork.uuid}</div>
                     <button
-                        className="button-copy"
+                        className={buttonStyles.ButtonCopy}
                         onClick={() => navigator.clipboard.writeText(monitoringNetwork.uuid)}
                     >
                         <i className="fa fa-clone" />

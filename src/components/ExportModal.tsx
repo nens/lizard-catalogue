@@ -19,6 +19,7 @@ import Datetime from "react-datetime";
 import moment from "moment";
 import MDSpinner from "react-md-spinner";
 import styles from './ExportModal.module.css';
+import buttonStyles from '../styles/Buttons.module.css';
 import "react-datetime/css/react-datetime.css";
 
 const maximumSelectForExport = 3;
@@ -340,7 +341,7 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                 </div>
                 <div className={styles.ExportButtons}>
                     <button 
-                        className={"button-action button-export"}
+                        className={`${buttonStyles.ButtonAction} ${buttonStyles.ButtonExport}`}
                         disabled={selectedGridCellIds.length === 0}
                         title={selectedGridCellIds.length === 0 ? "First make a selection on the map" : undefined}  
                         onClick={()=>{
@@ -352,7 +353,7 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                         {`Download ${selectedGridCellIds.length}  selected cells`}
                     </button>
                     <button 
-                        className={"button-action button-action-danger button-export"}
+                        className={`${buttonStyles.ButtonAction} ${buttonStyles.ButtonAction__Danger} ${buttonStyles.ButtonExport}`}
                         disabled={selectedGridCellIds.length === 0? true: false}
                         title={selectedGridCellIds.length === 0 ? "No grid cells selected" : undefined}  
                         onClick={()=>{
