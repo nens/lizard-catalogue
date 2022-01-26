@@ -19,8 +19,9 @@ import TimeSeriesModal from '../../components/TimeSeriesModal';
 import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
 import styles from '../../styles/Details.module.css';
-import '../../styles/Buttons.css';
-import '../../styles/Modal.css';
+import modalStyles from '../../styles/Modal.module.css';
+import timeseriesModalStyles from '../../components/TimeseriesModal.module.css';
+import buttonStyles from '../../styles/Buttons.module.css';
 
 // Helper function to add reference frame to unit of observation type
 const addRefToUnit = (observationType: ObservationType) => {
@@ -74,7 +75,7 @@ const MonitoringNetworkDetails = () => {
                 <div className={styles.Uuid}>
                     <div title={monitoringNetwork.uuid}>{monitoringNetwork.uuid}</div>
                     <button
-                        className="button-copy"
+                        className={buttonStyles.ButtonCopy}
                         onClick={() => navigator.clipboard.writeText(monitoringNetwork.uuid)}
                     >
                         <i className="fa fa-clone" />
@@ -103,7 +104,7 @@ const MonitoringNetworkDetails = () => {
                                     position={location.geometry.coordinates}
                                     icon={new Leaflet.DivIcon({
                                         iconSize: [16, 16],
-                                        className: "location-icon location-icon-small"
+                                        className: `${timeseriesModalStyles.LocationIcon} ${timeseriesModalStyles.LocationIconSmall}`
                                     })}
                                 />
                             )
@@ -181,7 +182,7 @@ const MonitoringNetworkDetails = () => {
             )}
             {/*This is the PopUp window for the time-series selection screen*/}
             {timeseriesModal && (
-                <div className="modal-background">
+                <div className={modalStyles.ModalBackground}>
                     <TimeSeriesModal
                         closeTimeseriesModal={() => setTimeseriesModal(false)}
                     />

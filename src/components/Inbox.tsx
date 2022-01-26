@@ -3,7 +3,7 @@ import { Message } from './../interface';
 import { connect, useSelector } from 'react-redux';
 import { removeMessage, downloadFile, removeCurrentExportTasks } from './../action';
 import { getRasterExportState, getTimeseriesExport } from './../reducers';
-import '../styles/Inbox.css';
+import styles from './Inbox.module.css';
 
 interface MyProps {
     inbox: Message[]
@@ -49,13 +49,13 @@ const Inbox: React.FC<MyProps & PropsFromDispatch> = ({
 
     return (
         <div
-            className="inbox"
+            className={styles.Inbox}
             onClick={(e) => e.stopPropagation()}
         >
             {inbox.map(message => (
-                <div className="inbox-file" key={message.id}>
+                <div className={styles.InboxFile} key={message.id}>
                     <div
-                        className="inbox-filename"
+                        className={styles.InboxFilename}
                         title={message.message}
                     >
                         {message.message}
@@ -66,13 +66,13 @@ const Inbox: React.FC<MyProps & PropsFromDispatch> = ({
                             href={message.url}
                             onClick={() => downloadFile(message.id)}
                         >
-                            <i className="fa fa-download inbox-download" />
+                            <i className={`fa fa-download ${styles.InboxDownload}`} />
                         </a>
                     ) : null}
                     {/* User can only remove the message if either the file
                     has been downloaded or the export task failed */}
                     <div
-                        className="inbox-read"
+                        className={styles.InboxRead}
                         title="remove file"
                         onClick={() => removeMessageFromInbox(message)}
                         style={{
@@ -85,22 +85,22 @@ const Inbox: React.FC<MyProps & PropsFromDispatch> = ({
             ))}
             {pendingExportTasks ? (
                 <div
-                    className="inbox-file inbox-pending-exports"
+                    className={`${styles.InboxFile} ${styles.InboxPendingExports}`}
                     title={`${pendingExportTasks} export(s) in progress`}
                 >
-                    <div className="inbox-filename">
+                    <div className={styles.InboxFilename}>
                         {pendingExportTasks} export(s) in progress
                     </div>
-                    <i className="fa fa-download inbox-pending-downloads" />
-                    <div className="inbox-read" />
+                    <i className={`fa fa-download ${styles.InboxPendingDownloads}`} />
+                    <div className={styles.InboxRead} />
                 </div>
             ): null}
             {(inbox.length === 0 && pendingExportTasks === 0) ? (
-                <i className="inbox-info">
+                <i className={styles.InboxInfo}>
                     No export tasks at the moment.
                 </i>
             ) : (
-                <i className="inbox-info">
+                <i className={styles.InboxInfo}>
                     When your files are ready, 
                     click on the download icon.
                 </i>

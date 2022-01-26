@@ -1,0 +1,210 @@
+.ButtonAction {
+  font-size: 1.8rem;
+  font-weight: 400;
+  height: 3.8rem;
+  width: 100%;
+  color: var(--main-color-scheme);
+  background-color: var(--button-color-scheme);
+  letter-spacing: 0;
+  padding: 0 5px;
+  border: none;
+  border-radius: 3px;
+  box-shadow: 0px 3px 6px #00000029;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+.ButtonAction:focus {
+  outline: none;
+}
+.ButtonAction:active {
+  transform: translateY(2px);
+}
+.ButtonAction:disabled {
+  cursor: not-allowed;
+  color: #FFFFFF;
+  background-color: var(--border-color-soft);
+}
+
+.ButtonAction__Danger {
+  color: #FFFFFF;
+  background-color: #ff7070;
+}
+
+/* Button to copy link */
+.ButtonLinkCopy {
+  cursor: pointer;
+  width: 8rem;
+  margin: 0;
+  padding: 0.5rem;
+  color: #fff;
+  background-color: var(--main-color-scheme);
+  border: none;
+  border-radius: 0.2rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  box-shadow: 0.1rem 0.1rem 0.3rem rgba(12, 12, 12, 0.5);
+}
+.ButtonLinkCopy:focus {
+  outline: none;
+}
+.ButtonLinkCopy:active {
+  transform: translateY(2px);
+}
+
+/* Add to basket button */
+.ButtonBasket {
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  padding: .8rem;
+  border-radius: .2rem;
+  border: none;
+  background-color: var(--main-color-scheme);
+  color: #fff;
+  box-shadow: .2rem .4rem .4rem rgba(12, 12, 12, 0.4);
+  cursor: pointer;
+}
+
+.ButtonBasket:focus {
+  outline: none;
+}
+
+.ButtonBasket:active {
+  transform: translateY(2px);
+}
+
+.ButtonBasket:disabled {
+  background-color: #BFBFBF;
+  cursor: not-allowed;
+}
+
+/* Polygon buttons */
+.ButtonPolygon {
+  font-size: 2.6rem;
+  height: 4.6rem;
+  width: 4.6rem;
+  padding: 5px;
+  margin-left: 1rem;
+  color: #FFFFFF;
+  background-color: #008080;
+}
+
+/* Home zoom button */
+.ButtonHomeZoom {
+  font-size: 2rem;
+  width: 4rem;
+  height: 4rem;
+  color: var(--font-color);
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-color-soft);
+  z-index: 1000;
+
+  position: absolute;
+  top: 4rem;
+  left: 0.8rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Deselect button with deselecting (minus) icon */
+.ButtonDeselect {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  height: 100%;
+  padding: 0;
+}
+.ButtonDeselect:focus {
+  outline: none;
+}
+.ButtonDeselect:active {
+  transform: translateY(1px);
+}
+.ButtonDeselect:hover > .IconDeselect {
+  display: none;
+}
+.ButtonDeselect:hover > .IconDeselect__OnHover {
+  display: block;
+}
+
+/* Deselect icon */
+.IconDeselect {
+  color: #D50000;
+  font-size: 2rem;
+  line-height: 2.2rem;
+}
+.IconDeselect__OnHover {
+  display: none;
+}
+
+/* CSS for Button with tooltip for copy to clipboard */
+.ButtonCopy {
+  position: relative;
+  border: none;
+  background-color: transparent;
+  padding: 0;
+}
+.ButtonCopy:before {
+  content: '';
+  display: none;
+  position: absolute;
+  z-index: 9998;
+  top: 100%;
+  left: 2px;
+
+  /* arrow above tooltip */
+  width: 0px;
+  height: 0px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #009F86;
+}
+.ButtonCopy:after {
+  content: 'Copy UUID';
+  display: none;
+  position: absolute;
+  top: calc(100% + 5px);
+  left: -4rem;
+  z-index: 9999;
+
+  /* tooltip content */
+  width: 9rem;
+  height: 3rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+  line-height: 3rem;
+  text-align: center;
+  color: #FFFFFF;
+  background: #009F86;
+  border-radius: 3px;
+}
+.ButtonCopy:hover:before {
+  display: block;
+}
+.ButtonCopy:hover:after {
+  display: block;
+}
+.ButtonCopy:focus {
+  outline: none;
+}
+.ButtonCopy:focus:after {
+  content: 'Copied!'
+}
+.ButtonCopy:active:after {
+  content: 'Copied!'
+}
+
+/* CSS for export button in the export modal */
+.ButtonExport {
+  width: auto;
+  font-size: 1.4rem;
+  line-height: 1.6rem;
+}

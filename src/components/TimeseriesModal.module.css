@@ -1,0 +1,165 @@
+.Timeseries {
+  height: calc(100% - 5rem); /* modal header height = 5rem */
+  padding: 2rem;
+  display: flex;
+  flex-direction: row;
+}
+.TimeseriesTop {
+  height: 75%;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.Timeseries h3 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin: 0;
+  margin-bottom: 1rem;
+}
+.TimeseriesHelperText {
+  font-style: italic;
+  font-weight: 300;
+}
+
+.TimeseriesFilter {
+  width: 60%;
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.TimeseriesFilterBar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-evenly; */
+}
+
+.TimeseriesSelection {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+}
+
+.TimeseriesMap {
+  flex: 1;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.LocationIcon {
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 3px solid #707070;
+}
+.LocationIconSmall {
+  border: 2px solid #707070;
+}
+.LocationIconSelected {
+  background-color: var(--button-color-scheme);
+  border: 3px solid var(--main-color-scheme);
+}
+
+.TimeseriesSearchLocation {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  width: 97%;
+  z-index: 1000;
+}
+
+.TimeseriesObservationList {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.TimeseriesObservationList li {
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+}
+.TimeseriesObservationList li input {
+  cursor: pointer;
+}
+
+.TimeseriesSelectedLocations {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--border-color-soft);
+}
+.TimeseriesSelectedLocationsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  white-space: nowrap;
+}
+.TimeseriesSelectedLocationsHeader > div {
+  margin-right: 1rem;
+}
+
+.TimeseriesLocationList {
+  height: 100%;
+  padding: 2rem 0;
+  padding-right: 1rem;
+  margin: 0;
+  overflow-y: auto;
+}
+.TimeseriesLocationList li {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.TimeseriesLocationName {
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+.TimeseriesFilterObservationType {
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.TimeseriesFilterObservationType > h3 {
+  margin-bottom: 0;
+  flex: 1;
+}
+.TimeseriesFilterObservationType > form {
+  flex: 1;
+}
+
+.TimeseriesFilterPeriod {
+  margin: 1rem 0;
+}
+
+/* Buttons */
+.TimeseriesButtonContainer {
+  margin-top: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.TimeseriesButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.TimeseriesButtonContainer button {
+  width: 90%;
+  margin-top: 1rem;
+  margin-right: 1rem;
+}
+
+/* Polygon button container */
+.PolygonButtonContainer {
+  display: flex;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 1000;
+}

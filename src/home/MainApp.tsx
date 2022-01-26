@@ -88,7 +88,7 @@ import MonitoringNetworkDetails from './timeseries/MonitoringNetworkDetails';
 import FilterBar from './FilterBar';
 import Header from './Header';
 import AlertPopup from '../components/AlertPopup';
-import '../styles/MainApp.css';
+import styles from './MainApp.module.css';
 
 const MainApp: React.FC<DispatchProps> = (props) => {
     const currentRasterList = useSelector(getCurrentRasterList);
@@ -334,13 +334,13 @@ const MainApp: React.FC<DispatchProps> = (props) => {
 
     return (
         <div
-            className="main-container"
+            className={styles.MainContainer}
             onClick={() => {
                 toggleAlertMessage();
                 closeDropdowns();
             }}
         >
-            <div className="main-header">
+            <div className={styles.MainHeader}>
                 <Header
                     showProfileDropdown={showProfileDropdown}
                     showInboxDropdown={showInboxDropdown}
@@ -349,7 +349,7 @@ const MainApp: React.FC<DispatchProps> = (props) => {
                     closeAllDropdowns={closeAllDropdowns}
                 />
             </div>
-            <div className="main-body">
+            <div className={styles.MainBody}>
                 <FilterBar
                     observationTypes={observationTypes}
                     organisations={organisations}

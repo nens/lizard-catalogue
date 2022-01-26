@@ -12,8 +12,8 @@ import Export from '../../components/Export';
 import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
 import styles from '../../styles/Details.module.css';
-import '../../styles/Modal.css';
-import '../../styles/Buttons.css';
+import modalStyles from '../../styles/Modal.module.css';
+import buttonStyles from '../../styles/Buttons.module.css';
 
 interface MyProps {
     filters: MyStore['filters'],
@@ -87,7 +87,7 @@ const RasterDetails = (props: MyProps) => {
                 <div className={styles.Uuid}>
                     <div title={raster.uuid}>{raster.uuid}</div>
                     <button
-                        className="button-copy"
+                        className={buttonStyles.ButtonCopy}
                         onClick={() => navigator.clipboard.writeText(raster.uuid)}
                     >
                         <i className="fa fa-clone" />
@@ -128,7 +128,7 @@ const RasterDetails = (props: MyProps) => {
                             readOnly={true}
                         />
                         <button
-                            className={styles.ButtonLinkCopy}
+                            className={buttonStyles.ButtonLinkCopy}
                             onClick={() => navigator.clipboard.writeText(getRasterGetCapabilitesURL(raster))}
                         >
                             Copy link
@@ -148,7 +148,7 @@ const RasterDetails = (props: MyProps) => {
                                 readOnly={true}
                             />
                             <button
-                                className={styles.ButtonLinkCopy}
+                                className={buttonStyles.ButtonLinkCopy}
                                 onClick={() => navigator.clipboard.writeText(getLayercollectionGetCapabilitesURL(layercollection))}
                             >
                                 Copy link
@@ -221,7 +221,7 @@ const RasterDetails = (props: MyProps) => {
             )}
             {/* Raster export modal */}
             {rasterExport && (
-                <div className="modal-background">
+                <div className={modalStyles.ModalBackground}>
                     <Export
                         raster={raster}
                         bounds={bounds}

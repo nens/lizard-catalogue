@@ -9,7 +9,8 @@ import rasterTemporalIcon from '../../images/raster-temporal.svg';
 import rasterNonTemporalIcon from '../../images/raster-non-temporal.svg';
 import LoadingScreen from '../../components/LoadingScreen';
 import AccessModifier from '../../components/AccessModifier';
-import '../../styles/List.css';
+import styles from '../../styles/List.module.css';
+import buttonStyles from '../../styles/Buttons.module.css';
 
 interface MyProps {
     searchTerm: string,
@@ -57,8 +58,8 @@ export default function RasterList (props: MyProps) {
     };
 
     return (
-        <div className="list">
-            <div className="list__top">
+        <div className={styles.List}>
+            <div className={styles.ListTop}>
                 <SearchBar
                     name="searchBar"
                     searchTerm={searchTerm}
@@ -67,51 +68,51 @@ export default function RasterList (props: MyProps) {
                     onSearchSubmit={onSearchSubmit}
                     onSearchChange={onSearchChange}
                 />
-                <div className="list__length">{count} rasters</div>
+                <div className={styles.ListLength}>{count} rasters</div>
             </div>
-            <div className="list__content">
-                <ul className="list__list">
-                    <li className="list__row-header">
-                        <div className="list__row list__row-box" />
-                        <div className="list__row list__row-type">
+            <div className={styles.ListContent}>
+                <ul className={styles.ListMainList}>
+                    <li className={styles.ListRowHeader}>
+                        <div className={`${styles.ListRow} ${styles.ListRowBox}`} />
+                        <div className={styles.ListRow}>
                             Type
                             <i className="fa fa-sort" onClick={() => onSorting('temporal')} />
                         </div>
-                        <div className="list__row list__row-name">
+                        <div className={`${styles.ListRow} ${styles.ListRowName}`}>
                             Name
                             <i className="fa fa-sort" onClick={() => onSorting('name')} />
                         </div>
-                        <div className="list__row list__row-org">
+                        <div className={`${styles.ListRow} ${styles.ListRowOrg}`}>
                             Organisation (owner)
                             <i className="fa fa-sort" onClick={() => onSorting('organisation__name')} />
                         </div>
-                        <div className="list__row list__row-raster-description">
+                        <div className={`${styles.ListRow} ${styles.ListRowRasterDescription}`}>
                             Description
                         </div>
-                        <div className="list__row list__row-time">
+                        <div className={`${styles.ListRow} ${styles.ListRowTime}`}>
                             Last update
                             <i className="fa fa-sort" onClick={() => onSorting('last_modified')} />
                         </div>
-                        <div className="list__row list__row-access" />
+                        <div className={`${styles.ListRow} ${styles.ListRowAccess}`} />
                     </li>
                     {rasters.map((raster: Raster) => {
                         const checked = !!checkedRasters.find(uuid => uuid === raster.uuid);
                         return (
                             <li
-                                className={selectedItem === raster.uuid ? "list__row-li list__row-li-selected" : "list__row-li"}
+                                className={selectedItem === raster.uuid ? `${styles.ListRowLi} ${styles.ListRowLi__Selected}` : styles.ListRowLi}
                                 key={raster.uuid}
                                 onClick={() => selectItem(raster.uuid)}
                             >
-                                <input className="list__row list__row-normal list__row-box" type="checkbox" onChange={() => onCheckboxSelect(raster.uuid)} checked={checked} />
+                                <input className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowBox}`} type="checkbox" onChange={() => onCheckboxSelect(raster.uuid)} checked={checked} />
                                 {raster.temporal ?
-                                    <img className="list__row list__row-normal list__row-type" src={rasterTemporalIcon} alt="temporal" title="Temporal"/> :
-                                    <img className="list__row list__row-normal list__row-type" src={rasterNonTemporalIcon} alt="non-temporal" title="Non-temporal"/>
+                                    <img className={`${styles.ListRow} ${styles.ListRowNormal}`} src={rasterTemporalIcon} alt="temporal" title="Temporal"/> :
+                                    <img className={`${styles.ListRow} ${styles.ListRowNormal}`} src={rasterNonTemporalIcon} alt="non-temporal" title="Non-temporal"/>
                                 }
-                                <div className="list__row list__row-normal list__row-name" title={raster.name}>{raster.name}</div>
-                                <div className="list__row list__row-normal list__row-org"title={raster.organisation && raster.organisation.name}>{raster.organisation && raster.organisation.name}</div>
-                                <div className="list__row list__row-normal list__row-raster-description" title={raster.description}>{raster.description}</div>
-                                <div className="list__row list__row-normal list__row-time">{new Date(raster.last_modified).toLocaleDateString()}</div>
-                                <div className="list__row list__row-normal list__row-access">
+                                <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowName}`} title={raster.name}>{raster.name}</div>
+                                <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowOrg}`}title={raster.organisation && raster.organisation.name}>{raster.organisation && raster.organisation.name}</div>
+                                <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowRasterDescription}`} title={raster.description}>{raster.description}</div>
+                                <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowTime}`}>{new Date(raster.last_modified).toLocaleDateString()}</div>
+                                <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowAccess}`}>
                                     <AccessModifier accessModifier={raster.access_modifier} />
                                 </div>
                             </li>
@@ -119,14 +120,14 @@ export default function RasterList (props: MyProps) {
                     })}
                 </ul>
             </div>
-            <div className="list__footer">
+            <div className={styles.ListFooter}>
                 <Pagination
                     count={count}
                     page={page}
                     onPageClick={onPageClick}
                 />
                 <button
-                    className="list__button-basket"
+                    className={buttonStyles.ButtonBasket}
                     disabled={checkedRasters.length === 0 ? true : false}
                     onClick={addToBasket}
                 >

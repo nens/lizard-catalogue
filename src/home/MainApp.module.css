@@ -1,0 +1,18 @@
+.MainContainer {
+    display: flex;
+    flex-direction: column;
+    min-width: 100rem;
+}
+
+.MainHeader {
+    background-color: var(--main-color-scheme);
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.MainBody {
+    display: flex;
+    justify-content: space-between;
+    height: 90vh;
+    min-height: 80rem;
+}

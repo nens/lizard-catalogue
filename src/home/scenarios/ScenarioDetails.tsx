@@ -10,7 +10,7 @@ import ScenarioResults from './ScenarioResults';
 import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
 import styles from '../../styles/Details.module.css';
-import '../../styles/Buttons.css';
+import buttonStyles from '../../styles/Buttons.module.css';
 
 const ScenarioDetails = () => {
     const selectedItem = useSelector(getSelectedItem);
@@ -56,7 +56,7 @@ const ScenarioDetails = () => {
                 <div className={styles.Uuid}>
                     <div title={scenario.uuid}>{scenario.uuid}</div>
                     <button
-                        className="button-copy"
+                        className={buttonStyles.ButtonCopy}
                         onClick={() => navigator.clipboard.writeText(scenario.uuid)}
                     >
                         <i className="fa fa-clone" />
@@ -83,7 +83,7 @@ const ScenarioDetails = () => {
                         readOnly={true}
                     />
                     <button
-                        className={styles.ButtonLinkCopy}
+                        className={buttonStyles.ButtonLinkCopy}
                         onClick={() => navigator.clipboard.writeText(getScenarioGetCapabilitesURL(scenario))}
                     >
                         Copy link

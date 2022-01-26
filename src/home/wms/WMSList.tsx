@@ -7,7 +7,8 @@ import SearchBar from '../../components/SearchBar';
 import Pagination from '../../components/Pagination';
 import LoadingScreen from '../../components/LoadingScreen';
 import AccessModifier from '../../components/AccessModifier';
-import '../../styles/List.css';
+import styles from '../../styles/List.module.css';
+import buttonStyles from '../../styles/Buttons.module.css';
 
 interface MyProps {
     searchTerm: string,
@@ -55,8 +56,8 @@ export default function WmsList (props: MyProps) {
     };
 
     return (
-        <div className="list">
-            <div className="list__top">
+        <div className={styles.List}>
+            <div className={styles.ListTop}>
                 <SearchBar
                     name="searchBar"
                     searchTerm={searchTerm}
@@ -65,38 +66,38 @@ export default function WmsList (props: MyProps) {
                     onSearchSubmit={onSearchSubmit}
                     onSearchChange={onSearchChange}
                 />
-                <div className="list__length">{count} WMS layers</div>
+                <div className={styles.ListLength}>{count} WMS layers</div>
             </div>
-            <div className="list__content">
-                <ul className="list__list">
-                    <li className="list__row-header">
-                        <div className="list__row list__row-box" />
-                        <div className="list__row list__row-name">
+            <div className={styles.ListContent}>
+                <ul className={styles.ListMainList}>
+                    <li className={styles.ListRowHeader}>
+                        <div className={`${styles.ListRow} ${styles.ListRowBox}`} />
+                        <div className={`${styles.ListRow} ${styles.ListRowName}`}>
                             Name
                             <i className="fa fa-sort" onClick={() => onSorting('name')} />
                         </div>
-                        <div className="list__row list__row-org">
+                        <div className={`${styles.ListRow} ${styles.ListRowOrg}`}>
                             Organisation (owner)
                             <i className="fa fa-sort" onClick={() => onSorting('organisation__name')} />
                         </div>
-                        <div className="list__row list__row-wms-description">
+                        <div className={`${styles.ListRow} ${styles.ListRowWmsDescription}`}>
                             Description
                         </div>
-                        <div className="list__row list__row-access" />
+                        <div className={`${styles.ListRow} ${styles.ListRowAccess}`} />
                     </li>
                     {wmsLayers.map((wms: WMS) => {
                         const checked = !!checkedWmsLayers.find(uuid => uuid === wms.uuid);
                         return (
                             <li
-                                className={selectedItem === wms.uuid ? "list__row-li list__row-li-selected" : "list__row-li"}
+                                className={selectedItem === wms.uuid ? `${styles.ListRowLi} ${styles.ListRowLi__Selected}` : styles.ListRowLi}
                                 key={wms.uuid}
                                 onClick={() => selectItem(wms.uuid)}
                             >
-                                <input className="list__row list__row-normal list__row-box" type="checkbox" onChange={() => onCheckboxSelect(wms.uuid)} checked={checked} />
-                                <div className="list__row list__row-normal list__row-name" title={wms.name}>{wms.name}</div>
-                                <div className="list__row list__row-normal list__row-org" title={wms.organisation && wms.organisation.name}>{wms.organisation && wms.organisation.name}</div>
-                                <div className="list__row list__row-normal list__row-wms-description" title={wms.description}>{wms.description}</div>
-                                <div className="list__row list__row-normal list__row-access">
+                                <input className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowBox}`} type="checkbox" onChange={() => onCheckboxSelect(wms.uuid)} checked={checked} />
+                                <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowName}`} title={wms.name}>{wms.name}</div>
+                                <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowOrg}`} title={wms.organisation && wms.organisation.name}>{wms.organisation && wms.organisation.name}</div>
+                                <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowWmsDescription}`} title={wms.description}>{wms.description}</div>
+                                <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowAccess}`}>
                                     <AccessModifier accessModifier={wms.access_modifier} />
                                 </div>
                             </li>
@@ -104,14 +105,14 @@ export default function WmsList (props: MyProps) {
                     })}
                 </ul>
             </div>
-            <div className="list__footer">
+            <div className={styles.ListFooter}>
                 <Pagination
                     count={count}
                     page={page}
                     onPageClick={onPageClick}
                 />
                 <button
-                    className="list__button-basket"
+                    className={buttonStyles.ButtonBasket}
                     disabled={checkedWmsLayers.length === 0 ? true : false}
                     onClick={addToBasket}
                 >

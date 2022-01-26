@@ -1,0 +1,105 @@
+.Header {
+  font-size: 1.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 6rem;
+  margin: 0 4rem;
+}
+
+.HeaderLogo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.HeaderLogo img {
+  height: 3rem;
+  width: 18.6rem;
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
+.HeaderLogoText {
+  font-size: 1.8rem;
+}
+
+.HeaderNav {
+  align-self: stretch;
+  /* overflow: hidden; */
+  display: flex;
+  align-items: center;
+  justify-content: right;
+}
+
+.HeaderNav * {
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.HeaderNav *:hover {
+  background-color: #006d6d;
+}
+
+.HeaderNav__IconBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1.2rem;
+}
+
+.UserProfile {
+  width: 16rem;
+  justify-content: flex-start;
+  position: relative;
+}
+
+.UserProfile .HeaderNav__Text {
+  width: 70%;
+  overflow: hidden;
+}
+
+.InboxDropdown {
+  position: relative;
+}
+
+.HeaderNav__InboxText {
+  margin-left: 1.5rem;
+}
+
+.HeaderNav__Icon {
+  height: 2.5rem;
+  width: 3rem;
+  fill: #fff;
+}
+
+.HeaderNav__Notification {
+  font-size: 1rem;
+  text-decoration: none;
+  color: #fff;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 50%;
+  background-color: orangered;
+  position: absolute;
+  margin: -2rem 0 0 -3rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.HeaderNav__Notification:hover {
+  background-color: orangered;
+}
+
+.HeaderNav__Text {
+  margin-left: 1.2rem;
+}
+
+.HeaderNav a {
+  text-decoration: none;
+  color: white;
+}

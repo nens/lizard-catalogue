@@ -1,0 +1,173 @@
+.List {
+  width: 52%;
+  padding: 0 1rem;
+  margin: 1rem 0;
+  border-right: 1px solid var(--border-color-soft);
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.LoadingScreen {
+  justify-content: center;
+  align-items: center;
+}
+
+.ListTop {
+  height: 8%;
+}
+
+.ListLength {
+  margin: 1rem 0 0 1rem;
+}
+
+.ListContent {
+  height: 80%;
+
+  font-size: 1.3rem;
+  line-height: 1.5rem;
+}
+
+.ListMainList {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  height: 100%;
+  overflow-y: auto;
+
+  margin: 0;
+  padding: 0;
+}
+
+.ListRowHeader {
+  font-weight: 500;
+  text-transform: uppercase;
+  width: 100%;
+  margin: 0.5rem auto;
+  display: flex;
+  justify-content: space-between;
+  height: 8%;
+}
+
+.ListRowLi {
+  border-radius: .3rem;
+  margin: 0.5rem auto;
+  background-color: #fff;
+  height: 3rem;
+  cursor: pointer;
+  width: 100%;
+  height: 10%;
+
+  border: 1px solid var(--border-color-soft);
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.ListRowLi:hover {
+  background-color: var(--second-color-scheme);
+}
+
+.ListRowLi__Selected {
+  border: 1px solid var(--main-color-scheme);
+}
+
+.ListRowLi img {
+  width: 3rem;
+  height: 3rem;
+}
+
+.ListRow {
+  flex: 1;
+  text-align: center;
+  margin: auto 2px;
+  max-height: 80%;
+}
+
+.ListRowNormal {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ListRow i {
+  cursor: pointer;
+  margin-left: .5rem;
+}
+
+.ListRowBox {
+  flex: .5;
+}
+
+.ListRowName {
+  flex: 2;
+  text-align: left;
+  margin-right: 2rem;
+  margin-left: 1rem;
+}
+
+.ListRowOrg {
+  flex: 3;
+  text-align: left;
+}
+
+.ListRowObs {
+  flex: 2;
+  text-align: left;
+}
+
+.ListRowTime {
+  flex: 2;
+}
+
+.ListRowAccess {
+  flex: .8;
+}
+
+.ListRowWmsDescription {
+  flex: 4;
+  text-align: left;
+  margin-right: 2rem;
+  max-height: 70%;
+}
+
+.ListRowRasterDescription {
+  flex: 2;
+  text-align: left;
+  margin-right: 2rem;
+  max-height: 60%;
+}
+
+.AccessModifier {
+  font-size: 1rem;
+  color: #fff;
+  border-radius: .2rem;
+  margin-right: .4rem;
+  padding: .2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.AccessModifier__Public {
+  background-color: var(--main-color-scheme);
+}
+
+.AccessModifier__Private {
+  background-color: #FF4500;
+}
+
+.AccessModifier__Common {
+  background-color: #FFA500;
+}
+
+.ListFooter {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 5%;
+  width: 100%;
+  padding: 0 1rem;
+}

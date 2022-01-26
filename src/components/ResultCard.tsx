@@ -7,7 +7,7 @@ import Export from './Export';
 import downloadIcon from '../images/download-icon.svg';
 import rasterExportIcon from '../images/raster-export.svg';
 import styles from './ResultCard.module.css';
-import '../styles/Modal.css';
+import modalStyles from '../styles/Modal.module.css';
 
 interface RasterState {
   id: number,
@@ -120,7 +120,7 @@ export default function ResultCard (props: MyProps) {
       </ul>
       {/* Raster export modal */}
       {rasterState && rasterState.raster ? (
-        <div className="modal-background">
+        <div className={modalStyles.ModalBackground}>
           <Export
             raster={rasterState.raster}
             bounds={boundsToDisplay(getBounds(rasterState.raster))}

@@ -5,7 +5,7 @@ import SearchBar from '../../components/SearchBar';
 import Pagination from '../../components/Pagination';
 import LoadingScreen from '../../components/LoadingScreen';
 import AccessModifier from '../../components/AccessModifier';
-import '../../styles/List.css';
+import styles from '../../styles/List.module.css';
 
 interface MyProps {
     searchTerm: string,
@@ -30,8 +30,8 @@ export default function MonitoringNetworkList (props: MyProps) {
     const monitoringNetworks = monitoringNetworksList.map(uuid => allMonitoringNetworks[uuid]);
 
     return (
-        <div className="list">
-            <div className="list__top">
+        <div className={styles.List}>
+            <div className={styles.ListTop}>
                 <SearchBar
                     name="searchBar"
                     searchTerm={searchTerm}
@@ -40,41 +40,41 @@ export default function MonitoringNetworkList (props: MyProps) {
                     onSearchSubmit={onSearchSubmit}
                     onSearchChange={onSearchChange}
                 />
-                <div className="list__length">{count} monitoring networks</div>
+                <div className={styles.ListLength}>{count} monitoring networks</div>
             </div>
-            <div className="list__content">
-                <ul className="list__list">
-                    <li className="list__row-header">
-                        <div className="list__row list__row-name">
+            <div className={styles.ListContent}>
+                <ul className={styles.ListMainList}>
+                    <li className={styles.ListRowHeader}>
+                        <div className={`${styles.ListRow} ${styles.ListRowName}`}>
                             Monitoring network
                             <i className="fa fa-sort" onClick={() => onSorting('name')} />
                         </div>
-                        <div className="list__row list__row-org">
+                        <div className={`${styles.ListRow} ${styles.ListRowOrg}`}>
                             Organisation (owner)
                             <i className="fa fa-sort" onClick={() => onSorting('organisation__name')} />
                         </div>
-                        <div className="list__row list__row-raster-description">
+                        <div className={`${styles.ListRow} ${styles.ListRowRasterDescription}`}>
                             Description
                         </div>
-                        <div className="list__row list__row-access" />
+                        <div className={`${styles.ListRow} ${styles.ListRowAccess}`} />
                     </li>
                     {monitoringNetworks.map((monitoringNetwork: MonitoringNetwork) => (
                         <li
-                            className={selectedItem === monitoringNetwork.uuid ? "list__row-li list__row-li-selected" : "list__row-li"}
+                            className={selectedItem === monitoringNetwork.uuid ? `${styles.ListRowLi} ${styles.ListRowLi__Selected}` : styles.ListRowLi}
                             key={monitoringNetwork.uuid}
                             onClick={() => selectItem(monitoringNetwork.uuid)}
                         >
-                            <div className="list__row list__row-normal list__row-name" title={monitoringNetwork.name}>{monitoringNetwork.name}</div>
-                            <div className="list__row list__row-normal list__row-org" title={monitoringNetwork.organisation && monitoringNetwork.organisation.name}>{monitoringNetwork.organisation && monitoringNetwork.organisation.name}</div>
-                            <div className="list__row list__row-normal list__row-raster-description" title={monitoringNetwork.description}>{monitoringNetwork.description}</div>
-                            <div className="list__row list__row-normal list__row-access">
+                            <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowName}`} title={monitoringNetwork.name}>{monitoringNetwork.name}</div>
+                            <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowOrg}`} title={monitoringNetwork.organisation && monitoringNetwork.organisation.name}>{monitoringNetwork.organisation && monitoringNetwork.organisation.name}</div>
+                            <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowRasterDescription}`} title={monitoringNetwork.description}>{monitoringNetwork.description}</div>
+                            <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowAccess}`}>
                                 <AccessModifier accessModifier={monitoringNetwork.access_modifier} />
                             </div>
                         </li>
                     ))}
                 </ul>
             </div>
-            <div className="list__footer">
+            <div className={styles.ListFooter}>
                 <Pagination
                     count={count}
                     page={page}

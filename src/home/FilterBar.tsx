@@ -11,7 +11,7 @@ import {
     updatePage
 } from '../action';
 import FilterOption from '../components/FilterOption';
-import '../styles/FilterBar.css';
+import styles from './FilterBar.module.css';
 
 interface MyProps {
     observationTypes: ObservationType[],
@@ -40,9 +40,9 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
     const filters = useSelector(getFilters);
 
     return (
-        <div className="filter-box">
+        <div className={styles.FilterBox}>
             <select
-                className="switcher"
+                className={styles.DataSwitcher}
                 value={currentDataType}
                 onChange={e => {
                     if (

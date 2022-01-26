@@ -5,10 +5,9 @@ import { addNotification, addTimeseriesExportTask } from './../action';
 import { timeValidator } from './../utils/timeValidator';
 import { requestTimeseriesExport } from './../utils/url';
 import { TimeseriesPeriodFilter } from './TimeseriesPeriodFilter';
-import '../styles/TimeseriesExportModal.css';
-import '../styles/Modal.css';
-import '../styles/Buttons.css';
-import '../styles/Icons.css';
+import styles from './TimeseriesExportModal.module.css';
+import modalStyles from '../styles/Modal.module.css';
+import buttonStyles from '../styles/Buttons.module.css';
 
 interface MyProps {
     defaultStart: number | null,
@@ -41,13 +40,13 @@ const TimeSeriesExportModal: FC<MyProps & PropsFromDispatch> = (props) => {
     });
 
     return (
-        <div className="modal-main modal-timeseries-export">
-            <div className="modal-header">
+        <div className={`${modalStyles.ModalMain} ${modalStyles.ModalTimeseriesExport}`}>
+            <div className={modalStyles.ModalHeader}>
                 <span>Export period</span>
                 <button onClick={props.toggleModal}>&times;</button>
             </div>
-            <div className="timeseries-export">
-                <div className="timeseries-export-title">
+            <div className={styles.TimeseriesExport}>
+                <div className={styles.TimeseriesExportTitle}>
                     <h4>Choose a period for your export.</h4>
                     <span>If the filter period is filled in, it will be used as the default period.</span>
                 </div>
@@ -59,7 +58,7 @@ const TimeSeriesExportModal: FC<MyProps & PropsFromDispatch> = (props) => {
                     startDateRequired
                 />
                 <button
-                    className="button-action"
+                    className={buttonStyles.ButtonAction}
                     title={
                         !start ? 'Please select a start date to export the Time Series' :
                         timeValidator(start, end) ? timeValidator(start, end) as string :

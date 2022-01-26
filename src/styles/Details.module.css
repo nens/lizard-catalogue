@@ -114,27 +114,6 @@
   outline: none;
 }
 
-.ButtonLinkCopy {
-  cursor: pointer;
-  width: 8rem;
-  margin: 0;
-  padding: 0.5rem;
-  color: #fff;
-  background-color: var(--main-color-scheme);
-  border: none;
-  border-radius: 0.2rem;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  box-shadow: 0.1rem 0.1rem 0.3rem rgba(12, 12, 12, 0.5);
-}
-.ButtonLinkCopy:focus {
-  outline: none;
-}
-.ButtonLinkCopy:active {
-  transform: translateY(2px);
-}
-
 /* Grid */
 .Grid {
   display: grid;

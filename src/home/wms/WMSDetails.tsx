@@ -10,7 +10,7 @@ import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
 import styles from '../../styles/Details.module.css';
-import '../../styles/Buttons.css';
+import buttonStyles from '../../styles/Buttons.module.css';
 
 const WMSDetails = () => {
     const selectedItem = useSelector(getSelectedItem);
@@ -69,7 +69,7 @@ const WMSDetails = () => {
                 <div className={styles.Uuid}>
                     <div title={wms.uuid}>{wms.uuid}</div>
                     <button
-                        className="button-copy"
+                        className={buttonStyles.ButtonCopy}
                         onClick={() => navigator.clipboard.writeText(wms.uuid)}
                     >
                         <i className="fa fa-clone" />
@@ -116,7 +116,7 @@ const WMSDetails = () => {
                             readOnly={true}
                         />
                         <button
-                            className={styles.ButtonLinkCopy}
+                            className={buttonStyles.ButtonLinkCopy}
                             onClick={() => navigator.clipboard.writeText(wmsUrl)}
                         >
                             Copy link
