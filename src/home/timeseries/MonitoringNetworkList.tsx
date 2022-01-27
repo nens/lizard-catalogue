@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { MonitoringNetwork } from '../../interface';
-import { getCurrentMonitoringNetworkList, getAllMonitoringNetworks, getSelectedItem, getFilters } from '../../reducers';
+import { getCurrentMonitoringNetworkList, getAllMonitoringNetworks, getSelectedItem, getFilters, MyStore } from '../../reducers';
 import SearchBar from '../../components/SearchBar';
 import Pagination from '../../components/Pagination';
 import LoadingScreen from '../../components/LoadingScreen';
@@ -10,8 +10,8 @@ import styles from '../../styles/List.module.css';
 interface MyProps {
     searchTerm: string,
     onPageClick: (page: number) => void,
-    onSearchChange: (event: object) => void,
-    onSearchSubmit: (event: object) => void,
+    onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onSearchSubmit: (event: React.FormEvent<HTMLFormElement>) => void,
     onSorting: (ordering: string) => void,
     selectItem: (uuid: string) => void
 };
@@ -27,7 +27,7 @@ export default function MonitoringNetworkList (props: MyProps) {
     if (!currentMonitoringNetworkList || currentMonitoringNetworkList.isFetching) return <LoadingScreen />;
 
     const { count, monitoringNetworksList } = currentMonitoringNetworkList;
-    const monitoringNetworks = monitoringNetworksList.map(uuid => allMonitoringNetworks[uuid]);
+    const monitoringNetworks = monitoringNetworksList.map(uuid => allMonitoringNetworks[uuid as keyof MyStore['allMonitoringNetworks']]) as MonitoringNetwork[];
 
     return (
         <div className={styles.List}>

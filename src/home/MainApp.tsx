@@ -25,6 +25,7 @@
 import { EffectCallback, useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router';
+import { RootDispatch } from '../store';
 import {
     fetchRasters,
     fetchObservationTypes,
@@ -66,7 +67,7 @@ import {
     getSelectedItem,
     getLizardBootstrap
 } from '../reducers';
-import { SwitchDataType } from '../interface';
+import { SwitchDataType } from '../action';
 import {
     getUrlParams,
     getSearch,
@@ -142,11 +143,11 @@ const MainApp: React.FC<DispatchProps> = (props) => {
         props.updatePage(page);
     };
 
-    const onSearchChange = (event) => {
+    const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(event.target.value);
     };
 
-    const onSearchSubmit = (event) => {
+    const onSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         props.updateSearch(searchTerm);
         props.updatePage(1); // Go back to page 1 in the result list
@@ -181,7 +182,7 @@ const MainApp: React.FC<DispatchProps> = (props) => {
 
     // useMountEffect for event listener to use ESC to close a modal
     useMountEffect(() => {
-        const closeModalsOnEsc = (e) => {
+        const closeModalsOnEsc = (e: KeyboardEvent) => {
             if (e.key === "Escape") {
                 window.location.href = "#";
             };
@@ -224,7 +225,7 @@ const MainApp: React.FC<DispatchProps> = (props) => {
         props.selectOrganisation(organisation);
         props.selectLayercollection(layercollection);
         props.selectObservationType(observation);
-        props.switchDataType(dataType);
+        props.switchDataType(dataType as SwitchDataType['payload']);
         props.selectItem(uuid);
 
         // Update the search term in MainApp's state to show the search input
@@ -431,7 +432,7 @@ const MainApp: React.FC<DispatchProps> = (props) => {
     );
 };
 
-const mapDispatchToProps = (dispatch: any) => ({
+const mapDispatchToProps = (dispatch: RootDispatch) => ({
     fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
     fetchRasters: (
         page: number,

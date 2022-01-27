@@ -2,7 +2,7 @@ import { useState } from 'react';
 import MDSpinner from 'react-md-spinner';
 import { Raster } from '../interface';
 import { getUuidFromUrl } from '../utils/getUuidFromUrl';
-import { boundsToDisplay, getBounds } from '../utils/latLngZoomCalculation';
+import { getBounds } from '../utils/latLngZoomCalculation';
 import Export from './Export';
 import downloadIcon from '../images/download-icon.svg';
 import rasterExportIcon from '../images/raster-export.svg';
@@ -123,7 +123,7 @@ export default function ResultCard (props: MyProps) {
         <div className={modalStyles.ModalBackground}>
           <Export
             raster={rasterState.raster}
-            bounds={boundsToDisplay(getBounds(rasterState.raster))}
+            bounds={getBounds(rasterState.raster)}
             toggleExportModal={() => setRasterState(null)}
           />
         </div>

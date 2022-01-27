@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Scenario } from '../../interface';
-import { getSelectedItem, getFilters, getCurrentScenariosList, getAllScenarios } from '../../reducers';
+import { getSelectedItem, getFilters, getCurrentScenariosList, getAllScenarios, MyStore } from '../../reducers';
 import { getLocalDateString } from '../../utils/dateUtils';
 import SearchBar from '../../components/SearchBar';
 import Pagination from '../../components/Pagination';
@@ -14,8 +14,8 @@ import buttonStyles from '../../styles/Buttons.module.css';
 interface MyProps {
     searchTerm: string,
     onPageClick: (page: number) => void,
-    onSearchChange: (event: object) => void,
-    onSearchSubmit: (event: object) => void,
+    onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onSearchSubmit: (event: React.FormEvent<HTMLFormElement>) => void,
     onSorting: (ordering: string) => void,
     selectItem: (uuid: string) => void,
     updateBasketWithScenarios: (scenarios: string[]) => void
@@ -34,7 +34,7 @@ export default function ScenariosList (props: MyProps) {
     if (!currentScenariosList || currentScenariosList.isFetching) return <LoadingScreen />;
 
     const { count, scenariosList } = currentScenariosList;
-    const scenarios = scenariosList.map(uuid => allScenarios[uuid]);
+    const scenarios = scenariosList.map(uuid => allScenarios[uuid as keyof MyStore['allScenarios']]) as Scenario[];
 
     const onCheckboxSelect = (uuid: string) => {
         // Check if the WMS layer has already been selected or not

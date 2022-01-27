@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { LatLngBounds } from 'leaflet';
 import { Raster } from './../interface';
 import DownloadModal from './DownloadModal';
 import ExportModal from './ExportModal';
@@ -6,7 +7,7 @@ import styles from '../styles/Modal.module.css';
 
 interface MyProps {
     raster: Raster,
-    bounds: number[][],
+    bounds: LatLngBounds,
     toggleExportModal: () => void
 }
 

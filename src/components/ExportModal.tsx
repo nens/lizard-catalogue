@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { mapBoxAccesToken } from './../mapboxConfig.js';
+import { LatLngBounds, LeafletMouseEvent } from 'leaflet';
 import { Map, TileLayer, WMSTileLayer, GeoJSON } from 'react-leaflet';
 import { getInbox, getRasterExportState } from './../reducers';
-import { AppDispatch } from './../store';
+import { RootDispatch } from './../store';
 import {
     addToSelectedExportGridCellIds,
     removeFromSelectedExportGridCellIds,
@@ -14,7 +15,7 @@ import {
 } from './../action';
 import { getSpatialBoundsIntersect, gridPolygonToSpatialBounds } from './../utils/geoUtils';
 import { areGridCelIdsEqual } from './../utils/rasterExportUtils';
-import { Raster, FieldValuePair } from './../interface';
+import { Raster, FieldValuePair, ExportGridCellId } from './../interface';
 import Datetime from "react-datetime";
 import moment from "moment";
 import MDSpinner from "react-md-spinner";
@@ -26,7 +27,7 @@ const maximumSelectForExport = 3;
 
 interface MyProps {
     raster: Raster,
-    bounds: number[][],
+    bounds: LatLngBounds,
     openDownloadModal: () => void,
 }
 
@@ -47,6 +48,7 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
     const noDataValue = rasterExportState.noDataValue;
     // const dateTimeStart = rasterExportState.dateTimeStart;
 
+    // @ts-ignore
     const exportGridCells = availableGridCells.filter(grid => getSpatialBoundsIntersect(gridPolygonToSpatialBounds(grid), exportBounds));
 
     useEffect(() => {
@@ -61,10 +63,10 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
             {
                 field: 'bounds',
                 value: { 
-                    north: bounds[0][0],
-                    east: bounds[0][1],
-                    south: bounds[1][0],
-                    west: bounds[1][1],
+                    north: bounds.getNorth(),
+                    east: bounds.getEast(),
+                    south: bounds.getSouth(),
+                    west: bounds.getWest(),
                 }
             }
         ]);
@@ -94,7 +96,7 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                         bounds={bounds}
                         zoomControl={false}
                         style={{ width: "100%" }}
-                        onMoveend={event=>{
+                        onmoveend={(event: LeafletMouseEvent) => {
                             const bounds = event.target.getBounds();
                             const mapSpatialBounds = {
                                 north: bounds._northEast.lat,
@@ -120,31 +122,34 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                         <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                         <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
                         {exportGridCells.length !== 0 ? (
-                            <GeoJSON 
-                                className={styles.ExportGridCell}
-                                data={{"type": "FeatureCollection", "features": exportGridCells}}
-                                style={(feature)=>{
-                                    const isSelected = selectedGridCellIds.find(item=>{
+                            <GeoJSON
+                                data={{type: "FeatureCollection", features: exportGridCells} as GeoJSON.FeatureCollection}
+                                style={feature => {
+                                    if (feature === undefined) return {};
+                                    const isSelected = selectedGridCellIds.find(item => {
                                         return areGridCelIdsEqual(feature.properties.id, item);
                                     })
                                     if (isSelected) {
                                         return {
-                                            "color": "#A10000",
-                                            "fillColor": "#E2D300",
-                                            "fillOpacity": "0.71",
+                                            className: styles.ExportGridCell,
+                                            color: "#A10000",
+                                            fillColor: "#E2D300",
+                                            fillOpacity: 0.71
 
                                         }
                                     } else if (selectedGridCellIds.length === maximumSelectForExport) {
                                         return {
-                                            "color": "#A10000",
-                                            "fillColor": "transparent",
-                                            "fillOpacity": "0.71",
+                                            className: styles.ExportGridCell,
+                                            color: "#A10000",
+                                            fillColor: "transparent",
+                                            fillOpacity: 0.71
 
                                         }
                                     } else {
                                         return {
-                                            "color": "#A10000",
-                                            "fillOpacity": "0",
+                                            className: styles.ExportGridCell,
+                                            color: "#A10000",
+                                            fillOpacity: 0
                                         }
                                     }
                                 }}
@@ -368,9 +373,9 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
     );
 };
 
-const mapDispatchToProps = (dispatch: AppDispatch) => ({
-    addToSelectedExportGridCellIds: (ids) => dispatch(addToSelectedExportGridCellIds(ids)),
-    removeFromSelectedExportGridCellIds: (ids) => dispatch(removeFromSelectedExportGridCellIds(ids)),
+const mapDispatchToProps = (dispatch: RootDispatch) => ({
+    addToSelectedExportGridCellIds: (ids: ExportGridCellId[]) => dispatch(addToSelectedExportGridCellIds(ids)),
+    removeFromSelectedExportGridCellIds: (ids: ExportGridCellId[]) => dispatch(removeFromSelectedExportGridCellIds(ids)),
     removeAllSelectedExportGridCellIds: ()=> dispatch(removeAllSelectedExportGridCellIds()),
     updateExportFormAndFetchExportGridCells: (rasterUuid: string, fieldValuePairs: FieldValuePair[])=> dispatch(updateExportFormAndFetchExportGridCells(rasterUuid, fieldValuePairs)),
     requestRasterExports: (numberOfInboxMessages:number, openDownloadModal: Function, rasterUuid: string)=> dispatch(requestRasterExports(numberOfInboxMessages, openDownloadModal, rasterUuid)),

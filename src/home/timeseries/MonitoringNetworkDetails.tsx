@@ -13,6 +13,7 @@ import {
     MyStore,
 } from '../../reducers';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
+import { convertToLatLngBounds } from '../../utils/latLngZoomCalculation';
 import { MonitoringNetwork, ObservationType, TableTab } from '../../interface';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import TimeSeriesModal from '../../components/TimeSeriesModal';
@@ -22,6 +23,7 @@ import styles from '../../styles/Details.module.css';
 import modalStyles from '../../styles/Modal.module.css';
 import timeseriesModalStyles from '../../components/TimeseriesModal.module.css';
 import buttonStyles from '../../styles/Buttons.module.css';
+import filterOptionStyles from '../../components/FilterOption.module.css';
 
 // Helper function to add reference frame to unit of observation type
 const addRefToUnit = (observationType: ObservationType) => {
@@ -35,6 +37,7 @@ const MonitoringNetworkDetails = () => {
     const locationsObject = useSelector(getLocationsObject);
     const organisations = useSelector(getOrganisations);
     const user = useSelector(getLizardBootstrap).user;
+    const bounds = convertToLatLngBounds(locationsObject ? locationsObject.spatialBounds : null);
 
     const [timeseriesModal, setTimeseriesModal] = useState(false);
     const [activeTab, setActiveTab] = useState<TableTab>('Details');
@@ -89,7 +92,7 @@ const MonitoringNetworkDetails = () => {
                     </div>
                 ) : null}
                 <Map
-                    bounds={locationsObject ? locationsObject.spatialBounds : [[85, 180], [-85, -180]]}
+                    bounds={bounds}
                     zoomControl={false}
                     style={{
                         width: '100%',
@@ -102,6 +105,7 @@ const MonitoringNetworkDetails = () => {
                                 <Marker
                                     key={location.uuid}
                                     position={location.geometry.coordinates}
+                                    // @ts-ignore
                                     icon={new Leaflet.DivIcon({
                                         iconSize: [16, 16],
                                         className: `${timeseriesModalStyles.LocationIcon} ${timeseriesModalStyles.LocationIconSmall}`
@@ -162,7 +166,7 @@ const MonitoringNetworkDetails = () => {
                         })}
                         {observationTypeObject.count > 10 ? (
                             <div
-                                className="filter-list-button"
+                                className={filterOptionStyles.FilterListButton}
                                 style={{ cursor: 'default' }}
                             >
                                 {observationTypeObject.count - 10} more

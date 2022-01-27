@@ -6,7 +6,7 @@ interface MyProps {
     searchTerm: string,
     title: string,
     placeholder: string,
-    onSearchChange: (e: React.FormEvent<HTMLInputElement>) => void,
+    onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     onSearchSubmit: (e: React.FormEvent<HTMLFormElement>) => void,
 };
 

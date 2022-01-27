@@ -1,7 +1,8 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
+import { RootDispatch } from '../store.js';
 import MDSpinner from 'react-md-spinner';
-import Leaflet from 'leaflet';
+import Leaflet, { LeafletMouseEvent } from 'leaflet';
 import inside from 'point-in-polygon'
 import moment from 'moment';
 import { Map, TileLayer, Marker, ZoomControl, Tooltip, Polygon } from 'react-leaflet';
@@ -13,6 +14,7 @@ import {
     getMonitoringNetworkObservationTypesNotNull,
 } from './../reducers';
 import { fetchTimeseries, removeTimeseries } from './../action';
+import { convertToLatLngBounds } from './../utils/latLngZoomCalculation';
 import { openTimeseriesInAPI, openLocationsInLizard } from './../utils/url';
 import { timeValidator } from './../utils/timeValidator';
 import { getSpatialBounds, getGeometry } from './../utils/getSpatialBounds';
@@ -132,7 +134,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
 
     // Add event listener to close modal on ESCAPE
     useEffect(() => {
-        const closeModalOnEsc = (e) => {
+        const closeModalOnEsc = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 closeTimeseriesModal();
             };
@@ -222,12 +224,12 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
     // Helper functions to get map bounds or center point
     const getMapBounds = () => {
         if (locationOnZoom || (filteredLocationObject && filteredLocationObject.centerPoint)) {
-            return null;
+            return undefined;
         };
         if (filteredLocationObject && filteredLocationObject.spatialBounds) {
-            return filteredLocationObject.spatialBounds;
+            return convertToLatLngBounds(filteredLocationObject.spatialBounds);
         };
-        return locationsObject.spatialBounds;
+        return convertToLatLngBounds(locationsObject.spatialBounds);
     };
 
     const getMapCenterPoint = () => {
@@ -235,9 +237,9 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
             return locations[locationOnZoom].geometry!.coordinates;
         };
         if (filteredLocationObject && filteredLocationObject.centerPoint) {
-            return filteredLocationObject.centerPoint;
+            return filteredLocationObject.centerPoint as [number, number];
         };
-        return null;
+        return undefined;
     };
 
     return (
@@ -275,7 +277,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                 ref={mapRef}
                                 bounds={getMapBounds()}
                                 center={getMapCenterPoint()}
-                                zoom={getMapCenterPoint() ? 18 : null}
+                                zoom={getMapCenterPoint() ? 18 : undefined}
                                 zoomControl={false}
                                 attributionControl={false}
                                 style={{
@@ -283,7 +285,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                     opacity: locationsObject.isFetching || (filteredLocationObject && filteredLocationObject.isFetching) ? 0.4 : 1,
                                     cursor: drawingMode ? "default" : "pointer"
                                 }}
-                                onClick={(e) => {
+                                onclick={(e: LeafletMouseEvent) => {
                                     if (drawingMode) {
                                         setPolygon([...polygon, [e.latlng.lat, e.latlng.lng]]);
                                     } else {
@@ -293,6 +295,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                             >
                                 <ZoomControl position="bottomleft"/>
                                 <Polygon
+                                    // @ts-ignore
                                     positions={polygon}
                                     color={"var(--main-color-scheme)"}
                                 />
@@ -303,6 +306,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                             <Marker
                                                 key={location.uuid}
                                                 position={location.geometry.coordinates}
+                                                // @ts-ignore
                                                 icon={
                                                     new Leaflet.DivIcon({
                                                         iconSize: [24, 24],
@@ -342,8 +346,8 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                     // Remove location currently on zoom if any
                                     if (locationOnZoom) setLocationOnZoom('');
                                     // Set map to the original bounds
-                                    mapRef.current.leafletElement.fitBounds(
-                                        filteredLocationObject ? filteredLocationObject.spatialBounds : locationsObject.spatialBounds
+                                    mapRef && mapRef.current && mapRef.current.leafletElement.fitBounds(
+                                        convertToLatLngBounds(filteredLocationObject ? filteredLocationObject.spatialBounds : locationsObject.spatialBounds)
                                     );
                                 }}
                             >
@@ -416,8 +420,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                     placeholder={'- Search and select -'}
                                     options={observationTypes.map(obsT => convertToSelectObject(obsT.id, obsT.parameter || obsT.code, obsT))}
                                     value={selectedObservationType ? convertToSelectObject(selectedObservationType.id, selectedObservationType.parameter || selectedObservationType.code, selectedObservationType) : null}
-                                    // @ts-ignore
-                                    onChange={(e) => setSelectedObservationType(e)}
+                                    onChange={(e) => setSelectedObservationType(e as ObservationType | null)}
                                     dropUp={true}
                                 />
                             </form>
@@ -551,7 +554,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
     );
 };
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch: RootDispatch) => ({
     fetchTimeseries: (uuid: string, signal?: AbortSignal) => dispatch(fetchTimeseries(uuid, signal)),
     removeTimeseries: () => dispatch(removeTimeseries()),
 });

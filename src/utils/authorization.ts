@@ -1,5 +1,5 @@
 // Check if the user is allowed to manage the raster or wms layer.
-// The user is allowed to manage the layer if 
+// The user is allowed to manage the layer if
 // the user has the 'admin' role in the organisation of the layer or
 // the user is the supplier of the layer
 // and has the 'supplier' role in the organisation of the layer.
@@ -30,7 +30,7 @@ export const isAuthorizedToManageLayer = (
         return true;
     } else if (
         layerOrganisationWithRolesOfUser.roles.includes("supplier") &&
-        layer["supplier"] === userName
+        layer.supplier === userName
     ) {
         return true;
     };

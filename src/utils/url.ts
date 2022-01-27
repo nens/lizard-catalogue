@@ -1,8 +1,8 @@
-import * as L from 'leaflet';
+import { LatLngBounds } from 'leaflet';
 import { Raster, WMS, LatLng, Layercollection, Location, Scenario } from "../interface";
 import { baseUrl } from "../api";
 import { getIdFromUrl } from './getUuidFromUrl';
-import { getBounds, getCenterPoint, zoomLevelCalculation } from './latLngZoomCalculation';
+import { zoomLevelCalculation } from './latLngZoomCalculation';
 import moment from "moment";
 
 // Helper function to get short UUID
@@ -83,7 +83,7 @@ export const openLocationsInLizard = async (locations: Location[], start: number
 
     // Get center point of all selected locations
     const arrayOfCoordinates = locationsWithCoordinates.map(location => location.geometry!.coordinates);
-    const bounds = new L.LatLngBounds(arrayOfCoordinates);
+    const bounds = new LatLngBounds(arrayOfCoordinates);
     const centerPoint = bounds.getCenter();
 
     // Construct url for multi-point selection
@@ -132,12 +132,16 @@ export const openAllInLizard = (rasters: Raster[], wmsLayers: WMS[], scenarios: 
 
     // Get the spatial bounds of the last selected object,
     // if lastSelectedObject is null then set it to the global map
-    const bounds = lastSelectedObject ? getBounds(lastSelectedObject) : {
+    const objectBounds = lastSelectedObject && lastSelectedObject.spatial_bounds ? lastSelectedObject.spatial_bounds : {
         north: 85, east: 180, south: -85, west: -180
     };
 
+    const bounds = new LatLngBounds(
+        [objectBounds.north, objectBounds.west], [objectBounds.south, objectBounds.east]
+    );
+
     // Get the center point based on its spatial bounds
-    const centerPoint: LatLng = getCenterPoint(bounds);
+    const centerPoint = bounds.getCenter();
 
     // Calculate the zoom level by using the zoomLevelCalculation function
     const zoom = zoomLevelCalculation(bounds);

@@ -1,6 +1,8 @@
 import { connect, useSelector } from 'react-redux';
+import { RootDispatch } from '../store';
 import { openAllInLizard } from './../utils/url';
 import { getLocalDateString } from '../utils/dateUtils';
+import { Raster, Scenario, WMS } from '../interface';
 import { removeRasterFromBasket, removeScenarioFromBasket, removeWMSFromBasket } from './../action';
 import { getAllRasters, getAllScenarios, getAllWms, getNumberOfItemsInBasket, MyStore } from '../reducers';
 import rasterTemporalIcon from './../images/raster-temporal.svg';
@@ -17,9 +19,9 @@ const Basket = (props: DispatchProps) => {
     const allScenarios = useSelector(getAllScenarios);
 
     // reverse the order so the last selected item will appear on top of the respective list
-    const rasters = useSelector((state: MyStore) => state.basket.rasters.map(uuid => allRasters[uuid]).reverse());
-    const wmsLayers = useSelector((state: MyStore) => state.basket.wmsLayers.map(uuid => allWmsLayers[uuid]).reverse());
-    const scenarios = useSelector((state: MyStore) => state.basket.scenarios.map(uuid => allScenarios[uuid]).reverse());
+    const rasters = useSelector((state: MyStore) => state.basket.rasters.map(uuid => allRasters[uuid as keyof MyStore['allRasters']]).reverse()) as Raster[];
+    const wmsLayers = useSelector((state: MyStore) => state.basket.wmsLayers.map(uuid => allWmsLayers[uuid as keyof MyStore['allWMS']]).reverse()) as WMS[];
+    const scenarios = useSelector((state: MyStore) => state.basket.scenarios.map(uuid => allScenarios[uuid as keyof MyStore['allScenarios']]).reverse()) as Scenario[];
 
     return (
         <div className={styles.Basket} id="basket">
@@ -80,7 +82,7 @@ const Basket = (props: DispatchProps) => {
     );
 };
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch: RootDispatch) => ({
     removeRasterFromBasket: (uuid: string) => removeRasterFromBasket(uuid, dispatch),
     removeWMSFromBasket: (uuid: string) => removeWMSFromBasket(uuid, dispatch),
     removeScenarioFromBasket: (uuid: string) => removeScenarioFromBasket(uuid, dispatch)

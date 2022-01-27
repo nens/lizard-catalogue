@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { WMS } from '../../interface';
-import { getCurrentWMSList, getAllWms, getSelectedItem, getFilters } from '../../reducers';
+import { getCurrentWMSList, getAllWms, getSelectedItem, getFilters, MyStore } from '../../reducers';
 import BasketNotification from '../../components/BasketNotification';
 import SearchBar from '../../components/SearchBar';
 import Pagination from '../../components/Pagination';
@@ -13,8 +13,8 @@ import buttonStyles from '../../styles/Buttons.module.css';
 interface MyProps {
     searchTerm: string,
     onPageClick: (page: number) => void,
-    onSearchChange: (event: object) => void,
-    onSearchSubmit: (event: object) => void,
+    onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onSearchSubmit: (event: React.FormEvent<HTMLFormElement>) => void,
     onSorting: (ordering: string) => void,
     selectItem: (uuid: string) => void,
     updateBasketWithWMS: (wmsLayers: string[]) => void
@@ -33,7 +33,7 @@ export default function WmsList (props: MyProps) {
     if (!currentWMSList || currentWMSList.isFetching) return <LoadingScreen />;
 
     const { count, wmsList } = currentWMSList;
-    const wmsLayers = wmsList.map(uuid => allWms[uuid]);
+    const wmsLayers = wmsList.map(uuid => allWms[uuid as keyof MyStore['allWMS']]);
 
     const onCheckboxSelect = (uuid: string) => {
         // Check if the WMS layer has already been selected or not

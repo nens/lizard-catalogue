@@ -1,33 +1,21 @@
 import request from 'superagent';
-import { Dispatch } from 'redux';
-import store  from './store';
+import store, { RootDispatch } from './store';
 import {
     RasterListObject,
     WMSObject,
-    SwitchDataType,
-    ExportGridCelId,
-    RemoveFromSelectedExportGridCellIds,
-    AddToSelectedExportGridCellIds,
-    RemoveAllSelectedExportGridCellIds,
-    RequestedGridCells,
+    ExportGridCellId,
     ExportGridCell,
-    RetrievedRasterExportGridcells,
-    FailedRetrievingRasterExportGridcells,
     FieldValuePair,
-    RemoveAllExportGridCells,
-    RequestRasterExports,
-    ReceivedTaskRasterExport,
-    FailedTaskRasterExport,
-    ReceivedProjections,
     Projection,
     FetchingState,
-    SetFetchingStateProjections,
-    SetRasterExportFormFields,
     MonitoringNetworkObject,
     TimeSeries,
     Location,
     ObservationType,
     ScenariosObject,
+    Organisation,
+    Layercollection,
+	Message,
 } from './interface';
 import { getRasterExportState } from './reducers';
 import { areGridCelIdsEqual } from './utils/rasterExportUtils'
@@ -38,28 +26,44 @@ import { UUID_REGEX } from './utils/uuidRegex';
 export const REQUEST_LIZARD_BOOTSTRAP = "REQUEST_LIZARD_BOOTSTRAP";
 export const RECEIVE_LIZARD_BOOTSTRAP = "RECEIVE_LIZARD_BOOTSTRAP";
 
-export const fetchLizardBootstrap = (dispatch) => {
+interface RequestLizardBootstrap {
+    type: typeof REQUEST_LIZARD_BOOTSTRAP
+};
+
+interface ReceiveLizardBootstrap {
+    type: typeof RECEIVE_LIZARD_BOOTSTRAP,
+    payload: any
+};
+
+type BootstrapAction = RequestLizardBootstrap | ReceiveLizardBootstrap;
+
+export const fetchLizardBootstrap = (dispatch: RootDispatch) => {
     dispatch({
         type: REQUEST_LIZARD_BOOTSTRAP
     });
     fetch("/bootstrap/lizard/", {
         credentials: "same-origin"
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data && data.user && data.user.authenticated === true) {
-            dispatch({
-                type: RECEIVE_LIZARD_BOOTSTRAP,
-                payload: data
-            });
-        } 
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.user && data.user.authenticated === true) {
+                dispatch({
+                    type: RECEIVE_LIZARD_BOOTSTRAP,
+                    payload: data
+                });
+            }
+        });
 };
 
 //MARK: Switch between rasters and wms layers
 export const SWITCH_DATA_TYPE = 'SWITCH_DATA_TYPE';
 
-export const switchDataType = (dataType: SwitchDataType['payload'], dispatch): void => {
+export interface SwitchDataType {
+    type: typeof SWITCH_DATA_TYPE,
+    payload: "Raster" | "WMS" | "Timeseries" | "Scenario"
+};
+
+export const switchDataType = (dataType: SwitchDataType['payload'], dispatch: RootDispatch): void => {
     dispatch({
         type: SWITCH_DATA_TYPE,
         payload: dataType
@@ -70,16 +74,25 @@ export const switchDataType = (dataType: SwitchDataType['payload'], dispatch): v
 export const RASTERS_REQUESTED = 'RASTERS_REQUESTED';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
 
-const rastersRequested = () => ({
+interface RastersRequested {
+    type: typeof RASTERS_REQUESTED
+};
+
+interface RastersFetched {
+    type: typeof RASTERS_FETCHED,
+    payload: RasterListObject
+};
+
+const rastersRequested = (): RastersRequested => ({
     type: RASTERS_REQUESTED
 });
 
-const rastersFetched = (rasterListObject: RasterListObject) => ({
+const rastersFetched = (rasterListObject: RasterListObject): RastersFetched => ({
     type: RASTERS_FETCHED,
     payload: rasterListObject
 });
 
-export const fetchRasters = (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, layercollectionSlug: string, ordering: string, dispatch): void => {
+export const fetchRasters = (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, layercollectionSlug: string, ordering: string, dispatch: RootDispatch): void => {
     dispatch(rastersRequested());
 
     const params: string[] = [];
@@ -96,7 +109,7 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
     request
         .get(`/api/v4/rasters/?${queries}&scenario__isnull=true`)
         .then(response => {
-            if(response.body.count === 0 && searchTerm) {
+            if (response.body.count === 0 && searchTerm) {
                 // If no raster found by name then search by uuid
                 const newQueries = queries.replace('name__icontains', 'uuid');
                 request
@@ -116,16 +129,25 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
 export const REQUEST_WMS = 'REQUEST_WMS';
 export const RECEIVE_WMS_LAYERS = 'RECEIVE_WMS_LAYERS';
 
-const wmsRequested = () => ({
+interface RequestWms {
+    type: typeof REQUEST_WMS
+};
+
+interface ReceiveWmsLayers {
+    type: typeof RECEIVE_WMS_LAYERS,
+    payload: WMSObject
+};
+
+const wmsRequested = (): RequestWms => ({
     type: REQUEST_WMS
 });
 
-const wmsLayersReceived = (wmsObject: WMSObject) => ({
+const wmsLayersReceived = (wmsObject: WMSObject): ReceiveWmsLayers => ({
     type: RECEIVE_WMS_LAYERS,
     payload: wmsObject
 });
 
-export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, layercollectionSlug: string, ordering: string, dispatch): void => {
+export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, layercollectionSlug: string, ordering: string, dispatch: RootDispatch): void => {
     dispatch(wmsRequested());
 
     const params: string[] = [];
@@ -141,7 +163,7 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
     request
         .get(`/api/v4/wmslayers/?${queries}`)
         .then(response => {
-            if(response.body.count === 0 && searchTerm) {
+            if (response.body.count === 0 && searchTerm) {
                 // If no WMS layer found by name then search by uuid
                 const newQueries = queries.replace('name__icontains', 'uuid');
                 request
@@ -161,16 +183,25 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
 export const REQUEST_SCENARIOS = 'REQUEST_SCENARIOS';
 export const RECEIVE_SCENARIOS = 'RECEIVE_SCENARIOS';
 
-const scenariosRequested = () => ({
+interface RequestScenarios {
+    type: typeof REQUEST_SCENARIOS
+};
+
+interface ReceiveScenarios {
+    type: typeof RECEIVE_SCENARIOS,
+    payload: ScenariosObject
+};
+
+const scenariosRequested = (): RequestScenarios => ({
     type: REQUEST_SCENARIOS
 });
 
-const scenariosReceived = (scenariosObject: ScenariosObject) => ({
+const scenariosReceived = (scenariosObject: ScenariosObject): ReceiveScenarios => ({
     type: RECEIVE_SCENARIOS,
     payload: scenariosObject
 });
 
-export const fetchScenarios = (page: number, searchTerm: string, organisationName: string, ordering: string, dispatch): void => {
+export const fetchScenarios = (page: number, searchTerm: string, organisationName: string, ordering: string, dispatch: RootDispatch): void => {
     dispatch(scenariosRequested());
 
     const params: string[] = [];
@@ -216,16 +247,25 @@ export const fetchScenarios = (page: number, searchTerm: string, organisationNam
 export const REQUEST_MONITORING_NETWORKS = 'REQUEST_MONITORING_NETWORKS';
 export const RECEIVE_MONITORING_NETWORKS = 'RECEIVE_MONITORING_NETWORKS';
 
-const monitoringNetworksRequested = () => ({
+interface RequestMonitoringNetworks {
+    type: typeof REQUEST_MONITORING_NETWORKS
+};
+
+interface ReceiveMonitoringNetworks {
+    type: typeof RECEIVE_MONITORING_NETWORKS,
+    payload: MonitoringNetworkObject
+};
+
+const monitoringNetworksRequested = (): RequestMonitoringNetworks => ({
     type: REQUEST_MONITORING_NETWORKS
 });
 
-const monitoringNetworksReceived = (monitoringNetwork: MonitoringNetworkObject) => ({
+const monitoringNetworksReceived = (monitoringNetwork: MonitoringNetworkObject): ReceiveMonitoringNetworks => ({
     type: RECEIVE_MONITORING_NETWORKS,
     payload: monitoringNetwork
 });
 
-export const fetchMonitoringNetworks = (page: number, searchTerm: string, organisationName: string, ordering: string, dispatch): void => {
+export const fetchMonitoringNetworks = (page: number, searchTerm: string, organisationName: string, ordering: string, dispatch: RootDispatch): void => {
     dispatch(monitoringNetworksRequested());
 
     const params: string[] = [];
@@ -261,16 +301,29 @@ export const REQUEST_TIMESERIES = 'REQUEST_TIMESERIES';
 export const RECEIVE_TIMESERIES = 'RECEIVE_TIMESERIES';
 export const REMOVE_TIMESERIES = 'REMOVE_TIMESERIES';
 
-const timeseriesRequested = () => ({
+interface RequestTimeseries {
+    type: typeof REQUEST_TIMESERIES
+};
+
+interface ReceiveTimeseries {
+    type: typeof RECEIVE_TIMESERIES,
+    timeseriesList: TimeSeries[]
+};
+
+interface RemoveTimeseries {
+    type: typeof REMOVE_TIMESERIES
+};
+
+const timeseriesRequested = (): RequestTimeseries => ({
     type: REQUEST_TIMESERIES
 });
 
-const timeseriesReceived = (timeseriesList: TimeSeries[]) => ({
+const timeseriesReceived = (timeseriesList: TimeSeries[]): ReceiveTimeseries => ({
     type: RECEIVE_TIMESERIES,
     timeseriesList
 });
 
-export const fetchTimeseries = (uuid: string, signal?: AbortSignal) => async (dispatch) => {
+export const fetchTimeseries = (uuid: string, signal?: AbortSignal) => async (dispatch: RootDispatch) => {
     dispatch(timeseriesRequested());
 
     const timeseries = await recursiveFetchFunction(`/api/v4/monitoringnetworks/${uuid}/timeseries/`, { page_size: 100 }, [], signal);
@@ -286,7 +339,7 @@ export const fetchTimeseries = (uuid: string, signal?: AbortSignal) => async (di
     dispatch(timeseriesReceived(timeseries));
 };
 
-export const removeTimeseries = () => (dispatch) => {
+export const removeTimeseries = () => (dispatch: RootDispatch) => {
     dispatch({
         type: REMOVE_TIMESERIES
     });
@@ -296,17 +349,27 @@ export const removeTimeseries = () => (dispatch) => {
 export const REQUEST_NETWORK_OBSERVATION_TYPES = 'REQUEST_NETWORK_OBSERVATION_TYPES';
 export const RECEIVE_NETWORK_OBSERVATION_TYPES = 'RECEIVE_NETWORK_OBSERVATION_TYPES';
 
-const observationTypesRequested = () => ({
+interface RequestNetworkObservationTypes {
+    type: typeof REQUEST_NETWORK_OBSERVATION_TYPES
+};
+
+interface ReceiveNetworkObservationTypes {
+    type: typeof RECEIVE_NETWORK_OBSERVATION_TYPES,
+    observationTypeList: ObservationType[],
+    count: number
+};
+
+const observationTypesRequested = (): RequestNetworkObservationTypes => ({
     type: REQUEST_NETWORK_OBSERVATION_TYPES
 });
 
-const observationTypesReceived = (observationTypeList: ObservationType[], count: number) => ({
+const observationTypesReceived = (observationTypeList: ObservationType[], count: number): ReceiveNetworkObservationTypes => ({
     type: RECEIVE_NETWORK_OBSERVATION_TYPES,
     observationTypeList,
     count
 });
 
-export const fetchMonitoringNetworkObservationTypes = (uuid: string, signal?: AbortSignal) => async (dispatch) => {
+export const fetchMonitoringNetworkObservationTypes = (uuid: string, signal?: AbortSignal) => async (dispatch: RootDispatch) => {
     dispatch(observationTypesRequested());
 
     const observationTypes = await recursiveFetchFunction(`/api/v4/monitoringnetworks/${uuid}/observationtypes/`, { page_size: 10000 }, [], signal);
@@ -326,23 +389,32 @@ export const fetchMonitoringNetworkObservationTypes = (uuid: string, signal?: Ab
 export const REQUEST_LOCATIONS = 'REQUEST_LOCATIONS';
 export const RECEIVE_LOCATIONS = 'RECEIVE_LOCATIONS';
 
-const locationsRequested = () => ({
+interface RequestLocations {
+    type: typeof REQUEST_LOCATIONS
+};
+
+interface ReceiveLocations {
+    type: typeof RECEIVE_LOCATIONS,
+    locationsList: Location[]
+};
+
+const locationsRequested = (): RequestLocations => ({
     type: REQUEST_LOCATIONS
 });
 
-const locationsReceived = (locationsList: Location[]) => ({
+const locationsReceived = (locationsList: Location[]): ReceiveLocations => ({
     type: RECEIVE_LOCATIONS,
     locationsList
 });
 
-export const fetchLocations = (uuid: string, signal?: AbortSignal) => async (dispatch) => {
+export const fetchLocations = (uuid: string, signal?: AbortSignal) => async (dispatch: RootDispatch) => {
     dispatch(locationsRequested());
 
     const locations = await recursiveFetchFunction(`/api/v4/monitoringnetworks/${uuid}/locations/`, { page_size: 1000 }, [], signal);
 
     if (!locations) {
         dispatch(addNotification(`Failed to load available locations for monitoring network ${uuid}.`, 2000));
-        return{
+        return {
             status: 'Error',
             errorMessage: `Failed to load available locations for monitoring network ${uuid}.`
         };
@@ -354,7 +426,12 @@ export const fetchLocations = (uuid: string, signal?: AbortSignal) => async (dis
 //MARK: Select Item to view (Raster or WMS layer)
 export const ITEM_SELECTED = 'ITEM_SELECTED';
 
-export const selectItem = (uuid: string, dispatch): void => {
+interface ItemSelected {
+    type: typeof ITEM_SELECTED,
+    uuid: string
+};
+
+export const selectItem = (uuid: string, dispatch: RootDispatch): void => {
     dispatch({
         type: ITEM_SELECTED,
         uuid
@@ -367,7 +444,27 @@ export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
 export const USER_ORGANISATIONS_FETCHED = 'USER_ORGANISATIONS_FETCHED';
 export const LAYERCOLLECTIONS_FETCHED = 'LAYERCOLLECTIONS_FETCHED';
 
-export const fetchObservationTypes = async (dispatch) => {
+interface ObservationTypesFetched {
+    type: typeof OBSERVATION_TYPES_FETCHED,
+    observationTypes: ObservationType[]
+};
+
+interface OrganisationsFetched {
+    type: typeof ORGANISATIONS_FETCHED,
+    organisations: Organisation[]
+};
+
+interface UserOrganisationsFetched {
+    type: typeof USER_ORGANISATIONS_FETCHED,
+    organisations: Organisation[]
+};
+
+interface LayerCollectionsFetched {
+    type: typeof LAYERCOLLECTIONS_FETCHED,
+    layercollections: Layercollection[]
+};
+
+export const fetchObservationTypes = async (dispatch: RootDispatch) => {
     const observationTypes = await recursiveFetchFunction(`/api/v4/observationtypes/`, { page_size: 10000 });
 
     if (!observationTypes) {
@@ -384,7 +481,7 @@ export const fetchObservationTypes = async (dispatch) => {
     });
 };
 
-export const fetchOrganisations = async (dispatch) => {
+export const fetchOrganisations = async (dispatch: RootDispatch) => {
     const organisations = await recursiveFetchFunction(`/api/v4/organisations/`, { page_size: 1000 });
 
     if (!organisations) {
@@ -401,7 +498,7 @@ export const fetchOrganisations = async (dispatch) => {
     });
 };
 
-export const fetchUserOrganisations = (userId: number) => async dispatch => {
+export const fetchUserOrganisations = (userId: number) => async (dispatch: RootDispatch) => {
     const userOrganisations = await recursiveFetchFunction(`/api/v4/users/${userId}/organisations/`, {});
 
     if (!userOrganisations) {
@@ -418,7 +515,7 @@ export const fetchUserOrganisations = (userId: number) => async dispatch => {
     });
 };
 
-export const fetchLayercollections = async (dispatch) => {
+export const fetchLayercollections = async (dispatch: RootDispatch) => {
     const layercollections = await recursiveFetchFunction(`/api/v4/layercollections/`, {});
 
     if (!layercollections) {
@@ -448,72 +545,111 @@ export const REMOVE_OBSERVATIONTYPE = 'REMOVE_OBSERVATIONTYPE';
 export const REMOVE_SEARCH = 'REMOVE_SEARCH';
 export const REMOVE_ORDER = 'REMOVE_ORDER';
 
-export const selectOrganisation = (dispatch, organisation: string) => {
+interface SelectOrganisation {
+    type: typeof SELECT_ORGANISATION,
+    organisation: string
+}
+export const selectOrganisation = (dispatch: RootDispatch, organisation: string) => {
     dispatch({
         type: SELECT_ORGANISATION,
         organisation
     });
 };
 
-export const removeOrganisation = (dispatch) => {
+interface RemoveOrganisation {
+    type: typeof REMOVE_ORGANISATION
+}
+export const removeOrganisation = (dispatch: RootDispatch) => {
     dispatch({
         type: REMOVE_ORGANISATION
     });
 };
 
-export const selectLayercollection = (dispatch, layercollection: string) => {
+interface SelectLayerCollection {
+    type: typeof SELECT_LAYERCOLLECTION,
+    layercollection: string
+}
+export const selectLayercollection = (dispatch: RootDispatch, layercollection: string) => {
     dispatch({
         type: SELECT_LAYERCOLLECTION,
         layercollection
     });
 };
 
-export const removeLayercollection = (dispatch) => {
+interface RemoveLayerCollection {
+	type: typeof REMOVE_LAYERCOLLECTION
+}
+export const removeLayercollection = (dispatch: RootDispatch) => {
     dispatch({
         type: REMOVE_LAYERCOLLECTION
     });
 };
 
-export const selectObservationType = (dispatch, observationType: string) => {
+interface SelectObservationType {
+	type: typeof SELECT_OBSERVATIONTYPE,
+	observationType: string
+}
+export const selectObservationType = (dispatch: RootDispatch, observationType: string) => {
     dispatch({
         type: SELECT_OBSERVATIONTYPE,
         observationType
     });
 };
 
-export const removeObservationType = (dispatch) => {
+interface RemoveObservationType {
+	type: typeof REMOVE_OBSERVATIONTYPE
+}
+export const removeObservationType = (dispatch: RootDispatch) => {
     dispatch({
         type: REMOVE_OBSERVATIONTYPE
     });
 };
 
-export const updateSearch = (dispatch, searchTerm: string) => {
+interface UpdateSearch {
+	type: typeof UPDATE_SEARCH,
+	searchTerm: string
+}
+export const updateSearch = (dispatch: RootDispatch, searchTerm: string) => {
     dispatch({
         type: UPDATE_SEARCH,
         searchTerm
     });
 };
 
-export const removeSearch = (dispatch) => {
+interface RemoveSearch {
+	type: typeof REMOVE_SEARCH
+}
+export const removeSearch = (dispatch: RootDispatch) => {
     dispatch({
         type: REMOVE_SEARCH
     });
 };
 
-export const updateOrder = (dispatch, ordering: string) => {
+interface UpdateOrder {
+	type: typeof UPDATE_ORDER,
+	ordering: string
+}
+export const updateOrder = (dispatch: RootDispatch, ordering: string) => {
     dispatch({
         type: UPDATE_ORDER,
         ordering
     });
 };
 
-export const removeOrder = (dispatch) => {
+interface RemoveOrder {
+	type: typeof REMOVE_ORDER
+}
+export const removeOrder = (dispatch: RootDispatch) => {
     dispatch({
         type: REMOVE_ORDER
     });
 };
 
-export const updatePage = (dispatch, page: number) => {
+interface UpdatePage {
+	type: typeof UPDATE_PAGE,
+	page: number
+}
+export const updatePage = (dispatch: RootDispatch, page: number) => {
     dispatch({
         type: UPDATE_PAGE,
         page
@@ -529,42 +665,69 @@ export const REMOVE_WMS_FROM_BASKET = 'REMOVE_WMS_FROM_BASKET';
 export const UPDATE_BASKET_WITH_SCENARIOS = 'UPDATE_BASKET_WITH_SCENARIOS';
 export const REMOVE_SCENARIO_FROM_BASKET = 'REMOVE_SCENARIO_FROM_BASKET';
 
-export const updateBasketWithRaster = (rasters: string[], dispatch): void => {
+interface UpdateBasketWithRaster {
+	type: typeof UPDATE_BASKET_WITH_RASTER,
+	rasters: string[]
+}
+interface RemoveRasterFromBasket {
+	type: typeof REMOVE_RASTER_FROM_BASKET,
+	uuid: string
+}
+
+export const updateBasketWithRaster = (rasters: string[], dispatch: RootDispatch): void => {
     dispatch({
         type: UPDATE_BASKET_WITH_RASTER,
         rasters
     });
 };
 
-export const removeRasterFromBasket = (uuid: string, dispatch): void => {
+export const removeRasterFromBasket = (uuid: string, dispatch: RootDispatch): void => {
     dispatch({
         type: REMOVE_RASTER_FROM_BASKET,
         uuid
     });
 };
 
-export const updateBasketWithWMS = (wmsLayers: string[], dispatch): void => {
+interface UpdateBasketWithWms {
+	type: typeof UPDATE_BASKET_WITH_WMS,
+	wmsLayers: string[]
+}
+interface RemoveWmsFromBasket {
+	type: typeof REMOVE_WMS_FROM_BASKET,
+	uuid: string
+}
+
+export const updateBasketWithWMS = (wmsLayers: string[], dispatch: RootDispatch): void => {
     dispatch({
         type: UPDATE_BASKET_WITH_WMS,
         wmsLayers
     });
 };
 
-export const removeWMSFromBasket = (uuid: string, dispatch): void => {
+export const removeWMSFromBasket = (uuid: string, dispatch: RootDispatch): void => {
     dispatch({
         type: REMOVE_WMS_FROM_BASKET,
         uuid
     });
 };
 
-export const updateBasketWithScenarios = (scenarios: string[], dispatch): void => {
+interface UpdateBasketWithScenarios {
+	type: typeof UPDATE_BASKET_WITH_SCENARIOS,
+	scenarios: string[]
+}
+interface RemoveScenariosFromBasket {
+	type: typeof REMOVE_SCENARIO_FROM_BASKET,
+	uuid: string
+}
+
+export const updateBasketWithScenarios = (scenarios: string[], dispatch: RootDispatch): void => {
     dispatch({
         type: UPDATE_BASKET_WITH_SCENARIOS,
         scenarios
     });
 };
 
-export const removeScenarioFromBasket = (uuid: string, dispatch): void => {
+export const removeScenarioFromBasket = (uuid: string, dispatch: RootDispatch): void => {
     dispatch({
         type: REMOVE_SCENARIO_FROM_BASKET,
         uuid
@@ -574,7 +737,11 @@ export const removeScenarioFromBasket = (uuid: string, dispatch): void => {
 //MARK: Toggle the showAlert
 export const TOGGLE_ALERT = 'TOGGLE_ALERT';
 
-export const toggleAlert = (dispatch) => {
+interface ToggleAlert {
+	type: typeof TOGGLE_ALERT
+}
+
+export const toggleAlert = (dispatch: RootDispatch) => {
     dispatch({
         type: TOGGLE_ALERT
     });
@@ -585,7 +752,11 @@ export const REQUEST_INBOX = 'REQUEST_INBOX';
 export const REMOVE_MESSAGE = 'REMOVE_MESSAGE';
 export const DOWNLOAD_FILE = 'DOWNLOAD_FILE';
 
-export const requestInbox = (dispatch) => {
+interface RequestInbox {
+	type: typeof REQUEST_INBOX,
+	messages: Message[]
+}
+export const requestInbox = (dispatch: RootDispatch) => {
     setInterval(async () => {
         const messages = await recursiveFetchFunction(`/api/v3/inbox/`, {});
         if (!messages) return;
@@ -596,14 +767,22 @@ export const requestInbox = (dispatch) => {
     }, 5000);
 };
 
-export const removeMessage = (dispatch, id: string) => {
+interface RemoveMessage {
+	type: typeof REMOVE_MESSAGE,
+	id: string
+}
+export const removeMessage = (dispatch: RootDispatch, id: string) => {
     dispatch({
         type: REMOVE_MESSAGE,
         id
     });
 };
 
-export const downloadFile = (dispatch, id: string) => {
+interface DownloadFile {
+	type: typeof DOWNLOAD_FILE,
+	id: string
+}
+export const downloadFile = (dispatch: RootDispatch, id: string) => {
     dispatch({
         type: DOWNLOAD_FILE,
         id
@@ -628,17 +807,78 @@ export const SET_RASTER_EXPORT_FORM_FIELDS = "SET_RASTER_EXPORT_FORM_FIELDS";
 export const REMOVE_CURRENT_EXPORT_TASKS = "REMOVE_CURRENT_EXPORT_TASKS";
 export const SET_NO_DATA_VALUE = "SET_NO_DATA_VALUE";
 
-export const removeCurrentExportTasks = (dispatch) => {
+interface RemoveFromSelectedExportGridCellIds {
+    type: typeof REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
+    gridCellIds: ExportGridCellId[],
+};
+interface AddToSelectedExportGridCellIds {
+    type: typeof ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
+    gridCellIds: ExportGridCellId[],
+};
+interface RemoveAllSelectedExportGridCellIds {
+    type: typeof REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
+};
+interface RemoveAllExportGridCells{
+    type: typeof REMOVE_ALL_EXPORT_GRID_CELLS,
+}
+interface RequestedGridCells {
+    type: typeof REQUESTED_RASTER_EXPORT_GRIDCELLS,
+};
+interface RetrievedRasterExportGridcells {
+    type: typeof RETRIEVED_RASTER_EXPORT_GRIDCELLS,
+    gridCells: ExportGridCell[]
+}
+interface  FailedRetrievingRasterExportGridcells {
+    type: typeof FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
+    failedMsg: string,
+}
+interface RequestRasterExports {
+    type: typeof REQUEST_RASTER_EXPORTS,
+    numberOfInboxMessages:number,
+}
+interface ReceivedTaskRasterExport {
+    type: typeof RECEIVED_TASK_RASTER_EXPORT,
+    id: ExportGridCellId,
+}
+interface RequestTimeseriesExports {
+    type: typeof REQUEST_TIMESERIES_EXPORT,
+    numberOfInboxMessages:number,
+}
+interface FailedTaskRasterExport {
+    type: typeof FAILED_TASK_RASTER_EXPORT,
+    id: ExportGridCellId,
+}
+interface ReceivedProjections {
+    type: typeof RECEIVED_PROJECTIONS,
+    projections: Projection[],
+}
+interface SetFetchingStateProjections {
+    type: typeof FETCHING_STATE_PROJECTIONS,
+    fetchingState: FetchingState,
+}
+interface SetRasterExportFormFields {
+    type: typeof SET_RASTER_EXPORT_FORM_FIELDS,
+    fieldValuePairs: FieldValuePair[],
+}
+interface SetNoDataValue {
+    type: typeof SET_NO_DATA_VALUE,
+    noDataValue: number
+}
+interface RemoveCurrentExportTasks {
+	type: typeof REMOVE_CURRENT_EXPORT_TASKS
+}
+
+export const removeCurrentExportTasks = (dispatch: RootDispatch) => {
     dispatch({
         type: REMOVE_CURRENT_EXPORT_TASKS
     });
 };
 
-export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): RemoveFromSelectedExportGridCellIds => ({
+export const removeFromSelectedExportGridCellIds = (gridCellIds: ExportGridCellId[]): RemoveFromSelectedExportGridCellIds => ({
     type: REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
     gridCellIds,
 });
-export const addToSelectedExportGridCellIds = (gridCellIds: ExportGridCelId[]): AddToSelectedExportGridCellIds => ({
+export const addToSelectedExportGridCellIds = (gridCellIds: ExportGridCellId[]): AddToSelectedExportGridCellIds => ({
     type: ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
     gridCellIds,
 });
@@ -657,37 +897,37 @@ export const retrievedGridCells = (gridCells: ExportGridCell[]): RetrievedRaster
     type: RETRIEVED_RASTER_EXPORT_GRIDCELLS,
     gridCells: gridCells,
 });
-export const failedRetrievingRasterExportGridcells = (msg: string): FailedRetrievingRasterExportGridcells=> ({
+export const failedRetrievingRasterExportGridcells = (msg: string): FailedRetrievingRasterExportGridcells => ({
     type: FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
     failedMsg: msg,
 });
-export const updateExportRasterFormFields = (fieldValuePairs:FieldValuePair[]): SetRasterExportFormFields => ({
+export const updateExportRasterFormFields = (fieldValuePairs: FieldValuePair[]): SetRasterExportFormFields => ({
     type: SET_RASTER_EXPORT_FORM_FIELDS,
     fieldValuePairs,
 });
 
-export const setCurrentRasterExportsToStore = (numberOfInboxMessages:number): RequestRasterExports => ({
+export const setCurrentRasterExportsToStore = (numberOfInboxMessages: number): RequestRasterExports => ({
     type: REQUEST_RASTER_EXPORTS,
     numberOfInboxMessages,
 })
 
-export const receivedTaskRasterExport = (id: ExportGridCelId): ReceivedTaskRasterExport => ({
+export const receivedTaskRasterExport = (id: ExportGridCellId): ReceivedTaskRasterExport => ({
     type: RECEIVED_TASK_RASTER_EXPORT,
     id: id,
 })
 
-export const failedTaskRasterExport = (id: ExportGridCelId): FailedTaskRasterExport => ({
+export const failedTaskRasterExport = (id: ExportGridCellId): FailedTaskRasterExport => ({
     type: FAILED_TASK_RASTER_EXPORT,
     id: id,
 })
-export const receivedProjections = (projections: Projection[]) : ReceivedProjections => ({
+export const receivedProjections = (projections: Projection[]): ReceivedProjections => ({
     type: RECEIVED_PROJECTIONS,
     projections,
 })
-export const setFetchingStateProjections = (fetchingState: FetchingState) : SetFetchingStateProjections => ({
+export const setFetchingStateProjections = (fetchingState: FetchingState): SetFetchingStateProjections => ({
     type: FETCHING_STATE_PROJECTIONS,
     fetchingState,
-}) 
+})
 
 export const setNoDataValue = (value: number) => ({
     type: SET_NO_DATA_VALUE,
@@ -695,18 +935,16 @@ export const setNoDataValue = (value: number) => ({
 })
 
 const fieldValuePairContainsFieldThatShouldResetGridCells = (fieldValuePair: FieldValuePair) => {
-     return   fieldValuePair.field === 'projection' ||
+    return fieldValuePair.field === 'projection' ||
         fieldValuePair.field === 'resolution' ||
         fieldValuePair.field === 'tileWidth' ||
         fieldValuePair.field === 'tileHeight'
 }
 const fieldValuePairsListContainsFieldThatShouldResetGridCells = (fieldValuePairs: FieldValuePair[]) => {
-    return   !!fieldValuePairs.find(fieldValuePairContainsFieldThatShouldResetGridCells);
+    return !!fieldValuePairs.find(fieldValuePairContainsFieldThatShouldResetGridCells);
 }
 
-export const updateExportFormAndFetchExportGridCells = (rasterUuid: string, fieldValuePairesToUpdate: FieldValuePair[]) => (
-    dispatch: Dispatch<RemoveAllSelectedExportGridCellIds | RemoveAllExportGridCells | SetRasterExportFormFields | RequestedGridCells | RetrievedRasterExportGridcells | FailedRetrievingRasterExportGridcells>
-) => {
+export const updateExportFormAndFetchExportGridCells = (rasterUuid: string, fieldValuePairesToUpdate: FieldValuePair[]) => (dispatch: RootDispatch) => {
     if (fieldValuePairsListContainsFieldThatShouldResetGridCells(fieldValuePairesToUpdate)) {
         dispatch(removeAllExportGridCells());
     }
@@ -720,7 +958,7 @@ export const updateExportFormAndFetchExportGridCells = (rasterUuid: string, fiel
     const tileHeight = rasterExportState.tileHeight;
     const bounds = rasterExportState.bounds;
     const boundsString = `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`;
-    
+
     request
         .get(`/api/v4/rasters/${rasterUuid}/grid/?projection=${projection}&cell_size=${resolution}&tile_height=${tileHeight}&tile_width=${tileWidth}&bbox=${boundsString}`)
         .then(response => {
@@ -746,13 +984,13 @@ export const updateExportFormAndFetchExportGridCells = (rasterUuid: string, fiel
                 dispatch(retrievedGridCells(gridCells));
             }
         })
-        .catch(error=>{
+        .catch(error => {
             console.error(error);
-            dispatch(failedRetrievingRasterExportGridcells(error+''));
+            dispatch(failedRetrievingRasterExportGridcells(error + ''));
         })
 };
 
-export const requestRasterExports = (numberOfInboxMessages: number, openDownloadModal: Function, rasterUuid: string) => (dispatch) =>{
+export const requestRasterExports = (numberOfInboxMessages: number, openDownloadModal: Function, rasterUuid: string) => (dispatch: RootDispatch) => {
 
     dispatch(setCurrentRasterExportsToStore(numberOfInboxMessages));
 
@@ -767,7 +1005,7 @@ export const requestRasterExports = (numberOfInboxMessages: number, openDownload
     const availableGridCells = rasterExportState.availableGridCells;
 
     selectedGridCellIds.forEach((id) => {
-        const currentGrid = availableGridCells.find(cell=>{return areGridCelIdsEqual(cell.properties.id, id)});
+        const currentGrid = availableGridCells.find(cell => { return areGridCelIdsEqual(cell.properties.id, id) });
         if (!currentGrid) {
             console.warn(`Raster with id ${id} not found among availableGridCells. Therefore export was not started.`);
             // TODO how do we recover from this ?
@@ -793,29 +1031,29 @@ export const requestRasterExports = (numberOfInboxMessages: number, openDownload
         const requestUrl = `/api/v4/rasters/${rasterUuid}/data/?${urlQuery}`;
 
         fetch(requestUrl)
-        .then(res => res.json())
-        .then((res) => {
-            if (res.status === 400) {
-                if (res.detail.nodata && res.detail.nodata[0]) {
-                    console.error(res.detail.nodata[0]);
-                    dispatch(addNotification(res.detail.nodata[0]));
-                } else {
-                    console.error(res);
-                    dispatch(addNotification('Raster export failed.'));
+            .then(res => res.json())
+            .then((res) => {
+                if (res.status === 400) {
+                    if (res.detail.nodata && res.detail.nodata[0]) {
+                        console.error(res.detail.nodata[0]);
+                        dispatch(addNotification(res.detail.nodata[0]));
+                    } else {
+                        console.error(res);
+                        dispatch(addNotification('Raster export failed.'));
+                    };
+                    return;
                 };
-                return;
-            };
-            openDownloadModal();
-            dispatch(receivedTaskRasterExport(id));
-        })
-        .catch(error => {
-            console.error(error);
-            dispatch(failedTaskRasterExport(id));
-        });
+                openDownloadModal();
+                dispatch(receivedTaskRasterExport(id));
+            })
+            .catch(error => {
+                console.error(error);
+                dispatch(failedTaskRasterExport(id));
+            });
     });
 };
 
-export const requestProjections = (rasterUuid: string) => async (dispatch) => {
+export const requestProjections = (rasterUuid: string) => async (dispatch: RootDispatch) => {
     dispatch(setFetchingStateProjections("SENT"));
 
     const projections = await recursiveFetchFunction(`/api/v4/rasters/${rasterUuid}/projections/?page_size=100`, {});
@@ -833,12 +1071,22 @@ export const requestProjections = (rasterUuid: string) => async (dispatch) => {
 export const REQUEST_TIMESERIES_EXPORT = 'REQUEST_TIMESERIES_EXPORT';
 export const ADD_TIMESERIES_EXPORT_TASK = 'ADD_TIMESERIES_EXPORT_TASK';
 
+interface RequestTimeseriesExport {
+	type: typeof REQUEST_TIMESERIES_EXPORT,
+	numberOfInboxMessages: number
+}
+
+interface AddTimeseriesExportTask {
+	type: typeof ADD_TIMESERIES_EXPORT_TASK,
+	taskUuid: string
+}
+
 export const requestTimeseriesExport = (numberOfInboxMessages: number) => ({
     type: REQUEST_TIMESERIES_EXPORT,
     numberOfInboxMessages
 });
 
-export const addTimeseriesExportTask = (numberOfInboxMessages: number, taskUuid: string) => (dispatch) => {
+export const addTimeseriesExportTask = (numberOfInboxMessages: number, taskUuid: string) => (dispatch: RootDispatch) => {
     dispatch(requestTimeseriesExport(numberOfInboxMessages));
     dispatch({
         type: ADD_TIMESERIES_EXPORT_TASK,
@@ -850,7 +1098,16 @@ export const addTimeseriesExportTask = (numberOfInboxMessages: number, taskUuid:
 export const DISMISS_NOTIFICATION = "DISMISS_NOTIFICATION";
 export const SHOW_NOTIFICATION = "SHOW_NOTIFICATION";
 
-const  showNotification = (message: string) => ({
+interface ShowNotification {
+	type: typeof SHOW_NOTIFICATION,
+	message: string
+}
+
+interface DismissNotification {
+	type: typeof DISMISS_NOTIFICATION
+}
+
+const showNotification = (message: string) => ({
     type: SHOW_NOTIFICATION,
     message
 });
@@ -859,7 +1116,7 @@ export const dismissNotification = () => ({
     type: DISMISS_NOTIFICATION
 });
 
-export const addNotification = (message: string, timeout?: number) => (dispatch) => {
+export const addNotification = (message: string, timeout?: number) => (dispatch: RootDispatch) => {
     if (timeout) {
         setTimeout(() => {
             dispatch(dismissNotification());
@@ -867,3 +1124,70 @@ export const addNotification = (message: string, timeout?: number) => (dispatch)
     };
     dispatch(showNotification(message));
 };
+
+export type Action = (
+    BootstrapAction |
+    SwitchDataType |
+    DownloadFile |
+    ItemSelected |
+    ObservationTypesFetched |
+    OrganisationsFetched |
+    UserOrganisationsFetched |
+    RastersFetched |
+    RastersRequested |
+    ReceiveWmsLayers |
+    LayerCollectionsFetched |
+    RequestLocations |
+    ReceiveLocations |
+    RequestScenarios |
+    ReceiveScenarios |
+    RequestMonitoringNetworks |
+    ReceiveMonitoringNetworks |
+    RequestTimeseries |
+    ReceiveTimeseries |
+    RequestNetworkObservationTypes |
+    ReceiveNetworkObservationTypes |
+    RemoveTimeseries |
+    RemoveScenariosFromBasket |
+    RemoveLayerCollection |
+    RemoveObservationType |
+    RemoveOrganisation |
+    RemoveRasterFromBasket |
+    RemoveMessage |
+    RemoveSearch |
+    RemoveOrder |
+    RemoveWmsFromBasket |
+    RequestInbox |
+    RequestWms |
+    SelectLayerCollection |
+    SelectObservationType |
+    SelectOrganisation |
+    ToggleAlert |
+    UpdateBasketWithRaster |
+    UpdateBasketWithWms |
+    UpdateBasketWithScenarios |
+    UpdateOrder |
+    UpdatePage |
+    UpdateSearch |
+    ShowNotification |
+    DismissNotification |
+    RequestTimeseriesExport |
+    AddTimeseriesExportTask |
+    RemoveCurrentExportTasks |
+    RemoveFromSelectedExportGridCellIds |
+    AddToSelectedExportGridCellIds |
+    RemoveAllSelectedExportGridCellIds |
+    RequestedGridCells |
+    RetrievedRasterExportGridcells |
+    FailedRetrievingRasterExportGridcells |
+    RemoveAllExportGridCells |
+    RequestRasterExports |
+    ReceivedTaskRasterExport |
+    FailedTaskRasterExport |
+    ReceivedProjections |
+    SetFetchingStateProjections |
+    SetRasterExportFormFields |
+    RequestTimeseriesExports |
+    RemoveCurrentExportTasks |
+    SetNoDataValue
+);
