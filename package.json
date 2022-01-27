@@ -6,6 +6,7 @@
   "private": true,
   "dependencies": {
     "leaflet": "^1.7.1",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "point-in-polygon": "^1.1.0",
     "rc-progress": "^3.2.4",
@@ -56,11 +57,12 @@
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.1",
     "@types/jest": "^27.0.1",
+    "@types/leaflet": "^1.7.8",
+    "@types/lodash": "^4.14.178",
     "@types/node": "^16.7.13",
+    "@types/point-in-polygon": "^1.1.1",
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
-    "@types/leaflet": "^1.7.8",
-    "@types/point-in-polygon": "^1.1.1",
     "@types/superagent": "^4.1.14",
     "release-it": "^14.5.0"
   }
