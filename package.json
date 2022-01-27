@@ -63,6 +63,7 @@
     "@types/point-in-polygon": "^1.1.1",
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
+    "@types/react-leaflet": "^2.8.2",
     "@types/superagent": "^4.1.14",
     "release-it": "^14.5.0"
   }
