@@ -161,7 +161,7 @@ const MainApp: React.FC<DispatchProps> = (props) => {
         props.selectItem(''); // Remove the previous selected item
         props.removeSearch(); // Remove the search input
         props.updatePage(1); // Go back to page 1 in the result list
-        props.removeOrder(); // Remove any ordering
+        props.removeOrder(); // Remove previous ordering
         setSearchTerm('');
     };
 

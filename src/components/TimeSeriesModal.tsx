@@ -342,7 +342,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                             <button
                                 className={`${buttonStyles.ButtonAction} ${buttonStyles.ButtonHomeZoom}`}
                                 onClick={() => {
-                                    // Remove location currently on zoom if any
+                                    // Remove current location on zoom
                                     if (locationOnZoom) setLocationOnZoom('');
                                     // Set map to the original bounds
                                     mapRef && mapRef.current && mapRef.current.leafletElement.fitBounds(
