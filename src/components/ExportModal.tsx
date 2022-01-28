@@ -331,7 +331,7 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
                             </span>
                             <span>
                             <br/>
-                            It is not allowed to export more then 3 items at once
+                            It is not allowed to export more than 3 items at once
                             </span>
                         </div>
                         ) : (
