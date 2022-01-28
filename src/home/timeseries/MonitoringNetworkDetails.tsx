@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import MDSpinner from "react-md-spinner";
 import { useSelector } from 'react-redux';
-import Leaflet from 'leaflet';
+import { DivIcon } from 'leaflet';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import {
     getLocationsObject,
@@ -106,7 +106,7 @@ const MonitoringNetworkDetails = () => {
                                     key={location.uuid}
                                     position={location.geometry.coordinates}
                                     // @ts-ignore
-                                    icon={new Leaflet.DivIcon({
+                                    icon={new DivIcon({
                                         iconSize: [16, 16],
                                         className: `${timeseriesModalStyles.LocationIcon} ${timeseriesModalStyles.LocationIconSmall}`
                                     })}

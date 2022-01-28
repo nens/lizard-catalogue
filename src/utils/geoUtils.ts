@@ -1,9 +1,4 @@
-import { Polygon } from "geojson";
-import { Bounds } from "../interface";
-
-interface HasPolygonGeometry {
-  geometry: Polygon
-}
+import { Bounds, ExportGridCell } from "../interface";
 
 export const getSpatialBoundsIntersect = (bounds1: Bounds, bounds2: Bounds) => {
   const intersectSpatialBounds = {
@@ -22,8 +17,8 @@ export const getSpatialBoundsIntersect = (bounds1: Bounds, bounds2: Bounds) => {
   }
 }
 
-export const gridPolygonToSpatialBounds = (polygon: HasPolygonGeometry) => {
-  const coordinates = polygon.geometry.coordinates[0];
+export const gridPolygonToSpatialBounds = (gridCell: ExportGridCell): Bounds => {
+  const coordinates = gridCell.geometry.coordinates[0];
   const eastWests = coordinates.map(e=>e[0]);
   const northSouths = coordinates.map(e=>e[1]);
 

@@ -2,7 +2,7 @@ import { FC, useEffect, useRef, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { RootDispatch } from '../store.js';
 import MDSpinner from 'react-md-spinner';
-import Leaflet, { LatLngExpression, LeafletMouseEvent } from 'leaflet';
+import { DivIcon, LatLngExpression, LeafletMouseEvent } from 'leaflet';
 import inside from 'point-in-polygon'
 import moment from 'moment';
 import { Map, TileLayer, Marker, ZoomControl, Tooltip, Polygon } from 'react-leaflet';
@@ -308,13 +308,11 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                                 key={location.uuid}
                                                 position={location.geometry.coordinates}
                                                 // @ts-ignore
-                                                icon={
-                                                    new Leaflet.DivIcon({
-                                                        iconSize: [24, 24],
-                                                        tooltipAnchor: [12, 0],
-                                                        className: selectedLocations.includes(locationUuid) ? `${styles.LocationIcon} ${styles.LocationIconSelected}` : styles.LocationIcon
-                                                    })
-                                                }
+                                                icon={new DivIcon({
+                                                    iconSize: [24, 24],
+                                                    tooltipAnchor: [12, 0],
+                                                    className: selectedLocations.includes(locationUuid) ? `${styles.LocationIcon} ${styles.LocationIconSelected}` : styles.LocationIcon
+                                                })}
                                                 onClick={() => {
                                                     // list of timeseries nested in the location
                                                     const locationTimeseries = Object.values(timeseries).filter(ts => ts.location.uuid === locationUuid);

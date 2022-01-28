@@ -46,9 +46,7 @@ function ExportModal (props: MyProps & PropsFromDispatch) {
     const tileHeight = rasterExportState.tileHeight;
     const exportBounds = rasterExportState.bounds;
     const noDataValue = rasterExportState.noDataValue;
-    // const dateTimeStart = rasterExportState.dateTimeStart;
 
-    // @ts-ignore
     const exportGridCells = availableGridCells.filter(grid => getSpatialBoundsIntersect(gridPolygonToSpatialBounds(grid), exportBounds));
 
     useEffect(() => {

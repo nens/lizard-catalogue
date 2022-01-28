@@ -1,20 +1,4 @@
-import {
-    REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
-    ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
-    REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
-    REQUESTED_RASTER_EXPORT_GRIDCELLS,
-    RETRIEVED_RASTER_EXPORT_GRIDCELLS,
-    FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
-    REMOVE_ALL_EXPORT_GRID_CELLS,
-    REQUEST_RASTER_EXPORTS,
-    RECEIVED_TASK_RASTER_EXPORT,
-    FAILED_TASK_RASTER_EXPORT,
-    RECEIVED_PROJECTIONS,
-    FETCHING_STATE_PROJECTIONS,
-    SET_RASTER_EXPORT_FORM_FIELDS,
-    REQUEST_TIMESERIES_EXPORT,
-    SET_NO_DATA_VALUE,
-} from "./action";
+import { Polygon } from "geojson";
 import { MyStore } from './reducers';
 
 // TABLE TABS
@@ -215,10 +199,7 @@ export type ExportGridCellId = number[];
 
 export interface ExportGridCell {
     type: string,
-    geometry: {
-        type: string,
-        coordinates: number[][],
-    },
+    geometry: Polygon,
     properties: {
         projection: string,
         bbox: number[],
