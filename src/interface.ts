@@ -254,7 +254,7 @@ export type RasterExportFormFieldType = (
     MyStore['rasterExportState']['noDataValue']
 )
 
-export interface FieldValuePair{field: string, value: RasterExportFormFieldType}
+export interface FieldValuePair{field: keyof MyStore['rasterExportState'] & string, value: RasterExportFormFieldType}
 
 export interface RasterExportRequest {
     fetchingState: FetchingState;

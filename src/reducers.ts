@@ -246,8 +246,7 @@ const rasterExportState = (state: MyStore["rasterExportState"] = {
             {
                 const stateCopy = {...state}
                 action.fieldValuePairs.forEach(fieldValuePair => {
-                    // @ts-ignore
-                    stateCopy[fieldValuePair.field as keyof MyStore['rasterExportState']] = fieldValuePair.value;
+                    Object.assign(stateCopy, {[fieldValuePair.field]: fieldValuePair.value})
                 })
                 return {
                     ...stateCopy,
