@@ -29,7 +29,7 @@ export const getBounds = (object: Raster | WMS | null): LatLngBounds => {
     );
 };
 
-export const convertToLatLngBounds = (spatialBounds: number[][] | null) => {
+export const convertToLatLngBounds = (spatialBounds: number[][] | null): LatLngBounds => {
     const bounds = spatialBounds ? {
         north: spatialBounds[0][0],
         east: spatialBounds[1][1],

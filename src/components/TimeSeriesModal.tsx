@@ -2,7 +2,7 @@ import { FC, useEffect, useRef, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { RootDispatch } from '../store.js';
 import MDSpinner from 'react-md-spinner';
-import Leaflet, { LeafletMouseEvent } from 'leaflet';
+import Leaflet, { LatLngExpression, LeafletMouseEvent } from 'leaflet';
 import inside from 'point-in-polygon'
 import moment from 'moment';
 import { Map, TileLayer, Marker, ZoomControl, Tooltip, Polygon } from 'react-leaflet';
@@ -77,7 +77,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
 
     // drawing polygon
     const [drawingMode, setDrawingMode] = useState(false);
-    const [polygon, setPolygon] = useState<number[][]>([]);
+    const [polygon, setPolygon] = useState<LatLngExpression[]>([]);
 
     // timeseries export modal
     const [exportModal, setExportModal] = useState<boolean>(false);
@@ -192,7 +192,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
             location => location.geometry !== null
         ).filter(location =>
             // location with coordinates inside the polygon
-            inside(location.geometry!.coordinates, polygon)
+            inside(location.geometry!.coordinates, polygon as [number, number][])
         ).map(
             location => location.uuid
         );
@@ -294,11 +294,12 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                 }}
                             >
                                 <ZoomControl position="bottomleft"/>
-                                <Polygon
-                                    // @ts-ignore
-                                    positions={polygon}
-                                    color={"var(--main-color-scheme)"}
-                                />
+                                {polygon ? (
+                                    <Polygon
+                                        positions={polygon}
+                                        color={"var(--main-color-scheme)"}
+                                    />
+                                ) : null}
                                 {(filteredLocationUUIDs || locationUUIDs).map(locationUuid => {
                                     const location = locations[locationUuid];
                                     if (location.geometry) {
@@ -347,7 +348,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
                                     if (locationOnZoom) setLocationOnZoom('');
                                     // Set map to the original bounds
                                     mapRef && mapRef.current && mapRef.current.leafletElement.fitBounds(
-                                        convertToLatLngBounds(filteredLocationObject ? filteredLocationObject.spatialBounds : locationsObject.spatialBounds)
+                                        convertToLatLngBounds(filteredLocationObject && filteredLocationObject.spatialBounds ? filteredLocationObject.spatialBounds : locationsObject.spatialBounds)
                                     );
                                 }}
                             >
