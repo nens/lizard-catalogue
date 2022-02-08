@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getLizardBootstrap, getOrganisations, getSelectedItem, getWMS, MyStore } from '../../reducers';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
-import { LatLng, TableTab } from '../../interface';
+import { TableTab } from '../../interface';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { openWMSInAPI, openWMSInLizard, openWMSDownloadURL} from '../../utils/url';
-import { getCenterPoint, zoomLevelCalculation, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
+import { zoomLevelCalculation, getBounds } from '../../utils/latLngZoomCalculation';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import Action from '../../components/Action';
 import manageIcon from '../../images/manage.svg';
@@ -31,17 +31,14 @@ const WMSDetails = () => {
 
     if (!wms) return <div className={`${styles.Details} ${styles.DetailsText}`}>Please select a WMS Layer</div>;
 
-    //Get WMS layer's getCapabilities link based on WMS layer's URL
+    // Get WMS layer's getCapabilities link based on WMS layer's URL
     const wmsUrl = wms.wms_url && `${wms.wms_url}/?request=GetCapabilities`;
 
-    //Get spatial bounds of the WMS layer
+    // Get spatial bounds of the WMS layer
     const wmsBounds = getBounds(wms);
-    const bounds = boundsToDisplay(wmsBounds);
+    const centerPoint = wmsBounds.getCenter();
 
-    //Get the center point of the raster based on its spatial bounds
-    const centerPoint: LatLng = getCenterPoint(wmsBounds);
-
-    //Calculate the zoom level of the raster by using the zoomLevelCalculation function
+    // Calculate the zoom level of the raster by using the zoomLevelCalculation function
     const zoom = zoomLevelCalculation(wmsBounds);
 
     return (
@@ -77,7 +74,7 @@ const WMSDetails = () => {
                 </div>
             </div>
             <div className={styles.Map}>
-                <Map bounds={bounds} zoom={wms.min_zoom} zoomControl={false} style={{ width: '100%' }}>
+                <Map bounds={wmsBounds} zoom={wms.min_zoom} zoomControl={false} style={{ width: '100%' }}>
                     <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                     {wms.wms_url ? (
                         <WMSTileLayer

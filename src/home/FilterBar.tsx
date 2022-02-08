@@ -1,6 +1,7 @@
 import { connect, useSelector } from 'react-redux';
-import { ObservationType, Organisation, Layercollection, SwitchDataType } from '../interface';
+import { ObservationType, Organisation, Layercollection } from '../interface';
 import { getFilters, MyStore } from '../reducers';
+import { RootDispatch } from '../store';
 import {
     selectOrganisation,
     removeOrganisation,
@@ -8,7 +9,8 @@ import {
     selectObservationType,
     removeObservationType,
     removeLayercollection,
-    updatePage
+    updatePage,
+    SwitchDataType
 } from '../action';
 import FilterOption from '../components/FilterOption';
 import styles from './FilterBar.module.css';
@@ -98,7 +100,7 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
     );
 };
 
-const mapDispatchToProps = (dispatch: any) => ({
+const mapDispatchToProps = (dispatch: RootDispatch) => ({
     selectOrganisation: (organisationName: string) => selectOrganisation(dispatch, organisationName),
     removeOrganisation: () => removeOrganisation(dispatch),
     selectLayercollection: (layercollectionSlug: string) => selectLayercollection(dispatch, layercollectionSlug),

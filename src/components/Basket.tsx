@@ -1,4 +1,5 @@
 import { connect, useSelector } from 'react-redux';
+import { RootDispatch } from '../store';
 import { openAllInLizard } from './../utils/url';
 import { getLocalDateString } from '../utils/dateUtils';
 import { removeRasterFromBasket, removeScenarioFromBasket, removeWMSFromBasket } from './../action';
@@ -80,7 +81,7 @@ const Basket = (props: DispatchProps) => {
     );
 };
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch: RootDispatch) => ({
     removeRasterFromBasket: (uuid: string) => removeRasterFromBasket(uuid, dispatch),
     removeWMSFromBasket: (uuid: string) => removeWMSFromBasket(uuid, dispatch),
     removeScenarioFromBasket: (uuid: string) => removeScenarioFromBasket(uuid, dispatch)

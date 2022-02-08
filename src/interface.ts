@@ -1,29 +1,8 @@
-import {
-    SWITCH_DATA_TYPE,
-    REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
-    ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
-    REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
-    REQUESTED_RASTER_EXPORT_GRIDCELLS,
-    RETRIEVED_RASTER_EXPORT_GRIDCELLS,
-    FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
-    REMOVE_ALL_EXPORT_GRID_CELLS,
-    REQUEST_RASTER_EXPORTS,
-    RECEIVED_TASK_RASTER_EXPORT,
-    FAILED_TASK_RASTER_EXPORT,
-    RECEIVED_PROJECTIONS,
-    FETCHING_STATE_PROJECTIONS,
-    SET_RASTER_EXPORT_FORM_FIELDS,
-} from "./action";
+import { Polygon } from "geojson";
 import { MyStore } from './reducers';
 
 // TABLE TABS
 export type TableTab = 'Details' | 'Actions' | 'Results';
-
-// ACTION
-export interface SwitchDataType {
-    type: typeof SWITCH_DATA_TYPE,
-    payload: "Raster" | "WMS" | "Timeseries" | "Scenario"
-};
 
 // LIZARD BOOTSTRAP
 export interface Bootstrap {
@@ -64,12 +43,8 @@ export interface Raster {
         endpoint: string,
         layer: string
     },
-    spatial_bounds: {
-        west: number,
-        east: number,
-        north: number,
-        south: number
-    },
+    spatial_bounds: Bounds,
+    supplier: string,
     options: {
         styles: string
     }
@@ -96,15 +71,11 @@ export interface WMS {
     url: string,
     wms_url: string,
     organisation: Organisation,
-    layercollections: Layercollection[],
+    layer_collections: Layercollection[],
     access_modifier: string,
     download_url: string | null,
-    spatial_bounds: {
-        west: number,
-        east: number,
-        north: number,
-        south: number
-    } | null,
+    spatial_bounds: Bounds | null,
+    supplier: string,
 };
 
 // SCENARIO
@@ -132,7 +103,8 @@ export interface Scenario {
     model_revision: string,
     model_name: string,
     has_raw_results: boolean,
-    total_size: number
+    total_size: number,
+    supplier: string,
 };
 
 // MONITORING NETWORK FOR TIMESERIES
@@ -197,7 +169,7 @@ export interface ObservationType {
     unit: string,
     scale: string,
     description: string,
-    reference_frame: string | null,
+    reference_frame?: string | null,
 };
 
 // LAYERCOLLECTION
@@ -223,18 +195,15 @@ export interface Message {
     downloaded: boolean,
 };
 
-export type ExportGridCelId = number[];
+export type ExportGridCellId = number[];
 
 export interface ExportGridCell {
     type: string,
-    geometry: {
-        type: string,
-        coordinates: number[][],
-    },
+    geometry: Polygon,
     properties: {
         projection: string,
         bbox: number[],
-        id: ExportGridCelId
+        id: ExportGridCellId
     }
 };
 
@@ -248,7 +217,7 @@ export interface Bounds {
 }
 
 export interface RasterExportState {
-    selectedGridCellIds: ExportGridCelId[],
+    selectedGridCellIds: ExportGridCellId[],
     availableGridCells: ExportGridCell[],
     fetchingStateGrid: FetchingState,
     fetchingStateGridMsg: string,
@@ -276,91 +245,20 @@ export interface Projection {
     code: string, 
 }
 
-
-export interface RemoveFromSelectedExportGridCellIds {
-    type: typeof REMOVE_FROM_SELECTED_EXPORT_GRID_CELL_IDS,
-    gridCellIds: ExportGridCelId[],
-};
-export interface AddToSelectedExportGridCellIds { 
-    type: typeof ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS,
-    gridCellIds: ExportGridCelId[],
-};
-export interface RemoveAllSelectedExportGridCellIds {
-    type: typeof REMOVE_ALL_SELECTED_EXPORT_GRID_CELL_IDS,
-};
-export interface RemoveAllExportGridCells{
-    type: typeof REMOVE_ALL_EXPORT_GRID_CELLS,
-}
-export interface RequestedGridCells {
-    type: typeof REQUESTED_RASTER_EXPORT_GRIDCELLS,
-};
-export interface RetrievedRasterExportGridcells {
-    type: typeof RETRIEVED_RASTER_EXPORT_GRIDCELLS,
-    gridCells: ExportGridCell[]
-
-}
-
-export interface  FailedRetrievingRasterExportGridcells {
-    type: typeof FAILED_RETRIEVING_RASTER_EXPORT_GRIDCELLS,
-    failedMsg: string,
-}
-
-export interface RequestRasterExports {
-    type: typeof REQUEST_RASTER_EXPORTS,
-    numberOfInboxMessages:number,
-}
-export interface ReceivedTaskRasterExport {
-    type: typeof RECEIVED_TASK_RASTER_EXPORT,
-    id: ExportGridCelId,
-}
-
-export interface FailedTaskRasterExport {
-    type: typeof FAILED_TASK_RASTER_EXPORT,
-    id: ExportGridCelId,
-}
-
-export interface ReceivedProjections {
-    type: typeof RECEIVED_PROJECTIONS,
-    projections: Projection[],
-}
-export interface SetFetchingStateProjections {
-    type: typeof FETCHING_STATE_PROJECTIONS,
-    fetchingState: FetchingState,
-}
-export interface SetRasterExportFormFields {
-    type: typeof SET_RASTER_EXPORT_FORM_FIELDS,
-    fieldValuePairs: FieldValuePair[],
-}
-
-export type RasterExportFormFieldType = 
+export type RasterExportFormFieldType = (
     MyStore['rasterExportState']['resolution'] | 
     MyStore['rasterExportState']['projection'] |
     MyStore['rasterExportState']['tileWidth'] |
     MyStore['rasterExportState']['tileHeight'] |
     MyStore['rasterExportState']['bounds'] |
     MyStore['rasterExportState']['noDataValue']
+)
 
-
-export interface FieldValuePair{field: string, value: RasterExportFormFieldType}
-
-export type RasterExportStateActionType = 
-    RemoveFromSelectedExportGridCellIds | 
-    AddToSelectedExportGridCellIds | 
-    RemoveAllSelectedExportGridCellIds | 
-    RequestedGridCells| 
-    RetrievedRasterExportGridcells | 
-    FailedRetrievingRasterExportGridcells | 
-    RemoveAllExportGridCells |
-    RequestRasterExports | 
-    ReceivedTaskRasterExport |
-    FailedTaskRasterExport |
-    ReceivedProjections |
-    SetFetchingStateProjections |
-    SetRasterExportFormFields ; 
+export interface FieldValuePair{field: keyof MyStore['rasterExportState'] & string, value: RasterExportFormFieldType}
 
 export interface RasterExportRequest {
     fetchingState: FetchingState;
-    id: ExportGridCelId;
+    id: ExportGridCellId;
     projection: string;
     bounds: Bounds;
     resolution: number | "";

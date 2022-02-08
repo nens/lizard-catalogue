@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
-import { MyStore, getRaster, getOrganisations, getLizardBootstrap, getSelectedItem } from '../../reducers';
-import { Raster, LatLng, TableTab } from '../../interface';
+import { MyStore, getOrganisations, getLizardBootstrap, getSelectedItem, getAllRasters } from '../../reducers';
+import { Raster, TableTab } from '../../interface';
 import { getLocalDateString } from '../../utils/dateUtils';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
-import { zoomLevelCalculation, getCenterPoint, getBounds, boundsToDisplay } from '../../utils/latLngZoomCalculation';
+import { zoomLevelCalculation, getBounds } from '../../utils/latLngZoomCalculation';
 import { openRasterInAPI, openRasterInLizard, getLayercollectionGetCapabilitesURL, getRasterGetCapabilitesURL } from '../../utils/url';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import Export from '../../components/Export';
@@ -21,7 +21,8 @@ interface MyProps {
 
 const RasterDetails = (props: MyProps) => {
     const selectedItem = useSelector(getSelectedItem);
-    const raster = useSelector((state: MyStore) => getRaster(state, selectedItem));
+    const allRasters = useSelector(getAllRasters);
+    const raster = allRasters[selectedItem];
     const organisations = useSelector(getOrganisations);
     const user = useSelector(getLizardBootstrap).user;
 
@@ -46,12 +47,9 @@ const RasterDetails = (props: MyProps) => {
     if (!raster) return <div className={`${styles.Details} ${styles.DetailsText}`}>Please select a raster</div>;
     const layercollection = selectedLayercollection(raster);
 
-    //Set the Map with bounds coming from spatial_bounds of the Raster
+    // Set the Map with bounds coming from spatial_bounds of the Raster
     const rasterBounds = getBounds(raster);
-    const bounds = boundsToDisplay(rasterBounds);
-
-    //Get the center point of the raster based on its spatial bounds
-    const centerPoint: LatLng = getCenterPoint(rasterBounds);
+    const centerPoint = rasterBounds.getCenter();
 
     //Calculate the zoom level of the raster by using the zoomLevelCalculation function
     const zoom = zoomLevelCalculation(rasterBounds);
@@ -95,7 +93,7 @@ const RasterDetails = (props: MyProps) => {
                 </div>
             </div>
             <div className={styles.Map}>
-                <Map bounds={bounds} zoomControl={false} style={{ width: '100%' }}>
+                <Map bounds={rasterBounds} zoomControl={false} style={{ width: '100%' }}>
                     <TileLayer url={`https://api.mapbox.com/styles/v1/nelenschuurmans/ck8sgpk8h25ql1io2ccnueuj6/tiles/256/{z}/{x}/{y}@2x?access_token=${mapBoxAccesToken}`} />
                     <WMSTileLayer url={raster.wms_info.endpoint} layers={raster.wms_info.layer} styles={raster.options.styles} />
                 </Map>
@@ -224,7 +222,7 @@ const RasterDetails = (props: MyProps) => {
                 <div className={modalStyles.ModalBackground}>
                     <Export
                         raster={raster}
-                        bounds={bounds}
+                        bounds={rasterBounds}
                         toggleExportModal={() => setRasterExport(!rasterExport)}
                     />
                 </div>

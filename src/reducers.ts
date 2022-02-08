@@ -64,6 +64,7 @@ import {
     SET_NO_DATA_VALUE,
     REQUEST_SCENARIOS,
     RECEIVE_SCENARIOS,
+    Action,
 } from "./action";
 import {
     Raster,
@@ -72,13 +73,12 @@ import {
     Layercollection,
     Bootstrap,
     WMS,
-    SwitchDataType,
     Message,
     RasterExportState,
     MonitoringNetwork,
     TimeSeries,
     Location,
-    Scenario,
+    Scenario
 } from './interface';
 import { areGridCelIdsEqual, haveGridCellsSameId } from './utils/rasterExportUtils';
 import { getSpatialBounds, getGeometry } from './utils/getSpatialBounds';
@@ -99,7 +99,7 @@ export interface MyStore {
     } | null,
     allRasters: {
         [index: string]: Raster,
-    } | {},
+    },
     currentWMSList: {
         count: number,
         previous: string | null,
@@ -110,7 +110,7 @@ export interface MyStore {
     } | null,
     allWMS: {
         [index: string]: WMS,
-    } | {},
+    },
     currentScenariosList: {
         count: number,
         previous: string | null,
@@ -121,7 +121,7 @@ export interface MyStore {
     } | null,
     allScenarios: {
         [index: string]: Scenario,
-    } | {},
+    },
     currentMonitoringNetworkList: {
         count: number,
         previous: string | null,
@@ -132,7 +132,7 @@ export interface MyStore {
     } | null,
     allMonitoringNetworks: {
         [index: string]: MonitoringNetwork,
-    } | {},
+    },
     timeseriesObject: {
         isFetching: boolean,
         timeseries: {
@@ -200,7 +200,7 @@ const rasterExportState = (state: MyStore["rasterExportState"] = {
         projections: [],
     }
 },
-    action
+    action: Action
 ): MyStore['rasterExportState'] => {
     switch (action.type) {
         case ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS:
@@ -246,7 +246,7 @@ const rasterExportState = (state: MyStore["rasterExportState"] = {
             {
                 const stateCopy = {...state}
                 action.fieldValuePairs.forEach(fieldValuePair => {
-                    stateCopy[fieldValuePair.field] = fieldValuePair.value;
+                    Object.assign(stateCopy, {[fieldValuePair.field]: fieldValuePair.value})
                 })
                 return {
                     ...stateCopy,
@@ -331,7 +331,7 @@ const bootstrap = (
         },
         isFetching: false
     },
-    action
+    action: Action
 ): MyStore['bootstrap'] => {
     switch (action.type) {
         case REQUEST_LIZARD_BOOTSTRAP:
@@ -353,7 +353,7 @@ const bootstrap = (
     }
 };
 
-const currentDataType = (state: MyStore['currentDataType'] = '', action: SwitchDataType): MyStore['currentDataType'] => {
+const currentDataType = (state: MyStore['currentDataType'] = '', action: Action): MyStore['currentDataType'] => {
     switch (action.type) {
         case SWITCH_DATA_TYPE:
             return action.payload;
@@ -362,7 +362,7 @@ const currentDataType = (state: MyStore['currentDataType'] = '', action: SwitchD
     };
 };
 
-const currentRasterList = (state: MyStore['currentRasterList'] = null, action): MyStore['currentRasterList'] => {
+const currentRasterList = (state: MyStore['currentRasterList'] = null, action: Action): MyStore['currentRasterList'] => {
     switch (action.type) {
         case RASTERS_REQUESTED:
             return {
@@ -374,12 +374,12 @@ const currentRasterList = (state: MyStore['currentRasterList'] = null, action): 
                 showAlert: false
             }
         case RASTERS_FETCHED:
-            const { count, previous, next } = action.payload;
+            const { count, previous, next, results } = action.payload;
             return {
                 count: count,
                 previous: previous,
                 next: next,
-                rasterList: action.payload.results.map(raster => raster.uuid),
+                rasterList: results.map(raster => raster.uuid),
                 isFetching: false,
                 showAlert: count === 0 ? true : false
             };
@@ -397,7 +397,7 @@ const currentRasterList = (state: MyStore['currentRasterList'] = null, action): 
     };
 };
 
-const allRasters = (state: MyStore['allRasters'] = {}, action): MyStore['allRasters'] => {
+const allRasters = (state: MyStore['allRasters'] = {}, action: Action): MyStore['allRasters'] => {
     switch (action.type) {
         case RASTERS_FETCHED:
             const newState = { ...state };
@@ -433,7 +433,7 @@ const allRasters = (state: MyStore['allRasters'] = {}, action): MyStore['allRast
     };
 };
 
-const currentWMSList = (state: MyStore['currentWMSList'] = null, action): MyStore['currentWMSList'] => {
+const currentWMSList = (state: MyStore['currentWMSList'] = null, action: Action): MyStore['currentWMSList'] => {
     switch (action.type) {
         case REQUEST_WMS:
             return {
@@ -468,7 +468,7 @@ const currentWMSList = (state: MyStore['currentWMSList'] = null, action): MyStor
     };
 };
 
-const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
+const allWMS = (state: MyStore['allWMS'] = {}, action: Action): MyStore['allWMS'] => {
     switch (action.type) {
         case RECEIVE_WMS_LAYERS:
             const newState = { ...state };
@@ -481,7 +481,7 @@ const allWMS = (state: MyStore['allWMS'] = {}, action): MyStore['allWMS'] => {
     };
 };
 
-const currentScenariosList = (state: MyStore['currentScenariosList'] = null, action): MyStore['currentScenariosList'] => {
+const currentScenariosList = (state: MyStore['currentScenariosList'] = null, action: Action): MyStore['currentScenariosList'] => {
     switch (action.type) {
         case REQUEST_SCENARIOS:
             return {
@@ -516,7 +516,7 @@ const currentScenariosList = (state: MyStore['currentScenariosList'] = null, act
     };
 };
 
-const allScenarios = (state: MyStore['allScenarios'] = {}, action): MyStore['allScenarios'] => {
+const allScenarios = (state: MyStore['allScenarios'] = {}, action: Action): MyStore['allScenarios'] => {
     switch (action.type) {
         case RECEIVE_SCENARIOS:
             const newState = { ...state };
@@ -529,7 +529,7 @@ const allScenarios = (state: MyStore['allScenarios'] = {}, action): MyStore['all
     };
 };
 
-const currentMonitoringNetworkList = (state: MyStore['currentMonitoringNetworkList'] = null, action): MyStore['currentMonitoringNetworkList'] => {
+const currentMonitoringNetworkList = (state: MyStore['currentMonitoringNetworkList'] = null, action: Action): MyStore['currentMonitoringNetworkList'] => {
     switch (action.type) {
         case REQUEST_MONITORING_NETWORKS:
             return {
@@ -564,7 +564,7 @@ const currentMonitoringNetworkList = (state: MyStore['currentMonitoringNetworkLi
     };
 };
 
-const allMonitoringNetworks = (state: MyStore['allMonitoringNetworks'] = {}, action): MyStore['allMonitoringNetworks'] => {
+const allMonitoringNetworks = (state: MyStore['allMonitoringNetworks'] = {}, action: Action): MyStore['allMonitoringNetworks'] => {
     switch (action.type) {
         case RECEIVE_MONITORING_NETWORKS:
             const newState = { ...state };
@@ -577,7 +577,7 @@ const allMonitoringNetworks = (state: MyStore['allMonitoringNetworks'] = {}, act
     };
 };
 
-const timeseriesObject = (state: MyStore['timeseriesObject'] = null, action): MyStore['timeseriesObject'] => {
+const timeseriesObject = (state: MyStore['timeseriesObject'] = null, action: Action): MyStore['timeseriesObject'] => {
     switch(action.type) {
         case REQUEST_TIMESERIES:
             return {
@@ -606,7 +606,7 @@ const timeseriesObject = (state: MyStore['timeseriesObject'] = null, action): My
     };
 };
 
-const observationTypeObject = (state: MyStore['observationTypeObject'] = null, action): MyStore['observationTypeObject'] => {
+const observationTypeObject = (state: MyStore['observationTypeObject'] = null, action: Action): MyStore['observationTypeObject'] => {
     switch(action.type) {
         case REQUEST_NETWORK_OBSERVATION_TYPES:
             return {
@@ -625,7 +625,7 @@ const observationTypeObject = (state: MyStore['observationTypeObject'] = null, a
     };
 };
 
-const locationsObject = (state: MyStore['locationsObject'] = null, action): MyStore['locationsObject'] => {
+const locationsObject = (state: MyStore['locationsObject'] = null, action: Action): MyStore['locationsObject'] => {
     switch(action.type) {
         case REQUEST_LOCATIONS:
             return {
@@ -652,10 +652,10 @@ const locationsObject = (state: MyStore['locationsObject'] = null, action): MySt
     };
 };
 
-const selectedItem = (state: MyStore['selectedItem'] = '', { type, uuid }): MyStore['selectedItem'] => {
-    switch (type) {
+const selectedItem = (state: MyStore['selectedItem'] = '', action: Action): MyStore['selectedItem'] => {
+    switch (action.type) {
         case ITEM_SELECTED:
-            return uuid;
+            return action.uuid;
         default:
             return state;
     };
@@ -667,7 +667,7 @@ const basket = (
         wmsLayers: [],
         scenarios: []
     },
-    action
+    action: Action
 ) => {
     switch (action.type) {
         case UPDATE_BASKET_WITH_RASTER:
@@ -723,11 +723,11 @@ const basket = (
     };
 };
 
-const observationTypes = (state: MyStore['observationTypes'] = [], { type, observationTypes }): MyStore['observationTypes'] => {
-    switch (type) {
+const observationTypes = (state: MyStore['observationTypes'] = [], action: Action): MyStore['observationTypes'] => {
+    switch (action.type) {
         case OBSERVATION_TYPES_FETCHED:
             //Remove observation types with empty parameter
-            const observationTypesWithoutEmptyNames = observationTypes.filter(observationType => observationType.parameter !== '');
+            const observationTypesWithoutEmptyNames = action.observationTypes.filter(observationType => observationType.parameter !== '');
 
             //Remove duplicates in parameters using reduce() method
             const parameters = observationTypesWithoutEmptyNames.map(observationType => observationType.parameter);
@@ -736,7 +736,7 @@ const observationTypes = (state: MyStore['observationTypes'] = [], { type, obser
                 return a;
             }, []);
             const filteredObservationTypes = parametersWithoutDuplicates.map(parameter => {
-                return observationTypesWithoutEmptyNames.find(observationType => observationType.parameter === parameter);
+                return observationTypesWithoutEmptyNames.find(observationType => observationType.parameter === parameter)!;
             });
 
             //Update Redux state
@@ -756,11 +756,11 @@ const observationTypes = (state: MyStore['observationTypes'] = [], { type, obser
     };
 };
 
-const organisations = (state: MyStore['organisations'] = [], { type, organisations }): MyStore['organisations'] => {
-    switch (type) {
+const organisations = (state: MyStore['organisations'] = [], action: Action): MyStore['organisations'] => {
+    switch (action.type) {
         case ORGANISATIONS_FETCHED:
             //Remove organisations with empty name
-            const organisationsWithoutEmptyNames = organisations.filter(organisation => organisation.name !== '');
+            const organisationsWithoutEmptyNames = action.organisations.filter(organisation => organisation.name !== '');
 
             //Remove duplications in organisation name using reduce() method
             const names = organisationsWithoutEmptyNames.map(organisation => organisation.name);
@@ -769,14 +769,14 @@ const organisations = (state: MyStore['organisations'] = [], { type, organisatio
                 return a;
             }, []);
             const filteredOrganisations = namesWithoutDuplicates.map(name => {
-                return organisationsWithoutEmptyNames.find(organisation => organisation.name === name);
+                return organisationsWithoutEmptyNames.find(organisation => organisation.name === name)!;
             });
 
             //Update Redux state
             return filteredOrganisations;
         case USER_ORGANISATIONS_FETCHED:
             const listOfUserOrganisations = state.map(organisation => {
-                const selectedOrganisation = organisations.find((org: Organisation) => org.uuid === organisation.uuid);
+                const selectedOrganisation = action.organisations.find((org: Organisation) => org.uuid === organisation.uuid);
                 if (selectedOrganisation) {
                     return selectedOrganisation;
                 };
@@ -788,10 +788,10 @@ const organisations = (state: MyStore['organisations'] = [], { type, organisatio
     };
 };
 
-const layercollections = (state: MyStore['layercollections'] = [], { type, layercollections }): MyStore['layercollections'] => {
-    switch (type) {
+const layercollections = (state: MyStore['layercollections'] = [], action: Action): MyStore['layercollections'] => {
+    switch (action.type) {
         case LAYERCOLLECTIONS_FETCHED:
-            return layercollections
+            return action.layercollections
                 //Remove layercollections with empty slug name
                 .filter(layercollection => layercollection.slug !== '')
                 .map(layercollection => {
@@ -815,35 +815,37 @@ const filters =(
         ordering: '',
         page: 1,
     },
-    { type, organisation, layercollection, observationType, searchTerm, ordering, page }
+    action: Action
+    // { type, organisation, layercollection, observationType, searchTerm, ordering, page }
 ): MyStore['filters'] => {
-    switch (type) {
+    switch (action.type) {
         case UPDATE_PAGE:
             return {
                 ...state,
-                page
+                page: action.page
             };
         case SELECT_ORGANISATION:
             return {
                 ...state,
-                organisation
+                organisation: action.organisation
             };
         case SELECT_LAYERCOLLECTION:
             return {
                 ...state,
-                layercollection
+                layercollection: action.layercollection
             };
         case SELECT_OBSERVATIONTYPE:
             return {
                 ...state,
-                observationType
+                observationType: action.observationType
             };
         case UPDATE_SEARCH:
             return {
                 ...state,
-                searchTerm
+                searchTerm: action.searchTerm
             };
         case UPDATE_ORDER:
+            const ordering = action.ordering;
             return {
                 ...state,
                 ordering: state.ordering === ordering ? `-${ordering}` : ordering
@@ -878,10 +880,10 @@ const filters =(
     };
 };
 
-const inbox = (state: MyStore['inbox'] = [], { type, messages, id }) => {
-    switch (type) {
+const inbox = (state: MyStore['inbox'] = [], action: Action) => {
+    switch (action.type) {
         case REQUEST_INBOX:
-            return messages.map(message => {
+            return action.messages.map(message => {
                 const currentMessage = state.find(mess => mess.id === message.id);
                 if (currentMessage) {
                     return {
@@ -899,7 +901,7 @@ const inbox = (state: MyStore['inbox'] = [], { type, messages, id }) => {
             });
         case DOWNLOAD_FILE:
             const newState = state.map(message => {
-                if (message.id === id) {
+                if (message.id === action.id) {
                     return {
                         ...message,
                         downloaded: true
@@ -909,16 +911,16 @@ const inbox = (state: MyStore['inbox'] = [], { type, messages, id }) => {
             });
             return newState;
         case REMOVE_MESSAGE:
-            return state.filter(message => message.id !== id);
+            return state.filter(message => message.id !== action.id);
         default:
             return state;
     };
 };
 
-const notification = (state: MyStore['notification'] = '', { type, message }) => {
-    switch (type) {
+const notification = (state: MyStore['notification'] = '', action: Action) => {
+    switch (action.type) {
         case SHOW_NOTIFICATION:
-            return message;
+            return action.message;
         case DISMISS_NOTIFICATION:
             return '';
         default:
@@ -926,9 +928,10 @@ const notification = (state: MyStore['notification'] = '', { type, message }) =>
     };
 };
 
-const timeseriesExport = (state: MyStore['timeseriesExport'] = {}, { type, taskUuid }) => {
-    switch (type) {
+const timeseriesExport = (state: MyStore['timeseriesExport'] = {}, action: Action) => {
+    switch (action.type) {
         case ADD_TIMESERIES_EXPORT_TASK:
+            const taskUuid = action.taskUuid;
             return {
                 ...state,
                 [taskUuid]: taskUuid
@@ -986,7 +989,7 @@ export const getAllWms = (state: MyStore) => {
     return state.allWMS;
 };
 
-export const getWMS = (state: MyStore, uuid: string) => {
+export const getWMS = (state: MyStore, uuid: string): WMS => {
     return state.allWMS[uuid];
 };
 

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Raster } from '../../interface';
 import { getCurrentRasterList, getSelectedItem, getFilters, getAllRasters } from '../../reducers';
 import BasketNotification from '../../components/BasketNotification';
 import SearchBar from '../../components/SearchBar';
@@ -15,8 +14,8 @@ import buttonStyles from '../../styles/Buttons.module.css';
 interface MyProps {
     searchTerm: string,
     onPageClick: (page: number) => void,
-    onSearchChange: (event: object) => void,
-    onSearchSubmit: (event: object) => void,
+    onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onSearchSubmit: (event: React.FormEvent<HTMLFormElement>) => void,
     onSorting: (ordering: string) => void,
     selectItem: (uuid: string) => void,
     updateBasketWithRaster: (rasters: string[]) => void
@@ -95,7 +94,7 @@ export default function RasterList (props: MyProps) {
                         </div>
                         <div className={`${styles.ListRow} ${styles.ListRowAccess}`} />
                     </li>
-                    {rasters.map((raster: Raster) => {
+                    {rasters.map(raster => {
                         const checked = !!checkedRasters.find(uuid => uuid === raster.uuid);
                         return (
                             <li

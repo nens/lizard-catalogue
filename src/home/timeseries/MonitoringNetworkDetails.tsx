@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import MDSpinner from "react-md-spinner";
 import { useSelector } from 'react-redux';
-import Leaflet from 'leaflet';
+import { DivIcon } from 'leaflet';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import {
     getLocationsObject,
@@ -13,7 +13,8 @@ import {
     MyStore,
 } from '../../reducers';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
-import { MonitoringNetwork, ObservationType, TableTab } from '../../interface';
+import { convertToLatLngBounds } from '../../utils/latLngZoomCalculation';
+import { ObservationType, TableTab } from '../../interface';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import TimeSeriesModal from '../../components/TimeSeriesModal';
 import Action from '../../components/Action';
@@ -22,6 +23,7 @@ import styles from '../../styles/Details.module.css';
 import modalStyles from '../../styles/Modal.module.css';
 import timeseriesModalStyles from '../../components/TimeseriesModal.module.css';
 import buttonStyles from '../../styles/Buttons.module.css';
+import filterOptionStyles from '../../components/FilterOption.module.css';
 
 // Helper function to add reference frame to unit of observation type
 const addRefToUnit = (observationType: ObservationType) => {
@@ -30,11 +32,12 @@ const addRefToUnit = (observationType: ObservationType) => {
 
 const MonitoringNetworkDetails = () => {
     const selectedItem = useSelector(getSelectedItem);
-    const monitoringNetwork = useSelector((state: MyStore) => getMonitoringNetwork(state, selectedItem)) as MonitoringNetwork;
+    const monitoringNetwork = useSelector((state: MyStore) => getMonitoringNetwork(state, selectedItem));
     const observationTypeObject = useSelector(getMonitoringNetworkObservationTypes);
     const locationsObject = useSelector(getLocationsObject);
     const organisations = useSelector(getOrganisations);
     const user = useSelector(getLizardBootstrap).user;
+    const bounds = convertToLatLngBounds(locationsObject ? locationsObject.spatialBounds : null);
 
     const [timeseriesModal, setTimeseriesModal] = useState(false);
     const [activeTab, setActiveTab] = useState<TableTab>('Details');
@@ -89,7 +92,7 @@ const MonitoringNetworkDetails = () => {
                     </div>
                 ) : null}
                 <Map
-                    bounds={locationsObject ? locationsObject.spatialBounds : [[85, 180], [-85, -180]]}
+                    bounds={bounds}
                     zoomControl={false}
                     style={{
                         width: '100%',
@@ -102,7 +105,8 @@ const MonitoringNetworkDetails = () => {
                                 <Marker
                                     key={location.uuid}
                                     position={location.geometry.coordinates}
-                                    icon={new Leaflet.DivIcon({
+                                    // @ts-ignore
+                                    icon={new DivIcon({
                                         iconSize: [16, 16],
                                         className: `${timeseriesModalStyles.LocationIcon} ${timeseriesModalStyles.LocationIconSmall}`
                                     })}
@@ -162,7 +166,7 @@ const MonitoringNetworkDetails = () => {
                         })}
                         {observationTypeObject.count > 10 ? (
                             <div
-                                className="filter-list-button"
+                                className={filterOptionStyles.FilterListButton}
                                 style={{ cursor: 'default' }}
                             >
                                 {observationTypeObject.count - 10} more

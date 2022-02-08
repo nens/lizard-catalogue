@@ -9,8 +9,7 @@ export const queryClient = new QueryClient({
       staleTime: 5 * 60 * 1000,
       retry: false as const,
       refetchOnMount: false as const,
-      // @ts-ignore
-      refetchOnWindowsFocus: false as const,
+      refetchOnWindowFocus: false as const,
       refetchOnReconnect: true as const,
       refetchIntervalInBackground: true as const,
       refetchInterval: false as const,
@@ -89,7 +88,7 @@ export async function recursiveFetchFunction (
   params: Params,
   previousResults: any[] = [],
   signal?: AbortSignal,
-) {
+): Promise<any> {
   const response = await basicFetchFunction(baseUrl, params, signal);
   if (!response) return;
 

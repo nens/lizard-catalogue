@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Scenario, TableTab } from '../../interface';
+import { TableTab } from '../../interface';
 import { MyStore, getOrganisations, getLizardBootstrap, getSelectedItem, getScenario } from '../../reducers';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { getScenarioGetCapabilitesURL, openScenarioInAPI, openScenarioInLizard } from '../../utils/url';
@@ -14,7 +14,7 @@ import buttonStyles from '../../styles/Buttons.module.css';
 
 const ScenarioDetails = () => {
     const selectedItem = useSelector(getSelectedItem);
-    const scenario = useSelector((state: MyStore) => getScenario(state, selectedItem)) as Scenario;
+    const scenario = useSelector((state: MyStore) => getScenario(state, selectedItem));
     const organisations = useSelector(getOrganisations);
     const user = useSelector(getLizardBootstrap).user;
 

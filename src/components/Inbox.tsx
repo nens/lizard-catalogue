@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-import { Message } from './../interface';
 import { connect, useSelector } from 'react-redux';
+import { RootDispatch } from '../store';
+import { Message } from './../interface';
 import { removeMessage, downloadFile, removeCurrentExportTasks } from './../action';
 import { getRasterExportState, getTimeseriesExport } from './../reducers';
 import styles from './Inbox.module.css';
@@ -109,7 +110,7 @@ const Inbox: React.FC<MyProps & PropsFromDispatch> = ({
     )
 }
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch: RootDispatch) => ({
     removeMessage: (id: string) => removeMessage(dispatch, id),
     downloadFile: (id: string) => downloadFile(dispatch, id),
     removeCurrentExportTasks: () => removeCurrentExportTasks(dispatch),

@@ -1,4 +1,5 @@
 import { connect, useSelector } from 'react-redux';
+import { RootDispatch } from '../store';
 import { dismissNotification } from './../action';
 import { getNotification } from './../reducers';
 import styles from './SnackBar.module.css';
@@ -26,7 +27,7 @@ const Snackbar: React.FC<PropsFromDispatch> = (props) => {
     );
 };
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch: RootDispatch) => ({
     dismiss: () => dispatch(dismissNotification())
 });
 type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>;

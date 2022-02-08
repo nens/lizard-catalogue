@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Scenario } from '../../interface';
 import { getSelectedItem, getFilters, getCurrentScenariosList, getAllScenarios } from '../../reducers';
 import { getLocalDateString } from '../../utils/dateUtils';
 import SearchBar from '../../components/SearchBar';
@@ -14,8 +13,8 @@ import buttonStyles from '../../styles/Buttons.module.css';
 interface MyProps {
     searchTerm: string,
     onPageClick: (page: number) => void,
-    onSearchChange: (event: object) => void,
-    onSearchSubmit: (event: object) => void,
+    onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onSearchSubmit: (event: React.FormEvent<HTMLFormElement>) => void,
     onSorting: (ordering: string) => void,
     selectItem: (uuid: string) => void,
     updateBasketWithScenarios: (scenarios: string[]) => void
@@ -95,7 +94,7 @@ export default function ScenariosList (props: MyProps) {
                         </div>
                         <div className={`${styles.ListRow} ${styles.ListRowAccess}`} />
                     </li>
-                    {scenarios.map((scenario: Scenario) => {
+                    {scenarios.map(scenario => {
                         const checked = !!checkedScenarios.find(uuid => uuid === scenario.uuid);
                         return (
                             <li

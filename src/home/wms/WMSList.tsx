@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { WMS } from '../../interface';
 import { getCurrentWMSList, getAllWms, getSelectedItem, getFilters } from '../../reducers';
 import BasketNotification from '../../components/BasketNotification';
 import SearchBar from '../../components/SearchBar';
@@ -13,8 +12,8 @@ import buttonStyles from '../../styles/Buttons.module.css';
 interface MyProps {
     searchTerm: string,
     onPageClick: (page: number) => void,
-    onSearchChange: (event: object) => void,
-    onSearchSubmit: (event: object) => void,
+    onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onSearchSubmit: (event: React.FormEvent<HTMLFormElement>) => void,
     onSorting: (ordering: string) => void,
     selectItem: (uuid: string) => void,
     updateBasketWithWMS: (wmsLayers: string[]) => void
@@ -85,7 +84,7 @@ export default function WmsList (props: MyProps) {
                         </div>
                         <div className={`${styles.ListRow} ${styles.ListRowAccess}`} />
                     </li>
-                    {wmsLayers.map((wms: WMS) => {
+                    {wmsLayers.map(wms => {
                         const checked = !!checkedWmsLayers.find(uuid => uuid === wms.uuid);
                         return (
                             <li

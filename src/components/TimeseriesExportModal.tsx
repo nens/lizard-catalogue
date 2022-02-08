@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
+import { RootDispatch } from '../store';
 import { getInbox } from './../reducers';
 import { addNotification, addTimeseriesExportTask } from './../action';
 import { timeValidator } from './../utils/timeValidator';
@@ -32,7 +33,7 @@ const TimeSeriesExportModal: FC<MyProps & PropsFromDispatch> = (props) => {
 
     // Add event listener to close modal on ESCAPE
     useEffect(() => {
-        const closeExportModalOnEsc = (e: any) => {
+        const closeExportModalOnEsc = (e: KeyboardEvent) => {
             if (e.key === 'Escape') props.toggleModal();
         };
         window.addEventListener('keydown', closeExportModalOnEsc);
@@ -95,7 +96,7 @@ const TimeSeriesExportModal: FC<MyProps & PropsFromDispatch> = (props) => {
     );
 };
 
-const mapDispatchToProps = (dispatch: any) => ({
+const mapDispatchToProps = (dispatch: RootDispatch) => ({
     addNotification: (message: string, timeout: number) => dispatch(addNotification(message, timeout)),
     addTimeseriesExportTask: (numberOfInboxMessages: number, taskUuid: string) => dispatch(addTimeseriesExportTask(numberOfInboxMessages, taskUuid)),
 });

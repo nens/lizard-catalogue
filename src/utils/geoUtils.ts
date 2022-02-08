@@ -1,4 +1,6 @@
-export const getSpatialBoundsIntersect = (bounds1, bounds2) => {
+import { Bounds, ExportGridCell } from "../interface";
+
+export const getSpatialBoundsIntersect = (bounds1: Bounds, bounds2: Bounds) => {
   const intersectSpatialBounds = {
     north: bounds1.north < bounds2.north ? bounds1.north : bounds2.north,
     east: bounds1.east < bounds2.east ? bounds1.east : bounds2.east,
@@ -15,8 +17,8 @@ export const getSpatialBoundsIntersect = (bounds1, bounds2) => {
   }
 }
 
-export const gridPolygonToSpatialBounds = (polygon) => {
-  const coordinates = polygon.geometry.coordinates[0];
+export const gridPolygonToSpatialBounds = (gridCell: ExportGridCell): Bounds => {
+  const coordinates = gridCell.geometry.coordinates[0];
   const eastWests = coordinates.map(e=>e[0]);
   const northSouths = coordinates.map(e=>e[1]);
 
@@ -26,5 +28,4 @@ export const gridPolygonToSpatialBounds = (polygon) => {
     south: Math.min(...northSouths),
     west: Math.min(...eastWests),
   }
-
 }

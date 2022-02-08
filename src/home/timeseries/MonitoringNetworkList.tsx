@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import { MonitoringNetwork } from '../../interface';
 import { getCurrentMonitoringNetworkList, getAllMonitoringNetworks, getSelectedItem, getFilters } from '../../reducers';
 import SearchBar from '../../components/SearchBar';
 import Pagination from '../../components/Pagination';
@@ -10,8 +9,8 @@ import styles from '../../styles/List.module.css';
 interface MyProps {
     searchTerm: string,
     onPageClick: (page: number) => void,
-    onSearchChange: (event: object) => void,
-    onSearchSubmit: (event: object) => void,
+    onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onSearchSubmit: (event: React.FormEvent<HTMLFormElement>) => void,
     onSorting: (ordering: string) => void,
     selectItem: (uuid: string) => void
 };
@@ -58,7 +57,7 @@ export default function MonitoringNetworkList (props: MyProps) {
                         </div>
                         <div className={`${styles.ListRow} ${styles.ListRowAccess}`} />
                     </li>
-                    {monitoringNetworks.map((monitoringNetwork: MonitoringNetwork) => (
+                    {monitoringNetworks.map(monitoringNetwork => (
                         <li
                             className={selectedItem === monitoringNetwork.uuid ? `${styles.ListRowLi} ${styles.ListRowLi__Selected}` : styles.ListRowLi}
                             key={monitoringNetwork.uuid}
