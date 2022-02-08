@@ -14,7 +14,7 @@ import {
 } from '../../reducers';
 import { isAuthorizedToManageLayer } from '../../utils/authorization';
 import { convertToLatLngBounds } from '../../utils/latLngZoomCalculation';
-import { MonitoringNetwork, ObservationType, TableTab } from '../../interface';
+import { ObservationType, TableTab } from '../../interface';
 import { mapBoxAccesToken } from "../../mapboxConfig.js";
 import TimeSeriesModal from '../../components/TimeSeriesModal';
 import Action from '../../components/Action';
@@ -32,7 +32,7 @@ const addRefToUnit = (observationType: ObservationType) => {
 
 const MonitoringNetworkDetails = () => {
     const selectedItem = useSelector(getSelectedItem);
-    const monitoringNetwork = useSelector((state: MyStore) => getMonitoringNetwork(state, selectedItem)) as MonitoringNetwork;
+    const monitoringNetwork = useSelector((state: MyStore) => getMonitoringNetwork(state, selectedItem));
     const observationTypeObject = useSelector(getMonitoringNetworkObservationTypes);
     const locationsObject = useSelector(getLocationsObject);
     const organisations = useSelector(getOrganisations);

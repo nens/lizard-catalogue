@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
-import { MonitoringNetwork } from '../../interface';
-import { getCurrentMonitoringNetworkList, getAllMonitoringNetworks, getSelectedItem, getFilters, MyStore } from '../../reducers';
+import { getCurrentMonitoringNetworkList, getAllMonitoringNetworks, getSelectedItem, getFilters } from '../../reducers';
 import SearchBar from '../../components/SearchBar';
 import Pagination from '../../components/Pagination';
 import LoadingScreen from '../../components/LoadingScreen';
@@ -27,7 +26,7 @@ export default function MonitoringNetworkList (props: MyProps) {
     if (!currentMonitoringNetworkList || currentMonitoringNetworkList.isFetching) return <LoadingScreen />;
 
     const { count, monitoringNetworksList } = currentMonitoringNetworkList;
-    const monitoringNetworks = monitoringNetworksList.map(uuid => allMonitoringNetworks[uuid as keyof MyStore['allMonitoringNetworks']]) as MonitoringNetwork[];
+    const monitoringNetworks = monitoringNetworksList.map(uuid => allMonitoringNetworks[uuid]);
 
     return (
         <div className={styles.List}>
@@ -58,7 +57,7 @@ export default function MonitoringNetworkList (props: MyProps) {
                         </div>
                         <div className={`${styles.ListRow} ${styles.ListRowAccess}`} />
                     </li>
-                    {monitoringNetworks.map((monitoringNetwork: MonitoringNetwork) => (
+                    {monitoringNetworks.map(monitoringNetwork => (
                         <li
                             className={selectedItem === monitoringNetwork.uuid ? `${styles.ListRowLi} ${styles.ListRowLi__Selected}` : styles.ListRowLi}
                             key={monitoringNetwork.uuid}

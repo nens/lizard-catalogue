@@ -22,7 +22,7 @@ interface MyProps {
 const RasterDetails = (props: MyProps) => {
     const selectedItem = useSelector(getSelectedItem);
     const allRasters = useSelector(getAllRasters);
-    const raster = allRasters[selectedItem as keyof MyStore['allRasters']] as Raster;
+    const raster = allRasters[selectedItem];
     const organisations = useSelector(getOrganisations);
     const user = useSelector(getLizardBootstrap).user;
 

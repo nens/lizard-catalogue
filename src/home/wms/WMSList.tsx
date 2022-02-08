@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { WMS } from '../../interface';
-import { getCurrentWMSList, getAllWms, getSelectedItem, getFilters, MyStore } from '../../reducers';
+import { getCurrentWMSList, getAllWms, getSelectedItem, getFilters } from '../../reducers';
 import BasketNotification from '../../components/BasketNotification';
 import SearchBar from '../../components/SearchBar';
 import Pagination from '../../components/Pagination';
@@ -33,7 +32,7 @@ export default function WmsList (props: MyProps) {
     if (!currentWMSList || currentWMSList.isFetching) return <LoadingScreen />;
 
     const { count, wmsList } = currentWMSList;
-    const wmsLayers = wmsList.map(uuid => allWms[uuid as keyof MyStore['allWMS']]);
+    const wmsLayers = wmsList.map(uuid => allWms[uuid]);
 
     const onCheckboxSelect = (uuid: string) => {
         // Check if the WMS layer has already been selected or not
@@ -85,7 +84,7 @@ export default function WmsList (props: MyProps) {
                         </div>
                         <div className={`${styles.ListRow} ${styles.ListRowAccess}`} />
                     </li>
-                    {wmsLayers.map((wms: WMS) => {
+                    {wmsLayers.map(wms => {
                         const checked = !!checkedWmsLayers.find(uuid => uuid === wms.uuid);
                         return (
                             <li

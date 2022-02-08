@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Raster } from '../../interface';
-import { getCurrentRasterList, getSelectedItem, getFilters, getAllRasters, MyStore } from '../../reducers';
+import { getCurrentRasterList, getSelectedItem, getFilters, getAllRasters } from '../../reducers';
 import BasketNotification from '../../components/BasketNotification';
 import SearchBar from '../../components/SearchBar';
 import Pagination from '../../components/Pagination';
@@ -35,7 +34,7 @@ export default function RasterList (props: MyProps) {
     if (!currentRasterList || currentRasterList.isFetching) return <LoadingScreen />;
 
     const { count, rasterList } = currentRasterList;
-    const rasters = rasterList.map(uuid => allRasters[uuid as keyof MyStore['allRasters']]) as Raster[];
+    const rasters = rasterList.map(uuid => allRasters[uuid]);
 
     const onCheckboxSelect = (uuid: string) => {
         // Check if the WMS layer has already been selected or not
@@ -95,7 +94,7 @@ export default function RasterList (props: MyProps) {
                         </div>
                         <div className={`${styles.ListRow} ${styles.ListRowAccess}`} />
                     </li>
-                    {rasters.map((raster: Raster) => {
+                    {rasters.map(raster => {
                         const checked = !!checkedRasters.find(uuid => uuid === raster.uuid);
                         return (
                             <li

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Scenario } from '../../interface';
-import { getSelectedItem, getFilters, getCurrentScenariosList, getAllScenarios, MyStore } from '../../reducers';
+import { getSelectedItem, getFilters, getCurrentScenariosList, getAllScenarios } from '../../reducers';
 import { getLocalDateString } from '../../utils/dateUtils';
 import SearchBar from '../../components/SearchBar';
 import Pagination from '../../components/Pagination';
@@ -34,7 +33,7 @@ export default function ScenariosList (props: MyProps) {
     if (!currentScenariosList || currentScenariosList.isFetching) return <LoadingScreen />;
 
     const { count, scenariosList } = currentScenariosList;
-    const scenarios = scenariosList.map(uuid => allScenarios[uuid as keyof MyStore['allScenarios']]) as Scenario[];
+    const scenarios = scenariosList.map(uuid => allScenarios[uuid]);
 
     const onCheckboxSelect = (uuid: string) => {
         // Check if the WMS layer has already been selected or not
@@ -95,7 +94,7 @@ export default function ScenariosList (props: MyProps) {
                         </div>
                         <div className={`${styles.ListRow} ${styles.ListRowAccess}`} />
                     </li>
-                    {scenarios.map((scenario: Scenario) => {
+                    {scenarios.map(scenario => {
                         const checked = !!checkedScenarios.find(uuid => uuid === scenario.uuid);
                         return (
                             <li

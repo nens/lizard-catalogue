@@ -99,7 +99,7 @@ export interface MyStore {
     } | null,
     allRasters: {
         [index: string]: Raster,
-    } | {},
+    },
     currentWMSList: {
         count: number,
         previous: string | null,
@@ -110,7 +110,7 @@ export interface MyStore {
     } | null,
     allWMS: {
         [index: string]: WMS,
-    } | {},
+    },
     currentScenariosList: {
         count: number,
         previous: string | null,
@@ -121,7 +121,7 @@ export interface MyStore {
     } | null,
     allScenarios: {
         [index: string]: Scenario,
-    } | {},
+    },
     currentMonitoringNetworkList: {
         count: number,
         previous: string | null,
@@ -132,7 +132,7 @@ export interface MyStore {
     } | null,
     allMonitoringNetworks: {
         [index: string]: MonitoringNetwork,
-    } | {},
+    },
     timeseriesObject: {
         isFetching: boolean,
         timeseries: {
@@ -978,7 +978,7 @@ export const getAllRasters = (state: MyStore) => {
 };
 
 export const getRaster = (state: MyStore, uuid: string) => {
-    return state.allRasters[uuid as keyof MyStore['allRasters']];
+    return state.allRasters[uuid];
 };
 
 export const getCurrentWMSList = (state: MyStore) => {
@@ -990,7 +990,7 @@ export const getAllWms = (state: MyStore) => {
 };
 
 export const getWMS = (state: MyStore, uuid: string): WMS => {
-    return state.allWMS[uuid as keyof MyStore['allWMS']];
+    return state.allWMS[uuid];
 };
 
 export const getCurrentScenariosList = (state: MyStore) => {
@@ -1002,7 +1002,7 @@ export const getAllScenarios = (state: MyStore) => {
 };
 
 export const getScenario = (state: MyStore, uuid: string): Scenario => {
-    return state.allScenarios[uuid as keyof MyStore['allWMS']];
+    return state.allScenarios[uuid];
 };
 
 export const getCurrentMonitoringNetworkList = (state: MyStore) => {
@@ -1012,7 +1012,7 @@ export const getAllMonitoringNetworks = (state: MyStore) => {
     return state.allMonitoringNetworks;
 };
 export const getMonitoringNetwork = (state: MyStore, uuid: string) => {
-    return state.allMonitoringNetworks[uuid as keyof MyStore['allMonitoringNetworks']];
+    return state.allMonitoringNetworks[uuid];
 };
 
 export const getMonitoringNetworkObservationTypes = (state: MyStore) => {
