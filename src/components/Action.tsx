@@ -25,6 +25,7 @@ const Action: React.FC<MyProps> = ({
         style={{
           cursor: disabled ? 'not-allowed' : undefined
         }}
+        disabled={disabled}
       >
         <PlayIcon disabled={disabled} />
       </button>
