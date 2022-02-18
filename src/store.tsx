@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose, AnyAction } from 'redux';
 import reducer from './reducers';
-import ReduxThunk, { ThunkDispatch } from 'redux-thunk';
+import ReduxThunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 const devTools = (window as any).__REDUX_DEVTOOLS_EXTENSION__ ? (window as any).__REDUX_DEVTOOLS_EXTENSION__() : (f: Function) => f;
 
@@ -16,7 +16,10 @@ const enhancer = compose(
 );
 
 const store = createStore(reducer, enhancer);
-
-export type RootDispatch = typeof store.dispatch
+export const rootDispatch: RootDispatch = store.dispatch;
+export type RootDispatch = ThunkDispatch<AppState, undefined, AnyAction>;
+export type AppState = ReturnType<typeof store.getState>;
+export type AppGetState = () => AppState;
+export type Thunk = ThunkAction<void, AppState, undefined, AnyAction>;
 
 export default store;

@@ -111,9 +111,9 @@ const Inbox: React.FC<MyProps & PropsFromDispatch> = ({
 }
 
 const mapDispatchToProps = (dispatch: RootDispatch) => ({
-    removeMessage: (id: string) => removeMessage(dispatch, id),
-    downloadFile: (id: string) => downloadFile(dispatch, id),
-    removeCurrentExportTasks: () => removeCurrentExportTasks(dispatch),
+    removeMessage: (id: string) => dispatch(removeMessage(id)),
+    downloadFile: (id: string) => dispatch(downloadFile(id)),
+    removeCurrentExportTasks: () => dispatch(removeCurrentExportTasks()),
 });
 type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>;
 

@@ -101,13 +101,13 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
 };
 
 const mapDispatchToProps = (dispatch: RootDispatch) => ({
-    selectOrganisation: (organisationName: string) => selectOrganisation(dispatch, organisationName),
-    removeOrganisation: () => removeOrganisation(dispatch),
-    selectLayercollection: (layercollectionSlug: string) => selectLayercollection(dispatch, layercollectionSlug),
-    removeLayercollection: () => removeLayercollection(dispatch),
-    selectObservationType: (observationTypeParameter: string) => selectObservationType(dispatch, observationTypeParameter),
-    removeObservationType: () => removeObservationType(dispatch),
-    updatePage: (page: number) => updatePage(dispatch, page),
+    selectOrganisation: (organisationName: string) => dispatch(selectOrganisation(organisationName)),
+    removeOrganisation: () => dispatch(removeOrganisation()),
+    selectLayercollection: (layercollectionSlug: string) => dispatch(selectLayercollection(layercollectionSlug)),
+    removeLayercollection: () => dispatch(removeLayercollection()),
+    selectObservationType: (observationTypeParameter: string) => dispatch(selectObservationType(observationTypeParameter)),
+    removeObservationType: () => dispatch(removeObservationType()),
+    updatePage: (page: number) => dispatch(updatePage(page)),
 });
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 

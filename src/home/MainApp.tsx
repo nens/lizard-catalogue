@@ -433,7 +433,7 @@ const MainApp: React.FC<DispatchProps> = (props) => {
 };
 
 const mapDispatchToProps = (dispatch: RootDispatch) => ({
-    fetchLizardBootstrap: () => fetchLizardBootstrap(dispatch),
+    fetchLizardBootstrap: () => dispatch(fetchLizardBootstrap()),
     fetchRasters: (
         page: number,
         searchTerm: string,
@@ -441,47 +441,47 @@ const mapDispatchToProps = (dispatch: RootDispatch) => ({
         observationTypeParameter: string,
         layercollectionSlug: string,
         ordering: string
-    ) => fetchRasters(page, searchTerm, organisationName, observationTypeParameter, layercollectionSlug, ordering, dispatch),
-    updateBasketWithRaster: (rasters: string[]) => updateBasketWithRaster(rasters, dispatch),
-    updateBasketWithWMS: (wmsLayers: string[]) => updateBasketWithWMS(wmsLayers, dispatch),
-    updateBasketWithScenarios: (scenarios: string[]) => updateBasketWithScenarios(scenarios, dispatch),
-    fetchObservationTypes: () => fetchObservationTypes(dispatch),
-    fetchOrganisations: () => fetchOrganisations(dispatch),
+    ) => dispatch(fetchRasters(page, searchTerm, organisationName, observationTypeParameter, layercollectionSlug, ordering)),
+    updateBasketWithRaster: (rasters: string[]) => dispatch(updateBasketWithRaster(rasters)),
+    updateBasketWithWMS: (wmsLayers: string[]) => dispatch(updateBasketWithWMS(wmsLayers)),
+    updateBasketWithScenarios: (scenarios: string[]) => dispatch(updateBasketWithScenarios(scenarios)),
+    fetchObservationTypes: () => dispatch(fetchObservationTypes()),
+    fetchOrganisations: () => dispatch(fetchOrganisations()),
     fetchUserOrganisations: (userId: number) => dispatch(fetchUserOrganisations(userId)),
-    fetchLayercollections: () => fetchLayercollections(dispatch),
+    fetchLayercollections: () => dispatch(fetchLayercollections()),
     fetchWMSLayers: (
         page: number,
         searchTerm: string,
         organisationName: string,
         layercollectionSlug: string,
         ordering: string
-    ) => fetchWMSLayers(page, searchTerm, organisationName, layercollectionSlug, ordering, dispatch),
+    ) => dispatch(fetchWMSLayers(page, searchTerm, organisationName, layercollectionSlug, ordering)),
     fetchScenarios: (
         page: number,
         searchTerm: string,
         organisationName: string,
         ordering: string
-    ) => fetchScenarios(page, searchTerm, organisationName, ordering, dispatch),
+    ) => dispatch(fetchScenarios(page, searchTerm, organisationName, ordering)),
     fetchMonitoringNetworks: (
         page: number,
         searchTerm: string,
         organisationName: string,
         ordering: string
-    ) => fetchMonitoringNetworks(page, searchTerm, organisationName, ordering, dispatch),
+    ) => dispatch(fetchMonitoringNetworks(page, searchTerm, organisationName, ordering)),
     fetchMonitoringNetworkObservationTypes: (uuid: string, signal?: AbortSignal) => dispatch(fetchMonitoringNetworkObservationTypes(uuid, signal)),
     fetchLocations: (uuid: string, signal?: AbortSignal) => dispatch(fetchLocations(uuid, signal)),
-    selectItem: (uuid: string) => selectItem(uuid, dispatch),
-    switchDataType: (dataType: SwitchDataType['payload']) => switchDataType(dataType, dispatch),
-    toggleAlert: () => toggleAlert(dispatch),
-    requestInbox: () => requestInbox(dispatch),
-    updateSearch: (searchTerm: string) => updateSearch(dispatch, searchTerm),
-    removeSearch: () => removeSearch(dispatch),
-    updateOrder: (ordering: string) => updateOrder(dispatch, ordering),
-    removeOrder: () => removeOrder(dispatch),
-    updatePage: (page: number) => updatePage(dispatch, page),
-    selectOrganisation: (organisationName: string) => selectOrganisation(dispatch, organisationName),
-    selectLayercollection: (layercollectionSlug: string) => selectLayercollection(dispatch, layercollectionSlug),
-    selectObservationType: (observationTypeParameter: string) => selectObservationType(dispatch, observationTypeParameter),
+    selectItem: (uuid: string) => dispatch(selectItem(uuid)),
+    switchDataType: (dataType: SwitchDataType['payload']) => dispatch(switchDataType(dataType)),
+    toggleAlert: () => dispatch(toggleAlert()),
+    requestInbox: () => dispatch(requestInbox()),
+    updateSearch: (searchTerm: string) => dispatch(updateSearch(searchTerm)),
+    removeSearch: () => dispatch(removeSearch()),
+    updateOrder: (ordering: string) => dispatch(updateOrder(ordering)),
+    removeOrder: () => dispatch(removeOrder()),
+    updatePage: (page: number) => dispatch(updatePage(page)),
+    selectOrganisation: (organisationName: string) => dispatch(selectOrganisation(organisationName)),
+    selectLayercollection: (layercollectionSlug: string) => dispatch(selectLayercollection(layercollectionSlug)),
+    selectObservationType: (observationTypeParameter: string) => dispatch(selectObservationType(observationTypeParameter)),
 });
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 
