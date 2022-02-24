@@ -45,7 +45,7 @@ const WMSDetails = () => {
         <div
             className={styles.Details}
             style={{
-                gridTemplateRows: "6rem 20rem auto 4rem auto 6rem 4rem 1fr"
+                gridTemplateRows: wmsUrl ? "6rem 20rem auto 4rem auto 6rem 4rem 1fr" : "6rem 20rem auto 4rem auto 4rem 1fr"
             }}
         >
             <div className={styles.NameUuidContainer}>
@@ -100,7 +100,7 @@ const WMSDetails = () => {
                     <span>{wms.layer_collections && wms.layer_collections[0] && wms.layer_collections[0].slug}</span>
                 </div>
             ) : <div />}
-            {wms.wms_url ? (
+            {wmsUrl ? (
                 <div className={styles.InfoBox}>
                     <div className={styles.InfoBoxTitle}>WMS Layer's URL</div>
                     <div className={styles.GetCapabilitiesUrlBox}>

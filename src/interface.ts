@@ -69,7 +69,7 @@ export interface WMS {
     min_zoom: number,
     max_zoom: number,
     url: string,
-    wms_url: string,
+    wms_url: string | null,
     organisation: Organisation,
     layer_collections: Layercollection[],
     access_modifier: string,
