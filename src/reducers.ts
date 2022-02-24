@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { combineReducers, AnyAction } from 'redux';
 import { uniqWith, differenceWith } from 'lodash';
 
 import {
@@ -64,7 +64,6 @@ import {
     SET_NO_DATA_VALUE,
     REQUEST_SCENARIOS,
     RECEIVE_SCENARIOS,
-    Action,
 } from "./action";
 import {
     Raster,
@@ -78,7 +77,8 @@ import {
     MonitoringNetwork,
     TimeSeries,
     Location,
-    Scenario
+    Scenario,
+    FieldValuePair
 } from './interface';
 import { areGridCelIdsEqual, haveGridCellsSameId } from './utils/rasterExportUtils';
 import { getSpatialBounds, getGeometry } from './utils/getSpatialBounds';
@@ -200,7 +200,7 @@ const rasterExportState = (state: MyStore["rasterExportState"] = {
         projections: [],
     }
 },
-    action: Action
+    action: AnyAction
 ): MyStore['rasterExportState'] => {
     switch (action.type) {
         case ADD_TO_SELECTED_EXPORT_GRID_CELL_IDS:
@@ -245,7 +245,7 @@ const rasterExportState = (state: MyStore["rasterExportState"] = {
         case SET_RASTER_EXPORT_FORM_FIELDS:
             {
                 const stateCopy = {...state}
-                action.fieldValuePairs.forEach(fieldValuePair => {
+                action.fieldValuePairs.forEach((fieldValuePair: FieldValuePair) => {
                     Object.assign(stateCopy, {[fieldValuePair.field]: fieldValuePair.value})
                 })
                 return {
@@ -331,7 +331,7 @@ const bootstrap = (
         },
         isFetching: false
     },
-    action: Action
+    action: AnyAction
 ): MyStore['bootstrap'] => {
     switch (action.type) {
         case REQUEST_LIZARD_BOOTSTRAP:
@@ -353,7 +353,7 @@ const bootstrap = (
     }
 };
 
-const currentDataType = (state: MyStore['currentDataType'] = '', action: Action): MyStore['currentDataType'] => {
+const currentDataType = (state: MyStore['currentDataType'] = '', action: AnyAction): MyStore['currentDataType'] => {
     switch (action.type) {
         case SWITCH_DATA_TYPE:
             return action.payload;
@@ -362,7 +362,7 @@ const currentDataType = (state: MyStore['currentDataType'] = '', action: Action)
     };
 };
 
-const currentRasterList = (state: MyStore['currentRasterList'] = null, action: Action): MyStore['currentRasterList'] => {
+const currentRasterList = (state: MyStore['currentRasterList'] = null, action: AnyAction): MyStore['currentRasterList'] => {
     switch (action.type) {
         case RASTERS_REQUESTED:
             return {
@@ -379,7 +379,7 @@ const currentRasterList = (state: MyStore['currentRasterList'] = null, action: A
                 count: count,
                 previous: previous,
                 next: next,
-                rasterList: results.map(raster => raster.uuid),
+                rasterList: results.map((raster: Raster) => raster.uuid),
                 isFetching: false,
                 showAlert: count === 0 ? true : false
             };
@@ -397,11 +397,11 @@ const currentRasterList = (state: MyStore['currentRasterList'] = null, action: A
     };
 };
 
-const allRasters = (state: MyStore['allRasters'] = {}, action: Action): MyStore['allRasters'] => {
+const allRasters = (state: MyStore['allRasters'] = {}, action: AnyAction): MyStore['allRasters'] => {
     switch (action.type) {
         case RASTERS_FETCHED:
             const newState = { ...state };
-            action.payload.results.forEach(raster => {
+            action.payload.results.forEach((raster: Raster) => {
                 //There is an exception with Regen raster as its WMS layer name and style
                 //when sending request to get the WMS tile layer is not the same as other rasters
                 //for regen, we should request for either "radar:5min" or "radar:hour" or "radar:day" for layers
@@ -433,7 +433,7 @@ const allRasters = (state: MyStore['allRasters'] = {}, action: Action): MyStore[
     };
 };
 
-const currentWMSList = (state: MyStore['currentWMSList'] = null, action: Action): MyStore['currentWMSList'] => {
+const currentWMSList = (state: MyStore['currentWMSList'] = null, action: AnyAction): MyStore['currentWMSList'] => {
     switch (action.type) {
         case REQUEST_WMS:
             return {
@@ -450,7 +450,7 @@ const currentWMSList = (state: MyStore['currentWMSList'] = null, action: Action)
                 count: count,
                 previous: previous,
                 next: next,
-                wmsList: action.payload.results.map(wms => wms.uuid),
+                wmsList: action.payload.results.map((wms: WMS) => wms.uuid),
                 isFetching: false,
                 showAlert: count === 0 ? true : false
             };
@@ -468,11 +468,11 @@ const currentWMSList = (state: MyStore['currentWMSList'] = null, action: Action)
     };
 };
 
-const allWMS = (state: MyStore['allWMS'] = {}, action: Action): MyStore['allWMS'] => {
+const allWMS = (state: MyStore['allWMS'] = {}, action: AnyAction): MyStore['allWMS'] => {
     switch (action.type) {
         case RECEIVE_WMS_LAYERS:
             const newState = { ...state };
-            action.payload.results.forEach(wms => {
+            action.payload.results.forEach((wms: WMS) => {
                 newState[wms.uuid] = wms;
             });
             return newState;
@@ -481,7 +481,7 @@ const allWMS = (state: MyStore['allWMS'] = {}, action: Action): MyStore['allWMS'
     };
 };
 
-const currentScenariosList = (state: MyStore['currentScenariosList'] = null, action: Action): MyStore['currentScenariosList'] => {
+const currentScenariosList = (state: MyStore['currentScenariosList'] = null, action: AnyAction): MyStore['currentScenariosList'] => {
     switch (action.type) {
         case REQUEST_SCENARIOS:
             return {
@@ -498,7 +498,7 @@ const currentScenariosList = (state: MyStore['currentScenariosList'] = null, act
                 count: count,
                 previous: previous,
                 next: next,
-                scenariosList: action.payload.results.map(scenario => scenario.uuid),
+                scenariosList: action.payload.results.map((scenario: Scenario) => scenario.uuid),
                 isFetching: false,
                 showAlert: count === 0 ? true : false
             };
@@ -516,11 +516,11 @@ const currentScenariosList = (state: MyStore['currentScenariosList'] = null, act
     };
 };
 
-const allScenarios = (state: MyStore['allScenarios'] = {}, action: Action): MyStore['allScenarios'] => {
+const allScenarios = (state: MyStore['allScenarios'] = {}, action: AnyAction): MyStore['allScenarios'] => {
     switch (action.type) {
         case RECEIVE_SCENARIOS:
             const newState = { ...state };
-            action.payload.results.forEach(scenario => {
+            action.payload.results.forEach((scenario: Scenario) => {
                 newState[scenario.uuid] = scenario;
             });
             return newState;
@@ -529,7 +529,7 @@ const allScenarios = (state: MyStore['allScenarios'] = {}, action: Action): MySt
     };
 };
 
-const currentMonitoringNetworkList = (state: MyStore['currentMonitoringNetworkList'] = null, action: Action): MyStore['currentMonitoringNetworkList'] => {
+const currentMonitoringNetworkList = (state: MyStore['currentMonitoringNetworkList'] = null, action: AnyAction): MyStore['currentMonitoringNetworkList'] => {
     switch (action.type) {
         case REQUEST_MONITORING_NETWORKS:
             return {
@@ -546,7 +546,7 @@ const currentMonitoringNetworkList = (state: MyStore['currentMonitoringNetworkLi
                 count: count,
                 previous: previous,
                 next: next,
-                monitoringNetworksList: action.payload.results.map(network => network.uuid),
+                monitoringNetworksList: action.payload.results.map((network: MonitoringNetwork) => network.uuid),
                 isFetching: false,
                 showAlert: count === 0 ? true : false
             };
@@ -564,11 +564,11 @@ const currentMonitoringNetworkList = (state: MyStore['currentMonitoringNetworkLi
     };
 };
 
-const allMonitoringNetworks = (state: MyStore['allMonitoringNetworks'] = {}, action: Action): MyStore['allMonitoringNetworks'] => {
+const allMonitoringNetworks = (state: MyStore['allMonitoringNetworks'] = {}, action: AnyAction): MyStore['allMonitoringNetworks'] => {
     switch (action.type) {
         case RECEIVE_MONITORING_NETWORKS:
             const newState = { ...state };
-            action.payload.results.forEach(network => {
+            action.payload.results.forEach((network: MonitoringNetwork) => {
                 newState[network.uuid] = network;
             });
             return newState;
@@ -577,7 +577,7 @@ const allMonitoringNetworks = (state: MyStore['allMonitoringNetworks'] = {}, act
     };
 };
 
-const timeseriesObject = (state: MyStore['timeseriesObject'] = null, action: Action): MyStore['timeseriesObject'] => {
+const timeseriesObject = (state: MyStore['timeseriesObject'] = null, action: AnyAction): MyStore['timeseriesObject'] => {
     switch(action.type) {
         case REQUEST_TIMESERIES:
             return {
@@ -606,7 +606,7 @@ const timeseriesObject = (state: MyStore['timeseriesObject'] = null, action: Act
     };
 };
 
-const observationTypeObject = (state: MyStore['observationTypeObject'] = null, action: Action): MyStore['observationTypeObject'] => {
+const observationTypeObject = (state: MyStore['observationTypeObject'] = null, action: AnyAction): MyStore['observationTypeObject'] => {
     switch(action.type) {
         case REQUEST_NETWORK_OBSERVATION_TYPES:
             return {
@@ -625,7 +625,7 @@ const observationTypeObject = (state: MyStore['observationTypeObject'] = null, a
     };
 };
 
-const locationsObject = (state: MyStore['locationsObject'] = null, action: Action): MyStore['locationsObject'] => {
+const locationsObject = (state: MyStore['locationsObject'] = null, action: AnyAction): MyStore['locationsObject'] => {
     switch(action.type) {
         case REQUEST_LOCATIONS:
             return {
@@ -652,7 +652,7 @@ const locationsObject = (state: MyStore['locationsObject'] = null, action: Actio
     };
 };
 
-const selectedItem = (state: MyStore['selectedItem'] = '', action: Action): MyStore['selectedItem'] => {
+const selectedItem = (state: MyStore['selectedItem'] = '', action: AnyAction): MyStore['selectedItem'] => {
     switch (action.type) {
         case ITEM_SELECTED:
             return action.uuid;
@@ -667,7 +667,7 @@ const basket = (
         wmsLayers: [],
         scenarios: []
     },
-    action: Action
+    action: AnyAction
 ) => {
     switch (action.type) {
         case UPDATE_BASKET_WITH_RASTER:
@@ -723,11 +723,13 @@ const basket = (
     };
 };
 
-const observationTypes = (state: MyStore['observationTypes'] = [], action: Action): MyStore['observationTypes'] => {
+const observationTypes = (state: MyStore['observationTypes'] = [], action: AnyAction): MyStore['observationTypes'] => {
     switch (action.type) {
         case OBSERVATION_TYPES_FETCHED:
+            const observationTypes: ObservationType[] = action.observationTypes;
+
             //Remove observation types with empty parameter
-            const observationTypesWithoutEmptyNames = action.observationTypes.filter(observationType => observationType.parameter !== '');
+            const observationTypesWithoutEmptyNames = observationTypes.filter(observationType => observationType.parameter !== '');
 
             //Remove duplicates in parameters using reduce() method
             const parameters = observationTypesWithoutEmptyNames.map(observationType => observationType.parameter);
@@ -756,11 +758,13 @@ const observationTypes = (state: MyStore['observationTypes'] = [], action: Actio
     };
 };
 
-const organisations = (state: MyStore['organisations'] = [], action: Action): MyStore['organisations'] => {
+const organisations = (state: MyStore['organisations'] = [], action: AnyAction): MyStore['organisations'] => {
     switch (action.type) {
         case ORGANISATIONS_FETCHED:
+            const organisations: Organisation[] = action.organisations;
+
             //Remove organisations with empty name
-            const organisationsWithoutEmptyNames = action.organisations.filter(organisation => organisation.name !== '');
+            const organisationsWithoutEmptyNames = organisations.filter(organisation => organisation.name !== '');
 
             //Remove duplications in organisation name using reduce() method
             const names = organisationsWithoutEmptyNames.map(organisation => organisation.name);
@@ -788,18 +792,18 @@ const organisations = (state: MyStore['organisations'] = [], action: Action): My
     };
 };
 
-const layercollections = (state: MyStore['layercollections'] = [], action: Action): MyStore['layercollections'] => {
+const layercollections = (state: MyStore['layercollections'] = [], action: AnyAction): MyStore['layercollections'] => {
     switch (action.type) {
         case LAYERCOLLECTIONS_FETCHED:
-            return action.layercollections
-                //Remove layercollections with empty slug name
-                .filter(layercollection => layercollection.slug !== '')
-                .map(layercollection => {
-                    return {
-                        slug: layercollection.slug,
-                        organisation: layercollection.organisation,
-                    };
-                });
+            const layercollections: Layercollection[] = action.layercollections;
+            return layercollections.filter(
+                layercollection => layercollection.slug !== ''
+            ).map(layercollection => {
+                return {
+                    slug: layercollection.slug,
+                    organisation: layercollection.organisation,
+                };
+            });
         default:
             return state;
     };
@@ -815,7 +819,7 @@ const filters =(
         ordering: '',
         page: 1,
     },
-    action: Action
+    action: AnyAction
     // { type, organisation, layercollection, observationType, searchTerm, ordering, page }
 ): MyStore['filters'] => {
     switch (action.type) {
@@ -880,10 +884,10 @@ const filters =(
     };
 };
 
-const inbox = (state: MyStore['inbox'] = [], action: Action) => {
+const inbox = (state: MyStore['inbox'] = [], action: AnyAction) => {
     switch (action.type) {
         case REQUEST_INBOX:
-            return action.messages.map(message => {
+            return action.messages.map((message: Message) => {
                 const currentMessage = state.find(mess => mess.id === message.id);
                 if (currentMessage) {
                     return {
@@ -917,7 +921,7 @@ const inbox = (state: MyStore['inbox'] = [], action: Action) => {
     };
 };
 
-const notification = (state: MyStore['notification'] = '', action: Action) => {
+const notification = (state: MyStore['notification'] = '', action: AnyAction) => {
     switch (action.type) {
         case SHOW_NOTIFICATION:
             return action.message;
@@ -928,7 +932,7 @@ const notification = (state: MyStore['notification'] = '', action: Action) => {
     };
 };
 
-const timeseriesExport = (state: MyStore['timeseriesExport'] = {}, action: Action) => {
+const timeseriesExport = (state: MyStore['timeseriesExport'] = {}, action: AnyAction) => {
     switch (action.type) {
         case ADD_TIMESERIES_EXPORT_TASK:
             const taskUuid = action.taskUuid;

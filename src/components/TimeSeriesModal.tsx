@@ -149,13 +149,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
         // use AbortController instance to stop the recursive fetch timeseries function
         // when the TimeseriesModal component unmounted
         const controller = new AbortController();
-
-        fetchTimeseries(selectedItem, controller.signal).then(response => {
-            if (response && response.status === 'Error') {
-                closeTimeseriesModal(); // close the modal if timeseries failed to load
-            };
-        });
-
+        fetchTimeseries(selectedItem, controller.signal, closeTimeseriesModal);
         return () => {
             controller.abort();
             removeTimeseries();
@@ -554,7 +548,7 @@ const TimeSeriesModal: FC<MyProps & PropsFromDispatch> = (props) => {
 };
 
 const mapDispatchToProps = (dispatch: RootDispatch) => ({
-    fetchTimeseries: (uuid: string, signal?: AbortSignal) => dispatch(fetchTimeseries(uuid, signal)),
+    fetchTimeseries: (uuid: string, signal?: AbortSignal, closeModal?: Function) => dispatch(fetchTimeseries(uuid, signal, closeModal)),
     removeTimeseries: () => dispatch(removeTimeseries()),
 });
 type PropsFromDispatch = ReturnType<typeof mapDispatchToProps>;

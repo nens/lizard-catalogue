@@ -82,9 +82,9 @@ const Basket = (props: DispatchProps) => {
 };
 
 const mapDispatchToProps = (dispatch: RootDispatch) => ({
-    removeRasterFromBasket: (uuid: string) => removeRasterFromBasket(uuid, dispatch),
-    removeWMSFromBasket: (uuid: string) => removeWMSFromBasket(uuid, dispatch),
-    removeScenarioFromBasket: (uuid: string) => removeScenarioFromBasket(uuid, dispatch)
+    removeRasterFromBasket: (uuid: string) => dispatch(removeRasterFromBasket(uuid)),
+    removeWMSFromBasket: (uuid: string) => dispatch(removeWMSFromBasket(uuid)),
+    removeScenarioFromBasket: (uuid: string) => dispatch(removeScenarioFromBasket(uuid))
 });
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 
