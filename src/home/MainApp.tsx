@@ -53,6 +53,10 @@ import {
     fetchLocations,
     fetchUserOrganisations,
     fetchScenarios,
+    fetchRaster,
+    fetchWmsLayer,
+    fetchScenario,
+    fetchMonitoringNetwork,
 } from '../action';
 import {
     getCurrentRasterList,
@@ -230,6 +234,19 @@ const MainApp: React.FC<DispatchProps> = (props) => {
 
         // Update the search term in MainApp's state to show the search input
         setSearchTerm(search);
+
+        // If uuid is found in the URL then fetch the respective data set
+        if (uuid) {
+            if (dataType === 'Raster') {
+                props.fetchRaster(uuid);
+            } else if (dataType === 'WMS') {
+                props.fetchWmsLayer(uuid);
+            } else if (dataType === 'Scenario') {
+                props.fetchScenario(uuid);
+            } else if (dataType === 'Timeseries') {
+                props.fetchMonitoringNetwork(uuid);
+            };
+        };
     });
 
     // useMountEffect to request the inbox which then poll the inbox
@@ -434,6 +451,7 @@ const MainApp: React.FC<DispatchProps> = (props) => {
 
 const mapDispatchToProps = (dispatch: RootDispatch) => ({
     fetchLizardBootstrap: () => dispatch(fetchLizardBootstrap()),
+    fetchRaster: (uuid: string) => dispatch(fetchRaster(uuid)),
     fetchRasters: (
         page: number,
         searchTerm: string,
@@ -449,6 +467,7 @@ const mapDispatchToProps = (dispatch: RootDispatch) => ({
     fetchOrganisations: () => dispatch(fetchOrganisations()),
     fetchUserOrganisations: (userId: number) => dispatch(fetchUserOrganisations(userId)),
     fetchLayercollections: () => dispatch(fetchLayercollections()),
+    fetchWmsLayer: (uuid: string) => dispatch(fetchWmsLayer(uuid)),
     fetchWMSLayers: (
         page: number,
         searchTerm: string,
@@ -456,12 +475,14 @@ const mapDispatchToProps = (dispatch: RootDispatch) => ({
         layercollectionSlug: string,
         ordering: string
     ) => dispatch(fetchWMSLayers(page, searchTerm, organisationName, layercollectionSlug, ordering)),
+    fetchScenario: (uuid: string) => dispatch(fetchScenario(uuid)),
     fetchScenarios: (
         page: number,
         searchTerm: string,
         organisationName: string,
         ordering: string
     ) => dispatch(fetchScenarios(page, searchTerm, organisationName, ordering)),
+    fetchMonitoringNetwork: (uuid: string) => dispatch(fetchMonitoringNetwork(uuid)),
     fetchMonitoringNetworks: (
         page: number,
         searchTerm: string,
