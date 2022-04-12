@@ -3,6 +3,7 @@ import { uniqWith, differenceWith } from 'lodash';
 
 import {
     RASTERS_FETCHED,
+    RASTER_FETCHED,
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
     LAYERCOLLECTIONS_FETCHED,
@@ -11,6 +12,7 @@ import {
     RECEIVE_LIZARD_BOOTSTRAP,
     REQUEST_WMS,
     RECEIVE_WMS_LAYERS,
+    RECEIVE_WMS_LAYER,
     SWITCH_DATA_TYPE,
     ITEM_SELECTED,
     TOGGLE_ALERT,
@@ -49,6 +51,7 @@ import {
     REMOVE_CURRENT_EXPORT_TASKS,
     REQUEST_MONITORING_NETWORKS,
     RECEIVE_MONITORING_NETWORKS,
+    RECEIVE_MONITORING_NETWORK,
     REQUEST_TIMESERIES,
     RECEIVE_TIMESERIES,
     REQUEST_LOCATIONS,
@@ -64,6 +67,7 @@ import {
     SET_NO_DATA_VALUE,
     REQUEST_SCENARIOS,
     RECEIVE_SCENARIOS,
+    RECEIVE_SCENARIO,
 } from "./action";
 import {
     Raster,
@@ -82,6 +86,7 @@ import {
 } from './interface';
 import { areGridCelIdsEqual, haveGridCellsSameId } from './utils/rasterExportUtils';
 import { getSpatialBounds, getGeometry } from './utils/getSpatialBounds';
+import { getRasterStyle } from './utils/getRasterStyle';
 
 export interface MyStore {
     bootstrap: Bootstrap,
@@ -402,32 +407,15 @@ const allRasters = (state: MyStore['allRasters'] = {}, action: AnyAction): MySto
         case RASTERS_FETCHED:
             const newState = { ...state };
             action.payload.results.forEach((raster: Raster) => {
-                //There is an exception with Regen raster as its WMS layer name and style
-                //when sending request to get the WMS tile layer is not the same as other rasters
-                //for regen, we should request for either "radar:5min" or "radar:hour" or "radar:day" for layers
-                //and either "radar-5min" or "radar-hour" or "radar-day" for styles
-                //Since the default value used in lizard-client is radar:hour, we will hardcode "radar:hour"
-                //as regen's wms layer name and "radar-hour" as its styles
-                //the UUIDs of regen raster on staging and on production are
-                //"3e5f56a7-b16e-4deb-8449-cc2c88805159" and "730d6675-35dd-4a35-aa9b-bfb8155f9ca7" respectively
-                let layerStyle = raster.options.styles ? raster.options.styles : "";
-                let layerName = raster.wms_info.layer;
-                if (raster.uuid === "3e5f56a7-b16e-4deb-8449-cc2c88805159" || raster.uuid === "730d6675-35dd-4a35-aa9b-bfb8155f9ca7") {
-                    layerName = "radar:hour";
-                    layerStyle = "radar-hour";
-                };
-                newState[raster.uuid] = {
-                    ...raster,
-                    options: {
-                        styles: layerStyle
-                    },
-                    wms_info: {
-                        ...raster.wms_info,
-                        layer: layerName
-                    }
-                };
+                newState[raster.uuid] = getRasterStyle(raster);
             });
             return newState;
+        case RASTER_FETCHED:
+            const raster = action.raster;
+            return {
+                ...state,
+                [raster.uuid]: getRasterStyle(raster)
+            };
         default:
             return state;
     };
@@ -476,6 +464,12 @@ const allWMS = (state: MyStore['allWMS'] = {}, action: AnyAction): MyStore['allW
                 newState[wms.uuid] = wms;
             });
             return newState;
+        case RECEIVE_WMS_LAYER:
+            const wms = action.wms;
+            return {
+                ...state,
+                [wms.uuid]: wms
+            };
         default:
             return state;
     };
@@ -524,6 +518,12 @@ const allScenarios = (state: MyStore['allScenarios'] = {}, action: AnyAction): M
                 newState[scenario.uuid] = scenario;
             });
             return newState;
+        case RECEIVE_SCENARIO:
+            const scenario = action.scenario;
+            return {
+                ...state,
+                [scenario.uuid]: scenario
+            };
         default:
             return state;
     };
@@ -572,6 +572,12 @@ const allMonitoringNetworks = (state: MyStore['allMonitoringNetworks'] = {}, act
                 newState[network.uuid] = network;
             });
             return newState;
+        case RECEIVE_MONITORING_NETWORK:
+            const monitoringNetwork = action.monitoringNetwork;
+            return {
+                ...state,
+                [monitoringNetwork.uuid]: monitoringNetwork
+            };
         default:
             return state;
     };

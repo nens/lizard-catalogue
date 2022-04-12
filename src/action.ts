@@ -59,6 +59,7 @@ export const switchDataType = (dataType: SwitchDataType['payload']): Thunk => di
 //MARK: Raster
 export const RASTERS_REQUESTED = 'RASTERS_REQUESTED';
 export const RASTERS_FETCHED = 'RASTERS_FETCHED';
+export const RASTER_FETCHED = 'RASTER_FETCHED';
 
 const rastersRequested = () => ({
     type: RASTERS_REQUESTED
@@ -68,6 +69,16 @@ const rastersFetched = (rasterListObject: RasterListObject) => ({
     type: RASTERS_FETCHED,
     payload: rasterListObject
 });
+
+export const fetchRaster = (uuid: string): Thunk => (dispatch) => {
+    request
+        .get(`/api/v4/rasters/${uuid}/`)
+        .then(response => dispatch({
+            type: RASTER_FETCHED,
+            raster: response.body
+        }))
+        .catch(console.error)
+};
 
 export const fetchRasters = (page: number, searchTerm: string, organisationName: string, observationTypeParameter: string, layercollectionSlug: string, ordering: string): Thunk => dispatch => {
     dispatch(rastersRequested());
@@ -105,6 +116,7 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
 //MARK: WMS
 export const REQUEST_WMS = 'REQUEST_WMS';
 export const RECEIVE_WMS_LAYERS = 'RECEIVE_WMS_LAYERS';
+export const RECEIVE_WMS_LAYER = 'RECEIVE_WMS_LAYER';
 
 const wmsRequested = () => ({
     type: REQUEST_WMS
@@ -114,6 +126,16 @@ const wmsLayersReceived = (wmsObject: WMSObject) => ({
     type: RECEIVE_WMS_LAYERS,
     payload: wmsObject
 });
+
+export const fetchWmsLayer = (uuid: string): Thunk => dispatch => {
+    request
+        .get(`/api/v4/wmslayers/${uuid}/`)
+        .then(response => dispatch({
+            type: RECEIVE_WMS_LAYER,
+            wms: response.body
+        }))
+        .catch(console.error)
+};
 
 export const fetchWMSLayers = (page: number, searchTerm: string, organisationName: string, layercollectionSlug: string, ordering: string): Thunk => dispatch => {
     dispatch(wmsRequested());
@@ -150,6 +172,7 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
 //MARK: Scenarios
 export const REQUEST_SCENARIOS = 'REQUEST_SCENARIOS';
 export const RECEIVE_SCENARIOS = 'RECEIVE_SCENARIOS';
+export const RECEIVE_SCENARIO = 'RECEIVE_SCENARIO';
 
 const scenariosRequested = () => ({
     type: REQUEST_SCENARIOS
@@ -159,6 +182,16 @@ const scenariosReceived = (scenariosObject: ScenariosObject) => ({
     type: RECEIVE_SCENARIOS,
     payload: scenariosObject
 });
+
+export const fetchScenario = (uuid: string): Thunk => dispatch => {
+    request
+        .get(`/api/v4/scenarios/${uuid}/`)
+        .then(response => dispatch({
+            type: RECEIVE_SCENARIO,
+            scenario: response.body
+        }))
+        .catch(console.error)
+};
 
 export const fetchScenarios = (page: number, searchTerm: string, organisationName: string, ordering: string): Thunk => dispatch => {
     dispatch(scenariosRequested());
@@ -205,6 +238,7 @@ export const fetchScenarios = (page: number, searchTerm: string, organisationNam
 //MARK: Monitoring Networks for Timeseries
 export const REQUEST_MONITORING_NETWORKS = 'REQUEST_MONITORING_NETWORKS';
 export const RECEIVE_MONITORING_NETWORKS = 'RECEIVE_MONITORING_NETWORKS';
+export const RECEIVE_MONITORING_NETWORK = 'RECEIVE_MONITORING_NETWORK';
 
 const monitoringNetworksRequested = () => ({
     type: REQUEST_MONITORING_NETWORKS
@@ -214,6 +248,16 @@ const monitoringNetworksReceived = (monitoringNetwork: MonitoringNetworkObject) 
     type: RECEIVE_MONITORING_NETWORKS,
     payload: monitoringNetwork
 });
+
+export const fetchMonitoringNetwork = (uuid: string): Thunk => dispatch => {
+    request
+        .get(`/api/v4/monitoringnetworks/${uuid}/`)
+        .then(response => dispatch({
+            type: RECEIVE_MONITORING_NETWORK,
+            monitoringNetwork: response.body
+        }))
+        .catch(console.error)
+};
 
 export const fetchMonitoringNetworks = (page: number, searchTerm: string, organisationName: string, ordering: string): Thunk => dispatch => {
     dispatch(monitoringNetworksRequested());
