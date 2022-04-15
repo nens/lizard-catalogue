@@ -72,17 +72,13 @@ export default function ScenariosList (props: MyProps) {
                 <ul className={styles.ListMainList}>
                     <li className={styles.ListRowHeader}>
                         <div className={`${styles.ListRow} ${styles.ListRowBox}`} />
-                        <div className={`${styles.ListRow} ${styles.ListRowName}`}>
+                        <div className={`${styles.ListRow} ${styles.ListRowScenarioModelName}`}>
                             Name
                             <i className="fa fa-sort" onClick={() => onSorting('name')} />
                         </div>
-                        <div className={`${styles.ListRow} ${styles.ListRowName}`}>
+                        <div className={`${styles.ListRow} ${styles.ListRowScenarioModelName}`}>
                             Model name
                             <i className="fa fa-sort" onClick={() => onSorting('model_name')} />
-                        </div>
-                        <div className={`${styles.ListRow} ${styles.ListRowName}`}>
-                            Username
-                            <i className="fa fa-sort" onClick={() => onSorting('username')} />
                         </div>
                         <div className={`${styles.ListRow} ${styles.ListRowOrg}`}>
                             Organisation (owner)
@@ -103,9 +99,8 @@ export default function ScenariosList (props: MyProps) {
                                 onClick={() => selectItem(scenario.uuid)}
                             >
                                 <input className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowBox}`} type="checkbox" onChange={() => onCheckboxSelect(scenario.uuid)} checked={checked} />
-                                <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowName}`} title={scenario.name}>{scenario.name}</div>
-                                <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowName}`} title={scenario.model_name}>{scenario.model_name}</div>
-                                <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowName}`} title={scenario.username}>{scenario.username}</div>
+                                <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowScenarioModelName}`} title={scenario.name}>{scenario.name}</div>
+                                <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowScenarioModelName}`} title={scenario.model_name}>{scenario.model_name}</div>
                                 <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowOrg}`} title={scenario.organisation && scenario.organisation.name}>{scenario.organisation && scenario.organisation.name}</div>
                                 <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowTime}`} title={scenario.last_modified}>{getLocalDateString(scenario.last_modified)}</div>
                                 <div className={`${styles.ListRow} ${styles.ListRowNormal} ${styles.ListRowAccess}`}>
