@@ -35,7 +35,7 @@ const ScenarioDetails = () => {
         <div
             className={styles.Details}
             style={{
-                gridTemplateRows: "6rem auto 4rem 6rem 4rem 1fr"
+                gridTemplateRows: "6rem auto auto 4rem 6rem 4rem 1fr"
             }}
         >
             <div className={styles.NameUuidContainer}>
@@ -66,6 +66,10 @@ const ScenarioDetails = () => {
             <div className={styles.InfoBox} style={{ maxHeight: 'unset', wordBreak: 'break-all' }}>
                 <span className={styles.InfoBoxTitle}>Model Name</span>
                 <span className={styles.InfoBoxDescription}>{scenario.model_name}</span>
+            </div>
+            <div className={styles.InfoBox}>
+                <span className={styles.InfoBoxTitle}>Description</span>
+                <span className={styles.InfoBoxDescription} id="scrollbar">{scenario.description}</span>
             </div>
             <div className={styles.InfoBox}>
                 <span className={styles.InfoBoxTitle}>Organisation</span>
