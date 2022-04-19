@@ -90,21 +90,22 @@ export interface Scenario {
     uuid: string,
     name: string,
     url: string,
+    description: string,
     organisation: Organisation,
     access_modifier: string,
     created: string,
     last_modified: string,
-    simulation_id: number,
-    start_time_sim: string,
-    end_time_sim: string,
-    username: string,
-    for_icms: boolean,
-    model_url: string | null,
+    simulation_identifier: string,
+    simulation_start: string,
+    simulation_end: string,
+    model_identifier: string,
     model_revision: string,
     model_name: string,
     has_raw_results: boolean,
     total_size: number,
     supplier: string,
+    extra_metadata: Object,
+    project: string,
 };
 
 // MONITORING NETWORK FOR TIMESERIES
@@ -181,6 +182,21 @@ export interface Layercollection {
         uuid: string
     },
 };
+
+// PROJECT
+export interface Project {
+    url: string;
+    uuid: string;
+    name: string;
+    organisation: Organisation;
+    access_modifier: string;
+    last_modified: string;
+    created: string;
+    code: string;
+    description: string;
+    scheduled_for_deletion: boolean;
+    supplier: string;
+}
 
 export interface LatLng {
     lat: number,

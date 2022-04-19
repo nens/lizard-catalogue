@@ -35,7 +35,7 @@ const ScenarioDetails = () => {
         <div
             className={styles.Details}
             style={{
-                gridTemplateRows: "6rem auto 4rem 6rem 4rem 1fr"
+                gridTemplateRows: "6rem auto auto 4rem 6rem 4rem 1fr"
             }}
         >
             <div className={styles.NameUuidContainer}>
@@ -66,6 +66,10 @@ const ScenarioDetails = () => {
             <div className={styles.InfoBox} style={{ maxHeight: 'unset', wordBreak: 'break-all' }}>
                 <span className={styles.InfoBoxTitle}>Model Name</span>
                 <span className={styles.InfoBoxDescription}>{scenario.model_name}</span>
+            </div>
+            <div className={styles.InfoBox}>
+                <span className={styles.InfoBoxTitle}>Description</span>
+                <span className={styles.InfoBoxDescription} id="scrollbar">{scenario.description}</span>
             </div>
             <div className={styles.InfoBox}>
                 <span className={styles.InfoBoxTitle}>Organisation</span>
@@ -121,12 +125,14 @@ const ScenarioDetails = () => {
                     <div>Scenario</div>
                     <div>Model revision</div>
                     <div>{scenario.model_revision}</div>
-                    <div>Model URL</div>
-                    <div>{scenario.model_url}</div>
-                    <div>Simulation ID</div>
-                    <div>{scenario.simulation_id}</div>
-                    <div>Username</div>
-                    <div>{scenario.username}</div>
+                    <div>Model Identifier</div>
+                    <div>{scenario.model_identifier}</div>
+                    <div>Simulation Identifier</div>
+                    <div>{scenario.simulation_identifier}</div>
+                    <div>Start</div>
+                    <div>{getLocalString(scenario.simulation_start)}</div>
+                    <div>End</div>
+                    <div>{getLocalString(scenario.simulation_end)}</div>
                     <div>Created</div>
                     <div>{getLocalDateString(scenario.created)}</div>
                     <div>Last update</div>
@@ -135,10 +141,6 @@ const ScenarioDetails = () => {
                     <div>{scenario.has_raw_results ? 'Yes' : 'No'}</div>
                     <div>Total size</div>
                     <div>{bytesToMb(scenario.total_size)}</div>
-                    <div>Start</div>
-                    <div>{getLocalString(scenario.start_time_sim)}</div>
-                    <div>End</div>
-                    <div>{getLocalString(scenario.end_time_sim)}</div>
                 </div>
             ) : showTableTab === 'Actions' ? (
                 <div className={`${styles.Grid} ${styles.GridBody} ${styles.GridBodyActions}`} id='scrollbar'>

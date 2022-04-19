@@ -1,5 +1,5 @@
 import { connect, useSelector } from 'react-redux';
-import { ObservationType, Organisation, Layercollection } from '../interface';
+import { ObservationType, Organisation, Layercollection, Project } from '../interface';
 import { getFilters, MyStore } from '../reducers';
 import { RootDispatch } from '../store';
 import {
@@ -9,6 +9,8 @@ import {
     selectObservationType,
     removeObservationType,
     removeLayercollection,
+    selectProject,
+    removeProject,
     updatePage,
     SwitchDataType
 } from '../action';
@@ -19,6 +21,7 @@ interface MyProps {
     observationTypes: ObservationType[],
     organisations: Organisation[],
     layercollections: Layercollection[],
+    projects: Project[],
     currentDataType: MyStore['currentDataType'],
     onDataTypeChange: (dataType: SwitchDataType['payload']) => void,
 };
@@ -28,12 +31,15 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
         observationTypes,
         organisations,
         layercollections,
+        projects,
         currentDataType,
         onDataTypeChange,
         selectOrganisation,
         removeOrganisation,
         selectLayercollection,
         removeLayercollection,
+        selectProject,
+        removeProject,
         selectObservationType,
         removeObservationType,
         updatePage
@@ -96,6 +102,18 @@ const FilterBar: React.FC<MyProps & DispatchProps> = (props)=> {
                     removeItem={removeObservationType}
                 />
             ) : null}
+            {currentDataType === "Scenario" ? (
+                <FilterOption
+                    filterOption="project"
+                    listOfItems={projects}
+                    filterValue={filters.project}
+                    selectItem={value => {
+                        updatePage(1);
+                        selectProject(value);
+                    }}
+                    removeItem={removeProject}
+                />
+            ) : null}
         </div>
     );
 };
@@ -105,6 +123,8 @@ const mapDispatchToProps = (dispatch: RootDispatch) => ({
     removeOrganisation: () => dispatch(removeOrganisation()),
     selectLayercollection: (layercollectionSlug: string) => dispatch(selectLayercollection(layercollectionSlug)),
     removeLayercollection: () => dispatch(removeLayercollection()),
+    selectProject: (project: string) => dispatch(selectProject(project)),
+    removeProject: () => dispatch(removeProject()),
     selectObservationType: (observationTypeParameter: string) => dispatch(selectObservationType(observationTypeParameter)),
     removeObservationType: () => dispatch(removeObservationType()),
     updatePage: (page: number) => dispatch(updatePage(page)),

@@ -108,6 +108,13 @@
   margin-left: 1rem;
 }
 
+.ListRowScenarioModelName {
+  flex: 3;
+  text-align: left;
+  margin-right: 2rem;
+  margin-left: 1rem;
+}
+
 .ListRowOrg {
   flex: 3;
   text-align: left;
