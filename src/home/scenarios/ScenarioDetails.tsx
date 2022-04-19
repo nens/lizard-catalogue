@@ -49,7 +49,7 @@ const ScenarioDetails = () => {
                             src={manageIcon}
                             title='To manage this scenario'
                             alt="Manage"
-                            onClick={() => window.open(`/management/data_management/scenarios/${scenario.uuid}`)}
+                            onClick={() => window.open(`/management/data_management/scenarios/scenarios/${scenario.uuid}`)}
                         />
                     ) : null}
                 </div>
