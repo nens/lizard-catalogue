@@ -1,22 +1,24 @@
 import { useState } from 'react';
-import { ObservationType, Organisation, Layercollection } from './../interface';
+import { ObservationType, Organisation, Layercollection, Project } from './../interface';
 import SearchBar from './SearchBar';
 import styles from './FilterOption.module.css';
 
 interface MyProps {
-    filterOption: "observationType" | "organisation" | "layercollection",
-    listOfItems: (ObservationType | Organisation | Layercollection)[],
+    filterOption: "observationType" | "organisation" | "layercollection" | "project",
+    listOfItems: (ObservationType | Organisation | Layercollection | Project)[],
     filterValue: string,
     selectItem: (value: string) => void,
     removeItem: () => void,
 };
 
 // Helper function to get input value
-const getItemValue = (item: ObservationType | Organisation | Layercollection, filterOption: MyProps['filterOption']) => {
+const getItemValue = (item: ObservationType | Organisation | Layercollection | Project, filterOption: MyProps['filterOption']) => {
     if (filterOption === "observationType") {
         return (item as ObservationType).parameter;
     } else if (filterOption === "organisation") {
         return (item as Organisation).name;
+    } else if (filterOption === "project") {
+        return (item as Project).name;
     } else { // filterOption === "layercollection"
         return (item as Layercollection).slug;
     };
@@ -44,6 +46,8 @@ const FilterOption: React.FC<MyProps> = (props) => {
             return (item as ObservationType).parameter.toLowerCase().includes(searchInput.toLowerCase());
         } else if (filterOption === "organisation") {
             return (item as Organisation).name.toLowerCase().includes(searchInput.toLowerCase());
+        } else if (filterOption === "project") {
+            return (item as Project).name.toLowerCase().includes(searchInput.toLowerCase());
         } else { // filterOption === "layercollection"
             return (item as Layercollection).slug.toLowerCase().includes(searchInput.toLowerCase());
         };
@@ -54,6 +58,8 @@ const FilterOption: React.FC<MyProps> = (props) => {
         title = "Observation Type";
     } else if (filterOption === "organisation") {
         title = "Organisation (owner)";
+    } else if (filterOption === "project") {
+        title = "Project";
     } else { // filterOption = "layercollection"
         title = "Layer Collection";
     };

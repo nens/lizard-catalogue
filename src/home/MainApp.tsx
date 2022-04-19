@@ -31,6 +31,7 @@ import {
     fetchObservationTypes,
     fetchOrganisations,
     fetchLayercollections,
+    fetchProjects,
     fetchLizardBootstrap,
     switchDataType,
     selectItem,
@@ -48,6 +49,7 @@ import {
     selectOrganisation,
     selectLayercollection,
     selectObservationType,
+    selectProject,
     fetchMonitoringNetworks,
     fetchMonitoringNetworkObservationTypes,
     fetchLocations,
@@ -63,6 +65,7 @@ import {
     getObservationTypes,
     getOrganisations,
     getLayercollections,
+    getProjects,
     getCurrentDataType,
     getCurrentWMSList,
     getCurrentMonitoringNetworkList,
@@ -78,6 +81,7 @@ import {
     getOrganisation,
     getObservationType,
     getLayercollection,
+    getProject,
     getDataType,
     newURL,
     getUUID
@@ -103,6 +107,7 @@ const MainApp: React.FC<DispatchProps> = (props) => {
     const observationTypes = useSelector(getObservationTypes);
     const organisations = useSelector(getOrganisations);
     const layercollections = useSelector(getLayercollections);
+    const projects = useSelector(getProjects);
     const currentDataType = useSelector(getCurrentDataType);
     const filters = useSelector(getFilters);
     const selectedItem = useSelector(getSelectedItem);
@@ -204,6 +209,7 @@ const MainApp: React.FC<DispatchProps> = (props) => {
         props.fetchObservationTypes();
         props.fetchOrganisations();
         props.fetchLayercollections();
+        props.fetchProjects();
     });
 
     // useEffect to fetch list of organisations which the currently login user is a member of
@@ -222,12 +228,14 @@ const MainApp: React.FC<DispatchProps> = (props) => {
         const organisation = getOrganisation(urlSearchParams);
         const observation = getObservationType(urlSearchParams);
         const layercollection = getLayercollection(urlSearchParams);
+        const project = getProject(urlSearchParams);
         const uuid = getUUID(urlSearchParams);
 
         // Update Redux filters with URL parameters
         props.updateSearch(search);
         props.selectOrganisation(organisation);
         props.selectLayercollection(layercollection);
+        props.selectProject(project);
         props.selectObservationType(observation);
         props.switchDataType(dataType as SwitchDataType['payload']);
         props.selectItem(uuid);
@@ -263,6 +271,7 @@ const MainApp: React.FC<DispatchProps> = (props) => {
             filters.organisation,
             currentDataType === 'Raster' ? filters.observationType : '',
             currentDataType === 'Raster' || currentDataType === 'WMS' ? filters.layercollection : '',
+            currentDataType === 'Scenario' ? filters.project : '',
             selectedItem
         );
 
@@ -277,6 +286,7 @@ const MainApp: React.FC<DispatchProps> = (props) => {
         filters.organisation,
         filters.observationType,
         filters.layercollection,
+        filters.project,
         selectedItem,
         navigate
     ]);
@@ -306,6 +316,7 @@ const MainApp: React.FC<DispatchProps> = (props) => {
                 filters.page,
                 filters.searchTerm,
                 filters.organisation,
+                filters.project,
                 filters.ordering
             );
         } else if (currentDataType === 'Timeseries') {
@@ -326,6 +337,7 @@ const MainApp: React.FC<DispatchProps> = (props) => {
         filters.observationType,
         filters.ordering,
         filters.organisation,
+        filters.project,
         filters.page,
         filters.searchTerm
     ]);
@@ -372,6 +384,7 @@ const MainApp: React.FC<DispatchProps> = (props) => {
                     observationTypes={observationTypes}
                     organisations={organisations}
                     layercollections={layercollections}
+                    projects={projects}
                     onDataTypeChange={onDataTypeChange}
                     currentDataType={currentDataType}
                 />
@@ -467,6 +480,7 @@ const mapDispatchToProps = (dispatch: RootDispatch) => ({
     fetchOrganisations: () => dispatch(fetchOrganisations()),
     fetchUserOrganisations: (userId: number) => dispatch(fetchUserOrganisations(userId)),
     fetchLayercollections: () => dispatch(fetchLayercollections()),
+    fetchProjects: () => dispatch(fetchProjects()),
     fetchWmsLayer: (uuid: string) => dispatch(fetchWmsLayer(uuid)),
     fetchWMSLayers: (
         page: number,
@@ -480,8 +494,9 @@ const mapDispatchToProps = (dispatch: RootDispatch) => ({
         page: number,
         searchTerm: string,
         organisationName: string,
+        projectName: string,
         ordering: string
-    ) => dispatch(fetchScenarios(page, searchTerm, organisationName, ordering)),
+    ) => dispatch(fetchScenarios(page, searchTerm, organisationName, projectName, ordering)),
     fetchMonitoringNetwork: (uuid: string) => dispatch(fetchMonitoringNetwork(uuid)),
     fetchMonitoringNetworks: (
         page: number,
@@ -502,6 +517,7 @@ const mapDispatchToProps = (dispatch: RootDispatch) => ({
     updatePage: (page: number) => dispatch(updatePage(page)),
     selectOrganisation: (organisationName: string) => dispatch(selectOrganisation(organisationName)),
     selectLayercollection: (layercollectionSlug: string) => dispatch(selectLayercollection(layercollectionSlug)),
+    selectProject: (project: string) => dispatch(selectProject(project)),
     selectObservationType: (observationTypeParameter: string) => dispatch(selectObservationType(observationTypeParameter)),
 });
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;

@@ -7,6 +7,7 @@ import {
     OBSERVATION_TYPES_FETCHED,
     ORGANISATIONS_FETCHED,
     LAYERCOLLECTIONS_FETCHED,
+    PROJECTS_FETCHED,
     RASTERS_REQUESTED,
     REQUEST_LIZARD_BOOTSTRAP,
     RECEIVE_LIZARD_BOOTSTRAP,
@@ -39,10 +40,12 @@ import {
     FETCHING_STATE_PROJECTIONS,
     SELECT_ORGANISATION,
     SELECT_LAYERCOLLECTION,
+    SELECT_PROJECT,
     SELECT_OBSERVATIONTYPE,
     UPDATE_SEARCH,
     REMOVE_ORGANISATION,
     REMOVE_LAYERCOLLECTION,
+    REMOVE_PROJECT,
     REMOVE_OBSERVATIONTYPE,
     REMOVE_SEARCH,
     REMOVE_ORDER,
@@ -82,7 +85,8 @@ import {
     TimeSeries,
     Location,
     Scenario,
-    FieldValuePair
+    FieldValuePair,
+    Project
 } from './interface';
 import { areGridCelIdsEqual, haveGridCellsSameId } from './utils/rasterExportUtils';
 import { getSpatialBounds, getGeometry } from './utils/getSpatialBounds';
@@ -93,6 +97,7 @@ export interface MyStore {
     observationTypes: ObservationType[],
     organisations: Organisation[],
     layercollections: Layercollection[],
+    projects: Project[],
     currentDataType: 'Raster' | 'WMS' | 'Timeseries' | 'Scenario' | '',
     currentRasterList: {
         count: number,
@@ -170,6 +175,7 @@ export interface MyStore {
     filters: {
         organisation: Organisation['name'],
         layercollection: Layercollection['slug'],
+        project: Project['name'],
         observationType: ObservationType['parameter'],
         searchTerm: string,
         ordering: string,
@@ -815,11 +821,21 @@ const layercollections = (state: MyStore['layercollections'] = [], action: AnyAc
     };
 };
 
+const projects = (state: MyStore['projects'] = [], action: AnyAction): MyStore['projects'] => {
+    switch (action.type) {
+        case PROJECTS_FETCHED:
+            return action.projects;
+        default:
+            return state;
+    };
+};
+
 //Filters
 const filters =(
     state: MyStore['filters'] = {
         organisation: '',
         layercollection: '',
+        project: '',
         observationType: '',
         searchTerm: '',
         ordering: '',
@@ -843,6 +859,11 @@ const filters =(
             return {
                 ...state,
                 layercollection: action.layercollection
+            };
+        case SELECT_PROJECT:
+            return {
+                ...state,
+                project: action.project
             };
         case SELECT_OBSERVATIONTYPE:
             return {
@@ -869,6 +890,11 @@ const filters =(
             return {
                 ...state,
                 layercollection: ''
+            };
+        case REMOVE_PROJECT:
+            return {
+                ...state,
+                project: ''
             };
         case REMOVE_OBSERVATIONTYPE:
             return {
@@ -1067,6 +1093,10 @@ export const getLayercollections = (state: MyStore) => {
     return state.layercollections;
 };
 
+export const getProjects = (state: MyStore) => {
+    return state.projects;
+};
+
 export const getInbox = (state: MyStore) => {
     return state.inbox;
 };
@@ -1108,6 +1138,7 @@ export default combineReducers({
     observationTypes,
     organisations,
     layercollections,
+    projects,
     inbox,
     notification,
     timeseriesExport

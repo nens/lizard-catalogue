@@ -193,14 +193,15 @@ export const fetchScenario = (uuid: string): Thunk => dispatch => {
         .catch(console.error)
 };
 
-export const fetchScenarios = (page: number, searchTerm: string, organisationName: string, ordering: string): Thunk => dispatch => {
+export const fetchScenarios = (page: number, searchTerm: string, organisationName: string, projectName: string, ordering: string): Thunk => dispatch => {
     dispatch(scenariosRequested());
 
     const params: string[] = [];
 
     if (page) params.push(`page=${page}`);
     if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
-    if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
+    if (organisationName) params.push(`organisation__name=${encodeURIComponent(organisationName)}`);
+    if (projectName) params.push(`project__name=${encodeURIComponent(projectName)}`);
     if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
 
     const queries = params.join('&');
@@ -397,6 +398,7 @@ export const OBSERVATION_TYPES_FETCHED = 'OBSERVATION_TYPES_FETCHED';
 export const ORGANISATIONS_FETCHED = 'ORGANISATIONS_FETCHED';
 export const USER_ORGANISATIONS_FETCHED = 'USER_ORGANISATIONS_FETCHED';
 export const LAYERCOLLECTIONS_FETCHED = 'LAYERCOLLECTIONS_FETCHED';
+export const PROJECTS_FETCHED = 'PROJECTS_FETCHED';
 
 export const fetchObservationTypes = (): Thunk => async dispatch => {
     const observationTypes = await recursiveFetchFunction(`/api/v4/observationtypes/`, { page_size: 10000 });
@@ -466,15 +468,34 @@ export const fetchLayercollections = (): Thunk => async dispatch => {
     });
 };
 
+export const fetchProjects = (): Thunk => async dispatch => {
+    const projects = await recursiveFetchFunction(`/api/v4/projects/`, {});
+
+    if (!projects) {
+        dispatch(addNotification('Failed to load available projects.'));
+        return {
+            status: 'Error',
+            errorMessage: `Failed to load available projects.`
+        };
+    };
+
+    dispatch({
+        type: PROJECTS_FETCHED,
+        projects
+    });
+};
+
 //MARK: Filters
 export const SELECT_ORGANISATION = 'SELECT_ORGANISATION';
 export const SELECT_LAYERCOLLECTION = 'SELECT_LAYERCOLLECTION';
+export const SELECT_PROJECT = 'SELECT_PROJECT';
 export const SELECT_OBSERVATIONTYPE = 'SELECT_OBSERVATIONTYPE';
 export const UPDATE_SEARCH = 'UPDATE_SEARCH';
 export const UPDATE_ORDER = 'UPDATE_ORDER';
 export const UPDATE_PAGE = 'UPDATE_PAGE';
 export const REMOVE_ORGANISATION = 'REMOVE_ORGANISATION';
 export const REMOVE_LAYERCOLLECTION = 'REMOVE_LAYERCOLLECTION';
+export const REMOVE_PROJECT = 'REMOVE_PROJECT';
 export const REMOVE_OBSERVATIONTYPE = 'REMOVE_OBSERVATIONTYPE';
 export const REMOVE_SEARCH = 'REMOVE_SEARCH';
 export const REMOVE_ORDER = 'REMOVE_ORDER';
@@ -502,6 +523,19 @@ export const selectLayercollection = (layercollection: string): Thunk => dispatc
 export const removeLayercollection = (): Thunk => dispatch => {
     dispatch({
         type: REMOVE_LAYERCOLLECTION
+    });
+};
+
+export const selectProject = (project: string): Thunk => dispatch => {
+    dispatch({
+        type: SELECT_PROJECT,
+        project
+    });
+};
+
+export const removeProject = (): Thunk => dispatch => {
+    dispatch({
+        type: REMOVE_PROJECT
     });
 };
 
