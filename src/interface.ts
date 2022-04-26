@@ -104,7 +104,9 @@ export interface Scenario {
     has_raw_results: boolean,
     total_size: number,
     supplier: string,
-    extra_metadata: Object,
+    extra_metadata: {
+        [key: string]: string | Object | []
+    },
     project: string,
 };
 

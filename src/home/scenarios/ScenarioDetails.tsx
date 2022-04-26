@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { TableTab } from '../../interface';
 import { MyStore, getOrganisations, getLizardBootstrap, getSelectedItem, getScenario } from '../../reducers';
@@ -141,6 +141,19 @@ const ScenarioDetails = () => {
                     <div>{scenario.has_raw_results ? 'Yes' : 'No'}</div>
                     <div>Total size</div>
                     <div>{bytesToMb(scenario.total_size)}</div>
+                    <div><b>Extra Metadata</b></div>
+                    <div />
+                    {Object.entries(scenario.extra_metadata).map(([key, value]) => {
+                        const displayValue = (typeof value === 'object') ? JSON.stringify(value) : value;
+                        return (
+                            <React.Fragment key={key}>
+                                <div>{key}</div>
+                                <div title={displayValue}>
+                                    {displayValue}
+                                </div>
+                            </React.Fragment>
+                        );
+                    })}
                 </div>
             ) : showTableTab === 'Actions' ? (
                 <div className={`${styles.Grid} ${styles.GridBody} ${styles.GridBodyActions}`} id='scrollbar'>
