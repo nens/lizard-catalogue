@@ -123,6 +123,8 @@ const ScenarioDetails = () => {
                 <div className={`${styles.Grid} ${styles.GridBody} ${styles.GridBodyDetails}`} id='scrollbar'>
                     <div>Data type</div>
                     <div>Scenario</div>
+                    <div>Source</div>
+                    <div>{scenario.source}</div>
                     <div>Model revision</div>
                     <div>{scenario.model_revision}</div>
                     <div>Model Identifier</div>

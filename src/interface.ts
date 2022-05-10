@@ -90,6 +90,7 @@ export interface Scenario {
     uuid: string,
     name: string,
     url: string,
+    source: string,
     description: string,
     organisation: Organisation,
     access_modifier: string,
