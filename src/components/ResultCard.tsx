@@ -18,14 +18,13 @@ interface RasterState {
 interface ScenarioResult {
   id: number,
   url: string,
+  name: string,
+  code: string,
+  description: string,
   scenario: string,
   raster: string,
   attachment_url: string,
-  result_type: {
-    name: string,
-    code: string,
-    layer_description: string
-  }
+  family: string,
 }
 
 interface Results {
@@ -91,7 +90,7 @@ export default function ResultCard (props: MyProps) {
                 href={result.attachment_url ? result.attachment_url : '#'}
                 onClick={() => result.raster && fetchRaster(result.id, result.raster)}
               >
-                {result.result_type.name}
+                {result.name}
               </a>
               {result.raster ? (
                 rasterState && rasterState.id === result.id && rasterState.isFetching ? (
