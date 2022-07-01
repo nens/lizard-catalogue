@@ -199,7 +199,7 @@ export const fetchScenarios = (page: number, searchTerm: string, organisationNam
     const params: string[] = [];
 
     if (page) params.push(`page=${page}`);
-    if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
+    if (searchTerm) params.push(`${UUID_REGEX.test(searchTerm) ? "uuid" : "name__icontains"}=${encodeURIComponent(searchTerm)}`);
     if (organisationName) params.push(`organisation__name=${encodeURIComponent(organisationName)}`);
     if (projectName) params.push(`project__name=${encodeURIComponent(projectName)}`);
     if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
@@ -209,24 +209,13 @@ export const fetchScenarios = (page: number, searchTerm: string, organisationNam
     request
         .get(`/api/v4/scenarios/?${queries}`)
         .then(response => {
-            if (response.body.count === 0 && searchTerm) {
+            if (response.body.count === 0 && searchTerm && !UUID_REGEX.test(searchTerm)) {
                 // If no scenario found by name then search by model name
                 const newQueries = queries.replace('name__icontains', 'model_name__icontains');
                 request
                     .get(`/api/v4/scenarios/?${newQueries}`)
                     .then(response => {
-                        if (response.body.count === 0 && searchTerm) {
-                            // If no scenario found by name and model name then search by uuid
-                            const newQueries = queries.replace('name__icontains', 'uuid');
-                            request
-                                .get(`/api/v4/scenarios/?${newQueries}`)
-                                .then(response => {
-                                    dispatch(scenariosReceived(response.body))
-                                })
-                                .catch(console.error)
-                        } else {
-                            dispatch(scenariosReceived(response.body))
-                        }
+                        dispatch(scenariosReceived(response.body))
                     })
                     .catch(console.error)
             } else {
