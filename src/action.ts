@@ -86,7 +86,7 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
     const params: string[] = [];
 
     if (page) params.push(`page=${page}`);
-    if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
+    if (searchTerm) params.push(`${UUID_REGEX.test(searchTerm) ? "uuid" : "name__icontains"}=${encodeURIComponent(searchTerm)}`);
     if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
     if (layercollectionSlug) params.push(`layer_collections__slug=${encodeURIComponent(layercollectionSlug)}`);
     if (observationTypeParameter) params.push(`observation_type__parameter__icontains=${encodeURIComponent(observationTypeParameter)}`);
@@ -96,20 +96,7 @@ export const fetchRasters = (page: number, searchTerm: string, organisationName:
 
     request
         .get(`/api/v4/rasters/?${queries}&scenario__isnull=true`)
-        .then(response => {
-            if (response.body.count === 0 && searchTerm) {
-                // If no raster found by name then search by uuid
-                const newQueries = queries.replace('name__icontains', 'uuid');
-                request
-                    .get(`/api/v4/rasters/?${newQueries}&scenario__isnull=true`)
-                    .then(response => {
-                        dispatch(rastersFetched(response.body))
-                    })
-                    .catch(console.error)
-            } else {
-                dispatch(rastersFetched(response.body))
-            }
-        })
+        .then(response => dispatch(rastersFetched(response.body)))
         .catch(console.error)
 };
 
@@ -143,7 +130,7 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
     const params: string[] = [];
 
     if (page) params.push(`page=${page}`);
-    if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
+    if (searchTerm) params.push(`${UUID_REGEX.test(searchTerm) ? "uuid" : "name__icontains"}=${encodeURIComponent(searchTerm)}`);
     if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
     if (layercollectionSlug) params.push(`layer_collections__slug=${encodeURIComponent(layercollectionSlug)}`);
     if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
@@ -152,20 +139,7 @@ export const fetchWMSLayers = (page: number, searchTerm: string, organisationNam
 
     request
         .get(`/api/v4/wmslayers/?${queries}`)
-        .then(response => {
-            if (response.body.count === 0 && searchTerm) {
-                // If no WMS layer found by name then search by uuid
-                const newQueries = queries.replace('name__icontains', 'uuid');
-                request
-                    .get(`/api/v4/wmslayers/?${newQueries}`)
-                    .then(response => {
-                        dispatch(wmsLayersReceived(response.body))
-                    })
-                    .catch(console.error)
-            } else {
-                dispatch(wmsLayersReceived(response.body))
-            }
-        })
+        .then(response => dispatch(wmsLayersReceived(response.body)))
         .catch(console.error)
 };
 
@@ -199,7 +173,7 @@ export const fetchScenarios = (page: number, searchTerm: string, organisationNam
     const params: string[] = [];
 
     if (page) params.push(`page=${page}`);
-    if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
+    if (searchTerm) params.push(`${UUID_REGEX.test(searchTerm) ? "uuid" : "name__icontains"}=${encodeURIComponent(searchTerm)}`);
     if (organisationName) params.push(`organisation__name=${encodeURIComponent(organisationName)}`);
     if (projectName) params.push(`project__name=${encodeURIComponent(projectName)}`);
     if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
@@ -209,25 +183,12 @@ export const fetchScenarios = (page: number, searchTerm: string, organisationNam
     request
         .get(`/api/v4/scenarios/?${queries}`)
         .then(response => {
-            if (response.body.count === 0 && searchTerm) {
+            if (response.body.count === 0 && searchTerm && !UUID_REGEX.test(searchTerm)) {
                 // If no scenario found by name then search by model name
                 const newQueries = queries.replace('name__icontains', 'model_name__icontains');
                 request
                     .get(`/api/v4/scenarios/?${newQueries}`)
-                    .then(response => {
-                        if (response.body.count === 0 && searchTerm) {
-                            // If no scenario found by name and model name then search by uuid
-                            const newQueries = queries.replace('name__icontains', 'uuid');
-                            request
-                                .get(`/api/v4/scenarios/?${newQueries}`)
-                                .then(response => {
-                                    dispatch(scenariosReceived(response.body))
-                                })
-                                .catch(console.error)
-                        } else {
-                            dispatch(scenariosReceived(response.body))
-                        }
-                    })
+                    .then(response => dispatch(scenariosReceived(response.body)))
                     .catch(console.error)
             } else {
                 dispatch(scenariosReceived(response.body))
@@ -266,7 +227,7 @@ export const fetchMonitoringNetworks = (page: number, searchTerm: string, organi
     const params: string[] = [];
 
     if (page) params.push(`page=${page}`);
-    if (searchTerm) params.push(`name__icontains=${encodeURIComponent(searchTerm)}`);
+    if (searchTerm) params.push(`${UUID_REGEX.test(searchTerm) ? "uuid" : "name__icontains"}=${encodeURIComponent(searchTerm)}`);
     if (organisationName) params.push(`organisation__name__icontains=${encodeURIComponent(organisationName)}`);
     if (ordering) params.push(`ordering=${encodeURIComponent(ordering)}`);
 
@@ -274,20 +235,7 @@ export const fetchMonitoringNetworks = (page: number, searchTerm: string, organi
 
     request
         .get(`/api/v4/monitoringnetworks/?${queries}`)
-        .then(response => {
-            if (response.body.count === 0 && searchTerm && UUID_REGEX.test(searchTerm)) {
-                // If no monitoring network found by name then search by uuid
-                const newQueries = queries.replace('name__icontains', 'uuid');
-                request
-                    .get(`/api/v4/monitoringnetworks/?${newQueries}`)
-                    .then(response => {
-                        dispatch(monitoringNetworksReceived(response.body))
-                    })
-                    .catch(console.error)
-            } else {
-                dispatch(monitoringNetworksReceived(response.body))
-            }
-        })
+        .then(response => dispatch(monitoringNetworksReceived(response.body)))
         .catch(console.error)
 };
 
