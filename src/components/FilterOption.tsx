@@ -110,11 +110,12 @@ const FilterOption: React.FC<MyProps> = (props) => {
                         <li className={styles.FilterItem} key={i}>
                             <input
                                 type="radio"
+                                id={getItemValue(item, filterOption)}
                                 className={styles.FilterRadioButton}
                                 onChange={() => selectItem(getItemValue(item, filterOption))}
                                 checked={filterValue === getItemValue(item, filterOption)}
                             />
-                            <label className={styles.FilterItemName}>{getItemValue(item, filterOption)}</label>
+                            <label htmlFor={getItemValue(item, filterOption)} className={styles.FilterItemName}>{getItemValue(item, filterOption)}</label>
                         </li>
                     ))}
                     {numberOfItems < filteredListOfItems.length ? (
